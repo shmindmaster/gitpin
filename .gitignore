@@ -1,0 +1,11 @@
+node_modules/
+.next/
+.cache/
+generated/
+.env
+.env.local
+*.secret.*
+*.sqlite3
+dist/
+.turbo/
+DS_Store

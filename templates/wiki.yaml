@@ -1,0 +1,29 @@
+# repocontext — wiki.yaml template v2
+#
+# Drop this file in any repo you want repocontext to index.
+# It controls exactly what documentation gets exposed to AI agents.
+#
+# Copy from: templates/wiki.yaml
+# Docs: docs/configuration.md
+
+version: 2
+
+# What to expose (everything else is hidden by default)
+expose:
+  - path: README.md
+  - path: CHANGELOG.md
+  - path: docs/
+    glob: "**/*.md"
+
+# Explicit exclusions (override expose)
+exclude:
+  - path: docs/internal/        # internal planning docs
+  - path: docs/drafts/          # work in progress
+  - path: "*.secret.*"          # anything with "secret" in the name
+  - path: "*.credentials.*"
+
+# Optional: branch to index (defaults to repo's default branch)
+# branch: main
+
+# Optional: description override for catalog
+# description: "My awesome service that does X"

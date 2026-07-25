@@ -1,0 +1,51 @@
+{
+  "name": "repocontext",
+  "version": "0.1.0",
+  "private": false,
+  "description": "MCP server that gives AI agents safe, searchable, commit-pinned context across your entire multi-repo codebase.",
+  "license": "MIT",
+  "packageManager": "pnpm@11.15.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "index": "tsx scripts/build-index.ts",
+    "mcp:serve": "tsx mcp/server.ts",
+    "mcp:serve:http": "tsx mcp/http-server.ts",
+    "init:repos": "tsx scripts/init-repos.ts",
+    "analyze": "tsx scripts/analyze-gaps.ts",
+    "validate": "pnpm test && pnpm typecheck && pnpm lint"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "simple-git": "^3.27.0",
+    "gray-matter": "^4.0.3",
+    "yaml": "^2.7.0",
+    "glob": "^11.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.0",
+    "tsx": "^4.19.0",
+    "vitest": "^3.1.0",
+    "@types/node": "^22.0.0"
+  },
+  "keywords": [
+    "mcp",
+    "ai-agents",
+    "codebase",
+    "multi-repo",
+    "documentation",
+    "context",
+    "claude",
+    "codex",
+    "cursor",
+    "model-context-protocol"
+  ]
+}
