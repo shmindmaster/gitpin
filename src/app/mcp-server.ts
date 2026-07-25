@@ -92,6 +92,7 @@ function createServer(): McpServer {
       case 'manifest': return json(await getRepoManifest(repository));
       case 'tests': return json(await getRepoTests(repository));
       case 'changes': return json(await getRepoRecentChanges(repository, limit ?? 10));
+      default: return json({ error: `Unknown operation: ${operation}` });
     }
   });
 

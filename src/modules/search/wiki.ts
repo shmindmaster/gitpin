@@ -6,7 +6,7 @@
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, extname } from 'node:path';
 import { parse } from 'yaml';
-import { listRepos, resolveRepoPath } from '../config/registry';
+import { listRepos, resolveRepoPath } from '../../platform/config/registry';
 
 export interface DocEntry {
   repository: string;
@@ -239,9 +239,9 @@ function isExposed(relPath: string, exposure: { expose: string[]; exclude: strin
   // If expose list is empty, default to README + docs/
   if (exposure.expose.length === 0) return relPath === 'README.md' || relPath.startsWith('docs/');
   // Check if path matches any expose pattern
-  return exposure.expose.some((pattern) => {
-    clean_pattern = pattern.replace(/\/\*\*$/, '').replace(/\*\*/, '');
-    return relPath.startsWith(clean_pattern) || relPath === clean_pattern;
+  return exposure.expose.some((pattern: string) => {
+    const cleanPattern = pattern.replace(/\/\*\*$/, '').replace(/\*\*/, '');
+    return relPath.startsWith(cleanPattern) || relPath === cleanPattern;
   });
 }
 

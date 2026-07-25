@@ -43,7 +43,7 @@ export function loadRegistry(): Registry {
   const raw = readFileSync(registryPath, 'utf-8');
   const parsed = parse(raw) as { repositories?: unknown[] };
 
-  const repositories: RepoEntry[] = (parsed.repositories ?? []).map((entry: Record<string, unknown>) => ({
+  const repositories: RepoEntry[] = ((parsed.repositories ?? []) as Record<string, unknown>[]).map((entry) => ({
     name: String(entry.name ?? ''),
     path: expandHome(String(entry.path ?? '')),
     branches: Array.isArray(entry.branches) ? entry.branches.map(String) : ['main'],
