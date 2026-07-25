@@ -5,48 +5,26 @@
   "description": "MCP server that gives AI agents safe, searchable, commit-pinned context across your entire multi-repo codebase.",
   "license": "MIT",
   "packageManager": "pnpm@11.15.0",
-  "engines": {
-    "node": ">=20"
-  },
+  "engines": { "node": ">=20" },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "test": "vitest run",
-    "test:watch": "vitest",
+    "mcp:serve": "tsx src/server.ts",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint .",
-    "index": "tsx scripts/build-index.ts",
-    "mcp:serve": "tsx mcp/server.ts",
-    "mcp:serve:http": "tsx mcp/http-server.ts",
-    "init:repos": "tsx scripts/init-repos.ts",
-    "analyze": "tsx scripts/analyze-gaps.ts",
-    "validate": "pnpm test && pnpm typecheck && pnpm lint"
+    "build": "tsc",
+    "test": "vitest run",
+    "lint": "eslint src/",
+    "validate": "pnpm typecheck && pnpm test"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
-    "glob": "^11.0.0",
-    "gray-matter": "^4.0.3",
     "simple-git": "^3.27.0",
     "yaml": "^2.7.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
-    "tsx": "^4.19.0",
     "typescript": "^5.8.0",
-    "vitest": "^3.1.0"
+    "tsx": "^4.19.0",
+    "vitest": "^3.1.0",
+    "@types/node": "^22.0.0"
   },
-  "keywords": [
-    "mcp",
-    "ai-agents",
-    "codebase",
-    "multi-repo",
-    "documentation",
-    "context",
-    "claude",
-    "codex",
-    "cursor",
-    "model-context-protocol"
-  ]
+  "keywords": ["mcp", "ai-agents", "codebase", "multi-repo", "documentation", "context", "claude", "codex", "cursor", "model-context-protocol"]
 }

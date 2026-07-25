@@ -1,68 +1,55 @@
-# AGENTS.md — repocontext
+# AGENTS.md - repocontext
 
-## Mission
+## What this is
 
-repocontext is an open-source MCP server that gives AI agents safe, searchable,
-commit-pinned context across a developer's entire multi-repo codebase.
-
-Read this file, the README, and package.json before making any change.
+MCP server giving AI agents safe, read-only, commit-pinned context across multiple local git repos. No databases. No queues. No writes. Git is the data source.
 
 ## Architecture
 
-Domain-oriented modular monolith. One MCP server process. Zero workers, zero queues,
-zero databases. Git repos are the data source — repocontext reads, never writes.
+Flat, 4-file TypeScript application. Domain-oriented, no over-engineering.
 
 ```
 src/
-├── app/                    # Entry points (mcp-server.ts)
-├── modules/
-│   ├── indexing/           # Build catalog.json + documents.json from repos
-│   ├── search/             # Cross-repo doc search + gap analysis
-│   ├── repo-inspection/    # Status, commits, manifests, tests, changes
-│   ├── drift-detection/    # Cross-repo schema/contract/token mismatch alerts
-│   └── knowledge-cards/    # Per-module deep understanding with annotations
-├── platform/
-│   ├── git/                # Git operations via simple-git (read-only)
-│   ├── config/             # Registry parsing (repositories.yaml)
-│   ├── mcp/                # MCP transport (stdio + HTTP)
-│   └── safety/             # Path traversal prevention, sensitive file blocking
-├── tests/
-└── docs/
+  server.ts     MCP server entry. 8 tools. Wires registry + git + wiki.
+  registry.ts   Reads repositories.yaml. Resolves repo paths.
+  git.ts        Git operations: status, commits, file read, code search, compare.
+  wiki.ts       Doc discovery, cross-repo search, gap analysis, wiki.yaml parsing.
 ```
+
+No subdirectories in src/. Add a module ONLY when a file exceeds ~300 lines and has a clear bounded responsibility (e.g., drift-detection.ts, knowledge-cards.ts).
 
 ## Rules
 
-1. **Read-only.** repocontext never writes to any indexed repository. Zero exceptions.
-2. **Commit-pinned.** Every response must include the commit SHA the data came from.
-3. **Secrets blocked.** .env, credentials, tokens, keys — scanned and blocked at read time.
-4. **Manifest-controlled.** Each repo's wiki.yaml controls what gets exposed. Default: README only.
-5. **Local-first.** Indexing runs on the developer's machine. Nothing leaves unless they deploy the HTTP server.
-6. **Simple.** No microservices, no queues, no databases, no Kubernetes. Git repos + YAML + TypeScript.
+1. Read-only. Zero writes to any indexed repository.
+2. Commit-pinned. Every response includes the source commit SHA.
+3. Sensitive files blocked at read time (.env, credentials, keys, tokens).
+4. Each repo controls exposure via docs/wiki.yaml. Default: README + docs/ only.
+5. Local-first. No network calls unless the user deploys the HTTP server.
+6. No databases, no cache layers, no workers. Git + filesystem + YAML.
 
 ## Commands
 
 ```bash
 pnpm install
-pnpm dev              # Start MCP server (stdio)
+pnpm mcp:serve        # Start MCP server (stdio)
+pnpm typecheck        # TypeScript strict check
 pnpm test             # Run tests
-pnpm build            # Production build
-pnpm typecheck        # TypeScript check
-pnpm lint             # ESLint
+pnpm build            # Compile to dist/
 ```
 
 ## Conventions
 
-- TypeScript strict mode. No `any`. No `@ts-ignore`.
-- Named exports. No default exports.
-- Error messages must be actionable: say what went wrong and what to do about it.
-- Tests in tests/ mirroring src/ structure.
-- Docs in docs/. One canonical source per subject.
-- Business-oriented names: `search-docs`, `detect-drift`, `analyze-gaps`. Not `utils`, `helpers`, `manager`.
+- TypeScript strict. No `any` in new code (existing `any` from v0.1 is grandfathered).
+- Named exports only.
+- Errors must be actionable: say what broke and what to do.
+- Business names: `search-docs`, `detect-drift`, `analyze-gaps`. Not `utils`, `helpers`.
+- One file = one responsibility. Split when >300 lines.
 
 ## Do not
 
-- Add a database or cache layer (git IS the data source)
-- Add write operations to any git repo
-- Add authentication complexity for the local stdio mode
-- Create parallel structures for the same concept
-- Add dependencies without a documented reason
+- Add a database or cache (git IS the source)
+- Add write operations to repos
+- Create empty directories or placeholder files
+- Add authentication to the stdio transport
+- Split into packages, microservices, or monorepos
+- Add dependencies without a documented reason in the PR
