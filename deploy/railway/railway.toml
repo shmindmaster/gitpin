@@ -1,9 +1,0 @@
-# Railway deployment for repocontext MCP server
-[build]
-builder = "nixpacks"
-
-[deploy]
-startCommand = "node dist/app/mcp-server.js"
-healthcheckPath = "/health"
-restartPolicyType = "on-failure"
-restartPolicyMaxRetries = 3

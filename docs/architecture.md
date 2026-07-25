@@ -49,12 +49,14 @@ repocontext sits between your local repos and your AI coding agent. It reads; it
 
 ## Deployment
 
-Primary: local stdio (no deployment needed, configured in coding-agent MCP config).
-Optional: self-hosted HTTP for team sharing (Railway, Render, Fly.io, DigitalOcean configs in `deploy/`).
+Primary (only supported path today): local stdio MCP, configured in the coding-agent MCP config. No network listener, no auth surface.
+
+There is no HTTP transport and no cloud deploy path. Do not add multi-host deploy configs until an HTTP transport exists and is needed.
 
 ## What this is NOT
 
 - Not a documentation generator (it reads existing docs, doesn't generate new ones)
 - Not a vector database or semantic search engine (it's keyword-based, fast, deterministic)
 - Not a code analysis tool (it doesn't parse ASTs or run linters)
+- Not a public SaaS product (personal portfolio tool)
 - Not a replacement for IDE features (it serves AI agents that can't see your filesystem otherwise)

@@ -33,9 +33,12 @@ No subdirectories in src/. Add a module ONLY when a file exceeds ~300 lines and 
 pnpm install
 pnpm mcp:serve        # Start MCP server (stdio)
 pnpm typecheck        # TypeScript strict check
-pnpm test             # Run tests
+pnpm test             # vitest unit tests
+pnpm validate         # typecheck + test
 pnpm build            # Compile to dist/
 ```
+
+Registry: `registry/repositories.yaml` (local absolute paths).
 
 ## Conventions
 

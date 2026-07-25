@@ -2,7 +2,7 @@
 
 Personal MCP server for cross-repo context across my product portfolio.
 
-Gives AI coding agents (Claude Code, Cursor, Codex, OpenCode) safe, read-only access to documentation and code across 9 repositories simultaneously. Replaces the old ShWiki.
+Gives AI coding agents (Claude Code, Cursor, Codex, OpenCode) safe, read-only access to documentation and code across the local SHMindMaster portfolio (product apps + tooling). Replaces the old ShWiki for agent context.
 
 ## What it does
 
@@ -34,6 +34,12 @@ registry/repositories.yaml   Which repos to index.
 templates/wiki.yaml          Per-repo exposure template.
 ```
 
+## Validate
+
+```bash
+pnpm validate   # typecheck + tests
+```
+
 ## Not public
 
-This is a personal tool. It works for my setup (9 repos, Windows, local git). Not optimized for general distribution. If you want something similar for public use, check out [jCodeMunch](https://github.com/jgravelle/jcodemunch-mcp), [GitNexus](https://github.com/AugmendTech/gitnexus), or [claude-context](https://github.com/zilliztech/claude-context).
+This is a personal tool. It works for this machine’s portfolio layout (Windows, local git paths in `registry/repositories.yaml`). Not optimized for general distribution. If you want something similar for public use, check out [jCodeMunch](https://github.com/jgravelle/jcodemunch-mcp), [GitNexus](https://github.com/AugmendTech/gitnexus), or [claude-context](https://github.com/zilliztech/claude-context).

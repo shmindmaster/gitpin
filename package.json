@@ -1,8 +1,8 @@
 {
   "name": "repocontext",
-  "version": "0.1.0",
-  "private": false,
-  "description": "MCP server that gives AI agents safe, searchable, commit-pinned context across your entire multi-repo codebase.",
+  "version": "0.1.1",
+  "private": true,
+  "description": "Personal local MCP server for safe, commit-pinned multi-repo context across the SHMindMaster portfolio.",
   "license": "MIT",
   "packageManager": "pnpm@11.15.0",
   "engines": { "node": ">=20" },
@@ -11,8 +11,7 @@
     "typecheck": "tsc --noEmit",
     "build": "tsc",
     "test": "vitest run",
-    "lint": "eslint src/",
-    "validate": "pnpm typecheck && pnpm test"
+    "validate": "tsc --noEmit && vitest run"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",

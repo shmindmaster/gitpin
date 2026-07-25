@@ -63,12 +63,23 @@ export async function getRepoRecentChanges(name: string, limit = 10) {
 }
 
 export async function getRepoFile(name: string, sourcePath: string, lineStart?: number, lineEnd?: number) {
-  const repoPath = resolveRepoPath(name);
+  const repoPath = resolve(resolveRepoPath(name));
   const full = resolve(repoPath, sourcePath);
-  if (!full.startsWith(repoPath)) throw new Error(`Path traversal blocked: ${sourcePath}`);
+  // Case-insensitive root check for Windows paths
+  const fullNorm = full.toLowerCase();
+  const rootNorm = repoPath.toLowerCase();
+  if (
+    fullNorm !== rootNorm &&
+    !fullNorm.startsWith(rootNorm + '\\') &&
+    !fullNorm.startsWith(rootNorm + '/')
+  ) {
+    throw new Error(`Path traversal blocked: ${sourcePath}`);
+  }
   if (!existsSync(full)) throw new Error(`Not found: ${sourcePath} in ${name}`);
   const lower = sourcePath.toLowerCase();
-  if (SENSITIVE.some((s) => lower.includes(s))) return { repository: name, sourcePath, blocked: true, reason: 'Matches sensitive-file pattern.' };
+  if (SENSITIVE.some((s) => lower.includes(s))) {
+    return { repository: name, sourcePath, blocked: true, reason: 'Matches sensitive-file pattern.' };
+  }
 
   const lines = readFileSync(full, 'utf-8').split('\n');
   const start = Math.max(1, lineStart ?? 1);

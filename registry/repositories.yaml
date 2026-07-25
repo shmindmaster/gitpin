@@ -1,8 +1,9 @@
-# repocontext: all SHMindMaster product repositories
-# This file replaces the old shwiki registry.
-# Generated 2026-07-25. ShWiki archived; repocontext is the successor.
+# repocontext: SHMindMaster local portfolio index
+# Personal tool — paths are machine-local. Update when repos move.
+# Generated 2026-07-25; refreshed for full portfolio inventory.
 
 repositories:
+  # Product applications
   - name: abacare
     path: C:/Repos/shmindmaster/abacare
     branches: [main]
@@ -37,4 +38,17 @@ repositories:
 
   - name: warrantygains
     path: C:/Repos/shmindmaster/warrantygains
+    branches: [main]
+
+  # Tooling / platform
+  - name: agent-guard
+    path: C:/Repos/shmindmaster/agent-guard
+    branches: [main]
+
+  - name: repocontext
+    path: C:/Repos/shmindmaster/repocontext
+    branches: [main]
+
+  - name: shwiki
+    path: C:/Repos/shmindmaster/shwiki
     branches: [main]
