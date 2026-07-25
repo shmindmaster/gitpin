@@ -309,17 +309,129 @@ pnpm validate         # full pre-release gate
 
 ---
 
+## 🧠 Knowledge Cards
+
+Beyond docs, repocontext generates **Knowledge Cards** — deep per-module understanding that AI agents use to answer "how does X work?" without reading every file.
+
+```
+$ repocontext cards --repo payments-service
+
+  💳 Payments Service — Knowledge Cards
+  ══════════════════════════════════════
+
+  📦 src/gateway/stripe.ts
+     Handles Stripe webhook verification and payment intent creation.
+     Depends on: shared-lib/crypto for signature validation.
+     Consumers: web-app/checkout, admin-panel/refunds
+     Last changed: commit e4f2a1d (2 days ago)
+
+  📦 src/webhooks/handler.ts
+     Routes webhooks to domain processors. Retry logic with
+     exponential backoff. Dead-letter queue after 5 failures.
+     Depends on: worker/queue, shared-lib/events
+     ⚠️ Worker is on an older commit — may miss new event types.
+
+  📦 src/ledger/reconcile.ts
+     Daily reconciliation against bank statements. Flags
+     discrepancies >$0.01 for human review.
+     Depends on: data-pipeline/staging
+     Human-gated: discrepancies route to finance team, never auto-resolved.
+```
+
+Cards are generated from code analysis + your annotations. **Your corrections are protected** — they won't be overwritten by the next auto-update.
+
+---
+
+## 📝 wiki_plan.yaml — Guided Generation
+
+Like a design brief for your codebase documentation. Drop one in your repo before indexing and repocontext follows your intent:
+
+```yaml
+# .repocontext/wiki_plan.yaml (or templates/wiki.yaml)
+version: 2
+
+repowiki:
+  # Template: "architecture" (technical) or "product" (feature-focused)
+  template: "architecture"
+
+  # Notes: inject guidance for the AI indexer
+  notes:
+    - text: "Focus on the payment flow, not internal utilities"
+      author: "you"
+    - text: "Document the auth boundary — it's the #1 source of cross-repo bugs"
+      author: "you"
+
+  # Documents: control what pages get generated
+  documents:
+    - title: "System Architecture"
+      goal: "How services connect, where data flows, deploy topology"
+    - title: "Payment Flow"
+      goal: "End-to-end from checkout click to bank reconciliation"
+      parent: "System Architecture"
+
+# Knowledge Cards: focus the per-module cards
+knowledgecard:
+  notes:
+    - text: "Prioritize cards for src/gateway/ and src/webhooks/"
+
+# Scope: what files to look at
+scope:
+  include: ["src/**", "docs/**"]
+  exclude: ["**/test/**", "**/migrations/**"]
+```
+
+Compatible with Qoder's `wiki_plan.yaml` schema — if you're coming from Qoder, your existing plans work here.
+
+---
+
+## 🔄 Drift Detection
+
+The feature Qoder doesn't have: **cross-repo drift alerts.**
+
+```
+$ repocontext drift
+
+  ⚠️  Cross-Repo Drift Detected (3 issues)
+  ═══════════════════════════════════════
+
+  1. TOKEN FORMAT MISMATCH
+     web-app (commit a3f2c1d, 2h ago) now sends v2 auth tokens
+     worker (commit b7e9a01, 3d ago) still validates v1 format only
+     → Risk: All authenticated requests will fail for new sessions
+
+  2. EVENT SCHEMA DRIFT
+     payments-service added `refund.partial` event (commit e4f2a1d)
+     notification-svc doesn't handle it yet (last commit: 12d ago)
+     → Risk: Partial refunds won't trigger customer notifications
+
+  3. API CONTRACT CHANGE
+     shared-lib changed `UserResponse.avatar` from string → object
+     mobile-app still expects string (commit f1a3b2c, 6d ago)
+     → Risk: Avatar display crashes on mobile
+```
+
+This is what makes repocontext worth the install. Single-repo tools literally cannot do this.
+
+---
+
 ## 🆚 vs. Alternatives
 
-| | repocontext | codebase-memory-mcp | GitHub Copilot Workspace | Manual |
-|---|---|---|---|---|
-| **Multi-repo** | ✅ Native | ❌ Single repo | ❌ Single repo | 😢 |
-| **Commit-pinned** | ✅ | ❌ | ❌ | ❌ |
-| **Doc gap analysis** | ✅ Built-in | ❌ | ❌ | ❌ |
-| **Secret scanning** | ✅ At index time | ❌ | ❌ | ❌ |
-| **Read-only safety** | ✅ Zero writes | ⚠️ | ⚠️ | ✅ |
-| **Any MCP client** | ✅ | ✅ | ❌ | ❌ |
-| **Self-hosted** | ✅ | ✅ | ❌ | ✅ |
+| | repocontext | Qoder RepoWiki | codebase-memory-mcp | Copilot Workspace | Manual |
+|---|---|---|---|---|---|
+| **Multi-repo** | ✅ Native | ❌ Single repo | ❌ Single repo | ❌ | 😢 |
+| **Cross-repo drift** | ✅ Built-in | ❌ | ❌ | ❌ | ❌ |
+| **MCP-native** | ✅ Any client | ❌ Qoder IDE only | ✅ | ❌ | ❌ |
+| **Open source** | ✅ MIT | ❌ Commercial | ✅ | ❌ | ✅ |
+| **Free** | ✅ | ❌ Credits | ✅ | ❌ | ✅ |
+| **Commit-pinned** | ✅ | ❌ | ❌ | ❌ | ❌ |
+| **Doc gap analysis** | ✅ Portfolio-wide | ❌ Per-repo | ❌ | ❌ | ❌ |
+| **Knowledge Cards** | ✅ + annotations | ✅ | ❌ | ❌ | ❌ |
+| **wiki_plan.yaml** | ✅ Qoder-compatible | ✅ (only option) | ❌ | ❌ | ❌ |
+| **Human annotations** | ✅ Protected | ✅ | ❌ | ❌ | ❌ |
+| **Secret scanning** | ✅ | ⚠️ | ❌ | ❌ | ❌ |
+| **Doc-drift alerts** | ✅ | ⚠️ Intra-repo only | ❌ | ❌ | ❌ |
+
+**The one-liner:** Qoder gives one repo a brain. repocontext gives your entire codebase a shared brain that any AI agent can talk to. Free, open-source, MCP-native.
 
 ---
 
