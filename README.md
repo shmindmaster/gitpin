@@ -57,6 +57,22 @@ All read-only. All commit-pinned. Your agents see the truth, not a stale guess.
 
 ---
 
+## ☁️ One-Click Deploy (Self-Hosted)
+
+Want repocontext running on your own infra? Click and go:
+
+| Platform | Deploy | Config |
+|----------|--------|--------|
+| **Railway** | [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/template/repocontext) | `deploy/railway/railway.toml` |
+| **Render** | [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/shmindmaster/repocontext) | `deploy/render/render.yaml` |
+| **Fly.io** | `fly launch --config deploy/fly/fly.toml` | `deploy/fly/fly.toml` |
+| **DigitalOcean** | [![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/shmindmaster/repocontext) | `deploy/digitalocean/app.yaml` |
+| **Docker** | `docker build -t repocontext . && docker run -p 3100:3100 repocontext` | Coming soon |
+
+> **Local-first by default.** You don't need to deploy anything. The MCP server runs locally via `pnpm mcp:serve`. Deploy only if you want a shared, remote MCP endpoint for your team.
+
+---
+
 ## ⚡ Quick Start
 
 ### 1. Install & Initialize (60 seconds)
