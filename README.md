@@ -1,5 +1,10 @@
 # RepoContext
 
+[![Validate](https://github.com/shmindmaster/repocontext/actions/workflows/ci.yml/badge.svg)](https://github.com/shmindmaster/repocontext/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](package.json)
+[![MCP Protocol](https://img.shields.io/badge/MCP-1.30-blue.svg)](https://modelcontextprotocol.io)
+
 ### Give coding agents commit-pinned answers from the repositories that matter.
 
 RepoContext is an open-source MCP server for teams that want Claude Code, Codex, Cursor, and other MCP clients to navigate multiple repositories without guessing. It returns bounded, read-only evidence with repository paths, line numbers, and Git commit SHAs.
