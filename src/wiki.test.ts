@@ -81,6 +81,13 @@ describe('wiki', () => {
     expect(gaps[0].gaps).toContain('Dev Guide');
   });
 
+  it('generates a ContextBrief structure', async () => {
+    const brief = (await getDocGaps('brief')) as { type: string; examinedRepositories: number; totalDocuments: number };
+    expect(brief.type).toBe('ContextBrief');
+    expect(brief.examinedRepositories).toBe(1);
+    expect(brief.totalDocuments).toBeGreaterThanOrEqual(14);
+  });
+
   it('reports dirty documentation as stale while returning HEAD content', async () => {
     writeFileSync(join(repoPath, 'README.md'), '# Dirty\n\nUncommitted text.\n', 'utf-8');
     const catalog = await getCatalog();

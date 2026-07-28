@@ -72,9 +72,9 @@ export function createServer(): McpServer {
     'wiki.analyze',
     {
       annotations: READ_ONLY,
-      description: 'Analyze documentation gaps or compare coverage across repositories.',
+      description: 'Analyze documentation gaps, compare coverage, or generate a source-cited context brief.',
       inputSchema: z.object({
-        operation: z.enum(['gaps', 'compare']),
+        operation: z.enum(['gaps', 'compare', 'brief']),
         repositories: z.array(z.string()).max(20).optional(),
       }),
     },

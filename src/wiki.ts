@@ -98,7 +98,7 @@ const EXPECTED_DOCUMENTS = [
   { path: 'docs/development.md', label: 'Dev Guide' },
 ];
 
-export async function getDocGaps(operation: 'gaps' | 'compare', repositories?: string[]) {
+export async function getDocGaps(operation: 'gaps' | 'compare' | 'brief', repositories?: string[]) {
   const selected = loadRegistry().filter((entry) => !repositories?.length || repositories.includes(entry.name));
   const rows = selected.map((repository) => {
     try {
@@ -111,6 +111,7 @@ export async function getDocGaps(operation: 'gaps' | 'compare', repositories?: s
       }
       return {
         repository: repository.name,
+        docCount: index.paths.length,
         commitSha: index.commitSha,
         confidence: index.confidence,
         stale: index.stale,
@@ -121,6 +122,7 @@ export async function getDocGaps(operation: 'gaps' | 'compare', repositories?: s
     } catch (error) {
       return {
         repository: repository.name,
+        docCount: 0,
         commitSha: null,
         confidence: 'unavailable' as const,
         stale: false,
@@ -135,6 +137,20 @@ export async function getDocGaps(operation: 'gaps' | 'compare', repositories?: s
     return {
       categories: EXPECTED_DOCUMENTS.map((expected) => expected.label),
       rows,
+    };
+  }
+  if (operation === 'brief') {
+    const totalDocs = rows.reduce((acc, row) => acc + row.docCount, 0);
+    const staleCount = rows.filter((row) => row.stale).length;
+    const unavailableCount = rows.filter((row) => row.confidence === 'unavailable').length;
+    return {
+      type: 'ContextBrief',
+      examinedRepositories: rows.length,
+      totalDocuments: totalDocs,
+      staleRepositories: staleCount,
+      unavailableRepositories: unavailableCount,
+      summary: `Examined ${rows.length} repositories with ${totalDocs} total docs. ${staleCount} stale, ${unavailableCount} unavailable.`,
+      repositories: rows,
     };
   }
   return rows;

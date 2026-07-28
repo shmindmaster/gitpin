@@ -113,9 +113,14 @@ export async function getRepoManifest(name: string) {
   const manifestNames = new Set([
     'Cargo.toml',
     'Dockerfile',
+    'bun.lockb',
+    'composer.json',
+    'deno.json',
+    'flake.nix',
     'go.mod',
     'package.json',
     'pnpm-workspace.yaml',
+    'pom.xml',
     'pyproject.toml',
     'requirements.txt',
   ]);
