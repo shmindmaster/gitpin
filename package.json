@@ -32,6 +32,7 @@
   "scripts": {
     "mcp:serve": "tsx src/server.ts",
     "mcp:http": "tsx src/http.ts",
+    "doctor:check": "tsx src/server.ts doctor",
     "index:build": "tsx src/snapshot.ts",
     "verify:package": "node scripts/verify-package.mjs",
     "verify:remote": "node scripts/verify-remote.mjs",

@@ -33,9 +33,9 @@ These issue-ready drafts cover work intentionally deferred from the 0.2 release 
 
 **Desired outcome:** Determine whether technical and cross-functional users can install RepoContext, identify the right source, understand unknowns, and trust the provenance without maintainer coaching.
 
-**Relevant components:** `_product-experience/`, `README.md`, `src/doctor.ts`, and all eight MCP tool descriptions in `src/server.ts`.
+**Relevant components:** `docs/`, `README.md`, `src/doctor.ts`, and all eight MCP tool descriptions in `src/server.ts`.
 
-**Suggested approach:** Use synthetic repositories only, run the protocol in `_product-experience/06-outcome-measurement-plan.md`, record completion and attribution outcomes, and publish only anonymized findings approved by participants.
+**Suggested approach:** Use synthetic repositories only, follow a standard task-based usability protocol, record completion and attribution outcomes, and publish only anonymized findings approved by participants.
 
 **Acceptance criteria:**
 
@@ -55,7 +55,7 @@ These issue-ready drafts cover work intentionally deferred from the 0.2 release 
 
 **Desired outcome:** Decide whether a source-cited brief is needed, what minimum information it contains, and whether generation belongs in RepoContext or the MCP client.
 
-**Relevant components:** `_product-experience/02-workflow-and-feature-design.md`, `src/server.ts`, exposure-policy code, and remote snapshot boundaries.
+**Relevant components:** `docs/architecture.md`, `src/server.ts`, exposure-policy code, and remote snapshot boundaries.
 
 **Suggested approach:** Use the preceding workflow study, prototype outside the public MCP contract, threat-model sharing and redaction, and compare a client-composed brief against a server tool.
 
