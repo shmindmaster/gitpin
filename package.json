@@ -1,6 +1,7 @@
 {
   "name": "repocontext",
   "version": "0.2.0",
+  "type": "commonjs",
   "description": "Give coding agents fast, commit-pinned context across the repositories that matter.",
   "author": "Sarosh Hussain",
   "license": "MIT",
