@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { resolve } from 'node:path';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
@@ -186,7 +187,20 @@ export async function runStdioServer(): Promise<void> {
   console.error('[repocontext] MCP server ready (stdio) - 8 tools available');
 }
 
-if (require.main === module) {
+function isDirectExecution(): boolean {
+  if (typeof require !== 'undefined' && require.main === module) return true;
+  if (process.argv[1]) {
+    try {
+      const mainPath = resolve(process.argv[1]);
+      return mainPath === __filename || mainPath === resolve(__dirname, 'server.js');
+    } catch {
+      return false;
+    }
+  }
+  return false;
+}
+
+if (isDirectExecution()) {
   const command = process.argv[2];
   const action =
     command === 'doctor'
