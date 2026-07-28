@@ -150,6 +150,33 @@ export function createServer(): McpServer {
     async ({ repository, base, head }) => json(await compareRepoCommits(repository, base, head)),
   );
 
+  server.registerResource(
+    'catalog',
+    'repocontext://catalog',
+    { mimeType: 'application/json', description: 'RepoContext Repository Catalog' },
+    async (uri) => ({
+      contents: [{ uri: uri.href, mimeType: 'application/json', text: JSON.stringify(await getCatalog(), null, 2) }],
+    }),
+  );
+
+  server.registerPrompt(
+    'audit-documentation-gaps',
+    {
+      description: 'Audit documentation coverage across registered repositories and identify missing documentation.',
+    },
+    async () => ({
+      messages: [
+        {
+          role: 'user',
+          content: {
+            type: 'text',
+            text: 'Use wiki.analyze and repo.inspect to audit documentation coverage across all registered repositories and report missing README, AGENTS.md, or ARCHITECTURE.md files.',
+          },
+        },
+      ],
+    }),
+  );
+
   return server;
 }
 
