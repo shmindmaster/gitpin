@@ -3,6 +3,8 @@
  * Search and index implementations live in focused sibling modules.
  */
 import { readPinnedFile } from './git';
+import { getContextBrief } from './context-brief';
+import { EXPECTED_DOCUMENTS, getDocumentationRows } from './documentation-analysis';
 import { loadRegistry } from './registry';
 import { documentIndex, MAX_DOCUMENT_BYTES, normalizePath } from './wiki-index';
 
@@ -91,66 +93,13 @@ export async function getDocs(repositoryName: string, sourcePath: string): Promi
   }
 }
 
-const EXPECTED_DOCUMENTS = [
-  { path: 'README.md', label: 'README' },
-  { path: 'docs/architecture.md', label: 'Architecture' },
-  { path: 'AGENTS.md', label: 'Agent Instructions' },
-  { path: 'docs/development.md', label: 'Dev Guide' },
-];
-
 export async function getDocGaps(operation: 'gaps' | 'compare' | 'brief', repositories?: string[]) {
-  const selected = loadRegistry().filter((entry) => !repositories?.length || repositories.includes(entry.name));
-  const rows = selected.map((repository) => {
-    try {
-      const index = documentIndex(repository);
-      const present: string[] = [];
-      const gaps: string[] = [];
-      for (const expected of EXPECTED_DOCUMENTS) {
-        if (index.paths.includes(expected.path)) present.push(expected.label);
-        else gaps.push(expected.label);
-      }
-      return {
-        repository: repository.name,
-        docCount: index.paths.length,
-        commitSha: index.commitSha,
-        confidence: index.confidence,
-        stale: index.stale,
-        present,
-        gaps,
-        coverage: `${present.length}/${EXPECTED_DOCUMENTS.length}`,
-      };
-    } catch (error) {
-      return {
-        repository: repository.name,
-        docCount: 0,
-        commitSha: null,
-        confidence: 'unavailable' as const,
-        stale: false,
-        present: [],
-        gaps: EXPECTED_DOCUMENTS.map((expected) => expected.label),
-        coverage: `0/${EXPECTED_DOCUMENTS.length}`,
-        message: error instanceof Error ? error.message : 'Repository could not be analyzed.',
-      };
-    }
-  });
+  if (operation === 'brief') return getContextBrief({ repositories });
+  const rows = getDocumentationRows(repositories).map(({ sourcePaths: _, ...row }) => row);
   if (operation === 'compare') {
     return {
       categories: EXPECTED_DOCUMENTS.map((expected) => expected.label),
       rows,
-    };
-  }
-  if (operation === 'brief') {
-    const totalDocs = rows.reduce((acc, row) => acc + row.docCount, 0);
-    const staleCount = rows.filter((row) => row.stale).length;
-    const unavailableCount = rows.filter((row) => row.confidence === 'unavailable').length;
-    return {
-      type: 'ContextBrief',
-      examinedRepositories: rows.length,
-      totalDocuments: totalDocs,
-      staleRepositories: staleCount,
-      unavailableRepositories: unavailableCount,
-      summary: `Examined ${rows.length} repositories with ${totalDocs} total docs. ${staleCount} stale, ${unavailableCount} unavailable.`,
-      repositories: rows,
     };
   }
   return rows;

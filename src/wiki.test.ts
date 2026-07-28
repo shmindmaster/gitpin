@@ -3,6 +3,7 @@ import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { getContextBrief } from './context-brief';
 import { setRegistryPath, clearRegistryCache } from './registry';
 import { getCatalog, getDocGaps, getDocs, searchDocs } from './wiki';
 
@@ -81,11 +82,65 @@ describe('wiki', () => {
     expect(gaps[0].gaps).toContain('Dev Guide');
   });
 
-  it('generates a ContextBrief structure', async () => {
-    const brief = (await getDocGaps('brief')) as { type: string; examinedRepositories: number; totalDocuments: number };
+  it('generates an audience-invariant, source-cited Context Brief', async () => {
+    const brief = await getContextBrief({ audience: 'technical' });
+    const productBrief = await getContextBrief({ audience: 'product' });
     expect(brief.type).toBe('ContextBrief');
-    expect(brief.examinedRepositories).toBe(1);
-    expect(brief.totalDocuments).toBeGreaterThanOrEqual(14);
+    expect(brief.scope.examinedRepositories).toBe(1);
+    expect(brief.scope.totalDocuments).toBeGreaterThanOrEqual(14);
+    expect(brief.evidenceSetId).toBe(productBrief.evidenceSetId);
+    expect(brief.presentation.focus).not.toBe(productBrief.presentation.focus);
+    expect(brief.knownFacts).toContainEqual(
+      expect.objectContaining({
+        label: 'known',
+        trace: expect.objectContaining({
+          sourcePath: 'README.md',
+          line: 1,
+          commitSha: expect.stringMatching(/^[0-9a-f]{40}$/),
+          originatingOperation: 'wiki.analyze:brief',
+        }),
+      }),
+    );
+    expect(brief.gaps).toContainEqual(
+      expect.objectContaining({
+        label: 'gap',
+        trace: expect.objectContaining({ sourcePath: 'docs/development.md' }),
+      }),
+    );
+  });
+
+  it('adds bounded, fully resolved change evidence to a Context Brief', async () => {
+    const base = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: repoPath, encoding: 'utf-8' }).trim();
+    writeFileSync(join(repoPath, 'README.md'), '# Doc Repo\n\nUpdated committed evidence.\n', 'utf-8');
+    execFileSync('git', ['add', 'README.md'], { cwd: repoPath, windowsHide: true });
+    execFileSync('git', ['commit', '-qm', 'update readme'], { cwd: repoPath, windowsHide: true });
+    const head = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: repoPath, encoding: 'utf-8' }).trim();
+
+    const brief = await getContextBrief({
+      repositories: ['doc-repo'],
+      changeRange: { repository: 'doc-repo', base: base.slice(0, 7), head: head.slice(0, 7) },
+    });
+
+    expect(brief.scope.changeRange).toMatchObject({ base, head, commitsBetween: 1, changedPaths: 1 });
+    expect(brief.knownFacts).toContainEqual(
+      expect.objectContaining({
+        statement: expect.stringContaining('changed README.md'),
+        trace: expect.objectContaining({ sourcePath: 'README.md', commitSha: head }),
+      }),
+    );
+  });
+
+  it('keeps an explicitly requested unregistered repository visible as a gap', async () => {
+    const brief = await getContextBrief({ repositories: ['not-registered'] });
+
+    expect(brief.scope).toMatchObject({ examinedRepositories: 1, unavailableRepositories: 1 });
+    expect(brief.gaps).toContainEqual(
+      expect.objectContaining({
+        id: 'unavailable:not-registered',
+        label: 'gap',
+        trace: expect.objectContaining({ repository: 'not-registered', commitSha: null }),
+      }),
+    );
   });
 
   it('reports dirty documentation as stale while returning HEAD content', async () => {

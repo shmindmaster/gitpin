@@ -64,15 +64,15 @@ export async function compareRepoCommits(name: string, base: string, head: strin
   }
   for (const component of gitComponents(name)) {
     try {
-      await component.git.raw(['cat-file', '-e', `${base}^{commit}`]);
-      await component.git.raw(['cat-file', '-e', `${head}^{commit}`]);
-      const diff = await component.git.diff(['--name-status', '--no-renames', base, head]);
-      const log = await component.git.log({ from: base, to: head });
+      const resolvedBase = (await component.git.raw(['rev-parse', '--verify', `${base}^{commit}`])).trim();
+      const resolvedHead = (await component.git.raw(['rev-parse', '--verify', `${head}^{commit}`])).trim();
+      const diff = await component.git.diff(['--name-status', '--no-renames', resolvedBase, resolvedHead]);
+      const log = await component.git.log({ from: resolvedBase, to: resolvedHead });
       return {
         repository: name,
         component: component.relativePath,
-        base,
-        head,
+        base: resolvedBase,
+        head: resolvedHead,
         commitsBetween: log.total,
         files: diff
           .split('\n')

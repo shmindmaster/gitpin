@@ -12,12 +12,20 @@ All notable changes to RepoContext are documented here. The project follows [Kee
 - Clean packed install-to-first-answer verification.
 - Biome linting and formatting gates.
 - Public configuration, deployment, security, contribution, and roadmap documentation.
+- Standard MCP catalog resource and documentation-audit prompt.
+- Deterministic Context Briefs with audience-specific presentation, invariant evidence IDs, source traces, explicit gaps, and bounded commit-range evidence.
+- A stdout-only `brief` CLI for CI artifact handoff.
+- Tested Cursor, Windsurf, Zed, and Continue configuration examples.
+- Tag-triggered npm trusted-publishing workflow and Node 20/22/24 CI matrix.
 
 ### Changed
 
 - Refactored Git and wiki operations into bounded domain modules while retaining the existing public MCP contract.
 - Updated the MCP SDK to use patched HTTP transport dependencies.
 - Repositioned installation and documentation for a public 0.2 release candidate.
+- Resolved abbreviated comparison revisions to full commit SHAs before returning evidence.
+- Strengthened packed-package verification with a clean npm dependency install, `doctor`, Context Brief, and first MCP answer.
+- Pruned development dependencies from the remote image and run the HTTP process as the unprivileged `node` user.
 
 ### Security
 

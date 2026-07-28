@@ -73,13 +73,22 @@ node dist/server.js doctor
 
 `doctor` reports each repository's HEAD, documentation count, exposure confidence, and `ready`, `attention`, or `blocked` status. A stale checkout needs review; an unavailable repository or an empty registry blocks safe use.
 
+Generate a deterministic Context Brief for a technical or cross-functional review:
+
+```bash
+node dist/server.js brief --audience technical --repository storefront
+```
+
+The JSON result separates `knownFacts`, `inferences`, and `gaps`; cites every known fact with a source path, line, and full commit SHA; and includes an `evidenceSetId` that stays the same across audience presentations. Add `--change-repository`, `--base`, and `--head` for a bounded commit-range brief. See [CI evidence-brief guidance](docs/ci.md).
+
 ## Configuration
 
 | Variable | Required | Purpose |
 | --- | --- | --- |
 | `REPOCONTEXT_REGISTRY` | Yes for normal use | Absolute path to the repository registry YAML |
 | `REPOCONTEXT_MCP_TOKEN` | HTTP only | Bearer token required by `/api/mcp` |
-| `REPOCONTEXT_ALLOWED_HOSTS` | Recommended for HTTP | Comma-separated host allowlist |
+| `REPOCONTEXT_ALLOWED_HOSTS` | Recommended for HTTP | Comma-separated hostname allowlist; omit schemes and ports |
+| `REPOCONTEXT_INDEX_PATH` | Snapshot builds only | Override the generated snapshot directory |
 | `PORT` | No | HTTP listening port; defaults to `3000` |
 
 Registry paths may be relative to the registry file. See [configuration guidance](docs/configuration.md) for the complete schema and safety behavior.
@@ -91,7 +100,7 @@ Registry paths may be relative to the registry file. See [configuration guidance
 | `wiki.catalog` | Repository doc counts, HEAD SHA, and stale-document signals |
 | `wiki.search` | Bounded documentation snippets with source path, line, and SHA |
 | `wiki.get` | One commit-pinned documentation page |
-| `wiki.analyze` | Missing README, architecture, agent instructions, and development guide coverage |
+| `wiki.analyze` | Documentation gaps, coverage comparison, or a deterministic source-cited Context Brief |
 | `repo.inspect` | HEAD-pinned status, commits, manifests, tests, and recent changes |
 | `repo.read` | Safe source slice with line numbers and provenance |
 | `repo.search` | Bounded code matches with source path, line, snippet, and SHA |
@@ -156,6 +165,7 @@ The HTTP server exposes `GET /healthz` and bearer-authenticated `POST /api/mcp`.
 - The HTTP transport serves a generated documentation and manifest snapshot, not repository source code or Git history.
 - Search is deterministic text matching, not semantic or embedding-based retrieval.
 - Registries contain local filesystem paths and are intentionally excluded from the npm package and remote image.
+- Client configuration schemas are verified from current official documentation, but native-client activation and the `npx` form remain publication-time checks.
 
 ## Development
 
@@ -176,12 +186,13 @@ pnpm mcp:serve
 | `pnpm validate` | Run lint, formatting, types, and tests |
 | `pnpm build` | Compile the distributable JavaScript |
 | `pnpm verify:package` | Pack, install, run `doctor`, and request a first MCP answer in an isolated fixture |
+| `pnpm verify:clients` | Parse and validate the four documented client configuration blocks |
 | `pnpm index:build` | Generate the commit-pinned HTTP snapshot |
 | `pnpm verify:remote` | Verify a configured remote MCP endpoint |
 
-Maintainers prepare a release with `pnpm install --frozen-lockfile`, `pnpm validate`, `pnpm build`, `pnpm verify:package`, and `npm pack --dry-run --json`. Package publication and GitHub release creation are manual owner actions until a reviewed trusted-publishing workflow exists.
+Maintainers prepare a release with `pnpm install --frozen-lockfile`, `pnpm validate`, `pnpm build`, `pnpm verify:package`, and `npm pack --dry-run --json`. A tag-triggered OIDC workflow is included; npm package ownership and the `release.yml` trusted-publisher relationship must be configured before the first tag is pushed.
 
-For help, use [GitHub Discussions or issues](https://github.com/shmindmaster/repocontext/issues) as appropriate. See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution workflow, [SECURITY.md](SECURITY.md) for private vulnerability reporting, [ROADMAP.md](ROADMAP.md) for planned work, and [CHANGELOG.md](CHANGELOG.md) for release notes.
+For help, use [GitHub Discussions or issues](https://github.com/shmindmaster/repocontext/issues) as appropriate. See [client setup](docs/clients.md), [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), [ROADMAP.md](ROADMAP.md), and [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 

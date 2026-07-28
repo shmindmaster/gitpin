@@ -44,7 +44,9 @@
     "typecheck": "tsc --noEmit",
     "build": "tsc",
     "test": "vitest run",
-    "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test"
+    "verify:clients": "node scripts/validate-client-configs.mjs",
+    "verify:release-tag": "node scripts/verify-release-tag.mjs",
+    "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm verify:clients && pnpm test"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",

@@ -4,6 +4,8 @@ import { resolve } from 'node:path';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
+import { runCli } from './cli';
+import { BRIEF_AUDIENCES, getContextBrief } from './context-brief';
 import {
   getRepoStatus,
   getRepoCommits,
@@ -15,7 +17,6 @@ import {
   getRepoTests,
 } from './git';
 import { getCatalog, searchDocs, getDocs, getDocGaps } from './wiki';
-import { doctorExitCode, formatDoctorReport, getDoctorReport } from './doctor';
 
 const json = (value: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(value, null, 2) }] });
 const READ_ONLY = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false } as const;
@@ -74,12 +75,36 @@ export function createServer(): McpServer {
     {
       annotations: READ_ONLY,
       description: 'Analyze documentation gaps, compare coverage, or generate a source-cited context brief.',
-      inputSchema: z.object({
-        operation: z.enum(['gaps', 'compare', 'brief']),
-        repositories: z.array(z.string()).max(20).optional(),
-      }),
+      inputSchema: z.discriminatedUnion('operation', [
+        z.object({ operation: z.literal('gaps'), repositories: z.array(z.string()).max(20).optional() }).strict(),
+        z.object({ operation: z.literal('compare'), repositories: z.array(z.string()).max(20).optional() }).strict(),
+        z
+          .object({
+            operation: z.literal('brief'),
+            repositories: z.array(z.string()).max(20).optional(),
+            audience: z.enum(BRIEF_AUDIENCES).default('technical'),
+            changeRange: z
+              .object({
+                repository: z.string().min(1),
+                base: z.string().regex(/^[0-9a-f]{7,40}$/iu),
+                head: z.string().regex(/^[0-9a-f]{7,40}$/iu),
+              })
+              .strict()
+              .optional(),
+          })
+          .strict(),
+      ]),
     },
-    async ({ operation, repositories }) => json(await getDocGaps(operation, repositories)),
+    async (input) =>
+      json(
+        input.operation === 'brief'
+          ? await getContextBrief({
+              repositories: input.repositories,
+              audience: input.audience,
+              changeRange: input.changeRange,
+            })
+          : await getDocGaps(input.operation, input.repositories),
+      ),
   );
 
   server.registerTool(
@@ -202,22 +227,9 @@ function isDirectExecution(): boolean {
 
 if (isDirectExecution()) {
   const command = process.argv[2];
-  const action =
-    command === 'doctor'
-      ? runDoctor()
-      : command === undefined
-        ? runStdioServer()
-        : Promise.reject(
-            new Error(`Unknown command: ${command}. Run "repocontext doctor" or start without arguments.`),
-          );
+  const action = command === undefined ? runStdioServer() : runCli(process.argv.slice(2));
   action.catch((error: unknown) => {
     console.error(error instanceof Error ? error.message : error);
     process.exit(1);
   });
-}
-
-async function runDoctor(): Promise<void> {
-  const report = await getDoctorReport();
-  console.log(formatDoctorReport(report));
-  process.exitCode = doctorExitCode(report);
 }

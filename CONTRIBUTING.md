@@ -18,6 +18,7 @@ pnpm install --frozen-lockfile
 pnpm validate
 pnpm build
 pnpm verify:package
+pnpm verify:clients
 pnpm mcp:serve
 ```
 

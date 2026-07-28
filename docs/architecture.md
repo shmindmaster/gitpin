@@ -21,6 +21,9 @@ Committed docs and manifests ──build snapshot──> authenticated HTTP ─�
 | Module | Responsibility |
 | --- | --- |
 | `src/server.ts` | Shared MCP tool contract and stdio entry point |
+| `src/cli.ts` | `doctor`, Context Brief, and help command dispatch |
+| `src/context-brief.ts` | Deterministic documentation/change evidence briefs and source traces |
+| `src/documentation-analysis.ts` | Bounded documentation coverage rows and unavailable-repository handling |
 | `src/http.ts` | Bearer-authenticated Streamable HTTP transport and health endpoint |
 | `src/registry.ts` | Loads a portable YAML registry and resolves paths relative to it |
 | `src/git.ts` | Commit-pinned repository inspection, source reads, search, and comparison |
@@ -35,6 +38,7 @@ Committed docs and manifests ──build snapshot──> authenticated HTTP ─�
 3. Documentation search returns a bounded set of matching snippets.
 4. File and page reads retrieve the requested bytes from `HEAD` with their commit SHA.
 5. The snapshot builder copies only selected committed files, records provenance, and runs gitleaks before producing a container input.
+6. Context Briefs compose the same pinned evidence into audience-specific presentations without changing the evidence set.
 
 ## Limits
 

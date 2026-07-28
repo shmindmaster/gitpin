@@ -96,6 +96,31 @@ describe('authenticated HTTP transport', () => {
         'wiki.search',
       ]);
       expect(tools.tools.every((tool) => tool.annotations?.readOnlyHint === true)).toBe(true);
+
+      const resources = await client.listResources();
+      expect(resources.resources).toContainEqual(
+        expect.objectContaining({ name: 'catalog', uri: 'repocontext://catalog' }),
+      );
+      const prompts = await client.listPrompts();
+      expect(prompts.prompts).toContainEqual(expect.objectContaining({ name: 'audit-documentation-gaps' }));
+
+      const briefResponse = await client.callTool({
+        name: 'wiki.analyze',
+        arguments: { operation: 'brief', audience: 'leadership', repositories: ['sample'] },
+      });
+      expect(briefResponse.isError).not.toBe(true);
+      const briefText = briefResponse.content.find((item) => item.type === 'text');
+      expect(briefText?.type === 'text' ? JSON.parse(briefText.text) : null).toMatchObject({
+        type: 'ContextBrief',
+        audience: 'leadership',
+        evidenceSetId: expect.stringMatching(/^[0-9a-f]{64}$/),
+      });
+
+      const invalidBrief = await client.callTool({
+        name: 'wiki.analyze',
+        arguments: { operation: 'brief', audience: 'technical', unsupported: true },
+      });
+      expect(invalidBrief.isError).toBe(true);
     } finally {
       await client.close();
       await close(server);

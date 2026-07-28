@@ -11,7 +11,6 @@ const repositoryPath = join(temporaryRoot, 'repository');
 const clientPath = join(temporaryRoot, 'client');
 const registryPath = join(temporaryRoot, 'repositories.yaml');
 const npmCommand = 'npm';
-const pnpmCommand = 'pnpm';
 const commandEnvironment = { ...process.env };
 delete commandEnvironment.npm_config_manage_package_manager_versions;
 let client;
@@ -36,7 +35,11 @@ try {
   const packOutput = runOutput(npmCommand, ['pack', '--json', '--pack-destination', temporaryRoot], process.cwd());
   const [{ filename }] = JSON.parse(packOutput);
   const tarballPath = join(temporaryRoot, filename);
-  run(pnpmCommand, ['add', '--offline', '--ignore-scripts', '--save-exact', tarballPath], clientPath);
+  const isolatedNpmCache = join(temporaryRoot, 'npm-cache');
+  run(npmCommand, ['install', '--ignore-scripts', '--no-audit', '--no-fund', '--save-exact', tarballPath], clientPath, {
+    ...commandEnvironment,
+    npm_config_cache: isolatedNpmCache,
+  });
 
   const serverPath = join(clientPath, 'node_modules', 'repocontext', 'dist', 'server.js');
   const environment = { ...commandEnvironment, REPOCONTEXT_REGISTRY: registryPath };
@@ -48,6 +51,21 @@ try {
   });
   if (!doctor.includes('RepoContext readiness: ready') || !doctor.includes('package-fixture: status=indexed')) {
     throw new Error(`Packed doctor check was not ready: ${doctor.trim()}`);
+  }
+  const brief = JSON.parse(
+    execFileSync(
+      process.execPath,
+      [serverPath, 'brief', '--audience', 'technical', '--repository', 'package-fixture'],
+      {
+        cwd: clientPath,
+        env: environment,
+        encoding: 'utf8',
+        windowsHide: true,
+      },
+    ),
+  );
+  if (!/^[0-9a-f]{64}$/.test(brief.evidenceSetId) || brief.knownFacts.length < 1) {
+    throw new Error('Packed Context Brief did not contain a deterministic evidence set and cited known facts.');
   }
 
   client = new Client({ name: 'repocontext-package-test', version: '1.0.0' });
@@ -68,17 +86,26 @@ try {
     : '';
   if (!text.includes(marker)) throw new Error('Packed MCP server did not return the committed fixture evidence.');
 
-  console.log(JSON.stringify({ status: 'ready', package: basename(tarballPath), firstAnswer: 'verified' }));
+  console.log(
+    JSON.stringify({
+      status: 'ready',
+      package: basename(tarballPath),
+      cleanInstall: 'verified',
+      doctor: 'verified',
+      contextBrief: 'verified',
+      firstAnswer: 'verified',
+    }),
+  );
 } finally {
   if (client) await client.close();
   rmSync(temporaryRoot, { recursive: true, force: true });
 }
 
-function run(command, args, cwd) {
+function run(command, args, cwd, environment = commandEnvironment) {
   const invocation = commandInvocation(command, args);
   execFileSync(invocation.command, invocation.args, {
     cwd,
-    env: commandEnvironment,
+    env: environment,
     stdio: 'pipe',
     windowsHide: true,
   });
@@ -95,6 +122,6 @@ function runOutput(command, args, cwd) {
 }
 
 function commandInvocation(command, args) {
-  if (process.platform !== 'win32' || (command !== npmCommand && command !== pnpmCommand)) return { command, args };
+  if (process.platform !== 'win32' || command !== npmCommand) return { command, args };
   return { command: process.env.ComSpec ?? 'cmd.exe', args: ['/d', '/s', '/c', command, ...args] };
 }
