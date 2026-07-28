@@ -1,29 +1,28 @@
-# repocontext — wiki.yaml template v2
+# RepoContext exposure-policy template
 #
-# Drop this file in any repo you want repocontext to index.
-# It controls exactly what documentation gets exposed to AI agents.
+# Drop this file in a repository registered with RepoContext.
+# It narrows the documentation exposed to MCP clients.
 #
 # Copy from: templates/wiki.yaml
 # Docs: docs/configuration.md
 
 version: 2
 
-# What to expose (everything else is hidden by default)
-expose:
-  - path: README.md
-  - path: CHANGELOG.md
-  - path: docs/
-    glob: "**/*.md"
+# Default RepoContext behavior exposes supported documentation files. Add an
+# explicit collection when only selected paths should be visible.
+collections:
+  - id: agent-context
+    include:
+      - README.md
+      - CHANGELOG.md
+      - docs/**/*.md
 
 # Explicit exclusions (override expose)
-exclude:
-  - path: docs/internal/        # internal planning docs
-  - path: docs/drafts/          # work in progress
-  - path: "*.secret.*"          # anything with "secret" in the name
-  - path: "*.credentials.*"
+safety:
+  deny:
+    - docs/internal/**
+    - docs/drafts/**
+    - "**/*secret*"
+    - "**/*credential*"
 
-# Optional: branch to index (defaults to repo's default branch)
-# branch: main
-
-# Optional: description override for catalog
-# description: "My awesome service that does X"
+# Policies are parsed from Git HEAD for local reads. Invalid YAML fails closed.

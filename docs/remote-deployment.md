@@ -1,0 +1,40 @@
+# Self-hosted HTTP deployment
+
+The HTTP transport serves a commit-pinned snapshot of documentation, selected root manifests, and workflow metadata. It does not clone repositories at runtime and does not include local source files, dirty work, or untracked files.
+
+## Build
+
+```bash
+pnpm validate
+pnpm build
+pnpm index:build
+docker build -f Dockerfile.remote -t repocontext:local .
+```
+
+`index:build` rejects a registry entry that is not a Git root, excludes sensitive paths, and fails if gitleaks detects a secret in the selected output. Its report records each repository, branch, source SHA, selected files, bytes, and excluded dirty entries.
+
+## Run
+
+```bash
+docker run --rm -p 3000:3000 \
+  -e REPOCONTEXT_MCP_TOKEN="replace-with-a-strong-token" \
+  -e REPOCONTEXT_ALLOWED_HOSTS="mcp.example.com" \
+  repocontext:local
+```
+
+Endpoints:
+
+- `GET /healthz`
+- `POST /api/mcp` with `Authorization: Bearer <token>`
+
+Store the token in your platform’s secret manager. Restrict network access and allowed hosts to the clients that should access the snapshot.
+
+## Verify
+
+```bash
+REPOCONTEXT_MCP_URL=https://mcp.example.com/api/mcp \
+REPOCONTEXT_MCP_TOKEN="your-token" \
+pnpm verify:remote
+```
+
+The verification checks readiness, rejects unauthenticated MCP calls, and confirms the authenticated server lists the eight read-only tools and returns a catalog.

@@ -25,7 +25,7 @@ describe('registry', () => {
       `
 repositories:
   - name: demo
-    path: C:/Repos/shmindmaster/agent-guard
+    path: C:/example/demo
     branches: [main]
 `,
       'utf-8',
@@ -34,7 +34,7 @@ repositories:
     const repos = loadRegistry();
     expect(repos).toHaveLength(1);
     expect(repos[0].name).toBe('demo');
-    expect(resolveRepoPath('demo')).toMatch(/agent-guard/i);
+    expect(resolveRepoPath('demo')).toMatch(/example[\\/]demo/i);
   });
 
   it('rejects unknown repo names with available list', () => {

@@ -1,0 +1,6 @@
+.git
+.github
+.repocontext-index/snapshot-report.json
+dist
+node_modules
+*.log

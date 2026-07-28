@@ -1,54 +1,8 @@
-# repocontext: SHMindMaster local portfolio index
-# Personal tool — paths are machine-local. Update when repos move.
-# Generated 2026-07-25; refreshed for full portfolio inventory.
+# Public starter registry. Paths are resolved relative to this file, so this
+# self-indexes after cloning and can be copied beside any repository collection.
+# Every entry must point at a Git repository root.
 
 repositories:
-  # Product applications
-  - name: abacare
-    path: C:/Repos/shmindmaster/abacare
-    branches: [main]
-
-  - name: coledger
-    path: C:/Repos/shmindmaster/coledger
-    branches: [main]
-
-  - name: gentlenext
-    path: C:/Repos/shmindmaster/gentlenext
-    branches: [main]
-
-  - name: lawli
-    path: C:/Repos/shmindmaster/lawli
-    branches: [main]
-
-  - name: lexalign
-    path: C:/Repos/shmindmaster/lexalign
-    branches: [main]
-
-  - name: sabhi
-    path: C:/Repos/shmindmaster/sabhi
-    branches: [main]
-
-  - name: subops
-    path: C:/Repos/shmindmaster/subops
-    branches: [main]
-
-  - name: verigence
-    path: C:/Repos/shmindmaster/verigence
-    branches: [main]
-
-  - name: warrantygains
-    path: C:/Repos/shmindmaster/warrantygains
-    branches: [main]
-
-  # Tooling / platform
-  - name: agent-guard
-    path: C:/Repos/shmindmaster/agent-guard
-    branches: [main]
-
   - name: repocontext
-    path: C:/Repos/shmindmaster/repocontext
-    branches: [main]
-
-  - name: shwiki
-    path: C:/Repos/shmindmaster/shwiki
+    path: ..
     branches: [main]

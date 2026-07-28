@@ -1,0 +1,39 @@
+name: repocontext
+region: YOUR_REGION
+
+services:
+  - name: mcp
+    image:
+      registry_type: DOCR
+      registry: YOUR_CONTAINER_REGISTRY
+      repository: repocontext
+      tag: REPLACE_WITH_IMMUTABLE_TAG
+    instance_count: 1
+    instance_size_slug: apps-s-1vcpu-0.5gb
+    http_port: 3000
+    routes:
+      - path: /
+    health_check:
+      http_path: /healthz
+      initial_delay_seconds: 10
+      period_seconds: 10
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
+    envs:
+      - key: REPOCONTEXT_MCP_TOKEN
+        scope: RUN_TIME
+        type: SECRET
+        value: REPLACE_WITH_PLATFORM_ENCRYPTED_SECRET
+      - key: REPOCONTEXT_ALLOWED_HOSTS
+        scope: RUN_TIME
+        type: GENERAL
+        value: mcp.example.com
+      - key: REPOCONTEXT_REGISTRY
+        scope: RUN_TIME
+        type: GENERAL
+        value: /data/index/repositories.yaml
+
+domains:
+  - domain: mcp.example.com
+    type: PRIMARY

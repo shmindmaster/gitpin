@@ -2,6 +2,7 @@ node_modules/
 .next/
 .cache/
 generated/
+.repocontext-index/
 .env
 .env.local
 *.secret.*
