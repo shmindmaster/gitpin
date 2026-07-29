@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -46,7 +46,39 @@ try {
     npm_config_cache: isolatedNpmCache,
   });
 
-  const serverPath = join(clientPath, 'node_modules', 'repocontext', 'dist', 'server.js');
+  const packageRoot = join(clientPath, 'node_modules', 'repocontext');
+  const requiredPublicFiles = [
+    '.env.example',
+    'CHANGELOG.md',
+    'CODE_OF_CONDUCT.md',
+    'CONTRIBUTING.md',
+    'LICENSE',
+    'README.md',
+    'ROADMAP.md',
+    'SECURITY.md',
+    'docs/clients.md',
+    'docs/configuration.md',
+    'docs/remote-deployment.md',
+    'docs/website.md',
+    'templates/wiki.yaml',
+  ];
+  const missingPublicFiles = requiredPublicFiles.filter((file) => !existsSync(join(packageRoot, file)));
+  if (missingPublicFiles.length > 0) {
+    throw new Error(`Packed public documentation is incomplete: ${missingPublicFiles.join(', ')}.`);
+  }
+  const environmentExample = readFileSync(join(packageRoot, '.env.example'), 'utf8');
+  if (!environmentExample.split(/\r?\n/u).includes('REPOCONTEXT_MCP_TOKEN=')) {
+    throw new Error('Packed .env.example must keep REPOCONTEXT_MCP_TOKEN empty.');
+  }
+  const packageReadme = readFileSync(join(packageRoot, 'README.md'), 'utf8');
+  const missingReadmeTargets = [...packageReadme.matchAll(/\]\((?!https?:\/\/|#)([^)#]+)(?:#[^)]*)?\)/gu)]
+    .map((match) => match[1])
+    .filter((target) => !existsSync(join(packageRoot, target)));
+  if (missingReadmeTargets.length > 0) {
+    throw new Error(`Packed README links are incomplete: ${missingReadmeTargets.join(', ')}.`);
+  }
+
+  const serverPath = join(packageRoot, 'dist', 'server.js');
   const environment = { ...commandEnvironment, REPOCONTEXT_REGISTRY: registryPath };
   const doctor = execFileSync(process.execPath, [serverPath, 'doctor'], {
     cwd: clientPath,
@@ -104,6 +136,7 @@ try {
       doctor: 'verified',
       contextBrief: 'verified',
       firstAnswer: 'verified',
+      publicDocs: 'verified',
     }),
   );
 } finally {

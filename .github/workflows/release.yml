@@ -16,7 +16,9 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           registry-url: "https://registry.npmjs.org"
@@ -29,4 +31,8 @@ jobs:
       - run: pnpm verify:package
       - name: Match tag to package version
         run: node scripts/verify-release-tag.mjs "$GITHUB_REF_NAME"
+      - name: Require tag commit on main
+        run: |
+          git fetch --no-tags origin main
+          git merge-base --is-ancestor "$GITHUB_SHA^{commit}" origin/main
       - run: npm publish --access public

@@ -15,6 +15,7 @@ git clone https://github.com/shmindmaster/repocontext.git
 cd repocontext
 corepack enable
 pnpm install --frozen-lockfile
+pnpm exec playwright install --with-deps chromium firefox webkit
 pnpm validate
 pnpm build
 pnpm verify:package
