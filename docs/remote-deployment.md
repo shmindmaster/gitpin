@@ -35,6 +35,14 @@ Store the token in your platform’s secret manager. Restrict network access and
 
 ## Verify
 
+For a credential-free local container check, run:
+
+```bash
+pnpm verify:container
+```
+
+It builds the current snapshot, starts an isolated loopback container with a generated throwaway token, verifies health, authentication, tool discovery, and catalog access, then removes the container and image. Set `REPOCONTEXT_CONTAINER_PORT` only when port `3100` is unavailable.
+
 ```bash
 REPOCONTEXT_MCP_URL=https://mcp.example.com/api/mcp \
 REPOCONTEXT_MCP_TOKEN="your-token" \

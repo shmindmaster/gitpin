@@ -43,6 +43,7 @@
     "doctor:check": "tsx src/server.ts doctor",
     "index:build": "tsx src/snapshot.ts",
     "verify:package": "node scripts/verify-package.mjs",
+    "verify:container": "node scripts/verify-container.mjs",
     "verify:remote": "node scripts/verify-remote.mjs",
     "start": "node dist/http.js",
     "lint": "biome lint src scripts site/app.js site/analytics.js tests playwright.config.mjs",

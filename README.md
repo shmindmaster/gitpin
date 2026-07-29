@@ -193,6 +193,7 @@ pnpm mcp:serve
 | `pnpm validate` | Run lint, formatting, types, client/environment/release validation, unit tests, and the site build |
 | `pnpm build` | Compile the distributable JavaScript |
 | `pnpm verify:package` | Pack, install, run `doctor`, and request a first MCP answer in an isolated fixture |
+| `pnpm verify:container` | Build a fresh docs-only image, verify its authenticated HTTP contract, then remove the disposable container and image |
 | `pnpm verify:clients` | Parse and validate the four documented client configuration blocks |
 | `pnpm verify:env` | Validate the complete, secret-free environment template |
 | `pnpm index:build` | Generate the commit-pinned HTTP snapshot |
