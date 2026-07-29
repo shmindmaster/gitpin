@@ -151,6 +151,31 @@ describe('authenticated HTTP transport', () => {
       await close(server);
     }
   });
+
+  it('allows host-agnostic health probes while restricting MCP calls to allowed hosts', async () => {
+    const server = createHttpServer({ token, allowedHosts: ['mcp.example.test'] });
+    await listen(server);
+    const port = (server.address() as AddressInfo).port;
+
+    try {
+      expect(await requestStatus(port, '/healthz', 'GET', { host: 'platform-health.internal' })).toBe(200);
+      expect(
+        await requestStatus(
+          port,
+          '/api/mcp',
+          'POST',
+          {
+            host: 'platform-health.internal',
+            'content-type': 'application/json',
+            'content-length': '2',
+          },
+          '{}',
+        ),
+      ).toBe(421);
+    } finally {
+      await close(server);
+    }
+  });
 });
 
 async function chunkedRequest(port: number): Promise<number> {
@@ -172,6 +197,24 @@ async function chunkedRequest(port: number): Promise<number> {
     });
     request.once('error', reject);
     request.end('{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}');
+  });
+}
+
+async function requestStatus(
+  port: number,
+  path: string,
+  method: string,
+  headers: Record<string, string>,
+  body?: string,
+): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const request = requestHttp({ host: '127.0.0.1', port, path, method, headers });
+    request.once('response', (response) => {
+      response.resume();
+      response.once('end', () => resolve(response.statusCode ?? 0));
+    });
+    request.once('error', reject);
+    request.end(body);
   });
 }
 

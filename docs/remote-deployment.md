@@ -32,6 +32,7 @@ Endpoints:
 
 Store the token in your platform’s secret manager. Restrict network access and allowed hosts to the clients that should access the snapshot.
 `REPOCONTEXT_ALLOWED_HOSTS` accepts hostnames only, such as `mcp.example.com`; do not include a scheme, path, or port.
+Managed health probes remain host-agnostic so platform readiness checks can run through their internal routing; all MCP requests still enforce the configured host allowlist.
 
 ## Verify
 

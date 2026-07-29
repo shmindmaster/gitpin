@@ -17,14 +17,9 @@ export function createHttpServer(options: HttpServerOptions): Server {
 
   return createNodeServer(async (request, response) => {
     setSecurityHeaders(response);
-
-    if (!hostAllowed(request, allowedHosts)) {
-      sendJson(response, 421, { error: 'misdirected_request' });
-      return;
-    }
-
     const url = new URL(request.url ?? '/', 'http://localhost');
-    if (url.pathname === '/healthz' && (request.method === 'GET' || request.method === 'HEAD')) {
+    const healthRequest = url.pathname === '/healthz' && (request.method === 'GET' || request.method === 'HEAD');
+    if (healthRequest) {
       try {
         const catalog = await getCatalog();
         const unavailable = catalog.filter((repository) => repository.status === 'unavailable');
@@ -53,6 +48,14 @@ export function createHttpServer(options: HttpServerOptions): Server {
           error: error instanceof Error ? error.message : 'Registry unavailable.',
         });
       }
+      return;
+    }
+
+    // Managed platforms commonly issue health probes with an internal Host
+    // header. Health carries no repository content; MCP calls remain bound to
+    // the configured public host.
+    if (!hostAllowed(request, allowedHosts)) {
+      sendJson(response, 421, { error: 'misdirected_request' });
       return;
     }
 

@@ -2,6 +2,12 @@
 
 All notable changes to RepoContext are documented here. The project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and intends to use [Semantic Versioning](https://semver.org/spec/v2.0.0.html) after the first public release.
 
+## [0.2.4] - 2026-07-29
+
+### Fixed
+
+- Keep managed HTTP health probes available when the MCP host allowlist is enabled, while continuing to reject MCP calls sent to unrecognized hosts.
+
 ## [0.2.3] - 2026-07-29
 
 ### Fixed
@@ -66,6 +72,7 @@ All notable changes to RepoContext are documented here. The project follows [Kee
 - Snapshot generation replaces only marked RepoContext output directories and rejects registered repository roots or their ancestors.
 - Malformed exposure policies fail closed.
 
+[0.2.4]: https://github.com/shmindmaster/repocontext/releases/tag/v0.2.4
 [0.2.3]: https://github.com/shmindmaster/repocontext/releases/tag/v0.2.3
 [0.2.2]: https://github.com/shmindmaster/repocontext/releases/tag/v0.2.2
 [0.2.1]: https://github.com/shmindmaster/repocontext/releases/tag/v0.2.1
