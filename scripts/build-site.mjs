@@ -26,4 +26,4 @@ if (projectKey) {
   );
 }
 
-console.log(JSON.stringify({ analytics: projectKey ? 'configured' : 'disabled', files: 6, output }));
+console.log(JSON.stringify({ analytics: projectKey ? 'configured' : 'disabled', output }));

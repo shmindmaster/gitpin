@@ -27,7 +27,20 @@ test('presents the release path and safety boundary without analytics by default
   await page.getByRole('link', { name: 'Install', exact: true }).click();
   await expect(page.locator('.terminal')).toContainText('@shmindmaster/repocontext@latest help');
   await expect(page.locator('body')).not.toContainText(/release candidate/i);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    'https://shmindmaster.github.io/repocontext/',
+  );
+  await expect(page.getByRole('link', { name: 'Privacy', exact: true })).toHaveAttribute('href', './privacy.html');
   expect(analyticsRequests).toEqual([]);
+});
+
+test('publishes a narrow, accessible privacy statement', async ({ page }) => {
+  await page.goto('/privacy.html');
+  await expect(page).toHaveTitle(/Privacy/);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Privacy at RepoContext');
+  await expect(page.getByText('The CLI and MCP transports do not send telemetry.')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Return to RepoContext', exact: true })).toHaveAttribute('href', './');
 });
 
 test('switches audience presentation while preserving the evidence set', async ({ page }) => {
