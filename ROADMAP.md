@@ -12,11 +12,13 @@ RepoContext's roadmap is evidence-led. Planned work may change when validation s
 - Deterministic, source-cited Context Briefs for technical and cross-functional audiences.
 - Tested MCP configuration templates for Cursor, Windsurf, Zed, and Continue.
 - Node 20/22/24 CI and tag-triggered npm trusted-publishing automation.
+- Static public website source with cross-browser regression tests and a manual deployment workflow.
 
 ## Current priorities
 
 - Complete maintainer review, exact-head CI verification, and npm trusted-publisher registration.
 - Verify installation from a clean machine after the first public package release.
+- Deploy the website after GitHub Pages and an optional dedicated cookieless PostHog project are configured.
 - Validate the existing workflow with technical and cross-functional users before expanding the tool contract.
 
 ## Planned improvements

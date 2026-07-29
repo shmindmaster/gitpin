@@ -38,15 +38,18 @@
     "verify:package": "node scripts/verify-package.mjs",
     "verify:remote": "node scripts/verify-remote.mjs",
     "start": "node dist/http.js",
-    "lint": "biome lint src scripts",
-    "format": "biome format --write src scripts package.json tsconfig.json biome.json",
-    "format:check": "biome format src scripts package.json tsconfig.json biome.json",
+    "lint": "biome lint src scripts site/app.js site/analytics.js tests playwright.config.mjs",
+    "format": "biome format --write src scripts site/app.js site/analytics.js tests playwright.config.mjs package.json tsconfig.json biome.json",
+    "format:check": "biome format src scripts site/app.js site/analytics.js tests playwright.config.mjs package.json tsconfig.json biome.json",
     "typecheck": "tsc --noEmit",
     "build": "tsc",
-    "test": "vitest run",
+    "test": "vitest run src",
     "verify:clients": "node scripts/validate-client-configs.mjs",
     "verify:release-tag": "node scripts/verify-release-tag.mjs",
-    "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm verify:clients && pnpm test"
+    "site:serve": "node scripts/serve-site.mjs site",
+    "site:build": "node scripts/build-site.mjs",
+    "site:test": "playwright test",
+    "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm verify:clients && pnpm test && pnpm site:build"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
@@ -56,6 +59,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.5",
+    "@playwright/test": "^1.55.0",
     "@types/node": "^22.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5.8.0",

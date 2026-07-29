@@ -17,9 +17,12 @@ No database. No embeddings. No write tools. Git remains the source of truth.
 
 > **Release status:** RepoContext 0.2 is a release candidate. Its source, tests, build, and packed-package flow are validated, but the npm package has not been published yet. Install from source until the first public package release is announced in this repository.
 
+The repository also contains a static product site and a manual GitHub Pages deployment workflow. It remains unpublished until the Pages deployment is explicitly run. Website analytics are optional, cookieless, and isolated to a dedicated RepoContext PostHog project; the CLI and MCP transports contain no telemetry.
+
 ## Prerequisites
 
-- Node.js 20 or newer
+- Node.js 20 or newer to run the published package
+- Node.js 22.13 or newer for source development (required by pnpm 11)
 - Git available on `PATH`
 - pnpm 11 for source development (`corepack enable` will provide the version declared by the project)
 
@@ -189,10 +192,13 @@ pnpm mcp:serve
 | `pnpm verify:clients` | Parse and validate the four documented client configuration blocks |
 | `pnpm index:build` | Generate the commit-pinned HTTP snapshot |
 | `pnpm verify:remote` | Verify a configured remote MCP endpoint |
+| `pnpm site:serve` | Run the static product site locally |
+| `pnpm site:test` | Run Chromium, Firefox, WebKit, and mobile browser regression tests |
+| `pnpm site:build` | Build the deployable site, with analytics disabled unless configured |
 
 Maintainers prepare a release with `pnpm install --frozen-lockfile`, `pnpm validate`, `pnpm build`, `pnpm verify:package`, and `npm pack --dry-run --json`. A tag-triggered OIDC workflow is included; npm package ownership and the `release.yml` trusted-publisher relationship must be configured before the first tag is pushed.
 
-For help, use [GitHub Discussions or issues](https://github.com/shmindmaster/repocontext/issues) as appropriate. See [client setup](docs/clients.md), [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), [ROADMAP.md](ROADMAP.md), and [CHANGELOG.md](CHANGELOG.md).
+For help, use [GitHub Discussions or issues](https://github.com/shmindmaster/repocontext/issues) as appropriate. See [client setup](docs/clients.md), [website and analytics](docs/website.md), [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), [ROADMAP.md](ROADMAP.md), and [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 

@@ -17,6 +17,7 @@ All notable changes to RepoContext are documented here. The project follows [Kee
 - A stdout-only `brief` CLI for CI artifact handoff.
 - Tested Cursor, Windsurf, Zed, and Continue configuration examples.
 - Tag-triggered npm trusted-publishing workflow and Node 20/22/24 CI matrix.
+- Static product site, manual GitHub Pages deployment, isolated cookieless website analytics adapter, and cross-browser Playwright regression suite.
 
 ### Changed
 

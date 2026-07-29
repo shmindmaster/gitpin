@@ -23,6 +23,27 @@ Everything below requires an external dependency, release decision, or additiona
 
 **Proof:** `npm view repocontext@0.2.0 --json`, `npx -y repocontext@0.2.0 doctor`, and the published workflow run URL.
 
+## Deploy the public website with isolated analytics
+
+**Suggested labels:** `release`, `website`, `analytics`, `help wanted`
+
+**Problem:** The static website, browser matrix, and manual Pages workflow are implemented, but GitHub Pages is not configured and the connected PostHog organization has no dedicated RepoContext project.
+
+**Why it matters:** GitHub's short repository-traffic window cannot measure landing-page comprehension or install conversion, while mixing RepoContext into another application's PostHog project would contaminate events and privacy settings.
+**Relevant files:** `site/`, `tests/browser/site.spec.mjs`, `.github/workflows/pages.yml`, `docs/website.md`.
+
+**Expected outcome:** A public HTTPS site serves the reviewed artifact and sends only anonymous website events to an isolated RepoContext PostHog project.
+
+**Acceptance criteria:**
+
+- Configure GitHub Pages to deploy through GitHub Actions and run the manual `Deploy website` workflow.
+- Create a dedicated `RepoContext` PostHog project; enable cookieless server hashing and IP anonymization.
+- Keep autocapture and session replay disabled, then set `POSTHOG_REPOCONTEXT_PROJECT_KEY` as a repository variable.
+- Verify `$pageview`, `cta_clicked`, and `audience_changed` contain no repository, filesystem, question, citation, MCP, token, or client-config data.
+- Confirm the production URL in Chromium and rerun the committed browser matrix.
+
+**Proof:** `pnpm site:test`, the Pages deployment URL, and a PostHog event query grouped by event name with no disallowed properties.
+
 ## Validate the Context Brief with representative users
 
 **Suggested labels:** `research`, `help wanted`, `type:validation`

@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="RepoContext gives coding agents bounded, commit-pinned evidence across local Git repositories through eight read-only MCP tools."
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="posthog-project-key" content="" />
+    <meta name="posthog-api-host" content="https://us.i.posthog.com" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="RepoContext — commit-pinned context for coding agents" />
+    <meta
+      property="og:description"
+      content="Search the repositories that matter without guessing. Every answer carries a path, line number, and Git commit SHA."
+    />
+    <meta property="og:image" content="./social-card.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="RepoContext — commit-pinned context for coding agents" />
+    <meta
+      name="twitter:description"
+      content="Read-only, commit-pinned evidence for coding agents. No database. No embeddings. No write tools."
+    />
+    <meta name="twitter:image" content="./social-card.svg" />
+    <title>RepoContext — commit-pinned context for coding agents</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./analytics.js" defer></script>
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="wordmark" href="#top" aria-label="RepoContext home">RepoContext</a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
+        Open navigation
+      </button>
+      <nav id="primary-nav" aria-label="Primary navigation">
+        <a href="#how-it-works">How it works</a>
+        <a href="#safety">Safety</a>
+        <a href="#install">Install</a>
+        <a data-analytics="github_nav" href="https://github.com/shmindmaster/repocontext">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero page-section" id="top">
+        <div class="hero-copy">
+          <h1>Commit-pinned context for coding agents.</h1>
+          <p class="lead">
+            Search the repositories that matter without guessing. Every answer carries a path, line number, and Git
+            commit SHA.
+          </p>
+          <div class="actions">
+            <a class="button primary" data-analytics="github_hero" href="https://github.com/shmindmaster/repocontext">
+              View on GitHub <span aria-hidden="true">→</span>
+            </a>
+            <a class="button secondary" data-analytics="setup_hero" href="https://github.com/shmindmaster/repocontext#install-from-source">
+              Read the setup guide
+            </a>
+          </div>
+          <p class="proof-line">No database. No embeddings. No write tools.</p>
+          <div class="audience-tabs" role="tablist" aria-label="Context Brief audience">
+            <button id="tab-technical" role="tab" aria-selected="true" aria-controls="evidence-panel" data-audience="technical">
+              Technical
+            </button>
+            <button id="tab-product" role="tab" aria-selected="false" aria-controls="evidence-panel" data-audience="product" tabindex="-1">
+              Product
+            </button>
+            <button id="tab-operations" role="tab" aria-selected="false" aria-controls="evidence-panel" data-audience="operations" tabindex="-1">
+              Operations
+            </button>
+          </div>
+        </div>
+
+        <div class="evidence-console" id="evidence-panel" role="tabpanel" aria-labelledby="tab-technical">
+          <div class="console-bar">
+            <span>repocontext</span>
+            <span>READ-ONLY · MCP SERVER</span>
+          </div>
+          <div class="console-step">
+            <span class="step-number">1</span>
+            <div>
+              <strong>Agent question</strong>
+              <p id="audience-question">Where is bearer authentication enforced?</p>
+            </div>
+          </div>
+          <div class="console-arrow" aria-hidden="true">↓</div>
+          <div class="console-step active">
+            <span class="step-number">2</span>
+            <div>
+              <strong>RepoContext</strong>
+              <p>Reading committed evidence at Git HEAD…</p>
+            </div>
+          </div>
+          <div class="console-arrow" aria-hidden="true">↓</div>
+          <div class="citation">
+            <div class="citation-head">
+              <strong>docs/architecture.md:42</strong>
+              <span>990c830d58cc68d63901985e5234ed3137819802</span>
+            </div>
+            <div class="source-line"><span>42</span><mark id="audience-fact">HTTP requests require bearer authentication.</mark></div>
+          </div>
+          <dl class="evidence-legend">
+            <div><dt>Known fact</dt><dd id="audience-known">Directly supported by committed source.</dd></div>
+            <div><dt>Inference</dt><dd id="audience-inference">Authentication is part of the remote trust boundary.</dd></div>
+            <div><dt>Gap</dt><dd id="audience-gap">Production endpoint ownership is not registered.</dd></div>
+          </dl>
+          <p class="evidence-id">Evidence set <code>8e44b735…be61</code></p>
+        </div>
+        <a class="section-cue" href="#how-it-works">How it works in three steps <span aria-hidden="true">↓</span></a>
+      </section>
+
+      <section class="process page-section" id="how-it-works">
+        <header class="section-heading">
+          <h2>Git stays the source of truth.</h2>
+          <p>
+            RepoContext reads committed evidence at HEAD, applies repository exposure policy, and returns bounded
+            citations your agent can verify.
+          </p>
+        </header>
+        <div class="process-rail">
+          <article>
+            <h3><span>1</span> Register repositories</h3>
+            <pre><code>repositories:
+  - name: storefront
+    path: ../storefront
+    branches: [main]
+  - name: api
+    path: ../api
+    branches: [main]</code></pre>
+          </article>
+          <div class="policy-flow" aria-label="Committed evidence passes through Git HEAD and repository exposure policy">
+            <span>Git HEAD</span>
+            <i aria-hidden="true"></i>
+            <span>Exposure policy</span>
+          </div>
+          <article>
+            <h3><span>2</span> Ask through MCP</h3>
+            <div class="question-block">Which service owns checkout?</div>
+            <h3><span>3</span> Verify every answer</h3>
+            <div class="result-block">
+              <strong>docs/architecture.md:42</strong>
+              <code>990c830d58cc68d63901985e5234ed3137819802</code>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="safety" id="safety">
+        <div class="safety-title">
+          <h2>A deliberately narrow trust boundary.</h2>
+          <a href="https://github.com/shmindmaster/repocontext/blob/main/docs/architecture.md">Read the architecture <span aria-hidden="true">→</span></a>
+        </div>
+        <dl class="safety-points">
+          <div><dt>Read-only tools</dt><dd>RepoContext never writes, commits, or changes repository state.</dd></div>
+          <div><dt>Sensitive paths blocked</dt><dd>Environment files, credentials, keys, tokens, and secrets fail closed.</dd></div>
+          <div><dt>Dirty work excluded</dt><dd>Local answers come from committed HEAD, with stale documentation signaled.</dd></div>
+          <div><dt>Documentation-only HTTP</dt><dd>Remote images contain a generated docs and manifest snapshot, not source code.</dd></div>
+        </dl>
+      </section>
+
+      <section class="install page-section" id="install">
+        <header class="section-heading">
+          <h2>From clone to cited answer.</h2>
+          <p>Run the release candidate from source today. Switch to npx after the first npm publication.</p>
+        </header>
+        <div class="install-layout">
+          <div>
+            <pre class="terminal" aria-label="Source installation commands"><code><span>git clone</span> https://github.com/shmindmaster/repocontext.git
+<span>cd</span> repocontext
+<span>corepack</span> enable
+<span>pnpm</span> install --frozen-lockfile
+<span>pnpm</span> build
+<span>node</span> dist/server.js doctor</code></pre>
+            <p class="clients">Works with Claude Code, Codex, Cursor, Windsurf, Zed, and Continue.</p>
+          </div>
+          <div class="tool-index">
+            <h3>Eight read-only MCP tools</h3>
+            <ul>
+              <li>wiki.catalog</li><li>wiki.search</li><li>wiki.get</li><li>wiki.analyze</li>
+              <li>repo.inspect</li><li>repo.read</li><li>repo.search</li><li>repo.compare</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="contribute">
+        <p>MIT licensed. Built in public.<br />Contributions backed by repeatable validation.</p>
+        <div class="actions">
+          <a class="button primary" data-analytics="github_footer" href="https://github.com/shmindmaster/repocontext">View on GitHub →</a>
+          <a class="button secondary" data-analytics="contributing_footer" href="https://github.com/shmindmaster/repocontext/blob/main/CONTRIBUTING.md">Contributing guide →</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <a class="wordmark" href="#top">RepoContext</a>
+      <nav aria-label="Footer navigation">
+        <a href="https://github.com/shmindmaster/repocontext/blob/main/docs/clients.md">Client setup</a>
+        <a href="https://github.com/shmindmaster/repocontext/blob/main/SECURITY.md">Security</a>
+        <a href="https://github.com/shmindmaster/repocontext/blob/main/ROADMAP.md">Roadmap</a>
+        <a href="https://github.com/shmindmaster/repocontext/blob/main/CHANGELOG.md">Changelog</a>
+      </nav>
+    </footer>
+  </body>
+</html>
