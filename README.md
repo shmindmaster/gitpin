@@ -66,7 +66,7 @@ Configure an MCP client with the compiled stdio server and the registry path:
 }
 ```
 
-After the package is published, the command can be replaced with `npx -y @shmindmaster/repocontext`. On Windows, use `npx.cmd` when required by the client. The server uses stdio and writes protocol messages only to stdout.
+For the published package, replace the source-server command with `npx` and `args: ["-y", "@shmindmaster/repocontext@latest"]`. On Windows, use `npx.cmd` when required by the client. The server uses stdio and writes protocol messages only to stdout.
 
 Verify the registry before connecting an agent:
 
@@ -204,7 +204,7 @@ pnpm mcp:serve
 
 Maintainers prepare a release with `pnpm install --frozen-lockfile`, `pnpm validate`, `pnpm build`, `pnpm verify:package`, and `npm pack --dry-run --json`. A tag-triggered OIDC workflow is included; npm package ownership and the `release.yml` trusted-publisher relationship must be configured before the first tag is pushed.
 
-For help, use [GitHub Discussions or issues](https://github.com/shmindmaster/repocontext/issues) as appropriate. See [client setup](docs/clients.md), [website and analytics](docs/website.md), [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), [ROADMAP.md](ROADMAP.md), and [CHANGELOG.md](CHANGELOG.md).
+For help, use [GitHub issues](https://github.com/shmindmaster/repocontext/issues). See [client setup](docs/clients.md), [website and analytics](docs/website.md), [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), [ROADMAP.md](ROADMAP.md), and [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 

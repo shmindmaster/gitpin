@@ -73,6 +73,15 @@ try {
     throw new Error('Packed .env.example must keep REPOCONTEXT_MCP_TOKEN empty.');
   }
   const packageReadme = readFileSync(join(packageRoot, 'README.md'), 'utf8');
+  if (!packageReadme.includes('args: ["-y", "@shmindmaster/repocontext@latest"]')) {
+    throw new Error('Packed README must document the published npx MCP command.');
+  }
+  if (
+    packageReadme.includes('After the package is published') ||
+    packageReadme.includes('GitHub Discussions or issues')
+  ) {
+    throw new Error('Packed README must not contain stale pre-publication or disabled-community guidance.');
+  }
   const missingReadmeTargets = [...packageReadme.matchAll(/\]\((?!https?:\/\/|#)([^)#]+)(?:#[^)]*)?\)/gu)]
     .map((match) => match[1])
     .filter((target) => !existsSync(join(packageRoot, target)));
