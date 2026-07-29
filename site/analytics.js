@@ -15,7 +15,7 @@ if (projectKey && apiHost) {
     document.head.append(script);
   };
   window.posthog = posthog;
-  window.repocontextTrack = (event, properties = {}) => posthog.capture(event, properties);
+  window.repocontextTrack = (event, properties = {}) => window.posthog.capture(event, properties);
   posthog.init(projectKey, {
     api_host: apiHost,
     autocapture: false,

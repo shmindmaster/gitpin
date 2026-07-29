@@ -42,6 +42,38 @@ test('switches audience presentation while preserving the evidence set', async (
   await expect(page.locator('.evidence-id code')).toHaveText(evidenceSet);
 });
 
+test('delivers custom events after the asynchronous analytics loader replaces its queue', async ({ page }) => {
+  await page.route('https://us-assets.i.posthog.com/static/array.js', async (route) => {
+    await route.fulfill({
+      body: `
+        window.__capturedEvents = [];
+        window.posthog = {
+          capture: (...args) => window.__capturedEvents.push(args),
+        };
+      `,
+      contentType: 'application/javascript',
+    });
+  });
+  await page.route('http://127.0.0.1:4173/analytics-fixture', async (route) => {
+    await route.fulfill({
+      body: `
+        <meta name="posthog-project-key" content="phc_test" />
+        <meta name="posthog-api-host" content="https://us.i.posthog.com" />
+        <script src="/analytics.js"></script>
+      `,
+      contentType: 'text/html',
+    });
+  });
+
+  await page.goto('/analytics-fixture');
+  await expect.poll(() => page.evaluate(() => Array.isArray(window.__capturedEvents))).toBe(true);
+
+  await page.evaluate(() => window.repocontextTrack('audience_changed', { audience: 'product' }));
+  await expect
+    .poll(() => page.evaluate(() => window.__capturedEvents))
+    .toContainEqual(['audience_changed', { audience: 'product' }]);
+});
+
 test('keeps the primary content within the viewport', async ({ page }) => {
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
