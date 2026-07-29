@@ -2,6 +2,13 @@ import { readFileSync } from 'node:fs';
 
 const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 const expected = `v${packageJson.version}`;
+const serverSource = readFileSync(new URL('../src/server.ts', import.meta.url), 'utf8');
+const serverVersion = serverSource.match(/new McpServer\(\{ name: 'repocontext', version: '([^']+)' \}\)/u)?.[1];
+if (serverVersion !== packageJson.version) {
+  throw new Error(
+    `MCP server version ${serverVersion ?? 'missing'} does not match package version ${packageJson.version}.`,
+  );
+}
 const githubTag = process.env.GITHUB_REF_TYPE === 'tag' ? process.env.GITHUB_REF_NAME : undefined;
 const tag = process.argv[2] ?? githubTag ?? expected;
 if (tag !== expected)
@@ -18,6 +25,7 @@ console.log(
   JSON.stringify({
     tag,
     version: packageJson.version,
+    serverVersion,
     releaseDate: releaseHeading[1],
     status: 'matched',
   }),

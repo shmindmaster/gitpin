@@ -87,7 +87,7 @@ Create `.continue/mcpServers/repocontext.yaml` at the workspace root.
 <!-- config:continue:start -->
 ```yaml
 name: RepoContext
-version: 0.2.1
+version: 0.2.2
 schema: v1
 mcpServers:
   - name: RepoContext
@@ -106,6 +106,6 @@ MCP tools are available in Continue's agent mode. Schema and standalone block me
 
 All four clients should expose eight read-only tools. Ask the client to call `wiki.catalog`; the result should include each selected repository and a full commit SHA. Then call `wiki.analyze` with `operation: "brief"` and confirm `evidenceSetId`, `knownFacts`, `gaps`, and `technicalTrace` are present.
 
-For the public package, replace `command: node` and the compiled path with `command: npx` (`npx.cmd` when a Windows client requires it) and `args: ["-y", "@shmindmaster/repocontext@0.2.1"]`.
+For the public package, replace `command: node` and the compiled path with `command: npx` (`npx.cmd` when a Windows client requires it) and `args: ["-y", "@shmindmaster/repocontext@0.2.2"]`.
 
 The configuration blocks are syntax-checked by `pnpm verify:clients`. Client-native activation still requires the installed client and, for the `npx` form, the public npm package.
