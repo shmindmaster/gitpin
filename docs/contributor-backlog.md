@@ -6,9 +6,9 @@ Everything below requires an external dependency, release decision, or additiona
 
 **Suggested labels:** `release`, `infra`, `help wanted`
 
-**Problem:** Source and tarball checks pass, but `repocontext` is not yet published on npm. The tag workflow cannot authenticate until the package exists and npm trusts `.github/workflows/release.yml`.
+**Problem:** Source and tarball checks pass, but `@shmindmaster/repocontext` is not yet published on npm. The tag workflow cannot authenticate until the package exists and npm trusts `.github/workflows/release.yml`.
 
-**Why it matters:** The public `npx -y repocontext@0.2.0` onboarding path and provenance badge cannot be verified locally.
+**Why it matters:** The public `npx -y @shmindmaster/repocontext@0.2.0` onboarding path and provenance badge cannot be verified locally.
 **Relevant files:** `package.json`, `.github/workflows/release.yml`, `scripts/verify-package.mjs`, `README.md`.
 
 **Expected outcome:** A reviewed `v0.2.0` tag publishes through npm OIDC, and clean Node 20, 22, and 24 environments reach `doctor`, a Context Brief, and a first MCP answer without cloning the repository.
@@ -18,10 +18,10 @@ Everything below requires an external dependency, release decision, or additiona
 - Register `shmindmaster/repocontext` and `release.yml` as the npm trusted publisher with `npm publish` permission.
 - Push the reviewed `v0.2.0` tag only after exact-head CI is green.
 - Confirm npm provenance and package metadata.
-- Run `npx -y repocontext@0.2.0 doctor` from clean Node 20, 22, and 24 environments.
+- Run `npx -y @shmindmaster/repocontext@0.2.0 doctor` from clean Node 20, 22, and 24 environments.
 - Update README release status only after those checks pass.
 
-**Proof:** `npm view repocontext@0.2.0 --json`, `npx -y repocontext@0.2.0 doctor`, and the published workflow run URL.
+**Proof:** `npm view @shmindmaster/repocontext@0.2.0 --json`, `npx -y @shmindmaster/repocontext@0.2.0 doctor`, and the published workflow run URL.
 
 ## Deploy the public website with isolated analytics
 

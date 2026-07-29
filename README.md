@@ -66,7 +66,7 @@ Configure an MCP client with the compiled stdio server and the registry path:
 }
 ```
 
-After the package is published, the command can be replaced with `npx -y repocontext`. On Windows, use `npx.cmd` when required by the client. The server uses stdio and writes protocol messages only to stdout.
+After the package is published, the command can be replaced with `npx -y @shmindmaster/repocontext`. On Windows, use `npx.cmd` when required by the client. The server uses stdio and writes protocol messages only to stdout.
 
 Verify the registry before connecting an agent:
 

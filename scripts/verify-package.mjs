@@ -5,6 +5,8 @@ import { basename, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const marker = 'REPOCONTEXT_PACKED_FIRST_ANSWER';
+const packageManifest = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+const packageName = packageManifest.name;
 const temporaryRoot = mkdtempSync(join(tmpdir(), 'repocontext-package-'));
 const repositoryPath = join(temporaryRoot, 'repository');
 const clientPath = join(temporaryRoot, 'client');
@@ -46,7 +48,7 @@ try {
     npm_config_cache: isolatedNpmCache,
   });
 
-  const packageRoot = join(clientPath, 'node_modules', 'repocontext');
+  const packageRoot = join(clientPath, 'node_modules', ...packageName.split('/'));
   const requiredPublicFiles = [
     '.env.example',
     'CHANGELOG.md',
