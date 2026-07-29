@@ -14,15 +14,77 @@ concurrency:
 
 jobs:
   validate:
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [22, 24]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          node-version: 22
-      - run: corepack enable
+          node-version: ${{ matrix.node }}
+      - run: npm install --global pnpm@11.15.0
       - run: pnpm install --frozen-lockfile
       - run: pnpm validate
       - run: pnpm build
+
+  package:
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - run: npm install --global pnpm@11.15.0
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
       - run: pnpm verify:package
       - run: pnpm audit --audit-level high
+      - run: mkdir -p artifacts
+      - run: npm pack --pack-destination artifacts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: repocontext-package
+          path: artifacts/*.tgz
+          if-no-files-found: error
+
+  package-runtime:
+    needs: package
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22, 24]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: repocontext-package
+          path: artifacts
+      - run: node scripts/verify-package.mjs artifacts/*.tgz
+
+  website:
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - run: npm install --global pnpm@11.15.0
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - run: pnpm site:test
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: website-test-evidence
+          path: |
+            playwright-report
+            test-results
+          if-no-files-found: ignore

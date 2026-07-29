@@ -1,0 +1,32 @@
+name: Publish package
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: "https://registry.npmjs.org"
+          package-manager-cache: false
+      - name: Install release toolchain
+        run: npm install --global npm@^11.5.1 pnpm@11.15.0
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm validate
+      - run: pnpm build
+      - run: pnpm verify:package
+      - name: Match tag to package version
+        run: node scripts/verify-release-tag.mjs "$GITHUB_REF_NAME"
+      - run: npm publish --access public

@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { execSync } from 'node:child_process';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { setRegistryPath, clearRegistryCache } from './registry';
-import { getRepoFile, getRepoManifest, getRepoStatus, getRepoTests, searchRepoCode } from './git';
+import { compareRepoCommits, getRepoFile, getRepoManifest, getRepoStatus, getRepoTests, searchRepoCode } from './git';
 
 const tmpRoot = join(tmpdir(), `repocontext-git-${process.pid}`);
 const repoPath = join(tmpRoot, 'sample-repo');
@@ -108,5 +108,16 @@ describe('git safety', () => {
     writeFileSync(join(repoPath, 'package.json'), JSON.stringify({ name: 'dirty', version: '9.9.9' }), 'utf-8');
     const manifest = await getRepoManifest('sample');
     expect((manifest.packageJson as { name: string }).name).toBe('sample');
+  });
+
+  it('resolves abbreviated comparison inputs to full commit SHAs', async () => {
+    const base = execSync('git rev-parse HEAD', { cwd: repoPath, encoding: 'utf-8' }).trim();
+    writeFileSync(join(repoPath, 'README.md'), '# Updated\n', 'utf-8');
+    execSync('git add README.md && git commit -m "update"', { cwd: repoPath, stdio: 'ignore' });
+    const head = execSync('git rev-parse HEAD', { cwd: repoPath, encoding: 'utf-8' }).trim();
+
+    const comparison = await compareRepoCommits('sample', base.slice(0, 7), head.slice(0, 7));
+
+    expect(comparison).toMatchObject({ base, head, commitsBetween: 1 });
   });
 });

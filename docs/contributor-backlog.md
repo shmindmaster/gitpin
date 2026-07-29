@@ -1,92 +1,105 @@
 # Contributor backlog
 
-These issue-ready drafts cover work intentionally deferred from the 0.2 release candidate. Maintainers may copy them into GitHub issues after confirming priority and ownership.
+Everything below requires an external dependency, release decision, or additional evidence. These are issue-ready drafts, not claims that the work is complete.
 
-## Publish 0.2 and verify a clean external installation
+## Publish 0.2 and verify public installation
 
-**Labels:** `release`, `documentation`  
-**Scope:** Medium; maintainer-only publication access  
-**Context:** Source and packed-fixture checks pass, but the package is not available from npm. Public instructions must remain source-first until publication succeeds.
+**Suggested labels:** `release`, `infra`, `help wanted`
 
-**Desired outcome:** Publish a reviewed 0.2 package through an approved trusted-publishing path and prove that a new user can reach a first commit-pinned MCP answer.
+**Problem:** Source and tarball checks pass, but `repocontext` is not yet published on npm. The tag workflow cannot authenticate until the package exists and npm trusts `.github/workflows/release.yml`.
 
-**Relevant components:** `package.json`, `pnpm-lock.yaml`, `.github/workflows/ci.yml`, `README.md`, `scripts/verify-package.mjs`, `CHANGELOG.md`.
+**Why it matters:** The public `npx -y repocontext@0.2.0` onboarding path and provenance badge cannot be verified locally.
+**Relevant files:** `package.json`, `.github/workflows/release.yml`, `scripts/verify-package.mjs`, `README.md`.
 
-**Suggested approach:** Review the complete release diff, confirm npm package ownership and provenance settings, run all release checks, publish without weakening package allowlists, then repeat the verifier from a clean environment without relying on the repository's pnpm store.
-
-**Acceptance criteria:**
-
-- CI passes on the release commit.
-- `npm view repocontext` returns the intended version and metadata.
-- A clean Node 20 or 22 environment installs the package and runs `repocontext doctor`.
-- A fixture registry returns a source-cited first answer through stdio.
-- README status and install instructions match the released artifact.
-
-**Testing:** `pnpm install --frozen-lockfile`, `pnpm validate`, `pnpm build`, `pnpm verify:package`, `npm pack --dry-run --json`, and a networked clean-install smoke test.  
-**Dependencies/blockers:** npm ownership, trusted-publishing approval, release commit/tag, and maintainer authorization. Do not label `good first issue`.
-
-## Validate the eight-tool workflow with representative users
-
-**Labels:** `research`, `help wanted`, `documentation`  
-**Scope:** Medium; requires research capacity and participant consent  
-**Context:** The evidence-first workflow is technically validated but has no external activation or repeated-use evidence.
-
-**Desired outcome:** Determine whether technical and cross-functional users can install RepoContext, identify the right source, understand unknowns, and trust the provenance without maintainer coaching.
-
-**Relevant components:** `_product-experience/`, `README.md`, `src/doctor.ts`, and all eight MCP tool descriptions in `src/server.ts`.
-
-**Suggested approach:** Use synthetic repositories only, run the protocol in `_product-experience/06-outcome-measurement-plan.md`, record completion and attribution outcomes, and publish only anonymized findings approved by participants.
+**Expected outcome:** A reviewed `v0.2.0` tag publishes through npm OIDC, and clean Node 20, 22, and 24 environments reach `doctor`, a Context Brief, and a first MCP answer without cloning the repository.
 
 **Acceptance criteria:**
 
-- At least one technical and one cross-functional workflow is observed.
-- Findings separate install friction, retrieval quality, comprehension, and trust.
-- No customer, private repository, credential, or participant-identifying data enters the repository.
-- Recommendations identify whether to improve onboarding, existing tools, or documentation before proposing a new feature.
+- Register `shmindmaster/repocontext` and `release.yml` as the npm trusted publisher with `npm publish` permission.
+- Push the reviewed `v0.2.0` tag only after exact-head CI is green.
+- Confirm npm provenance and package metadata.
+- Run `npx -y repocontext@0.2.0 doctor` from clean Node 20, 22, and 24 environments.
+- Update README release status only after those checks pass.
 
-**Testing:** Re-run all tested workflows against the same commit-pinned fixtures and record fixture SHAs.  
-**Dependencies/blockers:** Maintainer approval for recruitment and publication; participant consent. Not a `good first issue`.
+**Proof:** `npm view repocontext@0.2.0 --json`, `npx -y repocontext@0.2.0 doctor`, and the published workflow run URL.
 
-## Research a shareable Context Brief after workflow validation
+## Deploy the public website with isolated analytics
 
-**Labels:** `research`, `enhancement`, `help wanted`  
-**Scope:** Large; product and security design  
-**Context:** A compact evidence brief may create a collaboration loop, but implementing it before user validation would be speculative and could duplicate existing tools or leak context.
+**Suggested labels:** `release`, `website`, `analytics`, `help wanted`
 
-**Desired outcome:** Decide whether a source-cited brief is needed, what minimum information it contains, and whether generation belongs in RepoContext or the MCP client.
+**Problem:** The static website, browser matrix, and manual Pages workflow are implemented, but GitHub Pages is not configured and the connected PostHog organization has no dedicated RepoContext project.
 
-**Relevant components:** `_product-experience/02-workflow-and-feature-design.md`, `src/server.ts`, exposure-policy code, and remote snapshot boundaries.
+**Why it matters:** GitHub's short repository-traffic window cannot measure landing-page comprehension or install conversion, while mixing RepoContext into another application's PostHog project would contaminate events and privacy settings.
+**Relevant files:** `site/`, `tests/browser/site.spec.mjs`, `.github/workflows/pages.yml`, `docs/website.md`.
 
-**Suggested approach:** Use the preceding workflow study, prototype outside the public MCP contract, threat-model sharing and redaction, and compare a client-composed brief against a server tool.
-
-**Acceptance criteria:**
-
-- Research demonstrates a repeated workflow that current tool composition cannot solve adequately.
-- The proposal defines provenance, size bounds, unknown states, redaction, and policy behavior.
-- A decision record recommends implement, defer, or reject with supporting evidence.
-- No implementation changes the eight-tool contract before maintainer approval.
-
-**Testing:** Synthetic fixture evaluation for correct citations, stale state, denied paths, missing evidence, and output bounds.  
-**Dependencies/blockers:** Completion of representative-user workflow validation. Not a `good first issue`.
-
-## Add tested MCP-client configuration guides
-
-**Labels:** `documentation`, `good first issue`  
-**Scope:** Small; one client per pull request  
-**Context:** The README contains a generic MCP configuration. Client-specific command, environment, and Windows launcher behavior changes independently and should not be guessed.
-
-**Desired outcome:** Add one concise, tested setup guide for a commonly used MCP client without expanding the server contract.
-
-**Relevant components:** `README.md`, a new page under `docs/`, and the selected client's current public documentation.
-
-**Suggested approach:** Verify source and published-package command forms on a clean fixture, document only supported settings, include `doctor`, and link from the README.
+**Expected outcome:** A public HTTPS site serves the reviewed artifact and sends only anonymous website events to an isolated RepoContext PostHog project.
 
 **Acceptance criteria:**
 
-- Instructions are verified on a current released client version and identify that version.
-- Linux/macOS and Windows command differences are documented when applicable.
-- The guide reaches `doctor` and a first `wiki.catalog` call using synthetic repositories.
-- No secrets, personal paths, or private repository names appear in examples.
+- Configure GitHub Pages to deploy through GitHub Actions and run the manual `Deploy website` workflow.
+- Create a dedicated `RepoContext` PostHog project; enable cookieless server hashing and IP anonymization.
+- Keep autocapture and session replay disabled, then set `POSTHOG_REPOCONTEXT_PROJECT_KEY` as a repository variable.
+- Verify `$pageview`, `cta_clicked`, and `audience_changed` contain no repository, filesystem, question, citation, MCP, token, or client-config data.
+- Confirm the production URL in Chromium and rerun the committed browser matrix.
 
-**Testing:** Follow the guide from a clean environment and record the commands and versions in the pull request.  
-**Dependencies/blockers:** Public npm release if the guide uses `npx`; otherwise use the documented source build.
+**Proof:** `pnpm site:test`, the Pages deployment URL, and a PostHog event query grouped by event name with no disallowed properties.
+
+## Validate the Context Brief with representative users
+
+**Suggested labels:** `research`, `help wanted`, `type:validation`
+
+**Problem:** Deterministic brief behavior is tested, but usefulness and comprehension are not user-validated.
+
+**Why it matters:** Automated correctness does not prove that technical or cross-functional users make faster, safer decisions from the artifact.
+**Relevant files:** `src/context-brief.ts`, `src/cli.ts`, `docs/ci.md`, `README.md`.
+
+**Expected outcome:** Synthetic-fixture sessions establish whether users understand known facts, gaps, freshness, and the next safe action without maintainer coaching.
+
+**Acceptance criteria:**
+
+- Observe at least one technical and one cross-functional workflow using approved synthetic repositories.
+- Record task completion, correct source attribution, and unsafe-assumption rates.
+- Separate install friction from retrieval, comprehension, and trust findings.
+- Add only anonymized, consented findings and actionable product changes.
+
+**Proof:** Re-run `pnpm validate` and the documented fixture tasks against recorded commit SHAs.
+
+## Verify the documentation-only remote reference deployment
+
+**Suggested labels:** `infra`, `security`, `help wanted`
+
+**Problem:** Container and HTTP contracts are locally testable, but no approved hosted endpoint exists.
+
+**Why it matters:** Runtime host controls, bearer-secret injection, TLS, host allowlisting, and immutable image provenance require external infrastructure.
+**Relevant files:** `Dockerfile.remote`, `deploy/digitalocean-app.yaml.example`, `docs/remote-deployment.md`, `scripts/verify-remote.mjs`.
+
+**Expected outcome:** An approved host serves only the generated snapshot through authenticated Streamable HTTP.
+
+**Acceptance criteria:**
+
+- Deploy an immutable reviewed image through the authorized provider path.
+- Confirm `/healthz`, unauthenticated `401`, the eight read-only tools, and one catalog call.
+- Inspect the image to confirm source, dirty work, local roots, and secrets are absent.
+- Record teardown, rotation, and ownership instructions outside the public repository when sensitive.
+
+**Proof:** `REPOCONTEXT_MCP_URL=... REPOCONTEXT_MCP_TOKEN=... pnpm verify:remote`.
+
+## Evaluate monorepo package-boundary discovery
+
+**Suggested labels:** `research`, `enhancement`
+
+**Problem:** `repo.inspect(operation: "manifest")` detects polyglot manifests but does not model pnpm, Turborepo, or Nx package ownership.
+
+**Why it matters:** Agents need package boundaries in large repositories without turning non-Git umbrella folders into registry entries.
+**Relevant files:** `src/git-inspection.ts`, `src/git-shared.ts`, `src/git.test.ts`.
+
+**Expected outcome:** Decide whether a bounded package tree can be derived from committed manifests without adding storage or broad filesystem scanning.
+
+**Acceptance criteria:**
+
+- Use synthetic pnpm, Turborepo, and Nx fixtures.
+- Specify package-root, workspace-pattern, and commit-provenance behavior.
+- Preserve the existing manifest response fields and Git-root registry rule.
+- Implement only if the output remains bounded and deterministic.
+
+**Proof:** `pnpm test -- src/git.test.ts` with all three fixture families.

@@ -3,6 +3,8 @@
  * Search and index implementations live in focused sibling modules.
  */
 import { readPinnedFile } from './git';
+import { getContextBrief } from './context-brief';
+import { EXPECTED_DOCUMENTS, getDocumentationRows } from './documentation-analysis';
 import { loadRegistry } from './registry';
 import { documentIndex, MAX_DOCUMENT_BYTES, normalizePath } from './wiki-index';
 
@@ -91,46 +93,9 @@ export async function getDocs(repositoryName: string, sourcePath: string): Promi
   }
 }
 
-const EXPECTED_DOCUMENTS = [
-  { path: 'README.md', label: 'README' },
-  { path: 'docs/architecture.md', label: 'Architecture' },
-  { path: 'AGENTS.md', label: 'Agent Instructions' },
-  { path: 'docs/development.md', label: 'Dev Guide' },
-];
-
-export async function getDocGaps(operation: 'gaps' | 'compare', repositories?: string[]) {
-  const selected = loadRegistry().filter((entry) => !repositories?.length || repositories.includes(entry.name));
-  const rows = selected.map((repository) => {
-    try {
-      const index = documentIndex(repository);
-      const present: string[] = [];
-      const gaps: string[] = [];
-      for (const expected of EXPECTED_DOCUMENTS) {
-        if (index.paths.includes(expected.path)) present.push(expected.label);
-        else gaps.push(expected.label);
-      }
-      return {
-        repository: repository.name,
-        commitSha: index.commitSha,
-        confidence: index.confidence,
-        stale: index.stale,
-        present,
-        gaps,
-        coverage: `${present.length}/${EXPECTED_DOCUMENTS.length}`,
-      };
-    } catch (error) {
-      return {
-        repository: repository.name,
-        commitSha: null,
-        confidence: 'unavailable' as const,
-        stale: false,
-        present: [],
-        gaps: EXPECTED_DOCUMENTS.map((expected) => expected.label),
-        coverage: `0/${EXPECTED_DOCUMENTS.length}`,
-        message: error instanceof Error ? error.message : 'Repository could not be analyzed.',
-      };
-    }
-  });
+export async function getDocGaps(operation: 'gaps' | 'compare' | 'brief', repositories?: string[]) {
+  if (operation === 'brief') return getContextBrief({ repositories });
+  const rows = getDocumentationRows(repositories).map(({ sourcePaths: _, ...row }) => row);
   if (operation === 'compare') {
     return {
       categories: EXPECTED_DOCUMENTS.map((expected) => expected.label),

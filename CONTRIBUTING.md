@@ -18,17 +18,19 @@ pnpm install --frozen-lockfile
 pnpm validate
 pnpm build
 pnpm verify:package
+pnpm verify:clients
+pnpm site:test
 pnpm mcp:serve
 ```
 
-Node.js 20 or newer and Git are required. Copy the registry shape from [README.md](README.md) and set `REPOCONTEXT_REGISTRY` to a safe local fixture; never commit a registry containing machine-specific or private paths.
+Node.js 22.13 or newer and Git are required for source development. The packed package is separately validated on Node.js 20, 22, and 24. Copy the registry shape from [README.md](README.md) and set `REPOCONTEXT_REGISTRY` to a safe local fixture; never commit a registry containing machine-specific or private paths.
 
 ## Workflow
 
 1. Fork the repository and create a focused branch from `main`.
 2. Add a failing regression test before fixing a defect when practical.
 3. Implement the smallest change that preserves public tool names and result provenance.
-4. Run `pnpm validate`, `pnpm build`, and `pnpm verify:package`.
+4. Run `pnpm validate`, `pnpm build`, and `pnpm verify:package`. Run `pnpm site:test` for website changes.
 5. Open a pull request using the repository template and link the issue it addresses.
 
 Do not mix unrelated refactors with behavioral work. Maintainers may ask for a design discussion before accepting new MCP tools, transports, dependencies, or exposure-policy changes.
@@ -51,7 +53,7 @@ Do not mix unrelated refactors with behavioral work. Maintainers may ask for a d
 
 ## Tests and pull requests
 
-Behavior changes need regression coverage. Security-boundary changes should include both allowed and denied cases. Transport changes should verify the MCP contract, authentication behavior, and health checks. Packaging changes must pass the clean packed install-to-first-answer test.
+Behavior changes need regression coverage. Security-boundary changes should include both allowed and denied cases. Transport changes should verify the MCP contract, authentication behavior, and health checks. Packaging changes must pass the clean packed install-to-first-answer test. Website changes must pass the Chromium, Firefox, WebKit, and mobile Chromium regression suite.
 
 Pull requests should state the problem, approach, user-visible behavior, validation performed, security impact, and documentation changes. A passing check is not a substitute for review, and maintainers will not merge changes that weaken tests or suppress findings without a documented reason.
 

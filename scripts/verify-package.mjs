@@ -1,9 +1,8 @@
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { basename, join } from 'node:path';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+import { basename, join, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 const marker = 'REPOCONTEXT_PACKED_FIRST_ANSWER';
 const temporaryRoot = mkdtempSync(join(tmpdir(), 'repocontext-package-'));
@@ -11,7 +10,6 @@ const repositoryPath = join(temporaryRoot, 'repository');
 const clientPath = join(temporaryRoot, 'client');
 const registryPath = join(temporaryRoot, 'repositories.yaml');
 const npmCommand = 'npm';
-const pnpmCommand = 'pnpm';
 const commandEnvironment = { ...process.env };
 delete commandEnvironment.npm_config_manage_package_manager_versions;
 let client;
@@ -33,10 +31,20 @@ try {
   );
   writeFileSync(join(clientPath, 'package.json'), '{"name":"repocontext-package-test","private":true}\n', 'utf8');
 
-  const packOutput = runOutput(npmCommand, ['pack', '--json', '--pack-destination', temporaryRoot], process.cwd());
-  const [{ filename }] = JSON.parse(packOutput);
-  const tarballPath = join(temporaryRoot, filename);
-  run(pnpmCommand, ['add', '--offline', '--ignore-scripts', '--save-exact', tarballPath], clientPath);
+  const providedTarball = process.argv[2]?.trim() || process.env.REPOCONTEXT_PACKAGE_TARBALL?.trim();
+  let tarballPath;
+  if (providedTarball) {
+    tarballPath = resolve(providedTarball);
+  } else {
+    const packOutput = runOutput(npmCommand, ['pack', '--json', '--pack-destination', temporaryRoot], process.cwd());
+    const [{ filename }] = JSON.parse(packOutput);
+    tarballPath = join(temporaryRoot, filename);
+  }
+  const isolatedNpmCache = join(temporaryRoot, 'npm-cache');
+  run(npmCommand, ['install', '--ignore-scripts', '--no-audit', '--no-fund', '--save-exact', tarballPath], clientPath, {
+    ...commandEnvironment,
+    npm_config_cache: isolatedNpmCache,
+  });
 
   const serverPath = join(clientPath, 'node_modules', 'repocontext', 'dist', 'server.js');
   const environment = { ...commandEnvironment, REPOCONTEXT_REGISTRY: registryPath };
@@ -49,7 +57,27 @@ try {
   if (!doctor.includes('RepoContext readiness: ready') || !doctor.includes('package-fixture: status=indexed')) {
     throw new Error(`Packed doctor check was not ready: ${doctor.trim()}`);
   }
+  const brief = JSON.parse(
+    execFileSync(
+      process.execPath,
+      [serverPath, 'brief', '--audience', 'technical', '--repository', 'package-fixture'],
+      {
+        cwd: clientPath,
+        env: environment,
+        encoding: 'utf8',
+        windowsHide: true,
+      },
+    ),
+  );
+  if (!/^[0-9a-f]{64}$/.test(brief.evidenceSetId) || brief.knownFacts.length < 1) {
+    throw new Error('Packed Context Brief did not contain a deterministic evidence set and cited known facts.');
+  }
 
+  const sdkRoot = join(clientPath, 'node_modules', '@modelcontextprotocol', 'sdk', 'dist', 'esm', 'client');
+  const [{ Client }, { StdioClientTransport }] = await Promise.all([
+    import(pathToFileURL(join(sdkRoot, 'index.js')).href),
+    import(pathToFileURL(join(sdkRoot, 'stdio.js')).href),
+  ]);
   client = new Client({ name: 'repocontext-package-test', version: '1.0.0' });
   const transport = new StdioClientTransport({
     command: process.execPath,
@@ -68,17 +96,26 @@ try {
     : '';
   if (!text.includes(marker)) throw new Error('Packed MCP server did not return the committed fixture evidence.');
 
-  console.log(JSON.stringify({ status: 'ready', package: basename(tarballPath), firstAnswer: 'verified' }));
+  console.log(
+    JSON.stringify({
+      status: 'ready',
+      package: basename(tarballPath),
+      cleanInstall: 'verified',
+      doctor: 'verified',
+      contextBrief: 'verified',
+      firstAnswer: 'verified',
+    }),
+  );
 } finally {
   if (client) await client.close();
   rmSync(temporaryRoot, { recursive: true, force: true });
 }
 
-function run(command, args, cwd) {
+function run(command, args, cwd, environment = commandEnvironment) {
   const invocation = commandInvocation(command, args);
   execFileSync(invocation.command, invocation.args, {
     cwd,
-    env: commandEnvironment,
+    env: environment,
     stdio: 'pipe',
     windowsHide: true,
   });
@@ -95,6 +132,6 @@ function runOutput(command, args, cwd) {
 }
 
 function commandInvocation(command, args) {
-  if (process.platform !== 'win32' || (command !== npmCommand && command !== pnpmCommand)) return { command, args };
+  if (process.platform !== 'win32' || command !== npmCommand) return { command, args };
   return { command: process.env.ComSpec ?? 'cmd.exe', args: ['/d', '/s', '/c', command, ...args] };
 }

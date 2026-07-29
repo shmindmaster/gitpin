@@ -3,6 +3,9 @@ node_modules/
 .cache/
 generated/
 .repocontext-index/
+.site-dist/
+playwright-report/
+test-results/
 .env
 .env.local
 *.secret.*

@@ -12,6 +12,7 @@ docker build -f Dockerfile.remote -t repocontext:local .
 ```
 
 `index:build` rejects a registry entry that is not a Git root, excludes sensitive paths, and fails if gitleaks detects a secret in the selected output. Its report records each repository, branch, source SHA, selected files, bytes, and excluded dirty entries.
+The output path must be new or a directory marked by an earlier successful RepoContext snapshot build. Existing unmarked directories, registered repository roots, and ancestors of registered repositories are rejected before any removal occurs.
 
 ## Run
 
@@ -28,6 +29,7 @@ Endpoints:
 - `POST /api/mcp` with `Authorization: Bearer <token>`
 
 Store the token in your platform’s secret manager. Restrict network access and allowed hosts to the clients that should access the snapshot.
+`REPOCONTEXT_ALLOWED_HOSTS` accepts hostnames only, such as `mcp.example.com`; do not include a scheme, path, or port.
 
 ## Verify
 

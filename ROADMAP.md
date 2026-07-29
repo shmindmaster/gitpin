@@ -9,23 +9,28 @@ RepoContext's roadmap is evidence-led. Planned work may change when validation s
 - Exposure policies that fail closed and sensitive-path blocking.
 - Local stdio and bearer-authenticated, snapshot-backed HTTP transports.
 - A `doctor` onboarding check, deterministic test suite, and clean packed install-to-first-answer verification.
+- Deterministic, source-cited Context Briefs for technical and cross-functional audiences.
+- Tested MCP configuration templates for Cursor, Windsurf, Zed, and Continue.
+- Node 20/22/24 CI and tag-triggered npm trusted-publishing automation.
+- Static public website source with cross-browser regression tests and a manual deployment workflow.
 
 ## Current priorities
 
-- Complete maintainer review, CI verification, changelog review, and npm trusted-publishing setup.
+- Complete maintainer review, exact-head CI verification, and npm trusted-publisher registration.
 - Verify installation from a clean machine after the first public package release.
+- Deploy the website after GitHub Pages and an optional dedicated cookieless PostHog project are configured.
 - Validate the existing workflow with technical and cross-functional users before expanding the tool contract.
 
 ## Planned improvements
 
 - Improve fixtures for workspace repositories, stale documentation, malformed policies, and remote snapshots.
-- Document client-specific setup only where it can be tested and maintained.
-- Add release provenance and automated package integrity checks after the publishing model is approved.
+- Validate Context Brief usefulness with technical and cross-functional users using synthetic fixtures.
+- Verify the documentation-only remote container in an approved hosting environment.
 
 ## Longer-term ideas
 
-- Research a shareable, source-cited Context Brief after workflow validation demonstrates a real need.
 - Explore more useful documentation-health signals without introducing opaque scoring or generated claims.
+- Evaluate monorepo package-boundary discovery without indexing non-Git umbrella folders.
 - Evaluate additional Git-hosting and deployment examples based on contributor demand.
 
 ## Out of scope

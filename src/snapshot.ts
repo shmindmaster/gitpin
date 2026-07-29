@@ -7,31 +7,12 @@
  */
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
-import { basename, dirname, extname, join, relative, resolve } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
 import { stringify } from 'yaml';
 import { loadRegistry } from './registry';
-import { isAlwaysSensitivePath, isDocumentationAllowed, isPathDenied, parseExposurePolicy } from './policy';
-
-const DOCUMENT_EXTENSIONS = new Set(['.md', '.mdx', '.rst', '.adoc', '.txt']);
-const ROOT_MANIFESTS = new Set([
-  'AGENTS.md',
-  'ARCHITECTURE.md',
-  'CHANGELOG.md',
-  'CLAUDE.md',
-  'CONTRIBUTING.md',
-  'Cargo.toml',
-  'Dockerfile',
-  'GEMINI.md',
-  'LICENSE',
-  'Makefile',
-  'PROJECT_AUDIT.md',
-  'README.md',
-  'go.mod',
-  'package.json',
-  'pnpm-workspace.yaml',
-  'pyproject.toml',
-  'requirements.txt',
-]);
+import { parseExposurePolicy } from './policy';
+import { isSensitiveSnapshotPath, isSnapshotFile } from './snapshot-files';
+import { prepareSnapshotOutput } from './snapshot-output';
 const MAX_FILE_BYTES = 500_000;
 
 export interface SnapshotReportEntry {
@@ -46,10 +27,13 @@ export interface SnapshotReportEntry {
 
 export function buildSnapshot(outputPath?: string): SnapshotReportEntry[] {
   const workspace = resolve(process.cwd());
-  const outputRoot = resolve(outputPath ?? join(workspace, '.repocontext-index'));
-  assertSafeOutput(workspace, outputRoot);
-  rmSync(outputRoot, { recursive: true, force: true });
-  mkdirSync(outputRoot, { recursive: true });
+  const targetPath = outputPath ?? process.env.REPOCONTEXT_INDEX_PATH ?? join(workspace, '.repocontext-index');
+  const repositories = loadRegistry();
+  const outputRoot = prepareSnapshotOutput(
+    workspace,
+    targetPath,
+    repositories.map((repository) => repository.path),
+  );
 
   const report: SnapshotReportEntry[] = [];
   const remoteRepositories: Array<{
@@ -59,7 +43,7 @@ export function buildSnapshot(outputPath?: string): SnapshotReportEntry[] {
     mode: 'snapshot';
   }> = [];
 
-  for (const repository of loadRegistry()) {
+  for (const repository of repositories) {
     if (!existsSync(join(repository.path, '.git'))) {
       throw new Error(`Refusing to snapshot non-Git path for "${repository.name}": ${repository.path}`);
     }
@@ -81,7 +65,7 @@ export function buildSnapshot(outputPath?: string): SnapshotReportEntry[] {
     let files = 0;
 
     for (const sourcePath of selected) {
-      if (isSensitivePath(sourcePath)) continue;
+      if (isSensitiveSnapshotPath(sourcePath)) continue;
       const content = execFileSync('git', ['show', `HEAD:${sourcePath}`], {
         cwd: repository.path,
         maxBuffer: MAX_FILE_BYTES + 1,
@@ -144,18 +128,6 @@ export function buildSnapshot(outputPath?: string): SnapshotReportEntry[] {
   return report;
 }
 
-function isSnapshotFile(path: string, policy: ReturnType<typeof parseExposurePolicy>): boolean {
-  const normalized = path.replace(/\\/g, '/');
-  const fileName = basename(normalized);
-  if (isPathDenied(normalized, policy)) return false;
-  if (DOCUMENT_EXTENSIONS.has(extname(fileName).toLowerCase())) {
-    return isDocumentationAllowed(normalized, policy);
-  }
-  if (!normalized.includes('/') && ROOT_MANIFESTS.has(fileName)) return true;
-  if (/^\.github\/workflows\/[^/]+\.(ya?ml)$/i.test(normalized)) return true;
-  return false;
-}
-
 function loadGitPolicy(repositoryPath: string, tracked: string[]): ReturnType<typeof parseExposurePolicy> {
   const policyPath = ['.repocontext/wiki.yaml', 'docs/wiki.yaml', 'wiki.yaml'].find((path) => tracked.includes(path));
   if (!policyPath) return parseExposurePolicy(null);
@@ -200,15 +172,10 @@ function excludeSecretFindings(outputRoot: string, report: SnapshotReportEntry[]
         scanReportPath,
         outputRoot,
       ],
-      {
-        cwd: process.cwd(),
-        stdio: 'pipe',
-        timeout: 120_000,
-        windowsHide: true,
-      },
+      { cwd: process.cwd(), stdio: 'pipe', timeout: 120_000, windowsHide: true },
     );
   } catch {
-    // A nonzero exit is expected when the redacted report contains findings.
+    /* expected when redacted report contains findings */
   }
 
   if (!existsSync(scanReportPath)) return;
@@ -234,11 +201,7 @@ function excludeSecretFindings(outputRoot: string, report: SnapshotReportEntry[]
 }
 
 function gitText(path: string, args: string[]): string {
-  return execFileSync('git', args, {
-    cwd: path,
-    encoding: 'utf-8',
-    windowsHide: true,
-  }).trim();
+  return execFileSync('git', args, { cwd: path, encoding: 'utf-8', windowsHide: true }).trim();
 }
 
 function gitLines(path: string, args: string[]): string[] {
@@ -247,29 +210,15 @@ function gitLines(path: string, args: string[]): string[] {
 }
 
 function gitNullSeparated(path: string, args: string[]): string[] {
-  const output = execFileSync('git', args, {
-    cwd: path,
-    encoding: 'utf-8',
-    maxBuffer: 10 * 1024 * 1024,
-    windowsHide: true,
-  });
-  return output.split('\0').filter(Boolean);
+  return execFileSync('git', args, { cwd: path, encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024, windowsHide: true })
+    .split('\0')
+    .filter(Boolean);
 }
 
 function safeFolderName(name: string): string {
   return name.replace(/[^a-zA-Z0-9._-]+/g, '__');
 }
 
-function isSensitivePath(path: string): boolean {
-  return isAlwaysSensitivePath(path);
-}
-
-function assertSafeOutput(workspace: string, outputRoot: string): void {
-  const expected = resolve(workspace, '.repocontext-index').toLowerCase();
-  if (outputRoot.toLowerCase() !== expected) {
-    throw new Error(`Snapshot output must be ${resolve(workspace, '.repocontext-index')}.`);
-  }
-}
 function assertWithinSnapshot(outputRoot: string, target: string): void {
   const root = resolve(outputRoot).toLowerCase();
   const resolvedTarget = resolve(target).toLowerCase();
@@ -277,9 +226,13 @@ function assertWithinSnapshot(outputRoot: string, target: string): void {
     throw new Error(`Secret scan reported a path outside the snapshot: ${target}`);
   }
 }
+
 if (require.main === module) {
   try {
-    const report = buildSnapshot();
+    const args = process.argv.slice(2);
+    const outputIndex = args.findIndex((arg) => arg === '--output' || arg === '-o');
+    const customOutput = outputIndex !== -1 && args[outputIndex + 1] ? args[outputIndex + 1] : undefined;
+    const report = buildSnapshot(customOutput);
     console.log(
       JSON.stringify(
         {
@@ -287,7 +240,7 @@ if (require.main === module) {
           files: report.reduce((total, item) => total + item.files, 0),
           bytes: report.reduce((total, item) => total + item.bytes, 0),
           dirtyRepositoriesExcluded: report.filter((item) => item.dirtyEntriesExcluded > 0).length,
-          report: '.repocontext-index/snapshot-report.json',
+          report: `${customOutput ?? process.env.REPOCONTEXT_INDEX_PATH ?? '.repocontext-index'}/snapshot-report.json`,
         },
         null,
         2,
