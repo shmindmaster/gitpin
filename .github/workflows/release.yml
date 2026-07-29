@@ -18,7 +18,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
     steps:
       - uses: actions/checkout@v6
@@ -59,4 +59,16 @@ jobs:
             echo "$package_spec is already published from this commit; skipping duplicate publication."
           else
             npm publish --access public
+          fi
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          release_tag="${{ inputs.release_ref || github.ref_name }}"
+          release_title="RepoContext $(node -p 'require("./package.json").version')"
+
+          if gh release view "$release_tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "GitHub Release $release_tag already exists; skipping duplicate creation."
+          else
+            gh release create "$release_tag" --repo "$GITHUB_REPOSITORY" --title "$release_title" --generate-notes
           fi

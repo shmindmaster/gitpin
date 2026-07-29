@@ -72,4 +72,4 @@ Describe the coding-agent workflow that is currently blocked, the evidence the a
 
 ## Releases
 
-Maintainers update [CHANGELOG.md](CHANGELOG.md), run all checks documented in the README, inspect the package archive, and verify a clean external install before publishing. Contributors should not publish packages or create release tags from forks.
+Maintainers update [CHANGELOG.md](CHANGELOG.md), run all checks documented in the README, inspect the package archive, and verify a clean external install before publishing. A trusted version-tag workflow validates the exact tag, publishes or verifies the npm artifact through OIDC, and creates the matching GitHub Release. Contributors should not publish packages or create release tags from forks.
