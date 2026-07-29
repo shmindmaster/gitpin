@@ -22,7 +22,7 @@ const json = (value: unknown) => ({ content: [{ type: 'text' as const, text: JSO
 const READ_ONLY = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false } as const;
 
 export function createServer(): McpServer {
-  const server = new McpServer({ name: 'repocontext', version: '0.2.2' });
+  const server = new McpServer({ name: 'repocontext', version: '0.2.3' });
 
   server.registerTool(
     'wiki.catalog',
