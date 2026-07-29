@@ -27,7 +27,7 @@ Everything below requires an external dependency, release decision, or additiona
 
 **Suggested labels:** `release`, `website`, `analytics`, `help wanted`
 
-**Problem:** The static website, browser matrix, and manual Pages workflow are implemented, but GitHub Pages is not configured and the connected PostHog organization has no dedicated RepoContext project.
+**Problem:** The static website, browser matrix, and manual Pages workflow are merged, and a dedicated RepoContext PostHog project exists. GitHub Pages is not configured, the PostHog project still has IP anonymization and server-side cookieless hashing disabled, and no repository variable connects the site to analytics.
 
 **Why it matters:** GitHub's short repository-traffic window cannot measure landing-page comprehension or install conversion, while mixing RepoContext into another application's PostHog project would contaminate events and privacy settings.
 **Relevant files:** `site/`, `tests/browser/site.spec.mjs`, `.github/workflows/pages.yml`, `docs/website.md`.
@@ -37,7 +37,7 @@ Everything below requires an external dependency, release decision, or additiona
 **Acceptance criteria:**
 
 - Configure GitHub Pages to deploy through GitHub Actions and run the manual `Deploy website` workflow.
-- Create a dedicated `RepoContext` PostHog project; enable cookieless server hashing and IP anonymization.
+- Enable cookieless server hashing and IP anonymization in the dedicated `RepoContext` PostHog project.
 - Keep autocapture and session replay disabled, then set `POSTHOG_REPOCONTEXT_PROJECT_KEY` as a repository variable.
 - Verify `$pageview`, `cta_clicked`, and `audience_changed` contain no repository, filesystem, question, citation, MCP, token, or client-config data.
 - Confirm the production URL in Chromium and rerun the committed browser matrix.

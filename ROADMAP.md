@@ -16,9 +16,9 @@ RepoContext's roadmap is evidence-led. Planned work may change when validation s
 
 ## Current priorities
 
-- Complete maintainer review, exact-head CI verification, and npm trusted-publisher registration.
+- Configure npm package ownership and trusted publishing, then publish a reviewed tag only with explicit authorization.
 - Verify installation from a clean machine after the first public package release.
-- Deploy the website after GitHub Pages and an optional dedicated cookieless PostHog project are configured.
+- Deploy the website after GitHub Pages and the dedicated RepoContext PostHog project's privacy settings are configured.
 - Validate the existing workflow with technical and cross-functional users before expanding the tool contract.
 
 ## Planned improvements
