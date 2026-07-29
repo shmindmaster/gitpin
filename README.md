@@ -15,9 +15,9 @@ Agent question → RepoContext → commit-pinned docs and code evidence → answ
 
 No database. No embeddings. No write tools. Git remains the source of truth.
 
-> **Release status:** RepoContext 0.2 is a release candidate. Its source, tests, build, and packed-package flow are validated, but the npm package has not been published yet. Install from source until the first public package release is announced in this repository.
+> **Release status:** [`@shmindmaster/repocontext`](https://www.npmjs.com/package/@shmindmaster/repocontext) is publicly available on npm. Clean `npx` installs are verified on Node 20, 22, and 24.
 
-The repository also contains a static product site and a manual GitHub Pages deployment workflow. It remains unpublished until the Pages deployment is explicitly run. Website analytics are optional, cookieless, and isolated to a dedicated RepoContext PostHog project; the CLI and MCP transports contain no telemetry.
+The repository also contains a static product site at [shmindmaster.github.io/repocontext](https://shmindmaster.github.io/repocontext/). Website analytics are optional, cookieless, and isolated to a dedicated RepoContext PostHog project; the CLI and MCP transports contain no telemetry.
 
 ## Prerequisites
 
@@ -168,12 +168,11 @@ The HTTP server exposes `GET /healthz` and bearer-authenticated `POST /api/mcp`.
 
 ## Known limitations
 
-- The npm package is not published yet; source installation is the supported release-candidate path.
 - Local reads are pinned to the checked-out `HEAD`. Dirty and untracked work is intentionally excluded and may make `doctor` report `attention`.
 - The HTTP transport serves a generated documentation and manifest snapshot, not repository source code or Git history.
 - Search is deterministic text matching, not semantic or embedding-based retrieval.
 - User registries containing local filesystem paths are excluded from the npm package and remote image. Snapshot builds generate a separate registry containing only image-local paths.
-- Client configuration schemas are verified from current official documentation, but native-client activation and the `npx` form remain publication-time checks.
+- Client configuration schemas are verified from current official documentation; native-client activation remains a local client check.
 
 ## Development
 

@@ -1,6 +1,6 @@
 # MCP client setup
 
-RepoContext works as a local stdio server in MCP clients that accept a command, arguments, and environment variables. These examples use the source build because the npm package is not public yet.
+RepoContext works as a local stdio server in MCP clients that accept a command, arguments, and environment variables. These examples use a source build; use the public `npx` command below when a local checkout is unnecessary.
 
 Before configuring a client:
 
@@ -87,7 +87,7 @@ Create `.continue/mcpServers/repocontext.yaml` at the workspace root.
 <!-- config:continue:start -->
 ```yaml
 name: RepoContext
-version: 0.2.0
+version: 0.2.1
 schema: v1
 mcpServers:
   - name: RepoContext
@@ -106,6 +106,6 @@ MCP tools are available in Continue's agent mode. Schema and standalone block me
 
 All four clients should expose eight read-only tools. Ask the client to call `wiki.catalog`; the result should include each selected repository and a full commit SHA. Then call `wiki.analyze` with `operation: "brief"` and confirm `evidenceSetId`, `knownFacts`, `gaps`, and `technicalTrace` are present.
 
-After `@shmindmaster/repocontext@0.2.0` is published and externally verified, replace `command: node` and the compiled path with `command: npx` (`npx.cmd` when a Windows client requires it) and `args: ["-y", "@shmindmaster/repocontext@0.2.0"]`.
+For the public package, replace `command: node` and the compiled path with `command: npx` (`npx.cmd` when a Windows client requires it) and `args: ["-y", "@shmindmaster/repocontext@0.2.1"]`.
 
 The configuration blocks are syntax-checked by `pnpm verify:clients`. Client-native activation still requires the installed client and, for the `npx` form, the public npm package.

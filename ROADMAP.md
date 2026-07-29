@@ -2,7 +2,7 @@
 
 RepoContext's roadmap is evidence-led. Planned work may change when validation shows a different user need. Feature requests should describe the workflow and provenance requirement, not only a proposed interface.
 
-## Completed in the 0.2 release candidate
+## Completed in the 0.2 release
 
 - Eight bounded, read-only MCP tools for cross-repository documentation and source evidence.
 - Git `HEAD` pinning with path, line, and commit provenance.
@@ -12,13 +12,10 @@ RepoContext's roadmap is evidence-led. Planned work may change when validation s
 - Deterministic, source-cited Context Briefs for technical and cross-functional audiences.
 - Tested MCP configuration templates for Cursor, Windsurf, Zed, and Continue.
 - Node 20/22/24 CI and tag-triggered npm trusted-publishing automation.
-- Static public website source with cross-browser regression tests and a manual deployment workflow.
+- Static public website, cookieless analytics, and cross-browser regression tests.
 
 ## Current priorities
 
-- Configure npm package ownership and trusted publishing, then publish a reviewed tag only with explicit authorization.
-- Verify installation from a clean machine after the first public package release.
-- Deploy the website after GitHub Pages and the dedicated RepoContext PostHog project's privacy settings are configured.
 - Validate the existing workflow with technical and cross-functional users before expanding the tool contract.
 
 ## Planned improvements

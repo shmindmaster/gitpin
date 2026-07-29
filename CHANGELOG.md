@@ -2,6 +2,13 @@
 
 All notable changes to RepoContext are documented here. The project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and intends to use [Semantic Versioning](https://semver.org/spec/v2.0.0.html) after the first public release.
 
+## [0.2.1] - 2026-07-28
+
+### Fixed
+
+- Corrected public release, installation, client-configuration, website, and roadmap guidance after the npm launch.
+- Made release verification dispatchable against an existing immutable version tag and fixed its shell quoting.
+
 ## [0.2.0] - 2026-07-28
 
 ### Added
@@ -37,4 +44,5 @@ All notable changes to RepoContext are documented here. The project follows [Kee
 - Snapshot generation replaces only marked RepoContext output directories and rejects registered repository roots or their ancestors.
 - Malformed exposure policies fail closed.
 
+[0.2.1]: https://github.com/shmindmaster/repocontext/releases/tag/v0.2.1
 [0.2.0]: https://github.com/shmindmaster/repocontext/releases/tag/v0.2.0
