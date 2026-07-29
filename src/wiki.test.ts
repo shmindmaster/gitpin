@@ -143,6 +143,35 @@ describe('wiki', () => {
     );
   });
 
+  it('returns an unavailable change-range gap for an unregistered repository', async () => {
+    const brief = await getContextBrief({
+      repositories: ['not-registered'],
+      changeRange: { repository: 'not-registered', base: '1111111', head: '2222222' },
+    });
+
+    expect(brief.scope.changeRange).toMatchObject({ repository: 'not-registered', status: 'unavailable' });
+    expect(brief.gaps).toContainEqual(
+      expect.objectContaining({
+        id: 'change-range-unavailable:not-registered',
+        trace: expect.objectContaining({ repository: 'not-registered', commitSha: null }),
+      }),
+    );
+  });
+
+  it('does not invent a first-line citation for an empty document', async () => {
+    writeFileSync(join(repoPath, 'README.md'), '', 'utf-8');
+    execFileSync('git', ['add', 'README.md'], { cwd: repoPath, windowsHide: true });
+    execFileSync('git', ['commit', '-qm', 'empty readme'], { cwd: repoPath, windowsHide: true });
+
+    const brief = await getContextBrief({ repositories: ['doc-repo'] });
+    expect(brief.knownFacts).toContainEqual(
+      expect.objectContaining({
+        id: 'document:doc-repo:README.md',
+        trace: expect.objectContaining({ sourcePath: 'README.md', line: null }),
+      }),
+    );
+  });
+
   it('reports dirty documentation as stale while returning HEAD content', async () => {
     writeFileSync(join(repoPath, 'README.md'), '# Dirty\n\nUncommitted text.\n', 'utf-8');
     const catalog = await getCatalog();

@@ -196,7 +196,7 @@ export function createServer(): McpServer {
           role: 'user',
           content: {
             type: 'text',
-            text: 'Use wiki.analyze and repo.inspect to audit documentation coverage across all registered repositories and report missing README, AGENTS.md, or ARCHITECTURE.md files.',
+            text: 'Use wiki.analyze and repo.inspect to audit documentation coverage across all registered repositories and report missing README.md, AGENTS.md, or docs/architecture.md files.',
           },
         },
       ],

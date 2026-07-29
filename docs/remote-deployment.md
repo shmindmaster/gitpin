@@ -12,6 +12,7 @@ docker build -f Dockerfile.remote -t repocontext:local .
 ```
 
 `index:build` rejects a registry entry that is not a Git root, excludes sensitive paths, and fails if gitleaks detects a secret in the selected output. Its report records each repository, branch, source SHA, selected files, bytes, and excluded dirty entries.
+The output path must be new or a directory marked by an earlier successful RepoContext snapshot build. Existing unmarked directories, registered repository roots, and ancestors of registered repositories are rejected before any removal occurs.
 
 ## Run
 

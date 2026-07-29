@@ -92,7 +92,7 @@ function knownDocumentFacts(row: DocumentationRow): BriefEvidence[] {
             id: `document:${row.repository}:${expected.path}`,
             label: 'known' as const,
             statement: `${row.repository} exposes ${expected.label} at ${expected.path}.`,
-            trace: trace(row, expected.path, 1),
+            trace: trace(row, expected.path, row.emptySourcePaths.includes(expected.path) ? null : 1),
           },
         ]
       : [],
@@ -137,11 +137,12 @@ async function buildChangeEvidence(
   gaps: BriefEvidence[],
 ) {
   const row = rows.find((candidate) => candidate.repository === range.repository);
-  if (!row) {
+  if (!row || row.confidence === 'unavailable') {
     gaps.push({
-      id: `change-range-unselected:${range.repository}`,
+      id: `change-range-unavailable:${range.repository}`,
       label: 'gap',
-      statement: `The requested change range repository ${range.repository} is outside the selected repository scope.`,
+      statement:
+        row?.message ?? `The requested change range repository ${range.repository} is outside the selected scope.`,
       trace: {
         repository: range.repository,
         sourcePath: null,

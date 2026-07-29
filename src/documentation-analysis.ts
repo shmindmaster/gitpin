@@ -1,3 +1,6 @@
+import { execFileSync } from 'node:child_process';
+import { statSync } from 'node:fs';
+import { join } from 'node:path';
 import { loadRegistry, type RepoEntry } from './registry';
 import { documentIndex } from './wiki-index';
 
@@ -18,6 +21,7 @@ export interface DocumentationRow {
   gaps: string[];
   coverage: string;
   sourcePaths: string[];
+  emptySourcePaths: string[];
   message?: string;
 }
 
@@ -47,6 +51,10 @@ export function getDocumentationRows(repositories?: string[]): DocumentationRow[
         gaps,
         coverage: `${present.length}/${EXPECTED_DOCUMENTS.length}`,
         sourcePaths: index.paths,
+        emptySourcePaths: EXPECTED_DOCUMENTS.filter(
+          (expected) =>
+            index.paths.includes(expected.path) && !sourceHasContent(repository, index.confidence, expected.path),
+        ).map((expected) => expected.path),
       };
     } catch (error) {
       return unavailableRow(
@@ -68,6 +76,22 @@ function unavailableRow(repository: string, message: string): DocumentationRow {
     gaps: EXPECTED_DOCUMENTS.map((expected) => expected.label),
     coverage: `0/${EXPECTED_DOCUMENTS.length}`,
     sourcePaths: [],
+    emptySourcePaths: [],
     message,
   };
+}
+
+function sourceHasContent(repository: RepoEntry, confidence: DocumentationRow['confidence'], path: string): boolean {
+  try {
+    if (confidence === 'snapshot') return statSync(join(repository.path, ...path.split('/'))).size > 0;
+    return (
+      execFileSync('git', ['show', `HEAD:${path}`], {
+        cwd: repository.path,
+        maxBuffer: 100_001,
+        windowsHide: true,
+      }).length > 0
+    );
+  } catch {
+    return false;
+  }
 }

@@ -7,31 +7,12 @@
  */
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
-import { basename, dirname, extname, join, relative, resolve } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
 import { stringify } from 'yaml';
 import { loadRegistry } from './registry';
-import { isAlwaysSensitivePath, isDocumentationAllowed, isPathDenied, parseExposurePolicy } from './policy';
-
-const DOCUMENT_EXTENSIONS = new Set(['.md', '.mdx', '.rst', '.adoc', '.txt']);
-const ROOT_MANIFESTS = new Set([
-  'AGENTS.md',
-  'ARCHITECTURE.md',
-  'CHANGELOG.md',
-  'CLAUDE.md',
-  'CONTRIBUTING.md',
-  'Cargo.toml',
-  'Dockerfile',
-  'GEMINI.md',
-  'LICENSE',
-  'Makefile',
-  'PROJECT_AUDIT.md',
-  'README.md',
-  'go.mod',
-  'package.json',
-  'pnpm-workspace.yaml',
-  'pyproject.toml',
-  'requirements.txt',
-]);
+import { parseExposurePolicy } from './policy';
+import { isSensitiveSnapshotPath, isSnapshotFile } from './snapshot-files';
+import { prepareSnapshotOutput } from './snapshot-output';
 const MAX_FILE_BYTES = 500_000;
 
 export interface SnapshotReportEntry {
@@ -47,10 +28,12 @@ export interface SnapshotReportEntry {
 export function buildSnapshot(outputPath?: string): SnapshotReportEntry[] {
   const workspace = resolve(process.cwd());
   const targetPath = outputPath ?? process.env.REPOCONTEXT_INDEX_PATH ?? join(workspace, '.repocontext-index');
-  const outputRoot = resolve(targetPath);
-  assertSafeOutput(workspace, outputRoot);
-  rmSync(outputRoot, { recursive: true, force: true });
-  mkdirSync(outputRoot, { recursive: true });
+  const repositories = loadRegistry();
+  const outputRoot = prepareSnapshotOutput(
+    workspace,
+    targetPath,
+    repositories.map((repository) => repository.path),
+  );
 
   const report: SnapshotReportEntry[] = [];
   const remoteRepositories: Array<{
@@ -60,7 +43,7 @@ export function buildSnapshot(outputPath?: string): SnapshotReportEntry[] {
     mode: 'snapshot';
   }> = [];
 
-  for (const repository of loadRegistry()) {
+  for (const repository of repositories) {
     if (!existsSync(join(repository.path, '.git'))) {
       throw new Error(`Refusing to snapshot non-Git path for "${repository.name}": ${repository.path}`);
     }
@@ -82,7 +65,7 @@ export function buildSnapshot(outputPath?: string): SnapshotReportEntry[] {
     let files = 0;
 
     for (const sourcePath of selected) {
-      if (isSensitivePath(sourcePath)) continue;
+      if (isSensitiveSnapshotPath(sourcePath)) continue;
       const content = execFileSync('git', ['show', `HEAD:${sourcePath}`], {
         cwd: repository.path,
         maxBuffer: MAX_FILE_BYTES + 1,
@@ -143,18 +126,6 @@ export function buildSnapshot(outputPath?: string): SnapshotReportEntry[] {
   writeFileSync(join(outputRoot, 'snapshot-report.json'), `${JSON.stringify(report, null, 2)}\n`, 'utf-8');
   scanSnapshot(outputRoot);
   return report;
-}
-
-function isSnapshotFile(path: string, policy: ReturnType<typeof parseExposurePolicy>): boolean {
-  const normalized = path.replace(/\\/g, '/');
-  const fileName = basename(normalized);
-  if (isPathDenied(normalized, policy)) return false;
-  if (DOCUMENT_EXTENSIONS.has(extname(fileName).toLowerCase())) {
-    return isDocumentationAllowed(normalized, policy);
-  }
-  if (!normalized.includes('/') && ROOT_MANIFESTS.has(fileName)) return true;
-  if (/^\.github\/workflows\/[^/]+\.(ya?ml)$/i.test(normalized)) return true;
-  return false;
 }
 
 function loadGitPolicy(repositoryPath: string, tracked: string[]): ReturnType<typeof parseExposurePolicy> {
@@ -246,18 +217,6 @@ function gitNullSeparated(path: string, args: string[]): string[] {
 
 function safeFolderName(name: string): string {
   return name.replace(/[^a-zA-Z0-9._-]+/g, '__');
-}
-
-function isSensitivePath(path: string): boolean {
-  return isAlwaysSensitivePath(path);
-}
-
-function assertSafeOutput(workspace: string, outputRoot: string): void {
-  const root = resolve(outputRoot).toLowerCase();
-  const ws = resolve(workspace).toLowerCase();
-  if (root === ws) throw new Error('Snapshot output path cannot be the current workspace root.');
-  if (root === resolve('/').toLowerCase() || root === resolve('C:\\').toLowerCase())
-    throw new Error('Snapshot output path cannot be the filesystem root.');
 }
 
 function assertWithinSnapshot(outputRoot: string, target: string): void {

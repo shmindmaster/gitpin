@@ -31,6 +31,7 @@ All notable changes to RepoContext are documented here. The project follows [Kee
 ### Security
 
 - Remote snapshots exclude source code, dirty work, untracked files, sensitive paths, and local absolute source roots.
+- Snapshot generation replaces only marked RepoContext output directories and rejects registered repository roots or their ancestors.
 - Malformed exposure policies fail closed.
 
 [Unreleased]: https://github.com/shmindmaster/repocontext/compare/v0.1.1...HEAD
