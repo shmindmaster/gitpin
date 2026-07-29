@@ -2,6 +2,8 @@
 
 The HTTP transport serves a commit-pinned snapshot of documentation, selected root manifests, and workflow metadata. It does not clone repositories at runtime and does not include local source files, dirty work, or untracked files.
 
+`POST /api/mcp` accepts JSON requests with an explicit `Content-Length` of at most 1 MiB. Chunked or malformed-length requests are rejected before MCP transport handling; normal MCP clients send a bounded JSON body automatically.
+
 ## Build
 
 ```bash

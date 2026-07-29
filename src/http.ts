@@ -4,6 +4,8 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { getCatalog } from './wiki';
 import { createServer as createMcpServer } from './server';
 
+const MAX_MCP_REQUEST_BYTES = 1_048_576;
+
 interface HttpServerOptions {
   token: string;
   allowedHosts?: string[];
@@ -65,8 +67,16 @@ export function createHttpServer(options: HttpServerOptions): Server {
       return;
     }
 
-    const contentLength = Number.parseInt(request.headers['content-length'] ?? '0', 10);
-    if (Number.isFinite(contentLength) && contentLength > 1_048_576) {
+    const contentLength = requestContentLength(request);
+    if (contentLength === undefined) {
+      sendJson(response, 411, { error: 'content_length_required' });
+      return;
+    }
+    if (contentLength === null) {
+      sendJson(response, 400, { error: 'invalid_content_length' });
+      return;
+    }
+    if (contentLength > MAX_MCP_REQUEST_BYTES) {
       sendJson(response, 413, { error: 'request_too_large' });
       return;
     }
@@ -122,6 +132,14 @@ function authorized(request: IncomingMessage, expectedToken: string): boolean {
   const provided = Buffer.from(header.slice(prefix.length), 'utf-8');
   const expected = Buffer.from(expectedToken, 'utf-8');
   return provided.length === expected.length && timingSafeEqual(provided, expected);
+}
+
+function requestContentLength(request: IncomingMessage): number | null | undefined {
+  const value = request.headers['content-length'];
+  if (value === undefined) return undefined;
+  if (!/^\d+$/u.test(value)) return null;
+  const length = Number(value);
+  return Number.isSafeInteger(length) ? length : null;
 }
 
 function hostAllowed(request: IncomingMessage, allowedHosts: Set<string>): boolean {

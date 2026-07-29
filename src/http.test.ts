@@ -1,5 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { request as requestHttp } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
@@ -131,7 +132,48 @@ describe('authenticated HTTP transport', () => {
       await close(server);
     }
   });
+
+  it('rejects chunked and oversized MCP request bodies before transport handling', async () => {
+    const server = createHttpServer({ token });
+    await listen(server);
+    const port = (server.address() as AddressInfo).port;
+
+    try {
+      expect(await chunkedRequest(port)).toBe(411);
+
+      const oversized = await fetch(`http://127.0.0.1:${port}/api/mcp`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'content-type': 'application/json' },
+        body: 'x'.repeat(1_048_577),
+      });
+      expect(oversized.status).toBe(413);
+    } finally {
+      await close(server);
+    }
+  });
 });
+
+async function chunkedRequest(port: number): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const request = requestHttp({
+      host: '127.0.0.1',
+      port,
+      path: '/api/mcp',
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'content-type': 'application/json',
+        'transfer-encoding': 'chunked',
+      },
+    });
+    request.once('response', (response) => {
+      response.resume();
+      response.once('end', () => resolve(response.statusCode ?? 0));
+    });
+    request.once('error', reject);
+    request.end('{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}');
+  });
+}
 
 async function listen(server: ReturnType<typeof createHttpServer>): Promise<void> {
   await new Promise<void>((resolve, reject) => {
