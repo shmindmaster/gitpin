@@ -29,6 +29,7 @@ All notable changes to RepoContext are documented here. The project follows [Kee
 - Strengthened packed-package verification with a clean npm dependency install, `doctor`, Context Brief, and first MCP answer.
 - Pruned development dependencies from the remote image and run the HTTP process as the unprivileged `node` user.
 - Updated the test runner and GitHub Actions to their current Node 24-based releases.
+- Updated the TypeScript compiler to 7 and explicitly scoped ambient types to Node.js.
 
 ### Security
 
