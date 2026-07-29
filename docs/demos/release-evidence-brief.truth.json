@@ -1,0 +1,22 @@
+{
+  "episodeId": "release-evidence-brief",
+  "environment": "synthetic-local",
+  "persona": "release engineering lead",
+  "permissions": [
+    "read-only local Git access",
+    "read-only local RepoContext stdio MCP access"
+  ],
+  "fixture": "scripts/demo-fixture.mjs",
+  "resetCommand": "pnpm demo:reset",
+  "verificationCommand": "pnpm demo:verify",
+  "expected": {
+    "repositories": 3,
+    "committedDocuments": 7,
+    "staleRepositories": ["merchant-web"],
+    "changedRepository": "atlas-api",
+    "changedPaths": ["docs/architecture.md"],
+    "toolCount": 8,
+    "allToolsReadOnly": true
+  },
+  "syntheticDataDisclosure": "All repository names, documents, commits, and dirty-worktree state are created by the local fixture. No customer, production, credential, or private repository data is used."
+}

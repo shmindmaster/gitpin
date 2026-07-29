@@ -1,0 +1,69 @@
+{
+  "episodeId": "release-evidence-brief",
+  "workflow": "Generate a source-cited multi-repository release brief",
+  "assessedEnvironment": "synthetic-local",
+  "assessedRevision": "f4e5ee2688e584deb2fb139c89a4528e71f22b95",
+  "persona": "release engineering lead",
+  "assessmentOwner": "product-experience-engineering",
+  "heroMoment": "The actual wiki.analyze Context Brief returns one stable evidenceSetId with three repositories, seven committed documents, one stale repository, and commit source traces.",
+  "handoffPath": "_product-experience/07-demo-readiness-handoff.md",
+  "beforeVerdict": "REMEDIABLE",
+  "afterVerdict": "DEMO-READY",
+  "handoffDecision": "PROCEED",
+  "seedProfile": {
+    "fixture": "scripts/demo-fixture.mjs creates three isolated synthetic Git repositories",
+    "seedCommand": "pnpm demo:reset",
+    "resetCommand": "pnpm demo:reset"
+  },
+  "permissions": [
+    "read-only local Git access",
+    "read-only local RepoContext stdio MCP access"
+  ],
+  "verdict": "PASS",
+  "productExperienceHandoff": {
+    "assessmentOwner": "product-experience-engineering",
+    "assessedRevision": "f4e5ee2688e584deb2fb139c89a4528e71f22b95",
+    "assessedEnvironment": "synthetic-local",
+    "workflow": "Generate a source-cited multi-repository release brief",
+    "persona": "release engineering lead",
+    "permissions": [
+      "read-only local Git access",
+      "read-only local RepoContext stdio MCP access"
+    ],
+    "seedProfile": {
+      "fixture": "scripts/demo-fixture.mjs creates three isolated synthetic Git repositories",
+      "seedCommand": "pnpm demo:reset",
+      "resetCommand": "pnpm demo:reset"
+    },
+    "heroMoment": "The actual wiki.analyze Context Brief returns one stable evidenceSetId with three repositories, seven committed documents, one stale repository, and commit source traces.",
+    "handoffPath": "_product-experience/07-demo-readiness-handoff.md",
+    "afterVerdict": "DEMO-READY",
+    "handoffDecision": "PROCEED",
+    "criteria": [
+      { "id": "single-clear-outcome", "passed": true, "evidence": ["The workflow ends with an actual source-cited Context Brief for one release review."] },
+      { "id": "fast-to-value", "passed": true, "evidence": ["The catalog and stale signal appear in the opening beat of scripts/demo-workflow.mjs."] },
+      { "id": "clean-believable-states", "passed": true, "evidence": ["scripts/demo-fixture.mjs creates committed repository history plus one deliberate dirty-worktree signal."] },
+      { "id": "visual-stability", "passed": true, "evidence": ["The recording renderer uses fixed 1280x720 terminal frames from the live transcript."] },
+      { "id": "legibility", "passed": true, "evidence": ["The recording renderer uses a 32px monospace body font and a 48px heading at 1280x720."] },
+      { "id": "bounded-feedback-rich-waits", "passed": true, "evidence": ["The local fixture has no network wait; each operation prints its result before the next beat."] },
+      { "id": "discoverable-primary-action", "passed": true, "evidence": ["wiki.analyze(operation: brief) is visibly labelled Context Brief in the workflow output."] },
+      { "id": "deterministic-resettable", "passed": true, "evidence": ["pnpm demo:verify resets, executes twice, and compares returned evidence identifiers and commit sources."] },
+      { "id": "visible-guardrail", "passed": true, "evidence": ["merchant-web has an uncommitted change and the Brief visibly marks it stale and excludes it from pinned evidence."] },
+      { "id": "hero-moment-exists", "passed": true, "evidence": ["The stable Context Brief evidenceSetId is visible alongside the repository, document, and stale counts."] },
+      { "id": "polish-baseline", "passed": true, "evidence": ["The episode uses an isolated fixture, asserted real responses, bounded narrative beats, captions, and failure-safe artifact manifests."] }
+    ]
+  },
+  "criteria": [
+    { "id": "single-clear-outcome", "passed": true, "evidence": ["The workflow ends with an actual source-cited Context Brief for one release review."] },
+    { "id": "fast-to-value", "passed": true, "evidence": ["The catalog and stale signal appear in the opening beat of scripts/demo-workflow.mjs."] },
+    { "id": "clean-believable-states", "passed": true, "evidence": ["scripts/demo-fixture.mjs creates committed repository history plus one deliberate dirty-worktree signal."] },
+    { "id": "visual-stability", "passed": true, "evidence": ["The recording renderer uses fixed 1280x720 terminal frames from the live transcript."] },
+    { "id": "legibility", "passed": true, "evidence": ["The recording renderer uses a 32px monospace body font and a 48px heading at 1280x720."] },
+    { "id": "bounded-feedback-rich-waits", "passed": true, "evidence": ["The local fixture has no network wait; each operation prints its result before the next beat."] },
+    { "id": "discoverable-primary-action", "passed": true, "evidence": ["wiki.analyze(operation: brief) is visibly labelled Context Brief in the workflow output."] },
+    { "id": "deterministic-resettable", "passed": true, "evidence": ["pnpm demo:verify resets, executes twice, and compares returned evidence identifiers and commit sources."] },
+    { "id": "visible-guardrail", "passed": true, "evidence": ["merchant-web has an uncommitted change and the Brief visibly marks it stale and excludes it from pinned evidence."] },
+    { "id": "hero-moment-exists", "passed": true, "evidence": ["The stable Context Brief evidenceSetId is visible alongside the repository, document, and stale counts."] },
+    { "id": "polish-baseline", "passed": true, "evidence": ["The episode uses an isolated fixture, asserted real responses, bounded narrative beats, captions, and failure-safe artifact manifests."] }
+  ]
+}

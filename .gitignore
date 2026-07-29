@@ -4,6 +4,7 @@ node_modules/
 generated/
 .repocontext-index/
 .site-dist/
+.demo/
 playwright-report/
 test-results/
 .env

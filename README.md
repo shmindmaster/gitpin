@@ -201,6 +201,19 @@ pnpm mcp:serve
 | `pnpm site:serve` | Run the static product site locally |
 | `pnpm site:test` | Run Chromium, Firefox, WebKit, and mobile browser regression tests |
 | `pnpm site:build` | Build the deployable site, with analytics disabled unless configured |
+| `pnpm demo:verify` | Reset an isolated synthetic Git fixture twice and prove the live MCP workflow returns stable evidence and commit references |
+| `pnpm demo:record` | Produce a captioned local video candidate from the stdout of a fresh, live MCP workflow using only the synthetic fixture |
+
+## Reproducible demo
+
+RepoContext includes a deterministic release-evidence demonstration for contributors and maintainers. It creates three throwaway local Git repositories, including one deliberately stale worktree, then uses the built stdio MCP server to catalog sources, compare commits, and generate a Context Brief. It never reads or writes an indexed user repository.
+
+```bash
+pnpm demo:verify
+pnpm demo:record
+```
+
+The video renderer writes its resettable transcript, captions, and provenance manifest under the ignored `.demo/` directory. Its master video is placed in `Videos/RepoContext` by default. The included narration is local synthetic speech and the fixture is visibly disclosed; a named human watch-through is still required before external publication. The storyboard, truth sheet, and claim ledger are in [docs/demos](docs/demos).
 
 Maintainers prepare a release with `pnpm install --frozen-lockfile`, `pnpm validate`, `pnpm build`, `pnpm verify:package`, and `npm pack --dry-run --json`. A tag-triggered OIDC workflow is included; npm package ownership and the `release.yml` trusted-publisher relationship must be configured before the first tag is pushed.
 
