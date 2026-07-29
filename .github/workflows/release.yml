@@ -35,4 +35,19 @@ jobs:
         run: |
           git fetch --no-tags origin main
           git merge-base --is-ancestor "$GITHUB_SHA^{commit}" origin/main
-      - run: npm publish --access public
+      - name: Publish package or verify bootstrap artifact
+        run: |
+          package_name="$(node -p \"require('./package.json').name\")"
+          package_version="$(node -p \"require('./package.json').version\")"
+          package_spec="${package_name}@${package_version}"
+
+          if npm view "$package_spec" version --registry "https://registry.npmjs.org" >/dev/null 2>&1; then
+            published_commit="$(npm view "$package_spec" gitHead --registry "https://registry.npmjs.org")"
+            if [ "$published_commit" != "$GITHUB_SHA" ]; then
+              echo "Published $package_spec does not match release commit $GITHUB_SHA." >&2
+              exit 1
+            fi
+            echo "$package_spec is already published from this commit; skipping duplicate publication."
+          else
+            npm publish --access public
+          fi
