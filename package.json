@@ -52,12 +52,13 @@
     "build": "tsc",
     "test": "vitest run src",
     "verify:clients": "node scripts/validate-client-configs.mjs",
+    "verify:ci": "node scripts/verify-ci-runner-routing.mjs",
     "verify:env": "node scripts/validate-env-example.mjs",
     "verify:release-tag": "node scripts/verify-release-tag.mjs",
     "site:serve": "node scripts/serve-site.mjs site",
     "site:build": "node scripts/build-site.mjs",
     "site:test": "playwright test",
-    "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm verify:clients && pnpm verify:env && pnpm verify:release-tag && pnpm test && pnpm site:build"
+    "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm verify:clients && pnpm verify:ci && pnpm verify:env && pnpm verify:release-tag && pnpm test && pnpm site:build"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",

@@ -36,6 +36,10 @@ Node.js 22.13 or newer and Git are required for source development. The packed p
 
 Do not mix unrelated refactors with behavioral work. Maintainers may ask for a design discussion before accepting new MCP tools, transports, dependencies, or exposure-policy changes.
 
+## CI runner isolation
+
+`main` and same-repository pull requests use the dedicated DigitalOcean runner fleet to keep routine validation fast and avoid GitHub-hosted runner consumption. Pull requests from forks run on GitHub-hosted runners instead: never execute untrusted fork code on a self-hosted runner. `pnpm verify:ci` enforces this routing contract.
+
 ## Coding standards
 
 - TypeScript is strict; avoid `any` in new code.
