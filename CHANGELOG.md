@@ -2,7 +2,7 @@
 
 All notable changes to RepoContext are documented here. The project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and intends to use [Semantic Versioning](https://semver.org/spec/v2.0.0.html) after the first public release.
 
-## [Unreleased]
+## [0.2.0] - 2026-07-28
 
 ### Added
 
@@ -18,6 +18,7 @@ All notable changes to RepoContext are documented here. The project follows [Kee
 - Tested Cursor, Windsurf, Zed, and Continue configuration examples.
 - Tag-triggered npm trusted-publishing workflow and Node 20/22/24 CI matrix.
 - Static product site, manual GitHub Pages deployment, isolated cookieless website analytics adapter, and cross-browser Playwright regression suite.
+- A packaged, secret-free environment template with automated completeness validation.
 
 ### Changed
 
@@ -27,6 +28,7 @@ All notable changes to RepoContext are documented here. The project follows [Kee
 - Resolved abbreviated comparison revisions to full commit SHAs before returning evidence.
 - Strengthened packed-package verification with a clean npm dependency install, `doctor`, Context Brief, and first MCP answer.
 - Pruned development dependencies from the remote image and run the HTTP process as the unprivileged `node` user.
+- Updated the test runner and GitHub Actions to their current Node 24-based releases.
 
 ### Security
 
@@ -34,4 +36,4 @@ All notable changes to RepoContext are documented here. The project follows [Kee
 - Snapshot generation replaces only marked RepoContext output directories and rejects registered repository roots or their ancestors.
 - Malformed exposure policies fail closed.
 
-[Unreleased]: https://github.com/shmindmaster/repocontext/compare/v0.1.1...HEAD
+[0.2.0]: https://github.com/shmindmaster/repocontext/releases/tag/v0.2.0

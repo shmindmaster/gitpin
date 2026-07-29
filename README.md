@@ -88,11 +88,16 @@ The JSON result separates `knownFacts`, `inferences`, and `gaps`; cites every kn
 
 | Variable | Required | Purpose |
 | --- | --- | --- |
-| `REPOCONTEXT_REGISTRY` | Yes for normal use | Absolute path to the repository registry YAML |
+| `REPOCONTEXT_REGISTRY` | Recommended | Explicit registry YAML path; conventional workspace and home paths are also discovered |
 | `REPOCONTEXT_MCP_TOKEN` | HTTP only | Bearer token required by `/api/mcp` |
 | `REPOCONTEXT_ALLOWED_HOSTS` | Recommended for HTTP | Comma-separated hostname allowlist; omit schemes and ports |
 | `REPOCONTEXT_INDEX_PATH` | Snapshot builds only | Override the generated snapshot directory |
+| `REPOCONTEXT_MCP_URL` | Remote verification only | Full `/api/mcp` endpoint checked by `pnpm verify:remote` |
+| `POSTHOG_REPOCONTEXT_PROJECT_KEY` | Website build only | Optional public PostHog project key; blank keeps analytics disabled |
+| `HOST` | No | HTTP bind address; defaults to `0.0.0.0` |
 | `PORT` | No | HTTP listening port; defaults to `3000` |
+
+Use [`.env.example`](.env.example) as a reference when configuring a shell, container, or hosting platform. RepoContext does not parse `.env` files itself; pass the values through the process environment and keep real tokens out of source control.
 
 Registry paths may be relative to the registry file. See [configuration guidance](docs/configuration.md) for the complete schema and safety behavior.
 
@@ -167,7 +172,7 @@ The HTTP server exposes `GET /healthz` and bearer-authenticated `POST /api/mcp`.
 - Local reads are pinned to the checked-out `HEAD`. Dirty and untracked work is intentionally excluded and may make `doctor` report `attention`.
 - The HTTP transport serves a generated documentation and manifest snapshot, not repository source code or Git history.
 - Search is deterministic text matching, not semantic or embedding-based retrieval.
-- Registries contain local filesystem paths and are intentionally excluded from the npm package and remote image.
+- User registries containing local filesystem paths are excluded from the npm package and remote image. Snapshot builds generate a separate registry containing only image-local paths.
 - Client configuration schemas are verified from current official documentation, but native-client activation and the `npx` form remain publication-time checks.
 
 ## Development
@@ -186,10 +191,11 @@ pnpm mcp:serve
 | `pnpm format` | Format source and configuration files |
 | `pnpm typecheck` | Run strict TypeScript checks |
 | `pnpm test` | Run the Vitest suite |
-| `pnpm validate` | Run lint, formatting, types, and tests |
+| `pnpm validate` | Run lint, formatting, types, client/environment/release validation, unit tests, and the site build |
 | `pnpm build` | Compile the distributable JavaScript |
 | `pnpm verify:package` | Pack, install, run `doctor`, and request a first MCP answer in an isolated fixture |
 | `pnpm verify:clients` | Parse and validate the four documented client configuration blocks |
+| `pnpm verify:env` | Validate the complete, secret-free environment template |
 | `pnpm index:build` | Generate the commit-pinned HTTP snapshot |
 | `pnpm verify:remote` | Verify a configured remote MCP endpoint |
 | `pnpm site:serve` | Run the static product site locally |

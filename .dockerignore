@@ -1,6 +1,14 @@
 .git
 .github
+.env
+.env.*
+!.env.example
+.npmrc
 .repocontext-index/snapshot-report.json
 dist
 node_modules
+*.key
 *.log
+*.pem
+*.p12
+*.secret.*

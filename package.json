@@ -19,9 +19,16 @@
   "files": [
     "dist",
     "!dist/**/*.test.*",
+    ".env.example",
     "templates/wiki.yaml",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md",
+    "ROADMAP.md",
+    "SECURITY.md",
+    "docs"
   ],
   "publishConfig": {
     "access": "public"
@@ -45,11 +52,12 @@
     "build": "tsc",
     "test": "vitest run src",
     "verify:clients": "node scripts/validate-client-configs.mjs",
+    "verify:env": "node scripts/validate-env-example.mjs",
     "verify:release-tag": "node scripts/verify-release-tag.mjs",
     "site:serve": "node scripts/serve-site.mjs site",
     "site:build": "node scripts/build-site.mjs",
     "site:test": "playwright test",
-    "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm verify:clients && pnpm test && pnpm site:build"
+    "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm verify:clients && pnpm verify:env && pnpm verify:release-tag && pnpm test && pnpm site:build"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
@@ -63,7 +71,7 @@
     "@types/node": "^22.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5.8.0",
-    "vitest": "^3.1.0"
+    "vitest": "^4.1.10"
   },
   "keywords": [
     "mcp",
