@@ -25,7 +25,8 @@ test('presents the release path and safety boundary without analytics by default
   await expect(page.getByRole('heading', { name: 'A deliberately narrow trust boundary.' })).toBeVisible();
   if (await menu.isVisible()) await menu.click();
   await page.getByRole('link', { name: 'Install', exact: true }).click();
-  await expect(page.locator('.terminal')).toContainText('node dist/server.js doctor');
+  await expect(page.locator('.terminal')).toContainText('@shmindmaster/repocontext@latest help');
+  await expect(page.locator('body')).not.toContainText(/release candidate/i);
   expect(analyticsRequests).toEqual([]);
 });
 

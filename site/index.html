@@ -164,17 +164,13 @@
 
       <section class="install page-section" id="install">
         <header class="section-heading">
-          <h2>From clone to cited answer.</h2>
-          <p>Run the release candidate from source today. Switch to npx after the first npm publication.</p>
+          <h2>From install to cited answer.</h2>
+          <p>Install the public package, configure a registry of Git roots, then connect the stdio server to your MCP client.</p>
         </header>
         <div class="install-layout">
           <div>
-            <pre class="terminal" aria-label="Source installation commands"><code><span>git clone</span> https://github.com/shmindmaster/repocontext.git
-<span>cd</span> repocontext
-<span>corepack</span> enable
-<span>pnpm</span> install --frozen-lockfile
-<span>pnpm</span> build
-<span>node</span> dist/server.js doctor</code></pre>
+            <pre class="terminal" aria-label="Published package commands"><code><span>npx</span> -y @shmindmaster/repocontext@latest help
+<span>#</span> Follow the setup guide to create a registry and MCP client configuration.</code></pre>
             <p class="clients">Works with Claude Code, Codex, Cursor, Windsurf, Zed, and Continue.</p>
           </div>
           <div class="tool-index">
