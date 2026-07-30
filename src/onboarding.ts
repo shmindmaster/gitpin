@@ -5,9 +5,11 @@ import { basename, dirname, resolve, sep } from 'node:path';
 import { stringify } from 'yaml';
 import { getContextBrief } from './context-brief';
 import { type DoctorReport, getDoctorReport } from './doctor';
+import { getDocumentationRows } from './documentation-analysis';
 import { clearRegistryCache, setRegistryPath } from './registry';
+import { getDocs } from './wiki';
 
-export const supportedInitClients = ['codex', 'cursor', 'windsurf', 'zed', 'continue'] as const;
+export const supportedInitClients = ['claude-code', 'codex', 'cursor', 'windsurf', 'zed', 'continue'] as const;
 export type InitClient = (typeof supportedInitClients)[number];
 
 export interface InitInput {
@@ -58,13 +60,9 @@ export async function initializeRepoContext(input: InitInput): Promise<InitResul
   clearRegistryCache();
   try {
     const readiness = await getDoctorReport();
-    const brief = await getContextBrief({ repositories: repositories.map(({ name }) => name) });
-    const first = brief.knownFacts[0];
-    if (!first?.trace.sourcePath || first.trace.line === null || !first.trace.commitSha) {
-      throw new Error(
-        'RepoContext could not produce a cited first fact. Commit a README.md, AGENTS.md, or docs/architecture.md and retry.',
-      );
-    }
+    const repositoryNames = repositories.map(({ name }) => name);
+    const brief = await getContextBrief({ repositories: repositoryNames });
+    const firstContext = await findFirstContext(repositoryNames, brief.knownFacts);
     return {
       registry: {
         path: registryPath,
@@ -72,13 +70,7 @@ export async function initializeRepoContext(input: InitInput): Promise<InitResul
         repositories: repositories.map(({ name }) => name),
       },
       readiness,
-      firstContext: {
-        statement: first.statement,
-        repository: first.trace.repository,
-        sourcePath: first.trace.sourcePath,
-        line: first.trace.line,
-        commitSha: first.trace.commitSha,
-      },
+      firstContext,
       client: input.client,
       clientConfig: clientConfiguration(input.client, registryPath),
     };
@@ -228,6 +220,8 @@ function clientConfiguration(client: InitClient, registryPath: string): string {
   };
   if (client === 'codex')
     return `codex mcp add --env ${shellArgument(`REPOCONTEXT_REGISTRY=${registryPath}`)} repocontext -- ${command} -y @shmindmaster/repocontext@latest`;
+  if (client === 'claude-code')
+    return `claude mcp add repocontext -e ${shellArgument(`REPOCONTEXT_REGISTRY=${registryPath}`)} -- ${command} -y @shmindmaster/repocontext@latest`;
   if (client === 'cursor')
     return JSON.stringify({ mcpServers: { repocontext: { type: 'stdio', ...server } } }, null, 2);
   if (client === 'zed') return JSON.stringify({ context_servers: { repocontext: server } }, null, 2);
@@ -240,6 +234,42 @@ function clientConfiguration(client: InitClient, registryPath: string): string {
     }).trim();
   }
   return JSON.stringify({ mcpServers: { repocontext: server } }, null, 2);
+}
+
+async function findFirstContext(
+  repositoryNames: string[],
+  knownFacts: Awaited<ReturnType<typeof getContextBrief>>['knownFacts'],
+): Promise<InitResult['firstContext']> {
+  const fact = knownFacts.find(
+    ({ trace }) => Boolean(trace.sourcePath) && trace.line !== null && Boolean(trace.commitSha),
+  );
+  if (fact?.trace.sourcePath && fact.trace.line !== null && fact.trace.commitSha) {
+    return {
+      statement: fact.statement,
+      repository: fact.trace.repository,
+      sourcePath: fact.trace.sourcePath,
+      line: fact.trace.line,
+      commitSha: fact.trace.commitSha,
+    };
+  }
+
+  for (const row of getDocumentationRows(repositoryNames)) {
+    for (const sourcePath of row.sourcePaths) {
+      const page = await getDocs(row.repository, sourcePath);
+      if (!page?.body.trim() || !page.commitSha) continue;
+      const line = page.body.split(/\r?\n/u).findIndex((value) => value.trim().length > 0) + 1;
+      return {
+        statement: `${row.repository} exposes ${page.title} at ${sourcePath}.`,
+        repository: row.repository,
+        sourcePath,
+        line,
+        commitSha: page.commitSha,
+      };
+    }
+  }
+  throw new Error(
+    'RepoContext could not produce a cited first result. Commit a non-empty documentation file and retry.',
+  );
 }
 
 function shellArgument(value: string): string {

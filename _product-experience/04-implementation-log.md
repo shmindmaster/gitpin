@@ -15,9 +15,9 @@ it does not modify MCP client configuration.
 - Only exact Git repository roots with a commit at `HEAD` are accepted.
 - The default destination is `~/.repocontext/repositories.yaml`; an explicit `--registry` is supported.
 - An identical rerun is idempotent. Different existing content is never overwritten.
-- Success includes `doctor` readiness, one path/line/commit-pinned Context Brief fact, and a package-based client
+- Success includes `doctor` readiness, one path/line/commit-pinned documentation result, and a package-based client
   configuration.
-- Codex, Cursor, Windsurf, Zed, and Continue output is covered by automated tests.
+- Claude Code, Codex, Cursor, Windsurf, Zed, and Continue output is covered by automated tests.
 - The website presents npm onboarding as the primary action and preserves keyboard and responsive behavior.
 
 ## Decisions
@@ -39,9 +39,9 @@ it does not modify MCP client configuration.
 
 ## Validation
 
-- `pnpm exec vitest run src/onboarding.test.ts` - passed, 12 tests.
+- `pnpm exec vitest run src/onboarding.test.ts` - passed, 15 tests.
 - `pnpm typecheck` - passed.
-- `pnpm validate` - passed: lint, formatting, strict types, client/environment/release contracts, 48 unit tests, and
+- `pnpm validate` - passed: lint, formatting, strict types, client/environment/release contracts, 52 unit tests, and
   static site build.
 - `pnpm build && pnpm verify:package` - passed: packed clean install, `init`, `doctor`, Context Brief, first MCP answer,
   and public documentation.

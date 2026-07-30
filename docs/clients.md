@@ -10,10 +10,10 @@ Run `init` from a committed Git repository:
 npx -y @shmindmaster/repocontext@latest init --client codex
 ```
 
-Choose `codex`, `cursor`, `windsurf`, `zed`, or `continue`. The command creates an external registry, verifies
-readiness, prints one commit-pinned fact, and returns a client configuration using the published package. It does not
-edit the indexed repository or your MCP client configuration. Repeat `--repository <path>` for a multi-repository
-registry.
+Choose `claude-code`, `codex`, `cursor`, `windsurf`, `zed`, or `continue`. The command creates an external registry,
+verifies readiness, prints one commit-pinned result, and returns a client configuration using the published package.
+It does not edit the indexed repository or your MCP client configuration. Repeat `--repository <path>` for a
+multi-repository registry.
 
 ## Source-build setup
 

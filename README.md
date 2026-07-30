@@ -35,9 +35,9 @@ npx -y @shmindmaster/repocontext@latest init --client codex
 ```
 
 `init` creates `~/.repocontext/repositories.yaml` outside the indexed repository, runs the same readiness checks as
-`doctor`, returns one commit-pinned Context Brief fact, and prints a paste-ready MCP configuration. It never changes
-the indexed repository. Choose `codex`, `cursor`, `windsurf`, `zed`, or `continue`; repeat `--repository <path>` to
-register multiple Git roots, or use `--registry <path>` for a separate registry.
+`doctor`, returns one commit-pinned documentation result, and prints a paste-ready MCP configuration. It never changes
+the indexed repository. Choose `claude-code`, `codex`, `cursor`, `windsurf`, `zed`, or `continue`; repeat
+`--repository <path>` to register multiple Git roots, or use `--registry <path>` for a separate registry.
 
 An identical rerun is safe and leaves the registry unchanged. If the destination already contains different
 configuration, `init` refuses to overwrite it and tells you how to choose another path.

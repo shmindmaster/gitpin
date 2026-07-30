@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, realpathSync, rmSync, utimesSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -111,6 +111,56 @@ describe('initializeRepoContext', () => {
     ).rejects.toThrow(/outside indexed repositories/u);
     expect(existsSync(unsafeRegistry)).toBe(false);
   });
+
+  it('returns a cited first result from any non-empty exposed document', async () => {
+    execFileSync('git', ['rm', '-q', 'README.md'], { cwd: repositoryPath, windowsHide: true });
+    mkdirSync(join(repositoryPath, 'docs'));
+    writeFileSync(join(repositoryPath, 'docs', 'guide.md'), '# Operator guide\n\nUse committed evidence.\n', 'utf8');
+    execFileSync('git', ['add', 'docs/guide.md'], { cwd: repositoryPath, windowsHide: true });
+    execFileSync('git', ['commit', '-qm', 'replace readme with guide'], { cwd: repositoryPath, windowsHide: true });
+
+    const result = await initializeRepoContext({
+      client: 'codex',
+      repositories: [repositoryPath],
+      registryPath,
+    });
+
+    expect(result.readiness.status).toBe('ready');
+    expect(result.firstContext.sourcePath).toBe('docs/guide.md');
+    expect(result.firstContext.line).toBe(1);
+    expect(result.firstContext.commitSha).toMatch(/^[0-9a-f]{40}$/u);
+  });
+
+  it('skips an empty predefined document when another cited fact is available', async () => {
+    writeFileSync(join(repositoryPath, 'README.md'), '', 'utf8');
+    writeFileSync(join(repositoryPath, 'AGENTS.md'), '# Agent instructions\n\nRun focused tests.\n', 'utf8');
+    execFileSync('git', ['add', 'README.md', 'AGENTS.md'], { cwd: repositoryPath, windowsHide: true });
+    execFileSync('git', ['commit', '-qm', 'add agent instructions'], { cwd: repositoryPath, windowsHide: true });
+
+    const result = await initializeRepoContext({
+      client: 'codex',
+      repositories: [repositoryPath],
+      registryPath,
+    });
+
+    expect(result.firstContext.sourcePath).toBe('AGENTS.md');
+    expect(result.firstContext.line).toBe(1);
+  });
+
+  it('does not refresh the indexed repository Git index during readiness checks', async () => {
+    const readme = join(repositoryPath, 'README.md');
+    const future = new Date(Date.now() + 60_000);
+    utimesSync(readme, future, future);
+    const before = readFileSync(join(repositoryPath, '.git', 'index'));
+
+    await initializeRepoContext({
+      client: 'codex',
+      repositories: [repositoryPath],
+      registryPath,
+    });
+
+    expect(readFileSync(join(repositoryPath, '.git', 'index'))).toEqual(before);
+  });
 });
 
 describe('init option parsing and client output', () => {
@@ -148,6 +198,8 @@ describe('init option parsing and client output', () => {
     expect(result.clientConfig).toContain('REPOCONTEXT_REGISTRY');
     if (client === 'codex') {
       expect(result.clientConfig).toMatch(/^codex mcp add --env /u);
+    } else if (client === 'claude-code') {
+      expect(result.clientConfig).toMatch(/^claude mcp add repocontext -e /u);
     } else if (client === 'continue') {
       const config = parse(result.clientConfig);
       expect(config.mcpServers[0]).toMatchObject({ name: 'RepoContext', type: 'stdio' });
