@@ -21,7 +21,7 @@ Committed docs and manifests ──build snapshot──> authenticated HTTP ─�
 | Module | Responsibility |
 | --- | --- |
 | `src/server.ts` | Shared MCP tool contract and stdio entry point |
-| `src/cli.ts` | `doctor`, Context Brief, and help command dispatch |
+| `src/cli.ts` | `init`, `doctor`, Context Brief, and help command dispatch |
 | `src/context-brief.ts` | Deterministic documentation/change evidence briefs and source traces |
 | `src/documentation-analysis.ts` | Bounded documentation coverage rows and unavailable-repository handling |
 | `src/http.ts` | Bearer-authenticated Streamable HTTP transport and health endpoint |

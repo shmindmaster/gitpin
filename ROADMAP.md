@@ -16,7 +16,9 @@ RepoContext's roadmap is evidence-led. Planned work may change when validation s
 
 ## Current priorities
 
+- Finish official MCP Registry publication for the version-matched npm artifact (manual OIDC workflow).
 - Validate the existing workflow with technical and cross-functional users before expanding the tool contract.
+- Keep public beta positioning accurate: read-only, commit-pinned, multi-repo, no embeddings.
 
 ## Planned improvements
 

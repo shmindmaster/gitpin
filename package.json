@@ -1,6 +1,7 @@
 {
   "name": "@shmindmaster/repocontext",
-  "version": "0.3.0",
+  "version": "0.3.1",
+  "mcpName": "io.github.shmindmaster/repocontext",
   "type": "commonjs",
   "description": "Give coding agents fast, commit-pinned context across the repositories that matter.",
   "author": "Sarosh Hussain",
@@ -28,6 +29,7 @@
     "CONTRIBUTING.md",
     "ROADMAP.md",
     "SECURITY.md",
+    "server.json",
     "docs"
   ],
   "publishConfig": {
@@ -56,6 +58,7 @@
     "verify:ci": "node scripts/verify-ci-runner-routing.mjs",
     "verify:env": "node scripts/validate-env-example.mjs",
     "verify:release-tag": "node scripts/verify-release-tag.mjs",
+    "verify:mcp-registry": "node scripts/verify-mcp-registry.mjs",
     "demo:reset": "node scripts/demo-fixture.mjs",
     "demo:workflow": "pnpm build && node scripts/demo-workflow.mjs",
     "demo:verify": "pnpm build && node scripts/verify-demo-workflow.mjs",
@@ -65,7 +68,7 @@
     "site:serve": "node scripts/serve-site.mjs site",
     "site:build": "node scripts/build-site.mjs",
     "site:test": "playwright test",
-    "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm verify:clients && pnpm verify:ci && pnpm verify:env && pnpm verify:release-tag && pnpm test && pnpm site:build"
+    "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm verify:clients && pnpm verify:ci && pnpm verify:env && pnpm verify:mcp-registry && pnpm verify:release-tag && pnpm test && pnpm site:build"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",

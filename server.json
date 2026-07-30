@@ -1,0 +1,30 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.shmindmaster/repocontext",
+  "title": "RepoContext",
+  "description": "Read-only, commit-pinned repository context for coding agents.",
+  "repository": {
+    "url": "https://github.com/shmindmaster/repocontext",
+    "source": "github"
+  },
+  "version": "0.3.1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@shmindmaster/repocontext",
+      "version": "0.3.1",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "description": "Path to a registry created by repocontext init.",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false,
+          "name": "REPOCONTEXT_REGISTRY"
+        }
+      ]
+    }
+  ]
+}

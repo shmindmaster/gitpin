@@ -58,6 +58,7 @@ try {
     'README.md',
     'ROADMAP.md',
     'SECURITY.md',
+    'server.json',
     'docs/clients.md',
     'docs/configuration.md',
     'docs/remote-deployment.md',
@@ -67,6 +68,17 @@ try {
   const missingPublicFiles = requiredPublicFiles.filter((file) => !existsSync(join(packageRoot, file)));
   if (missingPublicFiles.length > 0) {
     throw new Error(`Packed public documentation is incomplete: ${missingPublicFiles.join(', ')}.`);
+  }
+  const packedManifest = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8'));
+  const packedRegistryMetadata = JSON.parse(readFileSync(join(packageRoot, 'server.json'), 'utf8'));
+  if (
+    packedManifest.mcpName !== 'io.github.shmindmaster/repocontext' ||
+    packedRegistryMetadata.name !== packedManifest.mcpName ||
+    packedRegistryMetadata.version !== packedManifest.version ||
+    packedRegistryMetadata.packages?.[0]?.identifier !== packedManifest.name ||
+    packedRegistryMetadata.packages?.[0]?.version !== packedManifest.version
+  ) {
+    throw new Error('Packed npm and MCP Registry metadata must remain version-matched.');
   }
   const environmentExample = readFileSync(join(packageRoot, '.env.example'), 'utf8');
   if (!environmentExample.split(/\r?\n/u).includes('REPOCONTEXT_MCP_TOKEN=')) {

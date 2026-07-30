@@ -4,20 +4,33 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](package.json)
 [![MCP Protocol](https://img.shields.io/badge/MCP-1.30-blue.svg)](https://modelcontextprotocol.io)
+[![npm](https://img.shields.io/npm/v/@shmindmaster/repocontext.svg)](https://www.npmjs.com/package/@shmindmaster/repocontext)
 
-### Give coding agents commit-pinned answers from the repositories that matter.
+### Commit-pinned context for coding agents—read-only, multi-repo, and verifiable.
 
-RepoContext is an open-source MCP server for teams that want Claude Code, Codex, Cursor, and other MCP clients to navigate multiple repositories without guessing. It returns bounded, read-only evidence with repository paths, line numbers, and Git commit SHAs.
+RepoContext is an open-source [MCP](https://modelcontextprotocol.io) server that gives Claude Code, Codex, Cursor, Windsurf, Zed, Continue, and other MCP clients **bounded evidence from the Git repositories you register**. Content search and read results carry a **path, line number, and full commit SHA**; catalog and comparison results stay commit-pinned. Dirty worktrees are never presented as committed truth.
 
 ```text
-Agent question → RepoContext → commit-pinned docs and code evidence → answer you can verify
+Agent question → RepoContext (Git HEAD only) → cited docs/code → you verify the SHA
 ```
 
-No database. No embeddings. No write tools. Git remains the source of truth.
+**No database. No embeddings. No write tools. No local reindex lag.** Git and the filesystem are the source of truth.
 
-> **Release status:** [`@shmindmaster/repocontext`](https://www.npmjs.com/package/@shmindmaster/repocontext) is publicly available on npm. Clean `npx` installs are verified on Node 20, 22, and 24.
+| You want… | RepoContext |
+| --- | --- |
+| Multi-repo agent context without a vector index | Yes |
+| Path + line + commit provenance on results | Yes |
+| Agents that can edit or push your repos | No — by design |
+| Semantic “find similar code” search | No — use a code-intel/RAG tool |
 
-The repository also contains a static product site at [shmindmaster.github.io/repocontext](https://shmindmaster.github.io/repocontext/). Website analytics are optional, cookieless, and isolated to a dedicated RepoContext PostHog project; the CLI and MCP transports contain no telemetry.
+> **Release status (public beta):** [`@shmindmaster/repocontext`](https://www.npmjs.com/package/@shmindmaster/repocontext) is on npm. Clean `npx` installs are verified on Node 20, 22, and 24. Prefer the latest published version.
+
+RepoContext's official MCP Registry identity is `io.github.shmindmaster/repocontext`. The version-matched
+[`server.json`](server.json) points Registry-capable clients to the same public npm package and canonical repository.
+
+Product site: [shmindmaster.github.io/repocontext](https://shmindmaster.github.io/repocontext/). Website analytics are optional, cookieless, and isolated; the CLI and MCP transports contain **no telemetry**.
+
+**Docs:** [Tools](docs/tools.md) · [Compare](docs/compare.md) · [Clients](docs/clients.md) · [Troubleshooting](docs/troubleshooting.md) · [Architecture](docs/architecture.md) · [Launch notes](docs/launch.md)
 
 ## Prerequisites
 
@@ -128,20 +141,55 @@ Registry paths may be relative to the registry file. See [configuration guidance
 | `repo.inspect` | HEAD-pinned status, commits, manifests, tests, and recent changes |
 | `repo.read` | Safe source slice with line numbers and provenance |
 | `repo.search` | Bounded code matches with source path, line, snippet, and SHA |
-| `repo.compare` | Changed paths and commit count between two revisions |
+| `repo.compare` | Changed paths and commit count between two hexadecimal revisions |
 
-Every local read comes from `HEAD`; uncommitted and untracked content is excluded. When documentation changes locally, catalog results flag it as stale so agents do not mistake old committed evidence for current work.
+Every local read comes from `HEAD`; uncommitted and untracked content is excluded as evidence. When documentation changes locally, catalog results flag it as stale so agents do not mistake dirty work for committed truth. Full input/output notes: [docs/tools.md](docs/tools.md).
+
+### Example agent prompts
+
+```text
+Use wiki.catalog (view: sync). For each repository, report name, status, docCount, and commitSha.
+
+Search documentation for "authentication" with wiki.search. For the top hit, call wiki.get and
+quote the cited lines with path, line number, and full commit SHA.
+
+In repository <name>, use repo.search for the symbol that implements that behavior, then repo.read
+a tight line range. Do not invent paths. If a path is blocked, say so.
+
+Use repo.compare with base=<sha> and head=<sha> (full or 7+ hex characters) and summarize changed paths.
+```
 
 ## Why this exists
 
-Coding agents are powerful inside one checkout and unreliable across a real system. The useful answer is rarely “search everything”; it is a small, inspectable set of evidence:
+Coding agents are powerful inside one checkout and unreliable across a real multi-repo system. Common failure modes:
 
-- Which service owns this behavior?
-- What does the architecture document actually say at the current revision?
-- Where is the implementation, and what changed between two commits?
-- Which repositories are missing the documentation an agent needs to work safely?
+- Answers that **cannot be verified** (no path, line, or commit).
+- Context mixed from the **wrong branch**, a **stale index**, or a **dirty worktree**.
+- Setup that needs **embeddings, workers, or write-capable** filesystem tools.
 
-RepoContext is built for those questions.
+RepoContext targets a narrower job: return a small, inspectable set of evidence an agent (and a human) can re-check in Git.
+
+**Primary audience:** developers using MCP coding agents across several local repositories.
+**Secondary:** release and platform engineers who need a source-cited Context Brief; teams that require a read-only trust boundary.
+
+See [how RepoContext compares](docs/compare.md) for filesystem MCP, GitHub MCP, and embedding indexers.
+
+## Five-minute quick start
+
+```bash
+# 1. From a committed Git repository
+npx -y @shmindmaster/repocontext@latest init --client codex
+
+# 2. Paste the printed MCP config into your client
+
+# 3. Ask the agent (examples)
+#    - "Call wiki.catalog and list each repository with its commit SHA."
+#    - "Search docs for bearer authentication and cite path, line, and SHA."
+#    - "Read the matching file slice with repo.read and confirm the commit."
+#    - "Compare two release SHAs with repo.compare."
+```
+
+Success looks like: a ready doctor report, a first context line with a **40-character SHA**, and eight read-only tools in the client. If anything fails, see [troubleshooting](docs/troubleshooting.md).
 
 ## Repository exposure policy
 

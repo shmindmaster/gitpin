@@ -4,7 +4,7 @@ RepoContext is intentionally read-only, but it can expose repository context to 
 
 ## Supported versions
 
-RepoContext is currently a pre-release project. Security fixes are applied to the latest code on `main`; no older version receives a guaranteed maintenance window yet.
+Security fixes are applied to the latest published release on npm and to `main`. Older patch lines do not receive a separate long-term maintenance window. Always prefer the latest `@shmindmaster/repocontext` version.
 
 ## Report a vulnerability
 
