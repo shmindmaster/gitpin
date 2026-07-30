@@ -61,6 +61,7 @@
     "demo:verify": "pnpm build && node scripts/verify-demo-workflow.mjs",
     "demo:present": "pnpm build && powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/demo-terminal.ps1",
     "demo:record": "pnpm build && node scripts/record-demo.mjs",
+    "demo:record:qwen": "pnpm build && powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/record-demo-qwen.ps1",
     "site:serve": "node scripts/serve-site.mjs site",
     "site:build": "node scripts/build-site.mjs",
     "site:test": "playwright test",

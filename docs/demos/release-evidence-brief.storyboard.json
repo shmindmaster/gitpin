@@ -160,7 +160,7 @@
       "expectedAudioDurationSeconds": 7,
       "timelineStartSeconds": 46,
       "eyeDirectionTreatment": "End on the outcome line and clear synthetic-fixture disclosure.",
-      "annotations": ["Synthetic fixture", "Local speech synthesis"],
+      "annotations": ["Synthetic fixture", "Local synthetic narration"],
       "protectedRegions": ["outcome statement"],
       "pacePatternChange": "quiet payoff",
       "resultHoldSeconds": 1.2,

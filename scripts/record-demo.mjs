@@ -40,19 +40,34 @@ const transcript = exec(process.execPath, [join(workspace, 'scripts', 'demo-work
 const transcriptPath = join(runDirectory, 'live-mcp-transcript.txt');
 write(transcriptPath, transcript);
 
-const sections = buildSections(transcript);
+const narrationProvider = process.env.REPOCONTEXT_DEMO_NARRATION_PROVIDER ?? 'sapi';
+const narrationDisclosure = narrationProvider === 'qwen' ? 'Local Qwen3-TTS narration' : 'Local speech synthesis';
+const sections = buildSections(transcript, narrationDisclosure);
 const narrationDirectory = join(runDirectory, 'narration');
-exec('powershell.exe', [
-  '-NoProfile',
-  '-ExecutionPolicy',
-  'Bypass',
-  '-File',
-  join(workspace, 'scripts', 'generate-demo-narration.ps1'),
-  '-StoryboardPath',
-  storyboardPath,
-  '-OutputDirectory',
-  narrationDirectory,
-]);
+let narrationManifestPath = null;
+if (narrationProvider === 'qwen') {
+  exec(process.execPath, [
+    join(workspace, 'scripts', 'generate-demo-narration-qwen.mjs'),
+    storyboardPath,
+    narrationDirectory,
+  ]);
+  narrationManifestPath = join(narrationDirectory, 'qwen-narration-manifest.json');
+} else if (narrationProvider === 'sapi') {
+  exec('powershell.exe', [
+    '-NoProfile',
+    '-ExecutionPolicy',
+    'Bypass',
+    '-File',
+    join(workspace, 'scripts', 'generate-demo-narration.ps1'),
+    '-StoryboardPath',
+    storyboardPath,
+    '-OutputDirectory',
+    narrationDirectory,
+  ]);
+} else {
+  throw new Error(`Unsupported REPOCONTEXT_DEMO_NARRATION_PROVIDER: ${narrationProvider}`);
+}
+const narrationManifest = narrationManifestPath ? JSON.parse(read(narrationManifestPath)) : null;
 
 const scenePaths = [];
 const sceneDurations = [];
@@ -179,12 +194,23 @@ const manifest = {
     master: masterPath,
   },
   captures: storyboard.segments.map((segment) => captureManifest(segment)),
-  narration: {
-    provider: 'Windows System.Speech.Synthesis',
-    voice: 'Microsoft Zira Desktop',
-    rate: -1,
-    disclosure: 'Local synthetic speech; no external TTS service was used.',
-  },
+  narration:
+    narrationProvider === 'qwen'
+      ? {
+          provider: narrationManifest.generator,
+          voice: narrationManifest.jobs[0]?.voice_id,
+          instruction: narrationManifest.jobs[0]?.instruction,
+          speed: narrationManifest.jobs[0]?.speed,
+          manifest: narrationManifestPath,
+          disclosure:
+            'Local synthetic speech generated from the installed Qwen3-TTS model; no external TTS service was used.',
+        }
+      : {
+          provider: 'Windows System.Speech.Synthesis',
+          voice: 'Microsoft Zira Desktop',
+          rate: -1,
+          disclosure: 'Local synthetic speech; no external TTS service was used.',
+        },
   durationSeconds: round(sceneDurations.reduce((total, duration) => total + duration, 0)),
   claims: claimLedger.claims.map((claim) => claim.id),
   truth: truthSheet.expected,

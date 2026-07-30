@@ -6,7 +6,7 @@ const releaseWorkflow = parse(readFileSync(new URL('../.github/workflows/release
 const githubTokenExpression = '$' + '{{ github.token }}';
 const expectedRunner =
   '$' +
-  '{{ github.event_name == \'pull_request\' && github.event.pull_request.head.repo.fork && \'ubuntu-latest\' || fromJSON(\'["self-hosted", "Linux", "X64", "sh-runner", "repocontext"]\') }}';
+  '{{ github.event_name == \'pull_request\' && github.event.pull_request.head.repo.fork && \'ubuntu-latest\' || fromJSON(\'["self-hosted", "Linux", "X64", "sh-runner-repocontext", "repocontext"]\') }}';
 
 for (const jobName of ['validate', 'package', 'package-runtime', 'website']) {
   if (workflow.jobs?.[jobName]?.['runs-on'] !== expectedRunner) {

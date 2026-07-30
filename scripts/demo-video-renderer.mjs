@@ -1,6 +1,6 @@
 import { resolve } from 'node:path';
 
-export function buildSections(transcriptValue) {
+export function buildSections(transcriptValue, narrationDisclosure = 'Local speech synthesis') {
   const lines = transcriptValue.trim().split(/\r?\n/);
   const line = (value) => {
     const found = lines.find((candidate) => candidate.includes(value));
@@ -21,7 +21,7 @@ export function buildSections(transcriptValue) {
       ],
     ],
     ['guardrail', [line('Guardrail:'), line('Outcome:')]],
-    ['payoff', [line('Outcome:'), 'Synthetic fixture · actual local MCP session · local speech synthesis']],
+    ['payoff', [line('Outcome:'), `Synthetic fixture · actual local MCP session · ${narrationDisclosure}`]],
   ]);
 }
 
