@@ -23,7 +23,7 @@ Keep one bounded responsibility per file. Do not split into packages or services
 ## Rules
 
 1. Read-only. Zero writes to any indexed repository.
-2. Commit-pinned. Every response includes the source commit SHA.
+2. Commit-pinned. Successful content responses include the source commit SHA; blocked or unavailable cases are explicit.
 3. Sensitive files blocked at read time (.env, credentials, keys, tokens).
 4. Each repo may control exposure via docs/wiki.yaml. Default: supported documentation files across the repository.
 5. Local stdio may expose source code. The HTTP image exposes only the generated documentation/manifests snapshot.

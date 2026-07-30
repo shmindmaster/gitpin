@@ -10,6 +10,13 @@ All notable changes to RepoContext are documented here. The project follows [Kee
 
 - Add version-matched metadata and validation for publishing RepoContext to the official MCP Registry.
 - Add a manual, GitHub OIDC-authenticated Registry publication workflow that verifies the npm artifact before publishing immutable metadata.
+- Add public docs for the eight MCP tools, competitive comparison, troubleshooting, and launch checklist.
+
+### Changed
+
+- Clarify public beta positioning, five-minute quick start, and agent prompt examples in the README and product site.
+- Require hexadecimal Git revisions for `repo.compare`, matching Context Brief change-range validation.
+- Align security support language with the published npm package.
 
 ## [0.3.0] - 2026-07-29
 

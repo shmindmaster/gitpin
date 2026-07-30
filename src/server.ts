@@ -169,8 +169,8 @@ export function createServer(): McpServer {
       description: 'Compare changed files between two commits.',
       inputSchema: z.object({
         repository: z.string(),
-        base: z.string().min(7).max(40),
-        head: z.string().min(7).max(40),
+        base: z.string().regex(/^[0-9a-f]{7,40}$/iu),
+        head: z.string().regex(/^[0-9a-f]{7,40}$/iu),
       }),
     },
     async ({ repository, base, head }) => json(await compareRepoCommits(repository, base, head)),

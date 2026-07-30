@@ -119,7 +119,9 @@ MCP tools are available in Continue's agent mode. Schema and standalone block me
 
 ## Verify the connection
 
-All four clients should expose eight read-only tools. Ask the client to call `wiki.catalog`; the result should include each selected repository and a full commit SHA. Then call `wiki.analyze` with `operation: "brief"` and confirm `evidenceSetId`, `knownFacts`, `gaps`, and `technicalTrace` are present.
+Supported clients should expose eight read-only tools. Ask the client to call `wiki.catalog`; the result should include each selected repository and a full commit SHA. Then call `wiki.analyze` with `operation: "brief"` and confirm `evidenceSetId`, `knownFacts`, `gaps`, and `technicalTrace` are present.
+
+For tool contracts, example agent prompts, and failure modes, see [tools.md](tools.md). For install failures, see [troubleshooting.md](troubleshooting.md).
 
 For the public package, replace `command: node` and the compiled path with `command: npx` (`npx.cmd` when a Windows client requires it) and `args: ["-y", "@shmindmaster/repocontext@0.3.1"]`.
 
