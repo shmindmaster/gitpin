@@ -228,7 +228,7 @@ function clientConfiguration(client: InitClient, registryPath: string): string {
   if (client === 'continue') {
     return stringify({
       name: 'RepoContext',
-      version: '0.3.0',
+      version: '0.3.1',
       schema: 'v1',
       mcpServers: [{ name: 'RepoContext', type: 'stdio', ...server }],
     }).trim();

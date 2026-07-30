@@ -1,0 +1,71 @@
+name: Publish to MCP Registry
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_ref:
+        description: Published version tag to register
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.release_ref }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Match metadata to the release tag
+        run: |
+          node scripts/verify-mcp-registry.mjs
+          node scripts/verify-release-tag.mjs "${{ inputs.release_ref }}"
+      - name: Require release commit on main
+        run: |
+          release_commit="$(git rev-parse HEAD)"
+          git fetch --no-tags origin main
+          git merge-base --is-ancestor "$release_commit" origin/main
+      - name: Require the exact npm artifact
+        run: |
+          package_name="$(node -p 'require("./package.json").name')"
+          package_version="$(node -p 'require("./package.json").version')"
+          mcp_name="$(node -p 'require("./package.json").mcpName')"
+          release_commit="$(git rev-parse HEAD)"
+          package_spec="${package_name}@${package_version}"
+
+          test "$(npm view "$package_spec" version --registry https://registry.npmjs.org)" = "$package_version"
+          test "$(npm view "$package_spec" mcpName --registry https://registry.npmjs.org)" = "$mcp_name"
+          test "$(npm view "$package_spec" gitHead --registry https://registry.npmjs.org)" = "$release_commit"
+      - name: Install the pinned MCP publisher
+        run: |
+          archive="mcp-publisher_linux_amd64.tar.gz"
+          curl --fail --location --silent --show-error \
+            "https://github.com/modelcontextprotocol/registry/releases/download/v1.7.9/${archive}" \
+            --output "$archive"
+          echo "ab128162b0616090b47cf245afe0a23f3ef08936fdce19074f5ba0a4469281ac  ${archive}" | sha256sum --check --strict
+          tar xzf "$archive" mcp-publisher
+          chmod +x mcp-publisher
+      - name: Authenticate with GitHub OIDC
+        run: ./mcp-publisher login github-oidc
+      - name: Publish immutable Registry metadata
+        run: ./mcp-publisher publish
+      - name: Verify Registry discovery
+        run: |
+          server_name="$(node -p 'require("./server.json").name')"
+          server_version="$(node -p 'require("./server.json").version')"
+          response="$(curl --fail --silent --show-error \
+            "https://registry.modelcontextprotocol.io/v0.1/servers?search=${server_name}&limit=20")"
+          echo "$response" | jq --exit-status \
+            --arg name "$server_name" \
+            --arg version "$server_version" \
+            '.servers[] | select(.server.name == $name and .server.version == $version)'
