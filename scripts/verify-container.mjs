@@ -8,7 +8,7 @@ if (!Number.isInteger(port) || port < 1 || port > 65_535) {
 }
 
 const nonce = randomUUID().replaceAll('-', '').slice(0, 12);
-const image = `repocontext:verify-${nonce}`;
+const image = `gitpin:verify-${nonce}`;
 const container = `repocontext-verify-${nonce}`;
 const token = randomUUID().replaceAll('-', '') + randomUUID().replaceAll('-', '');
 const endpoint = `http://127.0.0.1:${port}/api/mcp`;
@@ -25,16 +25,16 @@ try {
     '-p',
     `127.0.0.1:${port}:3000`,
     '-e',
-    `REPOCONTEXT_MCP_TOKEN=${token}`,
+    `GITPIN_MCP_TOKEN=${token}`,
     '-e',
-    'REPOCONTEXT_ALLOWED_HOSTS=127.0.0.1',
+    'GITPIN_ALLOWED_HOSTS=127.0.0.1',
     image,
   ]);
   const health = await waitForReadyHealth(port);
   await run(process.execPath, ['scripts/verify-remote.mjs'], {
     ...process.env,
-    REPOCONTEXT_MCP_URL: endpoint,
-    REPOCONTEXT_MCP_TOKEN: token,
+    GITPIN_MCP_URL: endpoint,
+    GITPIN_MCP_TOKEN: token,
   });
   console.log(JSON.stringify({ endpoint, health, status: 'verified' }));
 } finally {

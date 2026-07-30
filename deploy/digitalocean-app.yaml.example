@@ -21,15 +21,15 @@ services:
       success_threshold: 1
       failure_threshold: 3
     envs:
-      - key: REPOCONTEXT_MCP_TOKEN
+      - key: GITPIN_MCP_TOKEN
         scope: RUN_TIME
         type: SECRET
         value: REPLACE_WITH_PLATFORM_ENCRYPTED_SECRET
-      - key: REPOCONTEXT_ALLOWED_HOSTS
+      - key: GITPIN_ALLOWED_HOSTS
         scope: RUN_TIME
         type: GENERAL
         value: mcp.example.com
-      - key: REPOCONTEXT_REGISTRY
+      - key: GITPIN_REGISTRY
         scope: RUN_TIME
         type: GENERAL
         value: /data/index/repositories.yaml

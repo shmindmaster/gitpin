@@ -10,7 +10,7 @@ The HTTP transport serves a commit-pinned snapshot of documentation, selected ro
 pnpm validate
 pnpm build
 pnpm index:build
-docker build -f Dockerfile.remote -t repocontext:local .
+docker build -f Dockerfile.remote -t gitpin:local .
 ```
 
 `index:build` rejects a registry entry that is not a Git root, excludes sensitive paths, and fails if gitleaks detects a secret in the selected output. Its report records each repository, branch, source SHA, selected files, bytes, and excluded dirty entries.
@@ -20,9 +20,9 @@ The output path must be new or a directory marked by an earlier successful RepoC
 
 ```bash
 docker run --rm -p 3000:3000 \
-  -e REPOCONTEXT_MCP_TOKEN="replace-with-a-strong-token" \
-  -e REPOCONTEXT_ALLOWED_HOSTS="mcp.example.com" \
-  repocontext:local
+  -e GITPIN_MCP_TOKEN="replace-with-a-strong-token" \
+  -e GITPIN_ALLOWED_HOSTS="mcp.example.com" \
+  gitpin:local
 ```
 
 Endpoints:
@@ -31,7 +31,7 @@ Endpoints:
 - `POST /api/mcp` with `Authorization: Bearer <token>`
 
 Store the token in your platform’s secret manager. Restrict network access and allowed hosts to the clients that should access the snapshot.
-`REPOCONTEXT_ALLOWED_HOSTS` accepts hostnames only, such as `mcp.example.com`; do not include a scheme, path, or port.
+`GITPIN_ALLOWED_HOSTS` accepts hostnames only, such as `mcp.example.com`; do not include a scheme, path, or port.
 Managed health probes remain host-agnostic so platform readiness checks can run through their internal routing; all MCP requests still enforce the configured host allowlist.
 
 ## Verify
@@ -45,8 +45,8 @@ pnpm verify:container
 It builds the current snapshot, starts an isolated loopback container with a generated throwaway token, verifies health, authentication, tool discovery, and catalog access, then removes the container and image. Set `REPOCONTEXT_CONTAINER_PORT` only when port `3100` is unavailable.
 
 ```bash
-REPOCONTEXT_MCP_URL=https://mcp.example.com/api/mcp \
-REPOCONTEXT_MCP_TOKEN="your-token" \
+GITPIN_MCP_URL=https://mcp.example.com/api/mcp \
+GITPIN_MCP_TOKEN="your-token" \
 pnpm verify:remote
 ```
 

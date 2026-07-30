@@ -1,109 +1,98 @@
-# MCP tool reference
+# GitPin tool reference (`pin.*`)
 
-RepoContext exposes eight read-only MCP tools plus one catalog resource and one documentation-audit prompt. Every successful content result that comes from Git includes a full commit SHA. Blocked, missing, or unavailable cases return explicit errors or empty evidence instead of inventing content.
+Ten read-only MCP tools. This is **not** a “repo context dump” surface. Tools implement an **evidence product loop**:
 
-All tools advertise `readOnlyHint: true`, `destructiveHint: false`, and `openWorldHint: false`.
+```text
+pin.catalog → search (candidates) → pin.prove → pin.verify
+                 ↘ pin.analyze brief (multi-repo decision evidence)
+```
 
-## Documentation tools
+Successful content results include a **full commit SHA** (or an explicit blocked/missing status). Dirty worktrees are never treated as evidence.
 
-### `wiki.catalog`
+All tools set `readOnlyHint: true`.
 
-| | |
+## Product contract
+
+| Field | Meaning |
 | --- | --- |
-| **Job** | See which registered repositories are ready and how much documentation they expose. |
-| **Input** | `view`: `repositories` (default), `sync`, or `stale`. |
-| **Output** | Repository name, status, documentation count, HEAD SHA, stale flag, confidence. |
-| **Provenance** | Catalog rows carry each repository's current HEAD SHA. |
-| **Failure modes** | Empty registry, unavailable path, or non-Git root appears as blocked/unavailable rather than silent omission when listed. |
+| `product` | Always `gitpin` on structured evidence responses |
+| `contract` | `index-free-git-head-evidence` |
+| `kind` | `catalog` · `evidence-candidates` · `evidence-pack` · `evidence-slice` · `evidence-doc` · `verification-report` · `EvidenceBrief` |
+| `citation.cite` | Copy-paste claim locator: `repo/path:line @ fullSha` |
+| `next` | Suggested next tool (`pin.prove` / `pin.verify`) |
 
-Example agent request: “List every registered repository and flag stale documentation.”
+## Discover
 
-### `wiki.search`
+### `pin.catalog`
 
-| | |
-| --- | --- |
-| **Job** | Find documentation snippets across one or all repositories. |
-| **Input** | `query` (1–200 characters); optional `repository`. |
-| **Output** | Bounded hits with source path, line, snippet, commit SHA, and confidence. |
-| **Provenance** | Each hit is from Git HEAD (or the snapshot component SHA in remote mode). |
-| **Failure modes** | No matches return an empty list; denied paths never appear. |
+List registered repositories. `view`: `repositories` | `sync` | `stale`.
 
-Example: “Search all docs for bearer authentication.”
+Default `repositories` view returns `{ kind: "catalog", repositories: [...] }` with HEAD SHAs, doc counts, and stale flags.
 
-### `wiki.get`
+## Find candidates (not claims)
 
-| | |
-| --- | --- |
-| **Job** | Read one documentation page with its commit trace. |
-| **Input** | `repository`, `sourcePath`. |
-| **Output** | Title, body, commit SHA, confidence — or null/blocked when missing or denied. |
-| **Provenance** | Page body is read with `git show HEAD:path` (local) or the snapshot file + recorded SHA. |
+### `pin.search_docs`
 
-Example: “Open `docs/architecture.md` in the api repository.”
+Bounded documentation search. Returns **`evidence-candidates`**: each hit has `citation` and `next` → `pin.prove`.
 
-### `wiki.analyze`
+### `pin.search_code`
 
-| | |
-| --- | --- |
-| **Job** | Documentation gaps, coverage comparison, or a source-cited Context Brief. |
-| **Input** | Discriminated `operation`: `gaps`, `compare`, or `brief`. Brief accepts `audience` and optional `changeRange` with hex revisions. |
-| **Output** | Gap rows, comparison matrix, or a brief with `knownFacts`, `inferences`, `gaps`, `evidenceSetId`, and technical traces. |
-| **Provenance** | Every known fact cites path, line, and full SHA. `evidenceSetId` is stable across audiences for the same evidence set. |
+`git grep` at HEAD (max 50). Same candidate envelope. Prefer `pin.prove` before asserting.
 
-Example: “Generate a technical Context Brief for storefront and api.”
+## Prove
 
-## Source tools
+### `pin.prove` (primary product tool)
 
-### `repo.inspect`
+Single-path **evidence pack**:
 
-| | |
-| --- | --- |
-| **Job** | Inspect status, recent commits, manifests, tests, or recent changes without reading whole trees. |
-| **Input** | `repository`; `operation`: `status` \| `commits` \| `manifest` \| `tests` \| `changes`; optional `limit` 1–50. |
-| **Output** | Operation-specific JSON pinned to HEAD metadata. |
-| **Notes** | Status may report dirty working-tree counts; content tools still serve HEAD only. |
+- optional `claim` string bound to the pack
+- content slice + `contentSha256`
+- `citation` with `cite`, `git show`, and `gitpin verify` commands
+- `next` → `pin.verify`
 
-### `repo.read`
+Inputs: `repository`, `sourcePath`, optional `lineStart` / `lineEnd` / `claim`.
 
-| | |
-| --- | --- |
-| **Job** | Read a safe source slice with line numbers. |
-| **Input** | `repository`, `sourcePath`; optional `lineStart` / `lineEnd`. |
-| **Output** | Numbered lines, path, commit SHA — or a blocked response for sensitive or out-of-root paths. |
-| **Security** | Always-deny patterns (`.env*`, credentials, keys, tokens, secrets) fail closed. Path traversal outside the repository root is rejected. |
+### `pin.get_doc` / `pin.read`
 
-### `repo.search`
+Documentation page or source slice as an evidence-oriented payload. Prefer `pin.prove` when the agent must make a claim.
 
-| | |
-| --- | --- |
-| **Job** | Bounded code search with `git grep` at HEAD. |
-| **Input** | `repository`, `query` (1–200). |
-| **Output** | Up to 50 hits with path, line, snippet, and SHA. Sensitive paths are filtered. |
+## Verify
 
-### `repo.compare`
+### `pin.verify`
 
-| | |
-| --- | --- |
-| **Job** | List changed paths and commits between two revisions. |
-| **Input** | `repository`, `base`, `head` — each a 7–40 character hexadecimal Git revision. |
-| **Output** | Name-status changes, resolved full SHAs, commit count between. |
-| **Failure modes** | Unknown revisions and non-hex inputs are rejected before comparison. |
+Re-check a claim with `git show <sha>:<path>`. Reports whether current HEAD still matches. Same contract as CLI `gitpin verify`.
+
+Inputs: `repository`, `sourcePath`, `sha` (7–40 hex), optional `line`.
+
+## Decide / inspect / diff
+
+### `pin.analyze`
+
+`operation`: `gaps` | `compare` | `brief`.
+
+- **brief** → `EvidenceBrief` (`knownFacts` / `gaps` / `evidenceSetId`, audience-aware presentation)
+- Optional hex `changeRange` for bounded change evidence
+
+### `pin.inspect`
+
+`operation`: `status` | `commits` | `manifest` | `tests` | `changes`. Use `status` to see dirty work that is **excluded** from evidence.
+
+### `pin.compare`
+
+Changed paths between two hex revisions (7–40 characters).
 
 ## Resource and prompt
 
-| Name | Kind | Purpose |
-| --- | --- | --- |
-| `repocontext://catalog` | Resource | JSON catalog of registered repositories. |
-| `audit-documentation-gaps` | Prompt | Instructs an agent to audit README / AGENTS / architecture coverage with the tools above. |
+| Name | Kind |
+| --- | --- |
+| `gitpin://catalog` | Resource |
+| `prove-with-git-head` | Prompt — forces catalog → prove → verify discipline |
 
-## What agents should do next
+## CLI
 
-1. Call `wiki.catalog` or run `doctor` when readiness is unclear.
-2. Prefer `wiki.search` / `repo.search` before large reads.
-3. Verify every claim with path, line, and full SHA before acting.
-4. Treat `gaps` and brief `gaps` as missing evidence, not invented facts.
-5. Use `repo.compare` or a brief `changeRange` when the question is about a release or regression window.
-
-## Tool retention
-
-All eight tools remain part of the public API. They form one workflow: catalog → search → read → analyze/compare. Do not add tools for write, deploy, semantic embedding search, or arbitrary shell execution.
+```bash
+gitpin init --client <name>
+gitpin doctor
+gitpin brief --audience technical
+gitpin verify --repository <n> --path <p> --sha <hex> [--line <n>]
+```

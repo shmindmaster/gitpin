@@ -1,23 +1,14 @@
-# MCP client setup
-
-RepoContext works as a local stdio server in MCP clients that accept a command, arguments, and environment variables. These examples use a source build; use the public `npx` command below when a local checkout is unnecessary.
+# MCP client setup (GitPin)
 
 ## Fast path from npm
 
-Run `init` from a committed Git repository:
-
 ```bash
-npx -y @shmindmaster/repocontext@latest init --client codex
+npx -y @shmindmaster/gitpin@latest init --client codex
 ```
 
-Choose `claude-code`, `codex`, `cursor`, `windsurf`, `zed`, or `continue`. The command creates an external registry,
-verifies readiness, prints one commit-pinned result, and returns a client configuration using the published package.
-It does not edit the indexed repository or your MCP client configuration. Repeat `--repository <path>` for a
-multi-repository registry.
+Clients: `claude-code`, `codex`, `cursor`, `windsurf`, `zed`, `continue`.
 
 ## Source-build setup
-
-For the source-based configurations below:
 
 ```bash
 corepack enable
@@ -26,22 +17,20 @@ pnpm build
 node dist/server.js doctor
 ```
 
-Replace both absolute paths below. The registry must name Git repository roots; do not commit a machine-specific registry.
-
 ## Cursor
 
-Create `.cursor/mcp.json` in a project or `~/.cursor/mcp.json` globally.
+Create `.cursor/mcp.json` or `~/.cursor/mcp.json`.
 
 <!-- config:cursor:start -->
 ```json
 {
   "mcpServers": {
-    "repocontext": {
+    "gitpin": {
       "type": "stdio",
       "command": "node",
       "args": ["/absolute/path/to/repocontext/dist/server.js"],
       "env": {
-        "REPOCONTEXT_REGISTRY": "/absolute/path/to/repocontext.repositories.yaml"
+        "GITPIN_REGISTRY": "/absolute/path/to/gitpin.repositories.yaml"
       }
     }
   }
@@ -49,21 +38,19 @@ Create `.cursor/mcp.json` in a project or `~/.cursor/mcp.json` globally.
 ```
 <!-- config:cursor:end -->
 
-Open **Customize**, enable RepoContext, and inspect **MCP Logs** if startup fails. Schema and locations follow the [official Cursor MCP documentation](https://cursor.com/docs/mcp).
+See [Cursor MCP docs](https://cursor.com/docs/mcp).
 
 ## Windsurf
-
-Open **Settings → Tools → Windsurf Settings → Add Server → View Raw Config**, or edit `~/.codeium/mcp_config.json`.
 
 <!-- config:windsurf:start -->
 ```json
 {
   "mcpServers": {
-    "repocontext": {
+    "gitpin": {
       "command": "node",
       "args": ["/absolute/path/to/repocontext/dist/server.js"],
       "env": {
-        "REPOCONTEXT_REGISTRY": "/absolute/path/to/repocontext.repositories.yaml"
+        "GITPIN_REGISTRY": "/absolute/path/to/gitpin.repositories.yaml"
       }
     }
   }
@@ -71,21 +58,19 @@ Open **Settings → Tools → Windsurf Settings → Add Server → View Raw Conf
 ```
 <!-- config:windsurf:end -->
 
-Refresh the MCP list after saving. Schema and location follow the [official Windsurf MCP documentation](https://docs.devin.ai/windsurf/plugins/cascade/mcp).
+See [Windsurf MCP docs](https://docs.devin.ai/windsurf/plugins/cascade/mcp).
 
 ## Zed
-
-Open **Settings → AI → MCP Servers → Add Server → Add Local Server**, or add this entry to Zed's settings file.
 
 <!-- config:zed:start -->
 ```json
 {
   "context_servers": {
-    "repocontext": {
+    "gitpin": {
       "command": "node",
       "args": ["/absolute/path/to/repocontext/dist/server.js"],
       "env": {
-        "REPOCONTEXT_REGISTRY": "/absolute/path/to/repocontext.repositories.yaml"
+        "GITPIN_REGISTRY": "/absolute/path/to/gitpin.repositories.yaml"
       }
     }
   }
@@ -93,36 +78,34 @@ Open **Settings → AI → MCP Servers → Add Server → Add Local Server**, or
 ```
 <!-- config:zed:end -->
 
-The server indicator should turn green and report **Server is active**. Schema and verification behavior follow the [official Zed MCP documentation](https://zed.dev/docs/ai/mcp).
+See [Zed MCP docs](https://zed.dev/docs/ai/mcp).
 
 ## Continue
 
-Create `.continue/mcpServers/repocontext.yaml` at the workspace root.
-
 <!-- config:continue:start -->
 ```yaml
-name: RepoContext
-version: 0.3.1
+name: GitPin
+version: 0.4.0
 schema: v1
 mcpServers:
-  - name: RepoContext
+  - name: GitPin
     type: stdio
     command: node
     args:
       - /absolute/path/to/repocontext/dist/server.js
     env:
-      REPOCONTEXT_REGISTRY: /absolute/path/to/repocontext.repositories.yaml
+      GITPIN_REGISTRY: /absolute/path/to/gitpin.repositories.yaml
 ```
 <!-- config:continue:end -->
 
-MCP tools are available in Continue's agent mode. Schema and standalone block metadata follow the [official Continue MCP documentation](https://docs.continue.dev/customize/deep-dives/mcp).
+See [Continue MCP docs](https://docs.continue.dev/customize/deep-dives/mcp).
 
-## Verify the connection
+## Agent rule (recommended)
 
-Supported clients should expose eight read-only tools. Ask the client to call `wiki.catalog`; the result should include each selected repository and a full commit SHA. Then call `wiki.analyze` with `operation: "brief"` and confirm `evidenceSetId`, `knownFacts`, `gaps`, and `technicalTrace` are present.
+```text
+Use GitPin pin.* tools for multi-repo evidence—not generic repo dumps.
+Workflow: pin.catalog → search candidates → pin.prove → pin.verify.
+Every claim needs path, line, and full SHA (citation.cite). Dirty worktrees are not evidence.
+```
 
-For tool contracts, example agent prompts, and failure modes, see [tools.md](tools.md). For install failures, see [troubleshooting.md](troubleshooting.md).
-
-For the public package, replace `command: node` and the compiled path with `command: npx` (`npx.cmd` when a Windows client requires it) and `args: ["-y", "@shmindmaster/repocontext@0.3.1"]`.
-
-The configuration blocks are syntax-checked by `pnpm verify:clients`. Client-native activation still requires the installed client and, for the `npx` form, the public npm package.
+Supported clients should list **ten** read-only `pin.*` tools (including `pin.prove` and `pin.verify`).

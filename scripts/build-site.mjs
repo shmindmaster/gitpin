@@ -3,10 +3,10 @@ import { join, resolve } from 'node:path';
 
 const source = resolve('site');
 const output = resolve('.site-dist');
-const projectKey = process.env.POSTHOG_REPOCONTEXT_PROJECT_KEY?.trim() ?? '';
+const projectKey = process.env.POSTHOG_GITPIN_PROJECT_KEY?.trim() ?? '';
 
 if (projectKey && !/^phc_[A-Za-z0-9]+$/.test(projectKey)) {
-  throw new Error('POSTHOG_REPOCONTEXT_PROJECT_KEY must be a PostHog project key beginning with "phc_".');
+  throw new Error('POSTHOG_GITPIN_PROJECT_KEY must be a PostHog project key beginning with "phc_".');
 }
 
 rmSync(output, { force: true, recursive: true });

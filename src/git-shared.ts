@@ -66,9 +66,12 @@ export interface GitComponent {
 }
 
 export function snapshotMetadata(root: string): SnapshotMetadata | null {
-  const path = join(root, '.repocontext', 'snapshot.json');
-  if (!existsSync(path)) return null;
-  return JSON.parse(readFileSync(path, 'utf-8')) as SnapshotMetadata;
+  for (const relative of ['.gitpin/snapshot.json', '.repocontext/snapshot.json']) {
+    const path = join(root, ...relative.split('/'));
+    if (!existsSync(path)) continue;
+    return JSON.parse(readFileSync(path, 'utf-8')) as SnapshotMetadata;
+  }
+  return null;
 }
 
 export function gitComponents(name: string): GitComponent[] {

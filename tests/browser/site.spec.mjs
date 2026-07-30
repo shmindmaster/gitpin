@@ -14,8 +14,8 @@ test.beforeEach(async ({ page }) => {
     }
   });
   await page.goto('/');
-  await expect(page).toHaveTitle(/RepoContext/);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Commit-pinned context for coding agents.');
+  await expect(page).toHaveTitle(/GitPin/);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Pin agent answers to Git HEAD.');
   expect(errors, `console errors: ${errors.join('; ')}`).toEqual([]);
   expect(failedRequests, `failed network: ${failedRequests.join('; ')}`).toEqual([]);
 });
@@ -34,7 +34,7 @@ test('presents the release path and safety boundary without analytics by default
   await expect(page.getByRole('heading', { name: 'A deliberately narrow trust boundary.' })).toBeVisible();
   if (await menu.isVisible()) await menu.click();
   await page.getByRole('link', { name: 'Install', exact: true }).click();
-  await expect(page.locator('.terminal')).toContainText('@shmindmaster/repocontext@latest init --client codex');
+  await expect(page.locator('.terminal')).toContainText('@shmindmaster/gitpin@latest init --client codex');
   await expect(page.locator('body')).not.toContainText(/release candidate/i);
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
     'href',
@@ -50,17 +50,17 @@ test('makes npm-first onboarding the primary activation path', async ({ page }) 
   await primaryAction.click();
   await expect(page.getByRole('heading', { name: 'From install to cited answer.' })).toBeVisible();
   await expect(page.locator('.terminal')).toContainText('init --client codex');
-  await expect(page.locator('.terminal')).toContainText('Registry: ~/.repocontext/repositories.yaml');
-  await expect(page.locator('.terminal')).toContainText('First context: README.md:1');
+  await expect(page.locator('.terminal')).toContainText('Registry: ~/.gitpin/repositories.yaml');
+  await expect(page.locator('.terminal')).toContainText('First evidence: README.md:1');
   await expect(page.getByText('Works with Claude Code, Codex, Cursor, Windsurf, Zed, and Continue.')).toBeVisible();
 });
 
 test('publishes a narrow, accessible privacy statement', async ({ page }) => {
   await page.goto('/privacy.html');
   await expect(page).toHaveTitle(/Privacy/);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Privacy at RepoContext');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Privacy at GitPin');
   await expect(page.getByText('The CLI and MCP transports do not send telemetry.')).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Return to RepoContext', exact: true })).toHaveAttribute('href', './');
+  await expect(page.getByRole('link', { name: 'Return to GitPin', exact: true })).toHaveAttribute('href', './');
 });
 
 test('switches audience presentation while preserving the evidence set', async ({ page }) => {

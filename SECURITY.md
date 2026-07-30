@@ -4,7 +4,7 @@ RepoContext is intentionally read-only, but it can expose repository context to 
 
 ## Supported versions
 
-Security fixes are applied to the latest published release on npm and to `main`. Older patch lines do not receive a separate long-term maintenance window. Always prefer the latest `@shmindmaster/repocontext` version.
+Security fixes are applied to the latest published release on npm and to `main`. Older patch lines do not receive a separate long-term maintenance window. Always prefer the latest `@shmindmaster/gitpin` version.
 
 ## Report a vulnerability
 

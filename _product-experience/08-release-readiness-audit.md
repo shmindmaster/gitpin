@@ -10,13 +10,13 @@ Broad discovery launch requires shipping **0.3.1** (MCP Registry metadata) and c
 
 - `pnpm validate` exit 0 (52 tests)
 - `pnpm verify:package` → ready / firstAnswer verified for 0.3.1 package artifact
-- npm latest public: 0.3.0; branch prepares 0.3.1 + `io.github.shmindmaster/repocontext`
-- Registry API search for repocontext: empty until publish
+- npm latest public: 0.3.0; branch prepares 0.3.1 + `io.github.shmindmaster/gitpin`
+- Registry API search for gitpin: empty until publish
 - Demo workflow: DEMO-READY (release-evidence-brief)
 
 ## Implemented this pass
 
-Positioning README/site, docs/tools, compare, troubleshooting, launch; `repo.compare` hex validation; SECURITY wording; GitHub issues #20–#22; Linear SH-2426/SH-2427 + verdict document.
+Positioning README/site, docs/tools, compare, troubleshooting, launch; `pin.compare` hex validation; SECURITY wording; GitHub issues #20–#22; Linear SH-2426/SH-2427 + verdict document.
 
 ## Primary audience
 

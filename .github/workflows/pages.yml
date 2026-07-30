@@ -27,7 +27,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm site:build
         env:
-          POSTHOG_REPOCONTEXT_PROJECT_KEY: ${{ vars.POSTHOG_REPOCONTEXT_PROJECT_KEY }}
+          POSTHOG_GITPIN_PROJECT_KEY: ${{ vars.POSTHOG_GITPIN_PROJECT_KEY }}
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:

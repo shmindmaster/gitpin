@@ -29,7 +29,7 @@ export async function searchDocs(query: string, repositoryFilter?: string): Prom
         : searchSnapshotDocuments(repository, index, query, remaining);
       results.push(...matches);
     } catch {
-      // A missing or unreadable repository is represented by wiki.catalog.
+      // A missing or unreadable repository is represented by pin.catalog.
     }
   }
   return results;

@@ -20,11 +20,11 @@ beforeEach(() => {
   mkdirSync(repositoryPath, { recursive: true });
   writeFileSync(join(repositoryPath, 'README.md'), '# Sample\n', 'utf-8');
   execFileSync('git', ['init', '-q'], { cwd: repositoryPath, windowsHide: true });
-  execFileSync('git', ['config', 'user.email', 'repocontext-test@example.invalid'], {
+  execFileSync('git', ['config', 'user.email', 'gitpin-test@example.invalid'], {
     cwd: repositoryPath,
     windowsHide: true,
   });
-  execFileSync('git', ['config', 'user.name', 'RepoContext Test'], {
+  execFileSync('git', ['config', 'user.name', 'GitPin Test'], {
     cwd: repositoryPath,
     windowsHide: true,
   });
@@ -65,7 +65,7 @@ describe('authenticated HTTP transport', () => {
       const health = await fetch(`http://127.0.0.1:${port}/healthz`);
       expect(health.status).toBe(200);
       expect(await health.json()).toMatchObject({
-        service: 'repocontext',
+        service: 'gitpin',
         status: 'ready',
         repositories: 1,
       });
@@ -74,11 +74,11 @@ describe('authenticated HTTP transport', () => {
     }
   });
 
-  it('completes the MCP handshake and lists the eight read-only tools', async () => {
+  it('completes the MCP handshake and lists the ten read-only pin tools', async () => {
     const server = createHttpServer({ token });
     await listen(server);
     const port = (server.address() as AddressInfo).port;
-    const client = new Client({ name: 'repocontext-http-test', version: '1.0.0' });
+    const client = new Client({ name: 'gitpin-http-test', version: '1.0.0' });
     const transport = new StreamableHTTPClientTransport(new URL(`http://127.0.0.1:${port}/api/mcp`), {
       requestInit: { headers: { Authorization: `Bearer ${token}` } },
     });
@@ -87,49 +87,51 @@ describe('authenticated HTTP transport', () => {
       await client.connect(transport);
       const tools = await client.listTools();
       expect(tools.tools.map((tool) => tool.name).sort()).toEqual([
-        'repo.compare',
-        'repo.inspect',
-        'repo.read',
-        'repo.search',
-        'wiki.analyze',
-        'wiki.catalog',
-        'wiki.get',
-        'wiki.search',
+        'pin.analyze',
+        'pin.catalog',
+        'pin.compare',
+        'pin.get_doc',
+        'pin.inspect',
+        'pin.prove',
+        'pin.read',
+        'pin.search_code',
+        'pin.search_docs',
+        'pin.verify',
       ]);
       expect(tools.tools.every((tool) => tool.annotations?.readOnlyHint === true)).toBe(true);
 
       const resources = await client.listResources();
-      expect(resources.resources).toContainEqual(
-        expect.objectContaining({ name: 'catalog', uri: 'repocontext://catalog' }),
-      );
+      expect(resources.resources).toContainEqual(expect.objectContaining({ name: 'catalog', uri: 'gitpin://catalog' }));
       const prompts = await client.listPrompts();
-      expect(prompts.prompts).toContainEqual(expect.objectContaining({ name: 'audit-documentation-gaps' }));
-      const auditPrompt = await client.getPrompt({ name: 'audit-documentation-gaps' });
-      expect(auditPrompt.messages[0]?.content).toEqual({
-        type: 'text',
-        text: 'Use wiki.analyze and repo.inspect to audit documentation coverage across all registered repositories and report missing README.md, AGENTS.md, or docs/architecture.md files.',
-      });
+      expect(prompts.prompts).toContainEqual(expect.objectContaining({ name: 'prove-with-git-head' }));
+      const provePrompt = await client.getPrompt({ name: 'prove-with-git-head' });
+      const proveContent = provePrompt.messages[0]?.content;
+      expect(proveContent).toMatchObject({ type: 'text' });
+      if (proveContent?.type !== 'text') throw new Error('Expected text prompt content.');
+      expect(proveContent.text).toContain('pin.prove');
+      expect(proveContent.text).toContain('pin.verify');
 
       const briefResponse = await client.callTool({
-        name: 'wiki.analyze',
+        name: 'pin.analyze',
         arguments: { operation: 'brief', audience: 'leadership', repositories: ['sample'] },
       });
       expect(briefResponse.isError).not.toBe(true);
       const briefText = briefResponse.content.find((item) => item.type === 'text');
       expect(briefText?.type === 'text' ? JSON.parse(briefText.text) : null).toMatchObject({
-        type: 'ContextBrief',
+        type: 'EvidenceBrief',
+        product: 'gitpin',
         audience: 'leadership',
         evidenceSetId: expect.stringMatching(/^[0-9a-f]{64}$/),
       });
 
       const invalidBrief = await client.callTool({
-        name: 'wiki.analyze',
+        name: 'pin.analyze',
         arguments: { operation: 'brief', audience: 'technical', unsupported: true },
       });
       expect(invalidBrief.isError).toBe(true);
 
       const invalidCompare = await client.callTool({
-        name: 'repo.compare',
+        name: 'pin.compare',
         arguments: { repository: 'sample', base: 'HEAD~1', head: 'HEAD' },
       });
       expect(invalidCompare.isError).toBe(true);

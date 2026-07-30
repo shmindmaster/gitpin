@@ -89,7 +89,7 @@ export function parseInitOptions(options: string[], currentDirectory = process.c
     const option = options[index];
     const value = options[index + 1];
     if (!['--client', '--repository', '--registry'].includes(option)) {
-      throw new Error(`Unknown init option: ${option}. Run "repocontext help" for usage.`);
+      throw new Error(`Unknown init option: ${option}. Run "gitpin help" for usage.`);
     }
     if (!value || value.startsWith('--')) throw new Error(`Option ${option} requires a value.`);
     if (option === '--client') {
@@ -114,7 +114,7 @@ export function parseInitOptions(options: string[], currentDirectory = process.c
 }
 
 function defaultRegistryPath(): string {
-  return resolve(homedir(), '.repocontext', 'repositories.yaml');
+  return resolve(homedir(), '.gitpin', 'repositories.yaml');
 }
 
 function uniqueRepositories(paths: string[]): string[] {
@@ -149,7 +149,7 @@ function inspectRepository(path: string): RegisteredRepository {
       windowsHide: true,
     });
   } catch {
-    throw new Error(`${repositoryPath} has no commit at HEAD. Commit documentation before initializing RepoContext.`);
+    throw new Error(`${repositoryPath} has no commit at HEAD. Commit documentation before initializing GitPin.`);
   }
   const branch = execFileSync('git', ['branch', '--show-current'], {
     cwd: repositoryPath,
@@ -213,27 +213,27 @@ function writeRegistryIfAbsentOrIdentical(path: string, content: string): boolea
 
 function clientConfiguration(client: InitClient, registryPath: string): string {
   const command = process.platform === 'win32' ? 'npx.cmd' : 'npx';
+  const packageSpec = '@shmindmaster/gitpin@latest';
   const server = {
     command,
-    args: ['-y', '@shmindmaster/repocontext@latest'],
-    env: { REPOCONTEXT_REGISTRY: registryPath },
+    args: ['-y', packageSpec],
+    env: { GITPIN_REGISTRY: registryPath },
   };
   if (client === 'codex')
-    return `codex mcp add --env ${shellArgument(`REPOCONTEXT_REGISTRY=${registryPath}`)} repocontext -- ${command} -y @shmindmaster/repocontext@latest`;
+    return `codex mcp add --env ${shellArgument(`GITPIN_REGISTRY=${registryPath}`)} gitpin -- ${command} -y ${packageSpec}`;
   if (client === 'claude-code')
-    return `claude mcp add repocontext -e ${shellArgument(`REPOCONTEXT_REGISTRY=${registryPath}`)} -- ${command} -y @shmindmaster/repocontext@latest`;
-  if (client === 'cursor')
-    return JSON.stringify({ mcpServers: { repocontext: { type: 'stdio', ...server } } }, null, 2);
-  if (client === 'zed') return JSON.stringify({ context_servers: { repocontext: server } }, null, 2);
+    return `claude mcp add gitpin -e ${shellArgument(`GITPIN_REGISTRY=${registryPath}`)} -- ${command} -y ${packageSpec}`;
+  if (client === 'cursor') return JSON.stringify({ mcpServers: { gitpin: { type: 'stdio', ...server } } }, null, 2);
+  if (client === 'zed') return JSON.stringify({ context_servers: { gitpin: server } }, null, 2);
   if (client === 'continue') {
     return stringify({
-      name: 'RepoContext',
-      version: '0.3.1',
+      name: 'GitPin',
+      version: '0.4.0',
       schema: 'v1',
-      mcpServers: [{ name: 'RepoContext', type: 'stdio', ...server }],
+      mcpServers: [{ name: 'GitPin', type: 'stdio', ...server }],
     }).trim();
   }
-  return JSON.stringify({ mcpServers: { repocontext: server } }, null, 2);
+  return JSON.stringify({ mcpServers: { gitpin: server } }, null, 2);
 }
 
 async function findFirstContext(
@@ -267,9 +267,7 @@ async function findFirstContext(
       };
     }
   }
-  throw new Error(
-    'RepoContext could not produce a cited first result. Commit a non-empty documentation file and retry.',
-  );
+  throw new Error('GitPin could not produce a cited first result. Commit a non-empty documentation file and retry.');
 }
 
 function shellArgument(value: string): string {

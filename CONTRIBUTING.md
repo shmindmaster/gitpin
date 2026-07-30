@@ -24,7 +24,7 @@ pnpm site:test
 pnpm mcp:serve
 ```
 
-Node.js 22.13 or newer and Git are required for source development. The packed package is separately validated on Node.js 20, 22, and 24. Copy the registry shape from [README.md](README.md) and set `REPOCONTEXT_REGISTRY` to a safe local fixture; never commit a registry containing machine-specific or private paths.
+Node.js 22.13 or newer and Git are required for source development. The packed package is separately validated on Node.js 20, 22, and 24. Copy the registry shape from [README.md](README.md) and set `GITPIN_REGISTRY` to a safe local fixture; never commit a registry containing machine-specific or private paths.
 
 ## Workflow
 

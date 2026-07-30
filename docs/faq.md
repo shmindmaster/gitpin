@@ -1,55 +1,47 @@
-# FAQ
+# GitPin FAQ
 
-Answers grounded in the implemented product and [deep research](research/deep-research-2026-07-30.md).
+## Why not call this “repo context”?
 
-## Why not use the official filesystem MCP server?
+Because that category is crowded and usually means **indexes, dumps, or remote GitHub browsers**. GitPin’s job is different: **verifiable multi-repo evidence** from **Git HEAD** with path, line, and full SHA, closed by **`pin.verify`**.
 
-Filesystem MCP is for **reading and writing files**. It exposes create/write/edit/move tools and has **no commit model**. RepoContext is **read-only**, serves **Git HEAD** (not dirty worktree as evidence), and returns **path + line + full SHA**. Use filesystem MCP when the agent must edit; use RepoContext when the agent must **prove** committed context across repos.
+## How is this different from filesystem MCP?
 
-## Why not use the official Git MCP server?
+Filesystem MCP is for **reading and writing files**. It exposes create/write/edit tools and has **no commit model**. GitPin is **read-only**, serves **Git HEAD** (not dirty worktree as evidence), and implements **prove → verify**.
 
-`mcp-server-git` inspects **and mutates** a repository (stage, commit, branch, reset). RepoContext never writes to indexed repos and first-class supports a **multi-repo registry**. Use Git MCP for local Git automation; use RepoContext for **verifiable multi-repo evidence**.
+## How is this different from official git MCP?
 
-## Why not use the GitHub MCP server?
+`mcp-server-git` inspects **and mutates** a repository. GitPin never writes to indexed repos, supports a **multi-repo registry**, and optimizes for **cited claims**, not Git automation.
 
-GitHub MCP is for **GitHub’s platform** (issues, PRs, Actions, remote APIs). RepoContext is for **local Git roots** (including private offline trees) with HEAD-pinned content. They compose well: GitHub MCP for PR workflow, RepoContext for cited local source/docs.
+## How is this different from GitHub MCP?
 
-## Why not use embeddings / codebase indexes?
+GitHub MCP is for **platform** workflows (issues, PRs, Actions). GitPin is for **local Git roots** (including private/offline) at HEAD. They compose: GitHub MCP for PRs, GitPin for cited local source/docs.
 
-Indexes excel at **semantic** “find similar” and large fleets, but they introduce **reindex lag**, branch/rebase drift, and opaque chunks. RepoContext trades semantic search for **immediate HEAD freshness** and **reproducible citations**. Prefer Sourcegraph-class or graph MCP tools when structure/semantics dominate.
+## How is this different from embedding / “repo-context*” indexers?
 
-## Is this the only “RepoContext” / “repo-context” tool?
+Indexes excel at **semantic** similarity but introduce **reindex lag**, branch drift, and opaque chunks. GitPin trades semantic search for **immediate HEAD freshness** and **reproducible citations**. Search results are explicitly **candidates**, not claims.
 
-**No.** The name is crowded. Other open-source projects include `mcp-repo-context`, `repo-context-mcp-server`, `repo-ctx`, `repoctx`, dump-style `repo-context` CLIs, and vector-index servers that reuse the same language. This package is specifically **`@shmindmaster/repocontext`**: multi-repo local Git roots, **no embeddings/DB**, **read-only**, content from **Git HEAD** with **path / line / full SHA**. See [competitive landscape (corrected)](research/competitive-landscape-corrected-2026-07-30.md).
+## What is the agent workflow?
 
-## Why is commit pinning useful?
+1. `pin.catalog` — map roots and SHAs  
+2. `pin.search_docs` / `pin.search_code` — find candidates  
+3. `pin.prove` — evidence pack with `citation.cite`  
+4. `pin.verify` — re-check path@SHA  
+5. `pin.analyze` brief — multi-repo EvidenceBrief when deciding across services  
 
-Agents cache earlier tool results as if they were eternal facts. Branch switches, pulls, and multi-agent checkouts create **branch-state drift**. Pinning answers to a **full SHA** makes each fact auditable with `git show <sha>:<path>` and stops dirty work from masquerading as committed truth.
+Prompt `prove-with-git-head` encodes this loop.
 
-## How is this different from `git grep`?
+## Why does search not return “the answer”?
 
-`git grep` is a CLI for one repo. RepoContext packages **multi-repo registry**, **doc catalog/search**, **exposure policy**, **sensitive-path blocking**, **Context Briefs**, **doctor/init**, and **MCP-native** structured results agents can chain—always with provenance fields.
+By design. Hits are **`evidence-candidates`** with a `next` step to `pin.prove`. Treating grep hits as final claims is how agents invent confidence. GitPin forces the prove/verify product behavior.
 
-## Can RepoContext modify repositories?
+## Can GitPin modify repositories?
 
-**No.** MCP tools are read-only. `init` writes only an **external** registry YAML (default `~/.repocontext/`), never the indexed repos. Snapshot builds write a separate output directory for HTTP images.
+**No.** MCP tools are read-only. `init` writes only an **external** registry YAML (default `~/.gitpin/`), never indexed repos. Snapshot builds write a separate output directory for HTTP images.
 
-## Does it support large monorepos?
+## What about dirty worktrees?
 
-It supports **large Git roots** with bounded search/read caps. It does **not** model pnpm/Nx package ownership graphs inside one Git root (roadmap research). Multi-package systems that are **separate Git repositories** are the designed multi-repo case.
+Uncommitted edits are **not evidence**. `pin.inspect` with `operation: status` can show dirty state so agents and humans know what is excluded.
 
-## Which clients work?
+## Migration from RepoContext 0.3.x?
 
-Claude Code, Codex, Cursor, Windsurf, Zed, Continue (and any MCP client that runs a stdio command + env). `init --client <name>` prints paste-ready config. Native activation remains a client-side check.
-
-## Does the agent see my uncommitted edits?
-
-**Not as evidence.** Content tools read **HEAD**. Catalog/doctor can report **stale/attention** when tracked docs differ from HEAD so the agent knows the worktree is dirty.
-
-## Is there telemetry?
-
-CLI and MCP transports send **none**. Optional cookieless website analytics only if you configure a dedicated PostHog project key at site build time.
-
-## How do I verify a result?
-
-Check the returned **path**, **line**, and **40-character commit SHA**, then run `git show <sha>:<path>` (or open the file at that revision in your Git UI).
+See [migration-gitpin.md](migration-gitpin.md). Package `@shmindmaster/gitpin`, tools `pin.*`, env `GITPIN_*`. Legacy names remain aliases for one major line.

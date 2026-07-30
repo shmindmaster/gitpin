@@ -7,6 +7,14 @@ import { z } from 'zod';
 import { runCli } from './cli';
 import { BRIEF_AUDIENCES, getContextBrief } from './context-brief';
 import {
+  asCodeCandidateHits,
+  asCandidateHits,
+  asPinnedSlice,
+  buildEvidencePack,
+  PRODUCT_CONTRACT,
+  verifyEvidenceClaim,
+} from './evidence';
+import {
   getRepoStatus,
   getRepoCommits,
   getRepoFile,
@@ -16,19 +24,23 @@ import {
   getRepoRecentChanges,
   getRepoTests,
 } from './git';
+import { registerProvePrompt } from './pin-prompt';
 import { getCatalog, searchDocs, getDocs, getDocGaps } from './wiki';
 
 const json = (value: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(value, null, 2) }] });
 const READ_ONLY = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false } as const;
+const HEX_SHA = /^[0-9a-f]{7,40}$/iu;
 
 export function createServer(): McpServer {
-  const server = new McpServer({ name: 'repocontext', version: '0.3.1' });
+  const server = new McpServer({ name: 'gitpin', version: '0.4.0' });
 
+  // --- Discover ---
   server.registerTool(
-    'wiki.catalog',
+    'pin.catalog',
     {
       annotations: READ_ONLY,
-      description: 'List all indexed repositories with sync status and doc counts.',
+      description:
+        'Discover registered Git roots: HEAD SHAs, documentation counts, stale signals. Call first. Not a content claim.',
       inputSchema: z.object({ view: z.enum(['repositories', 'sync', 'stale']).default('repositories') }),
     },
     async ({ view }) => {
@@ -46,35 +58,120 @@ export function createServer(): McpServer {
           })),
         );
       }
-      return json(catalog);
+      return json({
+        kind: 'catalog',
+        product: 'gitpin',
+        contract: PRODUCT_CONTRACT,
+        repositories: catalog,
+      });
     },
   );
 
+  // --- Find candidates ---
   server.registerTool(
-    'wiki.search',
+    'pin.search_docs',
     {
       annotations: READ_ONLY,
-      description: 'Search documentation across all indexed repositories.',
+      description:
+        'Find documentation evidence candidates (not claims). Hits include citation + next pin.prove step. Git HEAD only.',
       inputSchema: z.object({ query: z.string().min(1).max(200), repository: z.string().optional() }),
     },
-    async ({ query, repository }) => json(await searchDocs(query, repository)),
+    async ({ query, repository }) => json(asCandidateHits(await searchDocs(query, repository), query)),
   );
 
   server.registerTool(
-    'wiki.get',
+    'pin.search_code',
     {
       annotations: READ_ONLY,
-      description: 'Read one documentation page with its source commit trace.',
+      description:
+        'Find code evidence candidates via git grep at HEAD. Hits are candidates; call pin.prove then pin.verify to claim.',
+      inputSchema: z.object({ repository: z.string(), query: z.string().min(1).max(200) }),
+    },
+    async ({ repository, query }) =>
+      json(asCodeCandidateHits(repository, query, await searchRepoCode(repository, query))),
+  );
+
+  // --- Prove ---
+  server.registerTool(
+    'pin.prove',
+    {
+      annotations: READ_ONLY,
+      description:
+        'Primary product tool: return a verifiable evidence pack (body slice, path, line, full SHA, content hash, verify next-step). Prefer for any factual claim.',
+      inputSchema: z.object({
+        repository: z.string(),
+        sourcePath: z.string(),
+        lineStart: z.number().int().positive().optional(),
+        lineEnd: z.number().int().positive().optional(),
+        claim: z.string().min(1).max(500).optional(),
+      }),
+    },
+    async (input) => json(await buildEvidencePack(input)),
+  );
+
+  server.registerTool(
+    'pin.get_doc',
+    {
+      annotations: READ_ONLY,
+      description: 'Read one committed documentation page as a pinned evidence slice with full SHA.',
       inputSchema: z.object({ repository: z.string(), sourcePath: z.string() }),
     },
-    async ({ repository, sourcePath }) => json(await getDocs(repository, sourcePath)),
+    async ({ repository, sourcePath }) => {
+      const doc = await getDocs(repository, sourcePath);
+      return json({
+        kind: 'evidence-doc',
+        product: 'gitpin',
+        contract: PRODUCT_CONTRACT,
+        ...doc,
+        next: {
+          tool: 'pin.prove',
+          arguments: { repository, sourcePath },
+        },
+      });
+    },
   );
 
   server.registerTool(
-    'wiki.analyze',
+    'pin.read',
     {
       annotations: READ_ONLY,
-      description: 'Analyze documentation gaps, compare coverage, or generate a source-cited context brief.',
+      description:
+        'Read a HEAD-only source slice as an evidence slice (path, lines, full SHA). Sensitive paths blocked. Prefer pin.prove for claims.',
+      inputSchema: z.object({
+        repository: z.string(),
+        sourcePath: z.string(),
+        lineStart: z.number().int().positive().optional(),
+        lineEnd: z.number().int().positive().optional(),
+      }),
+    },
+    async ({ repository, sourcePath, lineStart, lineEnd }) =>
+      json(asPinnedSlice(await getRepoFile(repository, sourcePath, lineStart, lineEnd))),
+  );
+
+  // --- Verify ---
+  server.registerTool(
+    'pin.verify',
+    {
+      annotations: READ_ONLY,
+      description:
+        'Independently re-check a claim: path exists at SHA via git show; report whether HEAD still matches. Closes the prove loop.',
+      inputSchema: z.object({
+        repository: z.string(),
+        sourcePath: z.string(),
+        sha: z.string().regex(HEX_SHA),
+        line: z.number().int().positive().optional(),
+      }),
+    },
+    async (input) => json(await verifyEvidenceClaim(input)),
+  );
+
+  // --- Decide / inspect / diff ---
+  server.registerTool(
+    'pin.analyze',
+    {
+      annotations: READ_ONLY,
+      description:
+        'Evidence brief (knownFacts/gaps/evidenceSetId), documentation gaps, or coverage compare. Brief is multi-repo decision evidence—not a dump.',
       inputSchema: z.discriminatedUnion('operation', [
         z.object({ operation: z.literal('gaps'), repositories: z.array(z.string()).max(20).optional() }).strict(),
         z.object({ operation: z.literal('compare'), repositories: z.array(z.string()).max(20).optional() }).strict(),
@@ -86,8 +183,8 @@ export function createServer(): McpServer {
             changeRange: z
               .object({
                 repository: z.string().min(1),
-                base: z.string().regex(/^[0-9a-f]{7,40}$/iu),
-                head: z.string().regex(/^[0-9a-f]{7,40}$/iu),
+                base: z.string().regex(HEX_SHA),
+                head: z.string().regex(HEX_SHA),
               })
               .strict()
               .optional(),
@@ -108,10 +205,11 @@ export function createServer(): McpServer {
   );
 
   server.registerTool(
-    'repo.inspect',
+    'pin.inspect',
     {
       annotations: READ_ONLY,
-      description: 'Inspect repository status, commits, manifests, tests, or recent changes.',
+      description:
+        'Inspect HEAD-pinned status, commits, manifests, tests, or recent changes. status surfaces dirty work that is excluded from evidence.',
       inputSchema: z.object({
         repository: z.string(),
         operation: z.enum(['status', 'commits', 'manifest', 'tests', 'changes']),
@@ -137,40 +235,15 @@ export function createServer(): McpServer {
   );
 
   server.registerTool(
-    'repo.read',
+    'pin.compare',
     {
       annotations: READ_ONLY,
-      description: 'Read a source-file slice pinned to the current commit. Sensitive files are blocked.',
+      description:
+        'Diff changed paths between two hex revisions. Bounded change evidence for reviews—not semantic search.',
       inputSchema: z.object({
         repository: z.string(),
-        sourcePath: z.string(),
-        lineStart: z.number().int().positive().optional(),
-        lineEnd: z.number().int().positive().optional(),
-      }),
-    },
-    async ({ repository, sourcePath, lineStart, lineEnd }) =>
-      json(await getRepoFile(repository, sourcePath, lineStart, lineEnd)),
-  );
-
-  server.registerTool(
-    'repo.search',
-    {
-      annotations: READ_ONLY,
-      description: 'Search code within a repository using git grep.',
-      inputSchema: z.object({ repository: z.string(), query: z.string().min(1).max(200) }),
-    },
-    async ({ repository, query }) => json(await searchRepoCode(repository, query)),
-  );
-
-  server.registerTool(
-    'repo.compare',
-    {
-      annotations: READ_ONLY,
-      description: 'Compare changed files between two commits.',
-      inputSchema: z.object({
-        repository: z.string(),
-        base: z.string().regex(/^[0-9a-f]{7,40}$/iu),
-        head: z.string().regex(/^[0-9a-f]{7,40}$/iu),
+        base: z.string().regex(HEX_SHA),
+        head: z.string().regex(HEX_SHA),
       }),
     },
     async ({ repository, base, head }) => json(await compareRepoCommits(repository, base, head)),
@@ -178,38 +251,20 @@ export function createServer(): McpServer {
 
   server.registerResource(
     'catalog',
-    'repocontext://catalog',
-    { mimeType: 'application/json', description: 'RepoContext Repository Catalog' },
+    'gitpin://catalog',
+    { mimeType: 'application/json', description: 'GitPin multi-repo catalog with HEAD SHAs' },
     async (uri) => ({
       contents: [{ uri: uri.href, mimeType: 'application/json', text: JSON.stringify(await getCatalog(), null, 2) }],
     }),
   );
-
-  server.registerPrompt(
-    'audit-documentation-gaps',
-    {
-      description: 'Audit documentation coverage across registered repositories and identify missing documentation.',
-    },
-    async () => ({
-      messages: [
-        {
-          role: 'user',
-          content: {
-            type: 'text',
-            text: 'Use wiki.analyze and repo.inspect to audit documentation coverage across all registered repositories and report missing README.md, AGENTS.md, or docs/architecture.md files.',
-          },
-        },
-      ],
-    }),
-  );
-
+  registerProvePrompt(server);
   return server;
 }
 
 export async function runStdioServer(): Promise<void> {
   const server = createServer();
   await server.connect(new StdioServerTransport());
-  console.error('[repocontext] MCP server ready (stdio) - 8 tools available');
+  console.error('[gitpin] MCP server ready (stdio) - 10 read-only pin.* tools (prove/verify product loop)');
 }
 
 function isDirectExecution(): boolean {

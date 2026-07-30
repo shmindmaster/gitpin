@@ -1,57 +1,63 @@
-# How RepoContext compares
+# How GitPin compares
 
-Honest comparison for developers choosing a repository-context path for coding agents. Strengths of alternatives are real; pick the tool that matches the job.
+Honest comparison for developers choosing how agents should ground multi-repo answers. Strengths of alternatives are real; pick the tool that matches the **job**.
 
-**Important:** the phrase “repo context” is **not unique**. Multiple open-source MCP/CLI products use names like `mcp-repo-context`, `repo-context`, `repo-ctx`, `repoctx`, and `Repo Context`. See [competitive landscape (corrected)](research/competitive-landscape-corrected-2026-07-30.md). This package is `@shmindmaster/repocontext` / `io.github.shmindmaster/repocontext` — an **index-free, read-only, Git-HEAD-pinned** multi-repo MCP, not a vector-index or dump tool.
+**Category exit:** GitPin is **not** competing as “another repo-context MCP.” That name family is crowded (indexes, dumps, remote GitHub browsers). GitPin’s job is **verifiable multi-repo evidence** from **Git HEAD** only.
 
-| Dimension | RepoContext | Filesystem MCP | Official Git MCP (typical) | GitHub MCP | Embedding / RAG indexers | Sourcegraph-class search |
+| Dimension | GitPin | Filesystem MCP | Official Git MCP | GitHub MCP | Embedding / RAG indexers | Sourcegraph-class |
 | --- | --- | --- | --- | --- | --- | --- |
-| Setup | One `npx init` + registry | Mount paths | Git tools in one repo | OAuth / token | Indexer + storage | Hosted or large self-host |
-| Indexing | None | None | None | Hosted API | Required | Required / continuous |
-| Freshness | Immediate at local HEAD | Live files (including dirty) | Live Git | Remote platform state | Delayed by reindex | Depends on sync |
-| Commit precision | HEAD-pinned content + explicit compare | No commit model | Git operations | PR/ref APIs | Often branch-level or fuzzy | Strong when configured |
+| Product job | Prove claims with path/line/SHA | Edit local files | Mutate/inspect one Git repo | Platform APIs | Semantic retrieval | Org code intelligence |
+| Indexing | **None** | None | None | Hosted API | Required | Required / continuous |
+| Freshness | Immediate at local HEAD | Live files (incl. dirty) | Live Git | Remote state | Delayed by reindex | Sync-dependent |
+| Evidence contract | `pin.prove` → `pin.verify` | No commit model | Tool-dependent | URLs / refs | Chunk IDs | Path + line when configured |
 | Determinism | High for same HEAD | High for same tree | High | API-dependent | Embedding variance | High for exact search |
-| Citations | Path, line, full SHA | Path (sometimes line) | Tool-dependent | URLs / refs | Often chunk IDs | Path + line |
-| Writes | Never to indexed repos | Often read-write | Often includes write/commit | Issues, PRs, more | Usually read | Read |
-| Multi-repo | First-class registry | Multiple mounts | Usually one cwd | Org/user scope | Often one corpus | Strong |
-| Trust boundary | Narrow, documented | Broad FS access | Repo FS + Git | Platform permissions | Corpus + vendor | Enterprise controls |
+| Writes | **Never** to indexed repos | Often R/W | Often write/commit | Issues, PRs, more | Usually read | Read |
+| Multi-repo | First-class YAML registry | Multiple mounts | Usually one cwd | Org/user scope | Often one corpus | Strong |
 | Infra | Node + Git | None | Git | Network | DB / vectors / workers | Significant |
-| Semantic search | No (text only) | No | No | Limited | Yes | Hybrid |
-| Best at | Verifiable multi-repo agent evidence | Local file edits | Single-repo Git tasks | GitHub workflow automation | “Find similar code” | Org-wide code intelligence |
+| Best at | Trustable agent citations humans re-check with `git show` | Local edits | Single-repo Git tasks | GitHub workflow | “Find similar code” | Enterprise search |
 
-## When RepoContext is the better fit
+## When GitPin is the better fit
 
-- Agents must show **where** an answer came from (path, line, SHA).
-- You work across **several local Git roots** (services, apps, shared libraries).
-- You want **no local reindex lag** and **no embedding drift**.
-- Security or process policy forbids broad write tools or opaque retrieval.
-- You need a **reproducible** brief for review, release, or cross-functional handoff.
+- Agents must **prove** where an answer came from (path, line, full SHA) and you want **`pin.verify` / `git show`** as the close of the loop.
+- You work across **several local Git roots** and refuse embedding index lag.
+- Policy forbids broad write tools or opaque retrieval.
+- You need a reproducible **EvidenceBrief** for review, release, or cross-functional handoff.
 
 ## When another tool is stronger
 
-- You need the agent to **edit files** or run Git writes → filesystem / Git MCP.
-- You need **Issues, PRs, Actions, or org APIs** → GitHub MCP.
-- You need **semantic** “find code like this” across huge monorepos → embeddings / Sourcegraph-class tools.
-- You only care about the **live dirty worktree** the human is editing → filesystem MCP (RepoContext intentionally excludes uncommitted content as evidence).
+- Agent must **edit** or run Git writes → filesystem / Git MCP.
+- Need **Issues, PRs, Actions** → GitHub MCP.
+- Need **semantic** similarity at org scale → embeddings / Sourcegraph-class.
+- You only care about the **live dirty worktree** → filesystem MCP (GitPin intentionally excludes uncommitted content as evidence).
 
-## Named ecosystem peers (corrected research, 2026-07-30)
+## Functionality that is product differentiation (not rename)
 
-| Peer | Stronger when… | This package stronger when… |
+| Capability | Why it is not “repo context renamed” |
+| --- | --- |
+| `pin.prove` evidence pack | Claim-bound pack with `citation.cite`, content hash, verify next-step |
+| `pin.verify` | Independent re-check of path@SHA; detects HEAD drift |
+| Search as **candidates** | Hits refuse to be treated as final claims (`next` → prove) |
+| EvidenceBrief | Multi-repo known/gap set with stable `evidenceSetId` |
+| Dirty excluded | `pin.inspect` status shows work that will never be cited as HEAD evidence |
+| Index-free | No SQLite/vectors/reindex—live `git show` / `git grep` at HEAD |
+
+## Named ecosystem peers
+
+| Peer | Stronger when… | GitPin stronger when… |
 | --- | --- | --- |
-| `mcp-repo-context`, `repo-ctx`, HutsonLabs `repo-context-mcp`, SRC | You want AST/call graphs, embeddings, SQLite/Lance indexes | You refuse index lag and want live Git HEAD + full SHA |
-| `codesearch`, `code-intel-mcp` | Multi-repo hybrid/semantic search at scale | You want zero embed model / no Zoekt index |
-| `sourceplane-mcp` | Multi-host sources (GH/GL/BB + local) with allowlists | Local Git-root registry + docs/code wiki tools + Context Brief |
-| GitMCP / gitctx | Chat with a **remote** GitHub repo without cloning | Local multi-root, offline, private trees |
-| Official filesystem / git MCP | Agent must edit or mutate Git | Read-only + HEAD-only evidence contract |
-| GitHub MCP server | Issues, PRs, Actions, remote GH | Local/private multi-root HEAD evidence |
-| Context7 | Third-party **library docs** freshness | **Your** repo docs/code at a SHA |
-| Repomix / dump CLIs (`repo-context` generators) | One-shot full-repo paste into a chat | Live MCP tools + bounded cited evidence |
-| codebase-memory / Sourcegraph-class | Call graphs, org-scale semantic search | Zero index infra, reproducible cites |
+| `mcp-repo-context`, `repo-ctx`, HutsonLabs `repo-context-mcp`, SRC | AST/call graphs, embeddings, local index DBs | No index lag; live HEAD + full SHA prove/verify |
+| `codesearch`, `code-intel-mcp` | Hybrid/semantic search at scale | Zero embed model; citation contract |
+| `sourceplane-mcp` | Multi-host GH/GL/BB sources | Local Git-root registry + EvidenceBrief |
+| GitMCP / gitctx | Chat with **remote** GitHub without clone | Local multi-root, offline, private trees |
+| Official filesystem / git MCP | Agent must edit or mutate Git | Read-only HEAD evidence loop |
+| GitHub MCP | Issues, PRs, Actions | Local/private multi-root HEAD evidence |
+| Context7 | Third-party **library docs** | **Your** repo docs/code at a SHA |
+| Repomix / dump CLIs | One-shot full-repo paste | Live MCP prove/verify tools |
 
-Full corrected landscape: [research/competitive-landscape-corrected-2026-07-30.md](research/competitive-landscape-corrected-2026-07-30.md). Earlier notes (pain points still useful): [research/deep-research-2026-07-30.md](research/deep-research-2026-07-30.md). FAQ: [faq.md](faq.md).
+Research: [competitive landscape (corrected)](research/competitive-landscape-corrected-2026-07-30.md).
 
-## Positioning statement (validated against the implementation + market research)
+## Positioning statement
 
-> RepoContext gives coding agents **read-only, multi-repository context pinned to Git HEAD**, with **path/line/SHA provenance** and **no indexing infrastructure**.
+> **GitPin** gives coding agents **index-free, read-only, multi-repository evidence pinned to Git HEAD**, with a **prove → verify** tool loop and **path / line / full SHA** citations humans can re-check with `git show`.
 
-That is a product advantage for trust and reproducibility—not a claim of better semantic retrieval. Complementary to Context7 (dependency docs) and GitHub MCP (platform workflows).
+That is a **trust product**, not a semantic retrieval product, and not a rebrand of “repo context.”

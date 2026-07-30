@@ -7,12 +7,12 @@ const windsurf = JSON.parse(codeBlock('windsurf', 'json'));
 const zed = JSON.parse(codeBlock('zed', 'json'));
 const continueConfig = parse(codeBlock('continue', 'yaml'));
 
-assertStdio(cursor.mcpServers?.repocontext, 'Cursor');
-assertStdio(windsurf.mcpServers?.repocontext, 'Windsurf');
-assertStdio(zed.context_servers?.repocontext, 'Zed');
+assertStdio(cursor.mcpServers?.gitpin, 'Cursor');
+assertStdio(windsurf.mcpServers?.gitpin, 'Windsurf');
+assertStdio(zed.context_servers?.gitpin, 'Zed');
 assertStdio(continueConfig.mcpServers?.[0], 'Continue');
 
-if (continueConfig.name !== 'RepoContext' || continueConfig.schema !== 'v1') {
+if (continueConfig.name !== 'GitPin' || continueConfig.schema !== 'v1') {
   throw new Error('Continue example must retain its required standalone block metadata.');
 }
 
@@ -42,5 +42,5 @@ function assertStdio(server, client) {
   if (!Array.isArray(server.args) || !server.args[0]?.endsWith('/dist/server.js')) {
     throw new Error(`${client} example must point to dist/server.js.`);
   }
-  if (!server.env?.REPOCONTEXT_REGISTRY) throw new Error(`${client} example must set REPOCONTEXT_REGISTRY.`);
+  if (!server.env?.GITPIN_REGISTRY) throw new Error(`${client} example must set GITPIN_REGISTRY.`);
 }

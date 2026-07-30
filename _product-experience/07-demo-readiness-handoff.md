@@ -34,7 +34,7 @@ The release engineering lead needs read-only access to local Git repositories an
 
 ## Hero Moments
 
-The hero moment is the real `wiki.analyze` Context Brief returning a single stable evidence-set identifier with `3` examined repositories, `7` committed documents, and `1` stale repository, while each result preserves the source repository and commit. The visible stale-worktree exclusion is the required trust guardrail.
+The hero moment is the real `pin.analyze` Context Brief returning a single stable evidence-set identifier with `3` examined repositories, `7` committed documents, and `1` stale repository, while each result preserves the source repository and commit. The visible stale-worktree exclusion is the required trust guardrail.
 
 ## Remaining Rough Edges
 

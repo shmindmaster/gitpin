@@ -1,14 +1,14 @@
 import { readFileSync } from 'node:fs';
 
 const expectedKeys = [
-  'REPOCONTEXT_REGISTRY',
-  'REPOCONTEXT_INDEX_PATH',
-  'REPOCONTEXT_MCP_TOKEN',
-  'REPOCONTEXT_ALLOWED_HOSTS',
+  'GITPIN_REGISTRY',
+  'GITPIN_INDEX_PATH',
+  'GITPIN_MCP_TOKEN',
+  'GITPIN_ALLOWED_HOSTS',
   'HOST',
   'PORT',
-  'REPOCONTEXT_MCP_URL',
-  'POSTHOG_REPOCONTEXT_PROJECT_KEY',
+  'GITPIN_MCP_URL',
+  'POSTHOG_GITPIN_PROJECT_KEY',
 ];
 
 const entries = new Map();
@@ -29,17 +29,17 @@ const unexpectedKeys = [...entries.keys()].filter((key) => !expectedKeys.include
 if (missingKeys.length > 0) throw new Error(`Missing .env.example entries: ${missingKeys.join(', ')}.`);
 if (unexpectedKeys.length > 0) throw new Error(`Unexpected .env.example entries: ${unexpectedKeys.join(', ')}.`);
 
-if (entries.get('REPOCONTEXT_MCP_TOKEN')) {
-  throw new Error('REPOCONTEXT_MCP_TOKEN must remain empty in .env.example.');
+if (entries.get('GITPIN_MCP_TOKEN')) {
+  throw new Error('GITPIN_MCP_TOKEN must remain empty in .env.example.');
 }
-if (entries.get('POSTHOG_REPOCONTEXT_PROJECT_KEY')) {
-  throw new Error('POSTHOG_REPOCONTEXT_PROJECT_KEY must remain empty in .env.example.');
+if (entries.get('POSTHOG_GITPIN_PROJECT_KEY')) {
+  throw new Error('POSTHOG_GITPIN_PROJECT_KEY must remain empty in .env.example.');
 }
 if (!entries.get('HOST')) throw new Error('HOST must be configured in .env.example.');
 if (!/^\d+$/u.test(entries.get('PORT') ?? '')) throw new Error('PORT must be numeric in .env.example.');
-const remoteUrl = new URL(entries.get('REPOCONTEXT_MCP_URL') ?? '');
+const remoteUrl = new URL(entries.get('GITPIN_MCP_URL') ?? '');
 if (!['http:', 'https:'].includes(remoteUrl.protocol)) {
-  throw new Error('REPOCONTEXT_MCP_URL must use HTTP or HTTPS in .env.example.');
+  throw new Error('GITPIN_MCP_URL must use HTTP or HTTPS in .env.example.');
 }
 
 console.log(JSON.stringify({ entries: entries.size, status: 'valid' }));

@@ -24,11 +24,11 @@ beforeEach(() => {
     );
   }
   execFileSync('git', ['init', '-q'], { cwd: repoPath, windowsHide: true });
-  execFileSync('git', ['config', 'user.email', 'repocontext-test@example.invalid'], {
+  execFileSync('git', ['config', 'user.email', 'gitpin-test@example.invalid'], {
     cwd: repoPath,
     windowsHide: true,
   });
-  execFileSync('git', ['config', 'user.name', 'RepoContext Test'], { cwd: repoPath, windowsHide: true });
+  execFileSync('git', ['config', 'user.name', 'GitPin Test'], { cwd: repoPath, windowsHide: true });
   execFileSync('git', ['add', '.'], { cwd: repoPath, windowsHide: true });
   execFileSync('git', ['commit', '-qm', 'test fixture'], { cwd: repoPath, windowsHide: true });
   const yamlPath = join(tmpRoot, 'repositories.yaml');
@@ -82,10 +82,12 @@ describe('wiki', () => {
     expect(gaps[0].gaps).toContain('Dev Guide');
   });
 
-  it('generates an audience-invariant, source-cited Context Brief', async () => {
+  it('generates an audience-invariant, source-cited Evidence Brief', async () => {
     const brief = await getContextBrief({ audience: 'technical' });
     const productBrief = await getContextBrief({ audience: 'product' });
-    expect(brief.type).toBe('ContextBrief');
+    expect(brief.type).toBe('EvidenceBrief');
+    expect(brief.product).toBe('gitpin');
+    expect(brief.contract).toBe('index-free-git-head-evidence');
     expect(brief.scope.examinedRepositories).toBe(1);
     expect(brief.scope.totalDocuments).toBeGreaterThanOrEqual(14);
     expect(brief.evidenceSetId).toBe(productBrief.evidenceSetId);
@@ -97,7 +99,7 @@ describe('wiki', () => {
           sourcePath: 'README.md',
           line: 1,
           commitSha: expect.stringMatching(/^[0-9a-f]{40}$/),
-          originatingOperation: 'wiki.analyze:brief',
+          originatingOperation: 'pin.analyze:brief',
         }),
       }),
     );

@@ -20,7 +20,7 @@ The `Deploy website` workflow is manual so merging source cannot publish a publi
 
 1. Configure GitHub Pages to use GitHub Actions.
 2. Optionally create a dedicated `RepoContext` PostHog project and enable its cookieless server-hash mode.
-3. Set the repository variable `POSTHOG_REPOCONTEXT_PROJECT_KEY` to that project's `phc_` key.
+3. Set the repository variable `POSTHOG_GITPIN_PROJECT_KEY` to that project's `phc_` key.
 4. Run the `Deploy website` workflow.
 5. Add a custom domain only after DNS ownership is confirmed.
 

@@ -28,7 +28,7 @@ export interface SnapshotReportEntry {
 
 export function buildSnapshot(outputPath?: string): SnapshotReportEntry[] {
   const workspace = resolve(process.cwd());
-  const targetPath = outputPath ?? process.env.REPOCONTEXT_INDEX_PATH ?? join(workspace, '.repocontext-index');
+  const targetPath = outputPath ?? process.env.GITPIN_INDEX_PATH ?? join(workspace, '.repocontext-index');
   const repositories = loadRegistry();
   const outputRoot = prepareSnapshotOutput(
     workspace,
@@ -241,7 +241,7 @@ if (require.main === module) {
           files: report.reduce((total, item) => total + item.files, 0),
           bytes: report.reduce((total, item) => total + item.bytes, 0),
           dirtyRepositoriesExcluded: report.filter((item) => item.dirtyEntriesExcluded > 0).length,
-          report: `${customOutput ?? process.env.REPOCONTEXT_INDEX_PATH ?? '.repocontext-index'}/snapshot-report.json`,
+          report: `${customOutput ?? process.env.GITPIN_INDEX_PATH ?? '.repocontext-index'}/snapshot-report.json`,
         },
         null,
         2,

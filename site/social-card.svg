@@ -2,8 +2,8 @@
   <rect width="1200" height="630" fill="#ffffff"/>
   <path d="M0 0h1200v10H0z" fill="#f04416"/>
   <g fill="#111315">
-    <text x="72" y="92" font-family="Arial, sans-serif" font-size="42" font-weight="700">RepoContext</text>
-    <text x="72" y="226" font-family="Consolas, monospace" font-size="66" font-weight="700">Commit-pinned context</text>
+    <text x="72" y="92" font-family="Arial, sans-serif" font-size="42" font-weight="700">GitPin</text>
+    <text x="72" y="226" font-family="Consolas, monospace" font-size="66" font-weight="700">Pin answers to HEAD</text>
     <text x="72" y="306" font-family="Consolas, monospace" font-size="66" font-weight="700">for coding agents.</text>
   </g>
   <text x="72" y="382" fill="#5b6570" font-family="Arial, sans-serif" font-size="30">Every answer carries a path, line number, and Git commit SHA.</text>

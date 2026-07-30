@@ -7,7 +7,7 @@ import type { RepoEntry } from './registry';
 const DOCUMENT_EXTENSIONS = new Set(['.md', '.mdx', '.rst', '.adoc', '.txt']);
 const MAX_DOCUMENTS_PER_REPOSITORY = 500;
 export const MAX_DOCUMENT_BYTES = 100_000;
-const POLICY_PATHS = ['.repocontext/wiki.yaml', 'docs/wiki.yaml', 'wiki.yaml'];
+const POLICY_PATHS = ['.gitpin/wiki.yaml', '.repocontext/wiki.yaml', 'docs/wiki.yaml', 'wiki.yaml'];
 const SNAPSHOT_SKIP_DIRECTORIES = new Set([
   'node_modules',
   '.git',
@@ -41,7 +41,7 @@ export function documentIndex(repository: RepoEntry): DocumentIndex {
   if (isGitRepository(repository.path)) return gitDocumentIndex(repository);
   const metadata = readSnapshotMetadata(repository.path);
   if (metadata) return snapshotDocumentIndex(repository, metadata);
-  throw new Error(`Repository "${repository.name}" is not a Git root or a RepoContext snapshot: ${repository.path}`);
+  throw new Error(`Repository "${repository.name}" is not a Git root or a GitPin snapshot: ${repository.path}`);
 }
 
 export function isGitRepository(repositoryPath: string): boolean {
@@ -127,9 +127,12 @@ function gitStatusPaths(repositoryPath: string): string[] {
 }
 
 function readSnapshotMetadata(repositoryPath: string): SnapshotMetadata | null {
-  const path = join(repositoryPath, '.repocontext', 'snapshot.json');
-  if (!existsSync(path)) return null;
-  return JSON.parse(readFileSync(path, 'utf-8')) as SnapshotMetadata;
+  for (const relative of ['.gitpin/snapshot.json', '.repocontext/snapshot.json']) {
+    const path = join(repositoryPath, ...relative.split('/'));
+    if (!existsSync(path)) continue;
+    return JSON.parse(readFileSync(path, 'utf-8')) as SnapshotMetadata;
+  }
+  return null;
 }
 
 function snapshotPaths(root: string): string[] {

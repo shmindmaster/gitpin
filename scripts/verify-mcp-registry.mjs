@@ -4,7 +4,7 @@ import { parse } from 'yaml';
 const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 const server = JSON.parse(readFileSync(new URL('../server.json', import.meta.url), 'utf8'));
 const workflow = parse(readFileSync(new URL('../.github/workflows/publish-mcp.yml', import.meta.url), 'utf8'));
-const expectedName = 'io.github.shmindmaster/repocontext';
+const expectedName = 'io.github.shmindmaster/gitpin';
 const releaseInputExpression = '$' + '{{ inputs.release_ref }}';
 
 if (packageJson.mcpName !== expectedName || server.name !== expectedName) {
@@ -36,7 +36,7 @@ if (
 const registryEnvironment = npmPackages[0].environmentVariables ?? [];
 if (
   registryEnvironment.length !== 1 ||
-  registryEnvironment[0].name !== 'REPOCONTEXT_REGISTRY' ||
+  registryEnvironment[0].name !== 'GITPIN_REGISTRY' ||
   registryEnvironment[0].isRequired !== false ||
   registryEnvironment[0].isSecret !== false
 ) {

@@ -1,15 +1,28 @@
 # Changelog
 
-All notable changes to RepoContext are documented here. The project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and intends to use [Semantic Versioning](https://semver.org/spec/v2.0.0.html) after the first public release.
+All notable changes to GitPin (formerly RepoContext) are documented here. The project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-07-30
+
+### Changed
+
+- **Full product pivot (not rename-only)** to GitPin: trust/evidence job, prove→verify functionality, and category exit from “repo context.”
+- Package/MCP identity: `@shmindmaster/gitpin`, `io.github.shmindmaster/gitpin`, CLI `gitpin` (legacy `repocontext` bin alias retained).
+- Tool surface reorganized around the product loop: discover → candidates → prove → verify → decide.
+- Search tools return `evidence-candidates` envelopes with `citation` and `next: pin.prove` (hits are not claims).
+- Read/get_doc return evidence-oriented slices with contract metadata.
+- Context Brief renamed to **EvidenceBrief** (`type`, `product`, `contract`, schemaVersion 2).
+- Prefer `GITPIN_*` and `~/.gitpin` (legacy `REPOCONTEXT_*` / `~/.repocontext` remain aliases).
+
 ### Added
 
-- Add market deep-research notes, FAQ, and launch copy grounded in multi-agent competitive research.
-- Correct the competitive landscape after a name-collision sweep (many `repo-context*` / multi-repo MCP peers).
-- Harden repository path containment with realpath checks and refuse directory symlink traversal while indexing snapshots.
-- Expand product-site Playwright coverage for navigation, keyboard audience tabs, skip link, network failures, and CI failure artifacts.
+- Shared `evidence` module: citations, evidence packs, verification reports, product contract constants.
+- `pin.prove` evidence packs with optional `claim`, `contentSha256`, `citation.cite`, and `next: pin.verify`.
+- `pin.verify` MCP tool (same contract as CLI `gitpin verify`) — independent `git show` re-check and HEAD match status.
+- Prompt `prove-with-git-head` encodes the full product loop (not just “cite SHA”).
+- Competitive landscape correction documenting crowded `repo-context*` peers.
 
 ### Security
 
@@ -26,7 +39,7 @@ All notable changes to RepoContext are documented here. The project follows [Kee
 ### Changed
 
 - Clarify public beta positioning, five-minute quick start, and agent prompt examples in the README and product site.
-- Require hexadecimal Git revisions for `repo.compare`, matching Context Brief change-range validation.
+- Require hexadecimal Git revisions for `pin.compare`, matching Context Brief change-range validation.
 - Align security support language with the published npm package.
 
 ## [0.3.0] - 2026-07-29
@@ -109,7 +122,8 @@ All notable changes to RepoContext are documented here. The project follows [Kee
 - Snapshot generation replaces only marked RepoContext output directories and rejects registered repository roots or their ancestors.
 - Malformed exposure policies fail closed.
 
-[Unreleased]: https://github.com/shmindmaster/repocontext/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/shmindmaster/repocontext/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/shmindmaster/repocontext/releases/tag/v0.4.0
 [0.3.1]: https://github.com/shmindmaster/repocontext/releases/tag/v0.3.1
 [0.3.0]: https://github.com/shmindmaster/repocontext/releases/tag/v0.3.0
 [0.2.4]: https://github.com/shmindmaster/repocontext/releases/tag/v0.2.4

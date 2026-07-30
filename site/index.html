@@ -5,29 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="RepoContext: read-only, multi-repo MCP context pinned to Git HEAD—path, line, and full commit SHA. No embeddings, no write tools."
+      content="GitPin: index-free multi-repo evidence pinned to Git HEAD—path, line, full SHA. No embeddings. No write tools."
     />
     <meta name="theme-color" content="#ffffff" />
     <link rel="canonical" href="https://shmindmaster.github.io/repocontext/" />
     <meta name="posthog-project-key" content="" />
     <meta name="posthog-api-host" content="https://us.i.posthog.com" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="RepoContext" />
+    <meta property="og:site_name" content="GitPin" />
     <meta property="og:url" content="https://shmindmaster.github.io/repocontext/" />
-    <meta property="og:title" content="RepoContext — commit-pinned context for coding agents" />
+    <meta property="og:title" content="GitPin — pin agent answers to Git HEAD" />
     <meta
       property="og:description"
-      content="Multi-repo evidence from Git HEAD only. Path, line, and full commit SHA. No database, embeddings, or write tools."
+      content="Index-free multi-repo evidence. Path, line, and full commit SHA. No database, embeddings, or write tools."
     />
     <meta property="og:image" content="https://shmindmaster.github.io/repocontext/social-card.svg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="RepoContext — commit-pinned context for coding agents" />
+    <meta name="twitter:title" content="GitPin — pin agent answers to Git HEAD" />
     <meta
       name="twitter:description"
-      content="Read-only, commit-pinned multi-repo evidence. No database. No embeddings. No write tools. No local reindex lag."
+      content="Index-free, read-only multi-repo evidence. Path, line, full SHA. No reindex lag."
     />
     <meta name="twitter:image" content="https://shmindmaster.github.io/repocontext/social-card.svg" />
-    <title>RepoContext — commit-pinned context for coding agents</title>
+    <title>GitPin — pin agent answers to Git HEAD</title>
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="./styles.css" />
     <script src="./analytics.js" defer></script>
@@ -36,7 +36,7 @@
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
-      <a class="wordmark" href="#top" aria-label="RepoContext home">RepoContext</a>
+      <a class="wordmark" href="#top" aria-label="GitPin home">GitPin</a>
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
         Open navigation
       </button>
@@ -51,10 +51,11 @@
     <main id="main">
       <section class="hero page-section" id="top">
         <div class="hero-copy">
-          <h1>Commit-pinned context for coding agents.</h1>
+          <h1>Prove agent answers. Then verify them.</h1>
           <p class="lead">
-            Multi-repo evidence from Git HEAD only—path, line, and full commit SHA. No database, embeddings, or write
-            tools. Dirty worktrees never masquerade as committed truth.
+            Not another repo-context MCP. GitPin is index-free multi-repo <strong>evidence</strong>: path, line, full SHA,
+            then <code>pin.verify</code> / <code>git show</code>. No database, embeddings, or write tools. Dirty worktrees
+            are never evidence.
           </p>
           <div class="actions">
             <a class="button primary" data-analytics="setup_hero" href="#install">
@@ -80,8 +81,8 @@
 
         <div class="evidence-console" id="evidence-panel" role="tabpanel" aria-labelledby="tab-technical">
           <div class="console-bar">
-            <span>repocontext</span>
-            <span>READ-ONLY · MCP SERVER</span>
+            <span>gitpin</span>
+            <span>READ-ONLY · PIN.* TOOLS</span>
           </div>
           <div class="console-step">
             <span class="step-number">1</span>
@@ -94,7 +95,7 @@
           <div class="console-step active">
             <span class="step-number">2</span>
             <div>
-              <strong>RepoContext</strong>
+              <strong>GitPin</strong>
               <p>Reading committed evidence at Git HEAD…</p>
             </div>
           </div>
@@ -118,15 +119,15 @@
 
       <section class="process page-section" id="how-it-works">
         <header class="section-heading">
-          <h2>Git stays the source of truth.</h2>
+          <h2>Product loop: candidates → prove → verify.</h2>
           <p>
-            RepoContext reads committed evidence at HEAD, applies repository exposure policy, and returns bounded
-            citations your agent can verify.
+            Search hits are candidates, not claims. <code>pin.prove</code> builds an evidence pack;
+            <code>pin.verify</code> re-checks path@SHA with <code>git show</code>. Git HEAD is the only truth source.
           </p>
         </header>
         <div class="process-rail">
           <article>
-            <h3><span>1</span> Register repositories</h3>
+            <h3><span>1</span> Register Git roots</h3>
             <pre><code>repositories:
   - name: storefront
     path: ../storefront
@@ -138,12 +139,12 @@
           <div class="policy-flow" aria-label="Committed evidence passes through Git HEAD and repository exposure policy">
             <span>Git HEAD</span>
             <i aria-hidden="true"></i>
-            <span>Exposure policy</span>
+            <span>Prove · Verify</span>
           </div>
           <article>
-            <h3><span>2</span> Ask through MCP</h3>
-            <div class="question-block">Which service owns checkout?</div>
-            <h3><span>3</span> Verify every answer</h3>
+            <h3><span>2</span> Prove a claim</h3>
+            <div class="question-block">pin.prove → evidence pack</div>
+            <h3><span>3</span> Verify independently</h3>
             <div class="result-block">
               <strong>docs/architecture.md:42</strong>
               <code>990c830d58cc68d63901985e5234ed3137819802</code>
@@ -158,7 +159,7 @@
           <a href="https://github.com/shmindmaster/repocontext/blob/main/docs/architecture.md">Read the architecture <span aria-hidden="true">→</span></a>
         </div>
         <dl class="safety-points">
-          <div><dt>Read-only tools</dt><dd>RepoContext never writes, commits, or changes repository state.</dd></div>
+          <div><dt>Read-only tools</dt><dd>GitPin never writes, commits, or changes repository state.</dd></div>
           <div><dt>Sensitive paths blocked</dt><dd>Environment files, credentials, keys, tokens, and secrets fail closed.</dd></div>
           <div><dt>Dirty work excluded</dt><dd>Local answers come from committed HEAD, with stale documentation signaled.</dd></div>
           <div><dt>Documentation-only HTTP</dt><dd>Remote images contain a generated docs and manifest snapshot, not source code.</dd></div>
@@ -172,18 +173,18 @@
         </header>
         <div class="install-layout">
           <div>
-            <pre class="terminal" aria-label="Published package commands"><code><span>npx</span> -y @shmindmaster/repocontext@latest init --client codex
+            <pre class="terminal" aria-label="Published package commands"><code><span>npx</span> -y @shmindmaster/gitpin@latest init --client codex
 
-<span>✓</span> Registry: ~/.repocontext/repositories.yaml
+<span>✓</span> Registry: ~/.gitpin/repositories.yaml
 <span>✓</span> Readiness: ready
-<span>✓</span> First context: README.md:1 at a full Git commit SHA</code></pre>
+<span>✓</span> First evidence: README.md:1 at a full Git commit SHA</code></pre>
             <p class="clients">Works with Claude Code, Codex, Cursor, Windsurf, Zed, and Continue.</p>
           </div>
           <div class="tool-index">
-            <h3>Eight read-only MCP tools</h3>
+            <h3>Ten read-only pin.* tools</h3>
             <ul>
-              <li>wiki.catalog</li><li>wiki.search</li><li>wiki.get</li><li>wiki.analyze</li>
-              <li>repo.inspect</li><li>repo.read</li><li>repo.search</li><li>repo.compare</li>
+              <li>pin.catalog</li><li>pin.search_docs</li><li>pin.search_code</li><li>pin.prove</li><li>pin.verify</li>
+              <li>pin.get_doc</li><li>pin.read</li><li>pin.analyze</li><li>pin.inspect</li><li>pin.compare</li>
             </ul>
           </div>
         </div>
@@ -199,7 +200,7 @@
     </main>
 
     <footer>
-      <a class="wordmark" href="#top">RepoContext</a>
+      <a class="wordmark" href="#top">GitPin</a>
       <nav aria-label="Footer navigation">
         <a href="https://github.com/shmindmaster/repocontext/blob/main/docs/clients.md">Client setup</a>
         <a href="https://github.com/shmindmaster/repocontext/blob/main/SECURITY.md">Security</a>

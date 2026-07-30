@@ -12,7 +12,7 @@ interface HttpServerOptions {
 }
 
 export function createHttpServer(options: HttpServerOptions): Server {
-  if (!options.token) throw new Error('REPOCONTEXT_MCP_TOKEN is required for the HTTP server.');
+  if (!options.token) throw new Error('GITPIN_MCP_TOKEN (or GITPIN_MCP_TOKEN) is required for the HTTP server.');
   const allowedHosts = new Set((options.allowedHosts ?? []).map((host) => host.toLowerCase()));
 
   return createNodeServer(async (request, response) => {
@@ -34,7 +34,7 @@ export function createHttpServer(options: HttpServerOptions): Server {
           response,
           200,
           {
-            service: 'repocontext',
+            service: 'gitpin',
             status: 'ready',
             repositories: catalog.length,
             documents,
@@ -43,7 +43,7 @@ export function createHttpServer(options: HttpServerOptions): Server {
         );
       } catch (error) {
         sendJson(response, 503, {
-          service: 'repocontext',
+          service: 'gitpin',
           status: 'not_ready',
           error: error instanceof Error ? error.message : 'Registry unavailable.',
         });
@@ -85,7 +85,7 @@ export function createHttpServer(options: HttpServerOptions): Server {
     }
 
     if (!authorized(request, options.token)) {
-      response.setHeader('www-authenticate', 'Bearer realm="repocontext"');
+      response.setHeader('www-authenticate', 'Bearer realm="gitpin"');
       sendJson(response, 401, { error: 'invalid_token' });
       return;
     }
@@ -115,8 +115,8 @@ export function createHttpServer(options: HttpServerOptions): Server {
 export async function runHttpServer(): Promise<void> {
   const port = parsePort(process.env.PORT);
   const host = process.env.HOST?.trim() || '0.0.0.0';
-  const token = process.env.REPOCONTEXT_MCP_TOKEN?.trim() ?? '';
-  const allowedHosts = (process.env.REPOCONTEXT_ALLOWED_HOSTS ?? '')
+  const token = process.env.GITPIN_MCP_TOKEN?.trim() || process.env.REPOCONTEXT_MCP_TOKEN?.trim() || '';
+  const allowedHosts = (process.env.GITPIN_ALLOWED_HOSTS ?? process.env.REPOCONTEXT_ALLOWED_HOSTS ?? '')
     .split(',')
     .map((value) => value.trim())
     .filter(Boolean);
@@ -125,7 +125,7 @@ export async function runHttpServer(): Promise<void> {
     server.once('error', reject);
     server.listen(port, host, resolve);
   });
-  console.error(`[repocontext] MCP server ready (http) on ${host}:${port}/api/mcp`);
+  console.error(`[gitpin] MCP server ready (http) on ${host}:${port}/api/mcp`);
 }
 
 function authorized(request: IncomingMessage, expectedToken: string): boolean {

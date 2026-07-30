@@ -1,5 +1,6 @@
 import { BRIEF_AUDIENCES, type BriefAudience, getContextBrief } from './context-brief';
 import { doctorExitCode, formatDoctorReport, getDoctorReport } from './doctor';
+import { verifyEvidenceClaim } from './evidence';
 import { initializeRepoContext, parseInitOptions, supportedInitClients } from './onboarding';
 
 export async function runCli(args: string[]): Promise<void> {
@@ -22,11 +23,17 @@ export async function runCli(args: string[]): Promise<void> {
     process.exitCode = doctorExitCode(result.readiness);
     return;
   }
+  if (command === 'verify') {
+    const report = await verifyEvidenceClaim(parseVerifyOptions(options));
+    console.log(JSON.stringify(report, null, 2));
+    process.exitCode = report.status === 'ok' ? 0 : 1;
+    return;
+  }
   if (command === 'help' || command === '--help' || command === '-h') {
     console.log(cliHelp());
     return;
   }
-  throw new Error(`Unknown command: ${command}. Run "repocontext help" for supported commands.`);
+  throw new Error(`Unknown command: ${command}. Run "gitpin help" for supported commands.`);
 }
 
 function parseBriefOptions(options: string[]) {
@@ -60,7 +67,7 @@ function parseBriefOptions(options: string[]) {
         head = revision(value, '--head');
         break;
       default:
-        throw new Error(`Unknown brief option: ${option}. Run "repocontext help" for usage.`);
+        throw new Error(`Unknown brief option: ${option}. Run "gitpin help" for usage.`);
     }
     index += 1;
   }
@@ -79,6 +86,44 @@ function parseBriefOptions(options: string[]) {
   };
 }
 
+function parseVerifyOptions(options: string[]) {
+  let repository: string | undefined;
+  let sourcePath: string | undefined;
+  let line: number | undefined;
+  let sha: string | undefined;
+
+  for (let index = 0; index < options.length; index += 1) {
+    const option = options[index];
+    const value = options[index + 1];
+    if (!value || value.startsWith('--')) throw new Error(`Option ${option} requires a value.`);
+    switch (option) {
+      case '--repository':
+        repository = value;
+        break;
+      case '--path':
+      case '--source-path':
+        sourcePath = value;
+        break;
+      case '--line':
+        line = Number.parseInt(value, 10);
+        if (!Number.isInteger(line) || line < 1) throw new Error('--line must be a positive integer.');
+        break;
+      case '--sha':
+      case '--commit':
+        sha = revision(value, option);
+        break;
+      default:
+        throw new Error(`Unknown verify option: ${option}. Run "gitpin help" for usage.`);
+    }
+    index += 1;
+  }
+
+  if (!repository || !sourcePath || !sha) {
+    throw new Error('verify requires --repository, --path, and --sha.');
+  }
+  return { repository, sourcePath, line, sha };
+}
+
 function revision(value: string, option: string): string {
   if (!/^[0-9a-f]{7,40}$/iu.test(value))
     throw new Error(`${option} must be a 7-40 character hexadecimal Git revision.`);
@@ -86,42 +131,54 @@ function revision(value: string, option: string): string {
 }
 
 function cliHelp(): string {
-  return `RepoContext
+  return `GitPin — index-free multi-repo evidence (not generic repo context)
+
+Product loop: catalog → search candidates → prove → verify (Git HEAD only).
 
 Usage:
-  repocontext                         Start the stdio MCP server
-  repocontext init --client <name>    Create a registry, verify it, and print client configuration
-  repocontext doctor                  Validate registry readiness
-  repocontext brief [options]         Print a deterministic Context Brief as JSON
+  gitpin                              Start stdio MCP (10 pin.* tools)
+  gitpin init --client <name>         Registry + doctor + first evidence line
+  gitpin doctor                       Validate readiness (stale/blocked)
+  gitpin brief [options]              EvidenceBrief JSON (knownFacts / gaps / evidenceSetId)
+  gitpin verify --repository <n> --path <p> --sha <hex> [--line <n>]
+                                      Same contract as pin.verify (git show re-check)
 
 Init options:
   --client <name>                     ${supportedInitClients.join(', ')}
-  --repository <path>                 Git repository root; repeat for multiple (default: current directory)
-  --registry <path>                   Registry destination (default: ~/.repocontext/repositories.yaml)
+  --repository <path>                 Git repository root; repeat for multiple (default: cwd)
+  --registry <path>                   Registry destination (default: ~/.gitpin/repositories.yaml)
 
 Brief options:
-  --audience <name>                   technical, product, design, support, operations, or leadership
-  --repository <name>                 Limit scope; repeat for multiple repositories
+  --audience <name>                   technical, product, design, support, operations, leadership
+  --repository <name>                 Limit scope; repeat for multiple
   --change-repository <name>          Repository for bounded change evidence
   --base <sha> --head <sha>           Compare two 7-40 character Git revisions
 
-RepoContext writes the brief only to stdout. Redirect it explicitly when an artifact is required.`;
+Verify options:
+  --repository <name>                 Registry repository name
+  --path <sourcePath>                 Path within the repository
+  --sha <hex>                         Claimed commit (7-40 hex)
+  --line <n>                          Optional 1-based line to check
+
+Migration: REPOCONTEXT_* env vars and ~/.repocontext still work as aliases.
+GitPin writes briefs only to stdout. Redirect explicitly for artifacts.`;
 }
 
 function formatInitResult(result: Awaited<ReturnType<typeof initializeRepoContext>>): string {
   const first = result.firstContext;
   return [
-    `RepoContext initialized: ${result.readiness.status}`,
+    `GitPin initialized: ${result.readiness.status}`,
     `Registry: ${result.registry.path} (${result.registry.created ? 'created' : 'already matched'})`,
     formatDoctorReport(result.readiness),
     '',
-    `First context: ${first.statement}`,
+    `First evidence: ${first.statement}`,
     `Source: ${first.repository}/${first.sourcePath}:${first.line}`,
     `Commit: ${first.commitSha}`,
+    `Verify: gitpin verify --repository ${first.repository} --path ${first.sourcePath} --line ${first.line} --sha ${first.commitSha}`,
     '',
     `Client configuration (${result.client}):`,
     result.clientConfig,
     '',
-    'Next: add this configuration to your MCP client, restart it, and call wiki.catalog.',
+    'Next: paste this into your MCP client, restart it, then pin.catalog → pin.prove → pin.verify.',
   ].join('\n');
 }

@@ -40,13 +40,13 @@ Everything below requires additional evidence or external infrastructure. These 
 - Inspect the image to confirm source, dirty work, local roots, and secrets are absent.
 - Record teardown, rotation, and ownership instructions outside the public repository when sensitive.
 
-**Proof:** `REPOCONTEXT_MCP_URL=... REPOCONTEXT_MCP_TOKEN=... pnpm verify:remote`.
+**Proof:** `GITPIN_MCP_URL=... GITPIN_MCP_TOKEN=... pnpm verify:remote`.
 
 ## Evaluate monorepo package-boundary discovery
 
 **Suggested labels:** `research`, `enhancement`
 
-**Problem:** `repo.inspect(operation: "manifest")` detects polyglot manifests but does not model pnpm, Turborepo, or Nx package ownership.
+**Problem:** `pin.inspect(operation: "manifest")` detects polyglot manifests but does not model pnpm, Turborepo, or Nx package ownership.
 
 **Why it matters:** Agents need package boundaries in large repositories without turning non-Git umbrella folders into registry entries.
 **Relevant files:** `src/git-inspection.ts`, `src/git-shared.ts`, `src/git.test.ts`.

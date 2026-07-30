@@ -8,18 +8,18 @@ import { type InitClient, initializeRepoContext, parseInitOptions, supportedInit
 
 const tmpRoot = join(tmpdir(), `repocontext-onboarding-${process.pid}`);
 const repositoryPath = join(tmpRoot, 'storefront');
-const registryPath = join(tmpRoot, 'home', '.repocontext', 'repositories.yaml');
+const registryPath = join(tmpRoot, 'home', '.gitpin', 'repositories.yaml');
 
 beforeEach(() => {
   rmSync(tmpRoot, { recursive: true, force: true });
   mkdirSync(repositoryPath, { recursive: true });
   writeFileSync(join(repositoryPath, 'README.md'), '# Storefront\n\nCommitted onboarding evidence.\n', 'utf8');
   execFileSync('git', ['init', '-q'], { cwd: repositoryPath, windowsHide: true });
-  execFileSync('git', ['config', 'user.email', 'repocontext-test@example.invalid'], {
+  execFileSync('git', ['config', 'user.email', 'gitpin-test@example.invalid'], {
     cwd: repositoryPath,
     windowsHide: true,
   });
-  execFileSync('git', ['config', 'user.name', 'RepoContext Test'], { cwd: repositoryPath, windowsHide: true });
+  execFileSync('git', ['config', 'user.name', 'GitPin Test'], { cwd: repositoryPath, windowsHide: true });
   execFileSync('git', ['add', 'README.md'], { cwd: repositoryPath, windowsHide: true });
   execFileSync('git', ['commit', '-qm', 'onboarding fixture'], { cwd: repositoryPath, windowsHide: true });
 });
@@ -45,7 +45,7 @@ describe('initializeRepoContext', () => {
     expect(result.firstContext.sourcePath).toBe('README.md');
     expect(result.firstContext.line).toBe(1);
     expect(result.firstContext.commitSha).toMatch(/^[0-9a-f]{40}$/u);
-    expect(result.clientConfig).toContain('@shmindmaster/repocontext@latest');
+    expect(result.clientConfig).toContain('@shmindmaster/gitpin@latest');
     expect(result.clientConfig).toContain(registryPath.replace(/\\/gu, '\\\\'));
     expect(readFileSync(registryPath, 'utf8')).toContain(repositoryPath.replace(/\\/gu, '/'));
     expect(gitStatus(repositoryPath)).toBe(before);
@@ -71,7 +71,7 @@ describe('initializeRepoContext', () => {
   });
 
   it('preserves a different existing registry', async () => {
-    mkdirSync(join(tmpRoot, 'home', '.repocontext'), { recursive: true });
+    mkdirSync(join(tmpRoot, 'home', '.gitpin'), { recursive: true });
     const existing = 'repositories:\n  - name: protected\n    path: C:/protected\n';
     writeFileSync(registryPath, existing, 'utf8');
 
@@ -194,19 +194,19 @@ describe('init option parsing and client output', () => {
       registryPath: perClientRegistry,
     });
 
-    expect(result.clientConfig).toContain('@shmindmaster/repocontext@latest');
-    expect(result.clientConfig).toContain('REPOCONTEXT_REGISTRY');
+    expect(result.clientConfig).toContain('@shmindmaster/gitpin@latest');
+    expect(result.clientConfig).toContain('GITPIN_REGISTRY');
     if (client === 'codex') {
       expect(result.clientConfig).toMatch(/^codex mcp add --env /u);
     } else if (client === 'claude-code') {
-      expect(result.clientConfig).toMatch(/^claude mcp add repocontext -e /u);
+      expect(result.clientConfig).toMatch(/^claude mcp add gitpin -e /u);
     } else if (client === 'continue') {
       const config = parse(result.clientConfig);
-      expect(config.mcpServers[0]).toMatchObject({ name: 'RepoContext', type: 'stdio' });
+      expect(config.mcpServers[0]).toMatchObject({ name: 'GitPin', type: 'stdio' });
     } else {
       const config = JSON.parse(result.clientConfig);
-      const server = client === 'zed' ? config.context_servers.repocontext : config.mcpServers.repocontext;
-      expect(server.args).toEqual(['-y', '@shmindmaster/repocontext@latest']);
+      const server = client === 'zed' ? config.context_servers.gitpin : config.mcpServers.gitpin;
+      expect(server.args).toEqual(['-y', '@shmindmaster/gitpin@latest']);
       if (client === 'cursor') expect(server.type).toBe('stdio');
     }
   });

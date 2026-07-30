@@ -7,7 +7,7 @@ import { resetDemoFixture } from './demo-fixture.mjs';
 
 export async function runDemoWorkflow({ presentation = true } = {}) {
   const fixture = resetDemoFixture();
-  const environment = { ...process.env, REPOCONTEXT_REGISTRY: fixture.registryPath };
+  const environment = { ...process.env, GITPIN_REGISTRY: fixture.registryPath };
   const serverPath = resolve(process.cwd(), 'dist', 'server.js');
   const doctor = execFileSync(process.execPath, [serverPath, 'doctor'], {
     cwd: process.cwd(),
@@ -27,13 +27,17 @@ export async function runDemoWorkflow({ presentation = true } = {}) {
   try {
     await client.connect(transport);
     const tools = await client.listTools();
-    const catalog = toolJson(await client.callTool({ name: 'wiki.catalog', arguments: { view: 'repositories' } }));
-    const search = toolJson(
-      await client.callTool({ name: 'wiki.search', arguments: { query: 'release gate', repository: 'atlas-api' } }),
+    const catalogEnvelope = toolJson(
+      await client.callTool({ name: 'pin.catalog', arguments: { view: 'repositories' } }),
     );
+    const catalog = Array.isArray(catalogEnvelope) ? catalogEnvelope : catalogEnvelope.repositories;
+    const searchEnvelope = toolJson(
+      await client.callTool({ name: 'pin.search_docs', arguments: { query: 'release gate', repository: 'atlas-api' } }),
+    );
+    const search = Array.isArray(searchEnvelope) ? searchEnvelope : searchEnvelope.hits;
     const comparison = toolJson(
       await client.callTool({
-        name: 'repo.compare',
+        name: 'pin.compare',
         arguments: {
           repository: fixture.expected.changedRepository,
           base: fixture.repositories['atlas-api'].initialCommit,
@@ -43,13 +47,13 @@ export async function runDemoWorkflow({ presentation = true } = {}) {
     );
     const brief = toolJson(
       await client.callTool({
-        name: 'wiki.analyze',
+        name: 'pin.analyze',
         arguments: { operation: 'brief', audience: 'leadership' },
       }),
     );
     const repeatedBrief = toolJson(
       await client.callTool({
-        name: 'wiki.analyze',
+        name: 'pin.analyze',
         arguments: { operation: 'brief', audience: 'technical' },
       }),
     );
@@ -65,8 +69,7 @@ function verifyWorkflow({ fixture, tools, catalog, search, comparison, brief, re
   const toolNames = tools.tools.map((tool) => tool.name).sort();
   const staleRepository = catalog.find((repository) => repository.name === 'merchant-web');
   const staleGap = brief.gaps.find((gap) => gap.id === 'stale:merchant-web');
-  if (!doctor.includes('RepoContext readiness: attention'))
-    throw new Error('Expected doctor to flag stale demo evidence.');
+  if (!doctor.includes('GitPin readiness: attention')) throw new Error('Expected doctor to flag stale demo evidence.');
   if (catalog.length !== fixture.expected.repositories)
     throw new Error('The demo catalog did not include every synthetic repository.');
   if (brief.scope.totalDocuments !== fixture.expected.documents)
@@ -74,8 +77,11 @@ function verifyWorkflow({ fixture, tools, catalog, search, comparison, brief, re
   if (!staleRepository?.stale || !staleGap) throw new Error('The demo did not surface the stale-evidence guardrail.');
   if (brief.evidenceSetId !== repeatedBrief.evidenceSetId)
     throw new Error('Context Brief evidence changed across presentation audiences.');
-  if (toolNames.length !== 8 || !tools.tools.every((tool) => tool.annotations?.readOnlyHint === true)) {
+  if (toolNames.length !== 10 || !tools.tools.every((tool) => tool.annotations?.readOnlyHint === true)) {
     throw new Error('The demo MCP server did not expose the expected read-only tool surface.');
+  }
+  if (!toolNames.includes('pin.prove') || !toolNames.includes('pin.verify')) {
+    throw new Error('The demo MCP server must expose pin.prove and pin.verify (product loop).');
   }
   if (!Array.isArray(comparison.files) || comparison.files.length !== fixture.expected.changedPaths.length) {
     throw new Error('The demo comparison did not return the expected changed path.');
@@ -88,7 +94,7 @@ function verifyWorkflow({ fixture, tools, catalog, search, comparison, brief, re
 function printPresentation({ fixture, toolNames, catalog, search, comparison, brief }) {
   const searchHit = search[0];
   const sourceTrace = brief.technicalTrace.slice(0, 3);
-  line('RepoContext · release evidence in one reviewable brief');
+  line('GitPin · release evidence in one reviewable brief');
   line(
     `Synthetic fixture: ${fixture.expected.repositories} Git repositories · ${fixture.expected.documents} committed documents`,
   );

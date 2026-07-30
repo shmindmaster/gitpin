@@ -4,7 +4,7 @@ Internal checklist and copy for RepoContext’s public beta / broader announceme
 
 ## Release verdict (2026-07-30)
 
-**Ready for public beta / discovery launch.** npm `@shmindmaster/repocontext@0.3.1`, GitHub Release `v0.3.1`, and official MCP Registry listing (`io.github.shmindmaster/repocontext`, status **active**) are live as of 2026-07-30. Research basis: [docs/research/deep-research-2026-07-30.md](research/deep-research-2026-07-30.md).
+**Ready for public beta / discovery launch.** npm `@shmindmaster/gitpin@0.3.1`, GitHub Release `v0.3.1`, and official MCP Registry listing (`io.github.shmindmaster/gitpin`, status **active**) are live as of 2026-07-30. Research basis: [docs/research/deep-research-2026-07-30.md](research/deep-research-2026-07-30.md).
 
 ## Golden-path demo (shareable)
 
@@ -12,20 +12,20 @@ Internal checklist and copy for RepoContext’s public beta / broader announceme
 
 ```bash
 # From a clean machine
-npx -y @shmindmaster/repocontext@latest init --client codex
+npx -y @shmindmaster/gitpin@latest init --client codex
 # Paste printed MCP config into the client, then ask:
 
 # 1) Which repositories are ready?
-#    → wiki.catalog (view: sync)
+#    → pin.catalog (view: sync)
 
 # 2) Where is authentication documented?
-#    → wiki.search query: "bearer authentication"
+#    → pin.search_docs query: "bearer authentication"
 
 # 3) Prove the source
-#    → wiki.get / repo.read and verify path + line + full SHA
+#    → pin.get_doc / pin.read and verify path + line + full SHA
 
 # 4) What changed between two release commits?
-#    → repo.compare with hex base/head
+#    → pin.compare with hex base/head
 
 # Maintainer demo (synthetic fixture, never user repos):
 pnpm demo:verify
@@ -53,7 +53,7 @@ Coding agents guess across repos.
 RepoContext is a read-only MCP server that answers from Git HEAD only—
 with path, line, and full commit SHA. No DB. No embeddings. No write tools.
 
-npx -y @shmindmaster/repocontext@latest init --client codex
+npx -y @shmindmaster/gitpin@latest init --client codex
 https://github.com/shmindmaster/repocontext
 ```
 
@@ -71,7 +71,7 @@ RepoContext is a small MCP server that answers only from Git HEAD across the rep
 you register—every useful hit carries path, line, and full commit SHA. No database,
 no embeddings, no write tools.
 
-npx -y @shmindmaster/repocontext@latest init --client codex
+npx -y @shmindmaster/gitpin@latest init --client codex
 
 https://github.com/shmindmaster/repocontext
 
@@ -87,7 +87,7 @@ or an index that still thinks last week’s API exists.
 I open-sourced RepoContext: a read-only MCP server for multi-repo, commit-pinned
 evidence (path + line + full SHA). Git stays the source of truth.
 
-Try: npx -y @shmindmaster/repocontext@latest init --client codex
+Try: npx -y @shmindmaster/gitpin@latest init --client codex
 Repo: https://github.com/shmindmaster/repocontext
 ```
 
@@ -96,7 +96,7 @@ Repo: https://github.com/shmindmaster/repocontext
 ```text
 When answering questions about architecture, ownership, docs, or implementation across
 registered local repositories, use RepoContext MCP tools (wiki.* / repo.*) and cite
-path, line, and full commit SHA. Do not invent file contents. Prefer wiki.catalog
+path, line, and full commit SHA. Do not invent file contents. Prefer pin.catalog
 before broad search. Treat gaps and blocked paths as real absences.
 ```
 
@@ -116,7 +116,7 @@ before broad search. Treat gaps and blocked paths as real absences.
 - Install-to-first-cited-fact via `init`
 - Trust boundary table
 - Link to docs/compare.md and docs/tools.md
-- MCP Registry identity when published (`io.github.shmindmaster/repocontext`)
+- MCP Registry identity when published (`io.github.shmindmaster/gitpin`)
 
 ## First-day / first-week / first-month
 

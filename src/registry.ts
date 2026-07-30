@@ -1,6 +1,6 @@
 /**
  * Registry: reads repositories.yaml, resolves repo paths.
- * Single source of truth for which repos repocontext indexes.
+ * Single source of truth for which Git roots GitPin indexes.
  */
 import { readFileSync, existsSync } from 'node:fs';
 import { dirname, resolve, join } from 'node:path';
@@ -28,16 +28,24 @@ export function clearRegistryCache(): void {
   cached = null;
 }
 
+function homeDirectory(): string {
+  return process.env.HOME ?? process.env.USERPROFILE ?? '';
+}
+
 function findRegistryPath(): string {
   if (registryOverride && existsSync(registryOverride)) return registryOverride;
   const candidates = [
+    process.env.GITPIN_REGISTRY,
     process.env.REPOCONTEXT_REGISTRY,
     resolve(process.cwd(), 'registry', 'repositories.yaml'),
     resolve(process.cwd(), 'repositories.yaml'),
-    join(process.env.HOME ?? process.env.USERPROFILE ?? '', '.repocontext', 'repositories.yaml'),
+    join(homeDirectory(), '.gitpin', 'repositories.yaml'),
+    join(homeDirectory(), '.repocontext', 'repositories.yaml'),
   ].filter((candidate): candidate is string => Boolean(candidate));
   for (const c of candidates) if (existsSync(c)) return c;
-  throw new Error('No RepoContext registry found. Set REPOCONTEXT_REGISTRY or create registry/repositories.yaml.');
+  throw new Error(
+    'No GitPin registry found. Set GITPIN_REGISTRY or run: npx -y @shmindmaster/gitpin@latest init --client codex',
+  );
 }
 
 export function loadRegistry(): RepoEntry[] {
@@ -68,7 +76,7 @@ export function resolveRepoPath(name: string): string {
 }
 
 function expandPath(path: string, registryDirectory: string): string {
-  if (path.startsWith('~')) return join(process.env.HOME ?? process.env.USERPROFILE ?? '', path.slice(1));
+  if (path.startsWith('~')) return join(homeDirectory(), path.slice(1));
   return resolve(registryDirectory, path);
 }
 

@@ -23,7 +23,7 @@ export interface EvidenceTrace {
   line: number | null;
   commitSha: string | null;
   confidence: DocumentationRow['confidence'];
-  originatingOperation: 'wiki.analyze:brief';
+  originatingOperation: 'pin.analyze:brief';
 }
 
 export interface BriefEvidence {
@@ -47,8 +47,10 @@ export async function getContextBrief(input: ContextBriefInput = {}) {
   const evidenceSetId = sha256(JSON.stringify({ knownFacts, gaps, changeSummary }));
 
   return {
-    type: 'ContextBrief',
-    schemaVersion: 1,
+    type: 'EvidenceBrief',
+    product: 'gitpin',
+    contract: 'index-free-git-head-evidence',
+    schemaVersion: 2,
     evidenceSetId,
     audience,
     presentation: {
@@ -149,7 +151,7 @@ async function buildChangeEvidence(
         line: null,
         commitSha: null,
         confidence: 'unavailable',
-        originatingOperation: 'wiki.analyze:brief',
+        originatingOperation: 'pin.analyze:brief',
       },
     });
     return { repository: range.repository, base: range.base, head: range.head, status: 'unavailable' as const };
@@ -177,7 +179,7 @@ async function buildChangeEvidence(
         line: null,
         commitSha: comparison.head,
         confidence: row.confidence,
-        originatingOperation: 'wiki.analyze:brief',
+        originatingOperation: 'pin.analyze:brief',
       },
     });
   }
@@ -192,7 +194,7 @@ async function buildChangeEvidence(
         line: null,
         commitSha: comparison.head,
         confidence: row.confidence,
-        originatingOperation: 'wiki.analyze:brief',
+        originatingOperation: 'pin.analyze:brief',
       },
     });
   }
@@ -213,7 +215,7 @@ function trace(row: DocumentationRow, sourcePath: string | null, line: number | 
     line,
     commitSha: row.commitSha,
     confidence: row.confidence,
-    originatingOperation: 'wiki.analyze:brief',
+    originatingOperation: 'pin.analyze:brief',
   };
 }
 

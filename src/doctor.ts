@@ -35,7 +35,7 @@ export async function getDoctorReport(): Promise<DoctorReport> {
 
 export function formatDoctorReport(report: DoctorReport): string {
   const lines = [
-    `RepoContext readiness: ${report.status}`,
+    `GitPin readiness: ${report.status}`,
     `Repositories: ${report.repositories.length} | indexed: ${report.summary.indexed} | empty: ${report.summary.empty} | unavailable: ${report.summary.unavailable} | stale: ${report.summary.stale} | docs: ${report.summary.documents}`,
     '',
   ];

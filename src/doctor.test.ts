@@ -15,11 +15,11 @@ beforeEach(() => {
   writeFileSync(join(repoPath, 'README.md'), '# Ready\n', 'utf-8');
   writeFileSync(join(repoPath, 'docs', 'architecture.md'), '# Architecture\n', 'utf-8');
   execFileSync('git', ['init', '-q'], { cwd: repoPath, windowsHide: true });
-  execFileSync('git', ['config', 'user.email', 'repocontext-test@example.invalid'], {
+  execFileSync('git', ['config', 'user.email', 'gitpin-test@example.invalid'], {
     cwd: repoPath,
     windowsHide: true,
   });
-  execFileSync('git', ['config', 'user.name', 'RepoContext Test'], { cwd: repoPath, windowsHide: true });
+  execFileSync('git', ['config', 'user.name', 'GitPin Test'], { cwd: repoPath, windowsHide: true });
   execFileSync('git', ['add', '.'], { cwd: repoPath, windowsHide: true });
   execFileSync('git', ['commit', '-qm', 'ready fixture'], { cwd: repoPath, windowsHide: true });
 });

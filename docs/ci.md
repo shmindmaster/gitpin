@@ -2,7 +2,7 @@
 
 `repocontext brief` emits deterministic JSON to stdout. It never writes to an indexed repository or posts to a pull request. A workflow may redirect stdout to an explicitly chosen artifact.
 
-After `@shmindmaster/repocontext@0.3.1` is published, this GitHub Actions job checks out one repository, creates its registry under the runner's temporary directory, generates a technical brief for the checked-out commit, and uploads the JSON artifact:
+After `@shmindmaster/gitpin@0.3.1` is published, this GitHub Actions job checks out one repository, creates its registry under the runner's temporary directory, generates a technical brief for the checked-out commit, and uploads the JSON artifact:
 
 ```yaml
 name: RepoContext evidence
@@ -23,7 +23,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
-      - run: npm install --global @shmindmaster/repocontext@0.3.1
+      - run: npm install --global @shmindmaster/gitpin@0.3.1
       - name: Build registry
         shell: bash
         run: |
@@ -36,7 +36,7 @@ jobs:
       - name: Generate brief
         shell: bash
         env:
-          REPOCONTEXT_REGISTRY: ${{ runner.temp }}/repositories.yaml
+          GITPIN_REGISTRY: ${{ runner.temp }}/repositories.yaml
         run: |
           repocontext doctor
           repocontext brief \

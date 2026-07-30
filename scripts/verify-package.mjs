@@ -21,8 +21,8 @@ try {
   mkdirSync(clientPath, { recursive: true });
   writeFileSync(join(repositoryPath, 'README.md'), `# Package fixture\n\n${marker}\n`, 'utf8');
   run('git', ['init', '-q'], repositoryPath);
-  run('git', ['config', 'user.email', 'repocontext-test@example.invalid'], repositoryPath);
-  run('git', ['config', 'user.name', 'RepoContext Test'], repositoryPath);
+  run('git', ['config', 'user.email', 'gitpin-test@example.invalid'], repositoryPath);
+  run('git', ['config', 'user.name', 'GitPin Test'], repositoryPath);
   run('git', ['add', 'README.md'], repositoryPath);
   run('git', ['commit', '-qm', 'package fixture'], repositoryPath);
 
@@ -72,7 +72,7 @@ try {
   const packedManifest = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8'));
   const packedRegistryMetadata = JSON.parse(readFileSync(join(packageRoot, 'server.json'), 'utf8'));
   if (
-    packedManifest.mcpName !== 'io.github.shmindmaster/repocontext' ||
+    packedManifest.mcpName !== 'io.github.shmindmaster/gitpin' ||
     packedRegistryMetadata.name !== packedManifest.mcpName ||
     packedRegistryMetadata.version !== packedManifest.version ||
     packedRegistryMetadata.packages?.[0]?.identifier !== packedManifest.name ||
@@ -81,12 +81,12 @@ try {
     throw new Error('Packed npm and MCP Registry metadata must remain version-matched.');
   }
   const environmentExample = readFileSync(join(packageRoot, '.env.example'), 'utf8');
-  if (!environmentExample.split(/\r?\n/u).includes('REPOCONTEXT_MCP_TOKEN=')) {
-    throw new Error('Packed .env.example must keep REPOCONTEXT_MCP_TOKEN empty.');
+  if (!environmentExample.split(/\r?\n/u).includes('GITPIN_MCP_TOKEN=')) {
+    throw new Error('Packed .env.example must keep GITPIN_MCP_TOKEN empty.');
   }
   const packageReadme = readFileSync(join(packageRoot, 'README.md'), 'utf8');
-  if (!packageReadme.includes('args: ["-y", "@shmindmaster/repocontext@latest"]')) {
-    throw new Error('Packed README must document the published npx MCP command.');
+  if (!packageReadme.includes('@shmindmaster/gitpin@latest')) {
+    throw new Error('Packed README must document the published GitPin package.');
   }
   if (
     packageReadme.includes('After the package is published') ||
@@ -114,21 +114,23 @@ try {
     },
   );
   if (
-    !initialization.includes('RepoContext initialized: ready') ||
-    !initialization.includes('First context: repository exposes README at README.md.') ||
+    !initialization.includes('GitPin initialized: ready') ||
+    !initialization.includes('First evidence:') ||
+    !initialization.includes('README.md') ||
     !initialization.includes('codex mcp add --env') ||
+    !initialization.includes('@shmindmaster/gitpin@latest') ||
     !existsSync(initializedRegistryPath)
   ) {
     throw new Error(`Packed init journey did not reach a configured first fact: ${initialization.trim()}`);
   }
-  const environment = { ...commandEnvironment, REPOCONTEXT_REGISTRY: registryPath };
+  const environment = { ...commandEnvironment, GITPIN_REGISTRY: registryPath };
   const doctor = execFileSync(process.execPath, [serverPath, 'doctor'], {
     cwd: clientPath,
     env: environment,
     encoding: 'utf8',
     windowsHide: true,
   });
-  if (!doctor.includes('RepoContext readiness: ready') || !doctor.includes('package-fixture: status=indexed')) {
+  if (!doctor.includes('GitPin readiness: ready') || !doctor.includes('package-fixture: status=indexed')) {
     throw new Error(`Packed doctor check was not ready: ${doctor.trim()}`);
   }
   const brief = JSON.parse(
@@ -161,7 +163,7 @@ try {
     stderr: 'pipe',
   });
   await client.connect(transport);
-  const answer = await client.callTool({ name: 'wiki.search', arguments: { query: marker } });
+  const answer = await client.callTool({ name: 'pin.search_docs', arguments: { query: marker } });
   const text = Array.isArray(answer.content)
     ? answer.content
         .filter((item) => item.type === 'text')
