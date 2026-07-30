@@ -4,6 +4,10 @@ All notable changes to RepoContext are documented here. The project follows [Kee
 
 ## [Unreleased]
 
+### Added
+
+- Add market deep-research notes, FAQ, and launch copy grounded in multi-agent competitive research.
+
 ## [0.3.1] - 2026-07-30
 
 ### Added

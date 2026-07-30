@@ -4,7 +4,7 @@ Internal checklist and copy for RepoContext’s public beta / broader announceme
 
 ## Release verdict (2026-07-30)
 
-**Ready for public beta.** npm `0.3.0` already ships a trustworthy install-to-first-answer path. Broad “discovery launch” should wait until **0.3.1** is on npm **and** listed in the official MCP Registry, with this documentation set merged.
+**Ready for public beta / discovery launch.** npm `@shmindmaster/repocontext@0.3.1`, GitHub Release `v0.3.1`, and official MCP Registry listing (`io.github.shmindmaster/repocontext`, status **active**) are live as of 2026-07-30. Research basis: [docs/research/deep-research-2026-07-30.md](research/deep-research-2026-07-30.md).
 
 ## Golden-path demo (shareable)
 
@@ -61,13 +61,55 @@ https://github.com/shmindmaster/repocontext
 
 **Title:** RepoContext – commit-pinned, read-only multi-repo context for coding agents (MCP)
 
-**Body outline:**
+**Body (draft for human posting):**
 
-1. Problem: agents mix dirty files, wrong commits, and uncited summaries.
-2. What it is: eight MCP tools, Git as source of truth, registry of local roots.
-3. What it is not: RAG, vector DB, write tools, GitHub automation.
-4. 30-second try: `npx … init --client codex`.
-5. Ask HN: multi-repo agent workflows and trust boundaries.
+```text
+Agents confidently quote code that is on the wrong branch, only in a dirty worktree,
+or never existed. Filesystem MCP tools often write. Embeddings lag after rebase.
+
+RepoContext is a small MCP server that answers only from Git HEAD across the repos
+you register—every useful hit carries path, line, and full commit SHA. No database,
+no embeddings, no write tools.
+
+npx -y @shmindmaster/repocontext@latest init --client codex
+
+https://github.com/shmindmaster/repocontext
+
+Curious how others pin multi-repo agent context without a vector store.
+```
+
+### LinkedIn
+
+```text
+Coding agents fail quietly when repository context is wrong—wrong branch, dirty tree,
+or an index that still thinks last week’s API exists.
+
+I open-sourced RepoContext: a read-only MCP server for multi-repo, commit-pinned
+evidence (path + line + full SHA). Git stays the source of truth.
+
+Try: npx -y @shmindmaster/repocontext@latest init --client codex
+Repo: https://github.com/shmindmaster/repocontext
+```
+
+### Client auto-invoke rule (paste into AGENTS.md / Cursor rules)
+
+```text
+When answering questions about architecture, ownership, docs, or implementation across
+registered local repositories, use RepoContext MCP tools (wiki.* / repo.*) and cite
+path, line, and full commit SHA. Do not invent file contents. Prefer wiki.catalog
+before broad search. Treat gaps and blocked paths as real absences.
+```
+
+### Likely objections (see docs/faq.md)
+
+| Objection | Short answer |
+| --- | --- |
+| Just use filesystem MCP | That tool writes; no commit pin |
+| Just use git MCP | Mutates repos; not multi-repo registry-first |
+| Just use embeddings | Better semantics; worse lag and opaque cites |
+| Just use git grep | One repo CLI; no policy, brief, doctor, MCP chain |
+| Can it write? | No |
+| Monorepos? | Git roots yes; package graphs later |
 
 ### GitHub release notes focus
 

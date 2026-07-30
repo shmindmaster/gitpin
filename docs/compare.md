@@ -32,8 +32,21 @@ Honest comparison for developers choosing a repository-context path for coding a
 - You need **semantic** “find code like this” across huge monorepos → embeddings / Sourcegraph-class tools.
 - You only care about the **live dirty worktree** the human is editing → filesystem MCP (RepoContext intentionally excludes uncommitted content as evidence).
 
-## Positioning statement (validated against the implementation)
+## Named ecosystem peers (research snapshot, 2026-07-30)
+
+| Peer | Stronger when… | RepoContext stronger when… |
+| --- | --- | --- |
+| `@modelcontextprotocol/server-filesystem` | Agent must edit files | Commit pins + no write tools |
+| `mcp-server-git` | Agent must stage/commit/branch | Multi-repo registry + no mutation |
+| GitHub MCP server | Issues, PRs, Actions, remote GH | Local/private multi-root HEAD evidence |
+| Context7 | Third-party **library docs** freshness | **Your** repo docs/code at a SHA |
+| Repomix / dump tools | One-shot full-repo paste | Bounded multi-repo cited evidence |
+| codebase-memory / Sourcegraph-class | Call graphs, org-scale semantic search | Zero index infra, reproducible cites |
+
+Full research notes: [research/deep-research-2026-07-30.md](research/deep-research-2026-07-30.md). FAQ: [faq.md](faq.md).
+
+## Positioning statement (validated against the implementation + market research)
 
 > RepoContext gives coding agents **read-only, multi-repository context pinned to Git HEAD**, with **path/line/SHA provenance** and **no indexing infrastructure**.
 
-That is a product advantage for trust and reproducibility—not a claim of better semantic retrieval.
+That is a product advantage for trust and reproducibility—not a claim of better semantic retrieval. Complementary to Context7 (dependency docs) and GitHub MCP (platform workflows).

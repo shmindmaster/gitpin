@@ -23,14 +23,14 @@ Agent question → RepoContext (Git HEAD only) → cited docs/code → you verif
 | Agents that can edit or push your repos | No — by design |
 | Semantic “find similar code” search | No — use a code-intel/RAG tool |
 
-> **Release status (public beta):** [`@shmindmaster/repocontext`](https://www.npmjs.com/package/@shmindmaster/repocontext) is on npm. Clean `npx` installs are verified on Node 20, 22, and 24. Prefer the latest published version.
+> **Release status (public beta):** [`@shmindmaster/repocontext`](https://www.npmjs.com/package/@shmindmaster/repocontext) is on npm (Node 20/22/24 verified). Official MCP Registry: [`io.github.shmindmaster/repocontext`](https://registry.modelcontextprotocol.io/) (v0.3.1, active). Prefer the latest published version.
 
-RepoContext's official MCP Registry identity is `io.github.shmindmaster/repocontext`. The version-matched
+RepoContext's Registry identity is `io.github.shmindmaster/repocontext`. The version-matched
 [`server.json`](server.json) points Registry-capable clients to the same public npm package and canonical repository.
 
 Product site: [shmindmaster.github.io/repocontext](https://shmindmaster.github.io/repocontext/). Website analytics are optional, cookieless, and isolated; the CLI and MCP transports contain **no telemetry**.
 
-**Docs:** [Tools](docs/tools.md) · [Compare](docs/compare.md) · [Clients](docs/clients.md) · [Troubleshooting](docs/troubleshooting.md) · [Architecture](docs/architecture.md) · [Launch notes](docs/launch.md)
+**Docs:** [Tools](docs/tools.md) · [Compare](docs/compare.md) · [FAQ](docs/faq.md) · [Clients](docs/clients.md) · [Troubleshooting](docs/troubleshooting.md) · [Architecture](docs/architecture.md) · [Research](docs/research/deep-research-2026-07-30.md) · [Launch notes](docs/launch.md)
 
 ## Prerequisites
 
