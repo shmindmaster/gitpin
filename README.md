@@ -54,23 +54,25 @@ npx -y @shmindmaster/gitpin@latest verify \
 **You want** every fact re-checkable with `git show <sha>:<path>`  
 **GitPin** registers local Git roots, serves **HEAD-only** docs/code, flags **stale** tracked docs, returns **path / line / SHA**, and closes the loop with **`pin.verify`**.
 
-### Agent tool surface (`pin.*`) — 10 read-only tools
+### Agent tool surface (`pin.*`) — 12 read-only tools
 
 | Job | Tools |
 | --- | --- |
 | Discover | `pin.catalog` |
 | Find candidates | `pin.search_docs`, `pin.search_code` |
-| Prove | `pin.prove` (primary), `pin.get_doc`, `pin.read` |
-| Verify | `pin.verify` |
+| Prove | `pin.prove` (primary), `pin.prove_set` (1–8 cites), `pin.get_doc`, `pin.read` |
+| Verify | `pin.verify`, `pin.verify_set` |
 | Decide | `pin.analyze` → `EvidenceBrief` |
 | Inspect / diff | `pin.inspect`, `pin.compare` |
 
-Resource: `gitpin://catalog`. Prompt: `prove-with-git-head` (forces the product loop).
+Resource: `gitpin://catalog`. Prompt: `prove-with-git-head` (forces the product loop).  
+Cite formats: [docs/cite-spec.md](docs/cite-spec.md). Agent skill template: [templates/gitpin-skill.md](templates/gitpin-skill.md).
 
 ### Functionality that is the pivot (not a rename)
 
-- **Evidence pack** (`pin.prove`): optional claim binding, line slice, full SHA, `contentSha256`, `citation.cite`, next-step verify.
-- **Verification report** (`pin.verify` / CLI): independent `git show`; status `ok` | `mismatch` | `missing` | `blocked`.
+- **Evidence pack** (`pin.prove`): claim binding, line slice, full SHA, `contentSha256`, `citation.cite` / `handle`, next-step verify.
+- **Multi-cite sets** (`pin.prove_set` / `pin.verify_set`): stable `evidenceSetId` for multi-repo answers and CI.
+- **Verification report** (`pin.verify` / CLI): independent `git show`; optional `mustContain` claim-text; status includes `contradicted`.
 - **Candidates, not claims**: search returns `kind: evidence-candidates` with forced `next: pin.prove`.
 - **EvidenceBrief**: multi-repo knownFacts / gaps / stable `evidenceSetId` (schema v2).
 - **Dirty exclusion**: uncommitted work is never cited as HEAD evidence.

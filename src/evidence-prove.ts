@@ -60,6 +60,7 @@ export async function buildEvidencePack(input: {
               sourcePath: result.sourcePath,
               sha: result.commitSha,
               ...(range ? { line: range.start } : {}),
+              ...(input.claim ? { mustContain: input.claim } : {}),
             },
           }
         : null,

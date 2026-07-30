@@ -4,6 +4,20 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 
 ## [Unreleased]
 
+### Added
+
+- Durable citation handles: `citation.handle` (`gitpin:repo@sha:path:line`) and `citation.repoAtSha`.
+- `pin.prove_set` / `pin.verify_set` multi-cite packs (max 8) with stable `evidenceSetId`.
+- `pin.verify` `mustContain` claim-text check (`claimVerdict`: supported | contradicted | unproven).
+- CLI: `verify --from-pack`, `verify --handle`, `verify --must-contain`, `verify-cites --file`, `prove-set --from-json`.
+- Cite mini-spec (`docs/cite-spec.md`), JSON Schemas (`docs/schemas/`), skill + client-rule templates, CI gate script `scripts/verify-citations.mjs`.
+- Research: next-feature differentiation pass (`docs/research/deep-research-gitpin-features-2026-07-30.md`).
+
+### Changed
+
+- MCP surface is **12** read-only `pin.*` tools (was 10).
+- Tool descriptions encode when/before workflow cues for agent tool selection.
+
 ## [0.4.0] - 2026-07-30
 
 ### Changed

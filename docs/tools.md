@@ -1,15 +1,15 @@
 # GitPin tool reference (`pin.*`)
 
-Ten read-only MCP tools. This is **not** a “repo context dump” surface. Tools implement an **evidence product loop**:
+Twelve read-only MCP tools. This is **not** a “repo context dump” surface. Tools implement an **evidence product loop**:
 
 ```text
-pin.catalog → search (candidates) → pin.prove → pin.verify
-                 ↘ pin.analyze brief (multi-repo decision evidence)
+pin.catalog → search (candidates) → pin.prove | pin.prove_set → pin.verify | pin.verify_set
+                                    ↘ pin.analyze brief (multi-repo decision evidence)
 ```
 
 Successful content results include a **full commit SHA** (or an explicit blocked/missing status). Dirty worktrees are never treated as evidence.
 
-All tools set `readOnlyHint: true`.
+All tools set `readOnlyHint: true`. Cite formats: [cite-spec.md](cite-spec.md).
 
 ## Product contract
 
@@ -17,9 +17,11 @@ All tools set `readOnlyHint: true`.
 | --- | --- |
 | `product` | Always `gitpin` on structured evidence responses |
 | `contract` | `index-free-git-head-evidence` |
-| `kind` | `catalog` · `evidence-candidates` · `evidence-pack` · `evidence-slice` · `evidence-doc` · `verification-report` · `EvidenceBrief` |
-| `citation.cite` | Copy-paste claim locator: `repo/path:line @ fullSha` |
-| `next` | Suggested next tool (`pin.prove` / `pin.verify`) |
+| `kind` | `catalog` · `evidence-candidates` · `evidence-pack` · `evidence-set` · `evidence-slice` · `evidence-doc` · `verification-report` · `verification-set-report` · `EvidenceBrief` |
+| `citation.cite` | Human locator: `repo/path:line @ fullSha` |
+| `citation.handle` | Durable: `gitpin:repo@fullSha:path:line` |
+| `citation.repoAtSha` | Repo pin: `repo@fullSha` |
+| `next` | Suggested next tool (`pin.prove` / `pin.prove_set` / `pin.verify` / `pin.verify_set`) |
 
 ## Discover
 
@@ -47,10 +49,14 @@ Single-path **evidence pack**:
 
 - optional `claim` string bound to the pack
 - content slice + `contentSha256`
-- `citation` with `cite`, `git show`, and `gitpin verify` commands
-- `next` → `pin.verify`
+- `citation` with `cite`, `handle`, `repoAtSha`, `git show`, and `gitpin verify` commands
+- `next` → `pin.verify` (includes `mustContain` when claim set)
 
 Inputs: `repository`, `sourcePath`, optional `lineStart` / `lineEnd` / `claim`.
+
+### `pin.prove_set`
+
+Multi-cite pack (1–8 items, multi-repo OK). Returns `kind: evidence-set` with stable `evidenceSetId` and `next` → `pin.verify_set`.
 
 ### `pin.get_doc` / `pin.read`
 
@@ -60,9 +66,13 @@ Documentation page or source slice as an evidence-oriented payload. Prefer `pin.
 
 ### `pin.verify`
 
-Re-check a claim with `git show <sha>:<path>`. Reports whether current HEAD still matches. Same contract as CLI `gitpin verify`.
+Re-check a claim with `git show <sha>:<path>`. Reports whether current HEAD still matches. Optional `mustContain` sets `claimVerdict` (`supported` | `contradicted` | `unproven`). Same contract as CLI `gitpin verify`.
 
-Inputs: `repository`, `sourcePath`, `sha` (7–40 hex), optional `line`.
+Inputs: `repository`, `sourcePath`, `sha` (7–40 hex), optional `line`, optional `mustContain`.
+
+### `pin.verify_set`
+
+Batch re-check up to 8 items (from `pin.prove_set` or a saved pack). Returns `verification-set-report`.
 
 ## Decide / inspect / diff
 
@@ -94,5 +104,10 @@ Changed paths between two hex revisions (7–40 characters).
 gitpin init --client <name>
 gitpin doctor
 gitpin brief --audience technical
-gitpin verify --repository <n> --path <p> --sha <hex> [--line <n>]
+gitpin verify --repository <n> --path <p> --sha <hex> [--line <n>] [--must-contain <text>]
+gitpin verify --from-pack pack.json
+gitpin verify-cites --file notes.md
+gitpin prove-set --from-json items.json
 ```
+
+CI gate: `node scripts/verify-citations.mjs --file notes.md` (requires `GITPIN_REGISTRY`).

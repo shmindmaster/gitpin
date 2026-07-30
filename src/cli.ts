@@ -1,6 +1,7 @@
 import { BRIEF_AUDIENCES, type BriefAudience, getContextBrief } from './context-brief';
+import { exitForVerify, parseProveSetOptions, runVerifyCitesCommand, runVerifyCommand } from './cli-verify';
 import { doctorExitCode, formatDoctorReport, getDoctorReport } from './doctor';
-import { verifyEvidenceClaim } from './evidence';
+import { buildEvidenceSet } from './evidence';
 import { initializeRepoContext, parseInitOptions, supportedInitClients } from './onboarding';
 
 export async function runCli(args: string[]): Promise<void> {
@@ -13,8 +14,7 @@ export async function runCli(args: string[]): Promise<void> {
     return;
   }
   if (command === 'brief') {
-    const input = parseBriefOptions(options);
-    console.log(JSON.stringify(await getContextBrief(input), null, 2));
+    console.log(JSON.stringify(await getContextBrief(parseBriefOptions(options)), null, 2));
     return;
   }
   if (command === 'init') {
@@ -24,9 +24,19 @@ export async function runCli(args: string[]): Promise<void> {
     return;
   }
   if (command === 'verify') {
-    const report = await verifyEvidenceClaim(parseVerifyOptions(options));
+    const report = await runVerifyCommand(options);
     console.log(JSON.stringify(report, null, 2));
-    process.exitCode = report.status === 'ok' ? 0 : 1;
+    process.exitCode = exitForVerify(report);
+    return;
+  }
+  if (command === 'prove-set') {
+    console.log(JSON.stringify(await buildEvidenceSet(parseProveSetOptions(options)), null, 2));
+    return;
+  }
+  if (command === 'verify-cites') {
+    const report = await runVerifyCitesCommand(options);
+    console.log(JSON.stringify(report, null, 2));
+    process.exitCode = exitForVerify(report);
     return;
   }
   if (command === 'help' || command === '--help' || command === '-h') {
@@ -86,44 +96,6 @@ function parseBriefOptions(options: string[]) {
   };
 }
 
-function parseVerifyOptions(options: string[]) {
-  let repository: string | undefined;
-  let sourcePath: string | undefined;
-  let line: number | undefined;
-  let sha: string | undefined;
-
-  for (let index = 0; index < options.length; index += 1) {
-    const option = options[index];
-    const value = options[index + 1];
-    if (!value || value.startsWith('--')) throw new Error(`Option ${option} requires a value.`);
-    switch (option) {
-      case '--repository':
-        repository = value;
-        break;
-      case '--path':
-      case '--source-path':
-        sourcePath = value;
-        break;
-      case '--line':
-        line = Number.parseInt(value, 10);
-        if (!Number.isInteger(line) || line < 1) throw new Error('--line must be a positive integer.');
-        break;
-      case '--sha':
-      case '--commit':
-        sha = revision(value, option);
-        break;
-      default:
-        throw new Error(`Unknown verify option: ${option}. Run "gitpin help" for usage.`);
-    }
-    index += 1;
-  }
-
-  if (!repository || !sourcePath || !sha) {
-    throw new Error('verify requires --repository, --path, and --sha.');
-  }
-  return { repository, sourcePath, line, sha };
-}
-
 function revision(value: string, option: string): string {
   if (!/^[0-9a-f]{7,40}$/iu.test(value))
     throw new Error(`${option} must be a 7-40 character hexadecimal Git revision.`);
@@ -136,12 +108,15 @@ function cliHelp(): string {
 Product loop: catalog → search candidates → prove → verify (Git HEAD only).
 
 Usage:
-  gitpin                              Start stdio MCP (10 pin.* tools)
+  gitpin                              Start stdio MCP (12 pin.* tools)
   gitpin init --client <name>         Registry + doctor + first evidence line
   gitpin doctor                       Validate readiness (stale/blocked)
   gitpin brief [options]              EvidenceBrief JSON (knownFacts / gaps / evidenceSetId)
-  gitpin verify --repository <n> --path <p> --sha <hex> [--line <n>]
-                                      Same contract as pin.verify (git show re-check)
+  gitpin verify --repository <n> --path <p> --sha <hex> [--line <n>] [--must-contain <text>]
+  gitpin verify --handle gitpin:repo@sha:path[:line]
+  gitpin verify --from-pack <pack.json>
+  gitpin verify-cites --file <notes.md>
+  gitpin prove-set --from-json <items.json>
 
 Init options:
   --client <name>                     ${supportedInitClients.join(', ')}
@@ -159,7 +134,11 @@ Verify options:
   --path <sourcePath>                 Path within the repository
   --sha <hex>                         Claimed commit (7-40 hex)
   --line <n>                          Optional 1-based line to check
+  --must-contain <text>               Fail with contradicted if text absent at SHA
+  --handle <gitpin:...>               Shortcut for repository/path/sha/line
+  --from-pack <file>                  Verify evidence-pack or evidence-set JSON
 
+Cite mini-spec: docs/cite-spec.md
 Migration: REPOCONTEXT_* env vars and ~/.repocontext still work as aliases.
 GitPin writes briefs only to stdout. Redirect explicitly for artifacts.`;
 }

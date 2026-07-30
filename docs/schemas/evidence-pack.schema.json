@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shmindmaster.github.io/repocontext/schemas/evidence-pack.schema.json",
+  "title": "GitPin Evidence Pack",
+  "type": "object",
+  "required": ["kind", "product", "contract", "status", "citation", "repository", "sourcePath"],
+  "properties": {
+    "kind": { "const": "evidence-pack" },
+    "product": { "const": "gitpin" },
+    "contract": { "const": "index-free-git-head-evidence" },
+    "status": { "enum": ["ok", "blocked", "missing"] },
+    "claim": { "type": ["string", "null"] },
+    "citation": { "$ref": "citation.schema.json" },
+    "repository": { "type": "string" },
+    "sourcePath": { "type": "string" },
+    "commitSha": { "type": ["string", "null"] },
+    "range": {
+      "type": ["object", "null"],
+      "properties": {
+        "start": { "type": "integer", "minimum": 1 },
+        "end": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "totalLines": { "type": ["integer", "null"] },
+    "content": { "type": ["string", "null"] },
+    "contentSha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+    "agentInstruction": { "type": "string" },
+    "next": { "type": ["object", "null"] }
+  }
+}

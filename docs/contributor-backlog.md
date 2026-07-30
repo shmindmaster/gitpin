@@ -2,7 +2,9 @@
 
 Everything below requires additional evidence or external infrastructure. These are issue-ready drafts, not claims that the work is complete.
 
-## Validate the Context Brief with representative users
+Product-direction research for the next evidence-loop features (multi-cite packs, claim-text verify, `repo@sha` handles, CI citation gate) lives in [docs/research/deep-research-gitpin-features-2026-07-30.md](research/deep-research-gitpin-features-2026-07-30.md). Prefer those over re-entering the indexing / “repo context” category.
+
+## Validate the Evidence Brief with representative users
 
 **Suggested labels:** `research`, `help wanted`, `type:validation`
 

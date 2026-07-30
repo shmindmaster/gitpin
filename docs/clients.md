@@ -108,4 +108,4 @@ Workflow: pin.catalog → search candidates → pin.prove → pin.verify.
 Every claim needs path, line, and full SHA (citation.cite). Dirty worktrees are not evidence.
 ```
 
-Supported clients should list **ten** read-only `pin.*` tools (including `pin.prove` and `pin.verify`).
+Supported clients should list **twelve** read-only `pin.*` tools (including `pin.prove`, `pin.prove_set`, `pin.verify`, and `pin.verify_set`).

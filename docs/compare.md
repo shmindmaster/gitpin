@@ -54,7 +54,7 @@ Honest comparison for developers choosing how agents should ground multi-repo an
 | Context7 | Third-party **library docs** | **Your** repo docs/code at a SHA |
 | Repomix / dump CLIs | One-shot full-repo paste | Live MCP prove/verify tools |
 
-Research: [competitive landscape (corrected)](research/competitive-landscape-corrected-2026-07-30.md).
+Research: [competitive landscape (corrected)](research/competitive-landscape-corrected-2026-07-30.md) · [next features & differentiation (2026-07-30)](research/deep-research-gitpin-features-2026-07-30.md).
 
 ## Positioning statement
 

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shmindmaster.github.io/repocontext/schemas/verification-report.schema.json",
+  "title": "GitPin Verification Report",
+  "type": "object",
+  "required": [
+    "kind",
+    "product",
+    "contract",
+    "status",
+    "repository",
+    "sourcePath",
+    "headMatchesClaimedSha",
+    "claimVerdict",
+    "message"
+  ],
+  "properties": {
+    "kind": { "const": "verification-report" },
+    "product": { "const": "gitpin" },
+    "contract": { "const": "index-free-git-head-evidence" },
+    "status": {
+      "enum": ["ok", "mismatch", "missing", "blocked", "contradicted"]
+    },
+    "repository": { "type": "string" },
+    "sourcePath": { "type": "string" },
+    "commitSha": { "type": ["string", "null"] },
+    "line": { "type": ["integer", "null"] },
+    "lineText": { "type": ["string", "null"] },
+    "headCommitSha": { "type": ["string", "null"] },
+    "headMatchesClaimedSha": { "type": "boolean" },
+    "mustContain": { "type": ["string", "null"] },
+    "claimTextMatch": { "type": ["boolean", "null"] },
+    "claimVerdict": {
+      "type": ["string", "null"],
+      "enum": ["supported", "contradicted", "unproven", null]
+    },
+    "command": { "type": ["string", "null"] },
+    "message": { "type": "string" },
+    "citation": { "type": ["object", "null"] }
+  }
+}

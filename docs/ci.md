@@ -54,3 +54,19 @@ jobs:
 ```
 
 For a multi-repository brief, add explicit checkout steps and registry rows. Use immutable revisions, avoid credentials in the registry, and keep pull-request commenting as a separate opt-in job with narrowly scoped permissions.
+
+## Citation gate (optional)
+
+Re-check agent or PR notes that embed GitPin cite strings (`repo/path:line @ sha`):
+
+```bash
+export GITPIN_REGISTRY="$RUNNER_TEMP/repositories.yaml"
+# after writing notes.md or pack.json from the agent:
+pnpm exec tsx src/server.ts verify-cites --file notes.md
+# or:
+node scripts/verify-citations.mjs --file notes.md
+# evidence pack from pin.prove_set:
+node scripts/verify-citations.mjs --pack pack.json
+```
+
+Exit code is non-zero on `mismatch`, `missing`, `blocked`, `contradicted`, or partial set failure. See [cite-spec.md](cite-spec.md).

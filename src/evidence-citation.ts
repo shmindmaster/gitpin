@@ -7,6 +7,64 @@ import {
   type ProvenanceKind,
 } from './evidence-types';
 
+/** Parse human `repo/path:line @ sha` or range form `repo/path:1-3 @ sha`. */
+export function parseCiteString(cite: string): {
+  repository: string;
+  sourcePath: string;
+  line: number | null;
+  lineEnd: number | null;
+  commitSha: string | null;
+} | null {
+  const match = cite
+    .trim()
+    .match(
+      /^(?<repository>[^/\s]+)\/(?<sourcePath>.+?)(?::(?<lineStart>\d+)(?:-(?<lineEnd>\d+))?)?(?:\s+@\s+(?<sha>[0-9a-f]{7,40}|\(no commit\)))?$/iu,
+    );
+  if (!match?.groups) return null;
+  const { repository, sourcePath, lineStart, lineEnd, sha } = match.groups;
+  if (!repository || !sourcePath) return null;
+  const line = lineStart ? Number.parseInt(lineStart, 10) : null;
+  const end = lineEnd ? Number.parseInt(lineEnd, 10) : line;
+  const commitSha = !sha || sha === '(no commit)' ? null : sha;
+  return { repository, sourcePath, line, lineEnd: end, commitSha };
+}
+
+/** Parse durable `gitpin:repo@sha:path` or `gitpin:repo@sha:path:line`. */
+export function parseHandle(handle: string): {
+  repository: string;
+  sourcePath: string | null;
+  line: number | null;
+  commitSha: string;
+} | null {
+  const match = handle.trim().match(/^gitpin:(?<repository>[^@\s]+)@(?<sha>[0-9a-f]{7,40})(?::(?<rest>.+))?$/iu);
+  if (!match?.groups?.repository || !match.groups.sha) return null;
+  const rest = match.groups.rest;
+  if (!rest) {
+    return { repository: match.groups.repository, sourcePath: null, line: null, commitSha: match.groups.sha };
+  }
+  const lineMatch = rest.match(/^(?<sourcePath>.+):(?<line>\d+)$/u);
+  if (lineMatch?.groups?.sourcePath && lineMatch.groups.line) {
+    return {
+      repository: match.groups.repository,
+      sourcePath: lineMatch.groups.sourcePath,
+      line: Number.parseInt(lineMatch.groups.line, 10),
+      commitSha: match.groups.sha,
+    };
+  }
+  return {
+    repository: match.groups.repository,
+    sourcePath: rest,
+    line: null,
+    commitSha: match.groups.sha,
+  };
+}
+
+export function extractCitesFromText(text: string): string[] {
+  const pattern = /[A-Za-z0-9._-]+\/[^\s@]+(?::\d+(?:-\d+)?)?\s+@\s+[0-9a-f]{7,40}/giu;
+  const found = text.match(pattern) ?? [];
+  return [...new Set(found.map((item) => item.trim()))];
+}
+
 export function buildCitation(input: {
   repository: string;
   sourcePath: string;
@@ -28,6 +86,12 @@ export function buildCitation(input: {
       : commitSha
         ? `gitpin verify --repository ${input.repository} --path ${input.sourcePath} --sha ${commitSha}`
         : null;
+  const repoAtSha = commitSha ? `${input.repository}@${commitSha}` : null;
+  const handle = commitSha
+    ? line !== null
+      ? `gitpin:${input.repository}@${commitSha}:${input.sourcePath}:${line}`
+      : `gitpin:${input.repository}@${commitSha}:${input.sourcePath}`
+    : null;
   return {
     repository: input.repository,
     sourcePath: input.sourcePath,
@@ -36,6 +100,8 @@ export function buildCitation(input: {
     commitSha,
     provenance,
     cite: `${input.repository}/${input.sourcePath}${linePart}${shaPart}`,
+    handle,
+    repoAtSha,
     verify: { gitShow, gitpinCli },
   };
 }
@@ -91,7 +157,7 @@ export function asCandidateHits(
         },
       };
     }),
-    note: 'Search hits are candidates, not claims. Call pin.prove (then pin.verify) before asserting a fact.',
+    note: 'Search hits are candidates, not claims. Call pin.prove (then pin.verify) before asserting a fact. Prefer pin.prove_set for multi-repo answers.',
   };
 }
 

@@ -74,7 +74,7 @@ describe('authenticated HTTP transport', () => {
     }
   });
 
-  it('completes the MCP handshake and lists the ten read-only pin tools', async () => {
+  it('completes the MCP handshake and lists the twelve read-only pin tools', async () => {
     const server = createHttpServer({ token });
     await listen(server);
     const port = (server.address() as AddressInfo).port;
@@ -93,10 +93,12 @@ describe('authenticated HTTP transport', () => {
         'pin.get_doc',
         'pin.inspect',
         'pin.prove',
+        'pin.prove_set',
         'pin.read',
         'pin.search_code',
         'pin.search_docs',
         'pin.verify',
+        'pin.verify_set',
       ]);
       expect(tools.tools.every((tool) => tool.annotations?.readOnlyHint === true)).toBe(true);
 

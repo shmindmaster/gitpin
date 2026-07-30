@@ -19,7 +19,7 @@ The name “RepoContext” collides with many open-source tools (often embedding
 | npm package | `@shmindmaster/repocontext` | `@shmindmaster/gitpin` |
 | CLI | `repocontext` | `gitpin` (`repocontext` bin alias kept temporarily) |
 | MCP name | `io.github.shmindmaster/repocontext` | `io.github.shmindmaster/gitpin` |
-| Tools | `wiki.*` / `repo.*` (8) | `pin.*` (10) including `pin.prove` + `pin.verify` |
+| Tools | `wiki.*` / `repo.*` (8) | `pin.*` (12) including prove/verify and prove_set/verify_set |
 | Brief type | `ContextBrief` schema v1 | `EvidenceBrief` schema v2 (`product`, `contract`) |
 | Search responses | Raw hit arrays | `evidence-candidates` envelope with `next` → prove |
 | Env | `REPOCONTEXT_*` | `GITPIN_*` (old names still accepted) |

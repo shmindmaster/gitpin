@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shmindmaster.github.io/repocontext/schemas/citation.schema.json",
+  "title": "GitPin Citation",
+  "type": "object",
+  "required": [
+    "repository",
+    "sourcePath",
+    "line",
+    "lineEnd",
+    "commitSha",
+    "provenance",
+    "cite",
+    "handle",
+    "repoAtSha",
+    "verify"
+  ],
+  "properties": {
+    "repository": { "type": "string", "minLength": 1 },
+    "sourcePath": { "type": "string", "minLength": 1 },
+    "line": { "type": ["integer", "null"], "minimum": 1 },
+    "lineEnd": { "type": ["integer", "null"], "minimum": 1 },
+    "commitSha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{7,40}$" },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "git-head",
+        "snapshot",
+        "unversioned-workspace-document",
+        "blocked",
+        "missing",
+        "unavailable"
+      ]
+    },
+    "cite": { "type": "string", "minLength": 1 },
+    "handle": { "type": ["string", "null"] },
+    "repoAtSha": { "type": ["string", "null"] },
+    "verify": {
+      "type": "object",
+      "required": ["gitShow", "gitpinCli"],
+      "properties": {
+        "gitShow": { "type": ["string", "null"] },
+        "gitpinCli": { "type": ["string", "null"] }
+      }
+    }
+  },
+  "additionalProperties": false
+}
