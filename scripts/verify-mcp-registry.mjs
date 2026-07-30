@@ -56,6 +56,13 @@ const publishJob = workflow.jobs?.publish;
 if (publishJob?.permissions?.contents !== 'read' || publishJob.permissions?.['id-token'] !== 'write') {
   throw new Error('MCP Registry publication must use least-privilege GitHub OIDC permissions.');
 }
+const installCommands = (publishJob.steps ?? []).map((step) => step.run ?? '').filter(Boolean);
+if (
+  !installCommands.includes('npm install --global pnpm@11.15.0') ||
+  !installCommands.includes('pnpm install --frozen-lockfile')
+) {
+  throw new Error('MCP Registry publication must install the locked verifier dependencies before validation.');
+}
 const metadataStep = (publishJob.steps ?? []).find((step) => step.name === 'Match metadata to the release tag');
 if (
   metadataStep?.env?.RELEASE_REF !== releaseInputExpression ||
