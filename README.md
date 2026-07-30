@@ -17,6 +17,9 @@ No database. No embeddings. No write tools. Git remains the source of truth.
 
 > **Release status:** [`@shmindmaster/repocontext`](https://www.npmjs.com/package/@shmindmaster/repocontext) is publicly available on npm. Clean `npx` installs are verified on Node 20, 22, and 24.
 
+RepoContext's official MCP Registry identity is `io.github.shmindmaster/repocontext`. The version-matched
+[`server.json`](server.json) points Registry-capable clients to the same public npm package and canonical repository.
+
 The repository also contains a static product site at [shmindmaster.github.io/repocontext](https://shmindmaster.github.io/repocontext/). Website analytics are optional, cookieless, and isolated to a dedicated RepoContext PostHog project; the CLI and MCP transports contain no telemetry.
 
 ## Prerequisites
