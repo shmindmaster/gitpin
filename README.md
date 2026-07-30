@@ -8,13 +8,13 @@
 
 ### Commit-pinned context for coding agents—read-only, multi-repo, and verifiable.
 
-RepoContext is an open-source [MCP](https://modelcontextprotocol.io) server that gives Claude Code, Codex, Cursor, Windsurf, Zed, Continue, and other MCP clients **bounded evidence from the Git repositories you register**. Every useful answer carries a **path, line number, and full commit SHA**. Dirty worktrees are never presented as committed truth.
+RepoContext is an open-source [MCP](https://modelcontextprotocol.io) server that gives Claude Code, Codex, Cursor, Windsurf, Zed, Continue, and other MCP clients **bounded evidence from the Git repositories you register**. Content search and read results carry a **path, line number, and full commit SHA**; catalog and comparison results stay commit-pinned. Dirty worktrees are never presented as committed truth.
 
 ```text
 Agent question → RepoContext (Git HEAD only) → cited docs/code → you verify the SHA
 ```
 
-**No database. No embeddings. No write tools. No reindex lag.** Git and the filesystem are the source of truth.
+**No database. No embeddings. No write tools. No local reindex lag.** Git and the filesystem are the source of truth.
 
 | You want… | RepoContext |
 | --- | --- |
@@ -169,7 +169,7 @@ Coding agents are powerful inside one checkout and unreliable across a real mult
 
 RepoContext targets a narrower job: return a small, inspectable set of evidence an agent (and a human) can re-check in Git.
 
-**Primary audience:** developers using MCP coding agents across several local repositories.  
+**Primary audience:** developers using MCP coding agents across several local repositories.
 **Secondary:** release and platform engineers who need a source-cited Context Brief; teams that require a read-only trust boundary.
 
 See [how RepoContext compares](docs/compare.md) for filesystem MCP, GitHub MCP, and embedding indexers.

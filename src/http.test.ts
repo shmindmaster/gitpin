@@ -127,6 +127,12 @@ describe('authenticated HTTP transport', () => {
         arguments: { operation: 'brief', audience: 'technical', unsupported: true },
       });
       expect(invalidBrief.isError).toBe(true);
+
+      const invalidCompare = await client.callTool({
+        name: 'repo.compare',
+        arguments: { repository: 'sample', base: 'HEAD~1', head: 'HEAD' },
+      });
+      expect(invalidCompare.isError).toBe(true);
     } finally {
       await client.close();
       await close(server);

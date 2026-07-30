@@ -21,7 +21,7 @@ Honest comparison for developers choosing a repository-context path for coding a
 
 - Agents must show **where** an answer came from (path, line, SHA).
 - You work across **several local Git roots** (services, apps, shared libraries).
-- You want **no reindex lag** and **no embedding drift**.
+- You want **no local reindex lag** and **no embedding drift**.
 - Security or process policy forbids broad write tools or opaque retrieval.
 - You need a **reproducible** brief for review, release, or cross-functional handoff.
 
