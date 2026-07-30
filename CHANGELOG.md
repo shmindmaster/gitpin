@@ -7,6 +7,12 @@ All notable changes to RepoContext are documented here. The project follows [Kee
 ### Added
 
 - Add market deep-research notes, FAQ, and launch copy grounded in multi-agent competitive research.
+- Harden repository path containment with realpath checks and refuse directory symlink traversal while indexing snapshots.
+- Expand product-site Playwright coverage for navigation, keyboard audience tabs, skip link, network failures, and CI failure artifacts.
+
+### Security
+
+- Block symlink escapes that resolve outside a registered repository root before filesystem reads.
 
 ## [0.3.1] - 2026-07-30
 

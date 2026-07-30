@@ -2,14 +2,22 @@ import { expect, test } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
   const errors = [];
+  const failedRequests = [];
   page.on('console', (message) => {
     if (message.type() === 'error') errors.push(message.text());
   });
   page.on('pageerror', (error) => errors.push(error.message));
+  page.on('requestfailed', (request) => {
+    const resourceType = request.resourceType();
+    if (resourceType === 'document' || resourceType === 'script' || resourceType === 'stylesheet') {
+      failedRequests.push(`${request.method()} ${request.url()} ${request.failure()?.errorText ?? 'failed'}`);
+    }
+  });
   await page.goto('/');
   await expect(page).toHaveTitle(/RepoContext/);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Commit-pinned context for coding agents.');
-  expect(errors).toEqual([]);
+  expect(errors, `console errors: ${errors.join('; ')}`).toEqual([]);
+  expect(failedRequests, `failed network: ${failedRequests.join('; ')}`).toEqual([]);
 });
 
 test('presents the release path and safety boundary without analytics by default', async ({ page }) => {
@@ -18,8 +26,9 @@ test('presents the release path and safety boundary without analytics by default
     if (request.url().includes('posthog')) analyticsRequests.push(request.url());
   });
 
-  await expect(page.getByText('No database. No embeddings. No write tools.')).toBeVisible();
-  const menu = page.getByRole('button', { name: 'Open navigation' });
+  await expect(page.getByText(/No database\. No embeddings\. No write tools\./)).toBeVisible();
+  await expect(page.getByText(/No local reindex lag/)).toBeVisible();
+  const menu = page.getByRole('button', { name: /navigation/i });
   if (await menu.isVisible()) await menu.click();
   await page.getByRole('link', { name: 'Safety', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'A deliberately narrow trust boundary.' })).toBeVisible();
@@ -36,13 +45,14 @@ test('presents the release path and safety boundary without analytics by default
 });
 
 test('makes npm-first onboarding the primary activation path', async ({ page }) => {
-  const primaryAction = page.getByRole('link', { name: 'Start with npx', exact: true });
+  const primaryAction = page.getByRole('link', { name: /Start with npx/i });
   await expect(primaryAction).toHaveAttribute('href', '#install');
   await primaryAction.click();
   await expect(page.getByRole('heading', { name: 'From install to cited answer.' })).toBeVisible();
   await expect(page.locator('.terminal')).toContainText('init --client codex');
   await expect(page.locator('.terminal')).toContainText('Registry: ~/.repocontext/repositories.yaml');
   await expect(page.locator('.terminal')).toContainText('First context: README.md:1');
+  await expect(page.getByText('Works with Claude Code, Codex, Cursor, Windsurf, Zed, and Continue.')).toBeVisible();
 });
 
 test('publishes a narrow, accessible privacy statement', async ({ page }) => {
@@ -57,6 +67,7 @@ test('switches audience presentation while preserving the evidence set', async (
   const evidenceSet = await page.locator('.evidence-id code').textContent();
   await page.getByRole('tab', { name: 'Product' }).click();
   await expect(page.getByRole('tab', { name: 'Product' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('tabpanel')).toBeVisible();
   await expect(page.locator('#audience-question')).toHaveText('What can users trust in a Context Brief?');
   await expect(page.locator('.evidence-id code')).toHaveText(evidenceSet);
 
@@ -64,6 +75,30 @@ test('switches audience presentation while preserving the evidence set', async (
   await expect(page.getByRole('tab', { name: 'Operations' })).toBeFocused();
   await expect(page.locator('#audience-fact')).toHaveText('HTTP snapshots contain documentation and manifests only.');
   await expect(page.locator('.evidence-id code')).toHaveText(evidenceSet);
+
+  await page.getByRole('tab', { name: 'Operations' }).press('Home');
+  await expect(page.getByRole('tab', { name: 'Technical' })).toBeFocused();
+  await expect(page.getByRole('tab', { name: 'Technical' })).toHaveAttribute('aria-selected', 'true');
+});
+
+test('supports skip-to-content and mobile navigation state transitions', async ({ page }) => {
+  const skip = page.getByRole('link', { name: 'Skip to content' });
+  await expect(skip).toHaveAttribute('href', '#main');
+  // Focus the skip target explicitly: WebKit does not always place first-Tab on the
+  // visually-hidden skip link the same way Chromium does, but it must remain operable.
+  await skip.focus();
+  await expect(skip).toBeFocused();
+  await skip.press('Enter');
+  await expect(page.locator('#main')).toBeVisible();
+  await expect(page.locator('#main')).toBeInViewport();
+
+  const menu = page.getByRole('button', { name: /navigation/i });
+  if (await menu.isVisible()) {
+    await menu.click();
+    await expect(menu).toHaveAttribute('aria-expanded', 'true');
+    await page.keyboard.press('Escape');
+    await expect(menu).toHaveAttribute('aria-expanded', 'false');
+  }
 });
 
 test('delivers custom events after the asynchronous analytics loader replaces its queue', async ({ page }) => {
@@ -103,5 +138,6 @@ test('keeps the primary content within the viewport', async ({ page }) => {
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
   );
   expect(overflow).toBeLessThanOrEqual(1);
-  await expect(page.getByRole('link', { name: 'View on GitHub', exact: true }).first()).toBeVisible();
+  await expect(page.getByRole('link', { name: /View on GitHub/i }).first()).toBeVisible();
+  await expect(page.getByRole('link', { name: /Start with npx/i })).toBeVisible();
 });

@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs';
 import { extname, join, relative } from 'node:path';
 import { isDocumentationAllowed, parseExposurePolicy } from './policy';
 import type { RepoEntry } from './registry';
@@ -141,7 +141,9 @@ function snapshotPaths(root: string): string[] {
     for (const entry of safeReadDirectory(directory)) {
       const full = join(directory, entry);
       try {
-        const stat = statSync(full);
+        const stat = lstatSync(full);
+        // Do not follow symlinks that could escape the snapshot root.
+        if (stat.isSymbolicLink()) continue;
         if (stat.isDirectory()) visit(full);
         else if (stat.isFile() && stat.size <= MAX_DOCUMENT_BYTES) found.push(normalizePath(relative(root, full)));
       } catch {

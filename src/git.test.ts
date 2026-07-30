@@ -1,10 +1,11 @@
-import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdirSync, writeFileSync, rmSync, symlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { execSync } from 'node:child_process';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { setRegistryPath, clearRegistryCache } from './registry';
 import { compareRepoCommits, getRepoFile, getRepoManifest, getRepoStatus, getRepoTests, searchRepoCode } from './git';
+import { assertWithinRoot } from './git-shared';
 
 const tmpRoot = join(tmpdir(), `repocontext-git-${process.pid}`);
 const repoPath = join(tmpRoot, 'sample-repo');
@@ -74,6 +75,19 @@ describe('git safety', () => {
 
   it('blocks path traversal', async () => {
     await expect(getRepoFile('sample', '../outside.txt')).rejects.toThrow(/traversal/i);
+  });
+
+  it('blocks symlink escape outside the repository root', () => {
+    const outside = join(tmpRoot, 'outside-secret.txt');
+    writeFileSync(outside, 'escaped\n', 'utf-8');
+    const linkPath = join(repoPath, 'escape-link.txt');
+    try {
+      symlinkSync(outside, linkPath);
+    } catch {
+      // Windows may require elevated privileges for file symlinks.
+      return;
+    }
+    expect(() => assertWithinRoot(repoPath, linkPath, 'escape-link.txt')).toThrow(/traversal/i);
   });
 
   it('reports status and manifest', async () => {

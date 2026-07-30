@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, lstatSync, readFileSync, readdirSync, realpathSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import simpleGit, { type SimpleGit } from 'simple-git';
 import { isAlwaysSensitivePath } from './policy';
@@ -162,6 +162,16 @@ export function findFiles(root: string, predicate: (path: string) => boolean, li
 
 export function assertWithinRoot(root: string, full: string, sourcePath: string): void {
   if (!isWithin(root, full)) throw new Error(`Path traversal blocked: ${sourcePath}`);
+  // Existing paths must stay inside the repository after symlink resolution.
+  if (!existsSync(full)) return;
+  try {
+    const rootReal = realpathSync.native(root);
+    const fullReal = realpathSync.native(full);
+    if (!isWithin(rootReal, fullReal)) throw new Error(`Path traversal blocked: ${sourcePath}`);
+  } catch (error) {
+    if (error instanceof Error && /Path traversal blocked/u.test(error.message)) throw error;
+    throw new Error(`Path traversal blocked: ${sourcePath}`);
+  }
 }
 
 export function isWithin(root: string, full: string): boolean {
@@ -195,7 +205,9 @@ function discoverGitRoots(root: string): string[] {
       const full = join(directory, item);
       let isDirectory = false;
       try {
-        isDirectory = statSync(full).isDirectory();
+        const entry = lstatSync(full);
+        if (entry.isSymbolicLink()) continue;
+        isDirectory = entry.isDirectory();
       } catch {
         continue;
       }
@@ -215,7 +227,10 @@ function walk(root: string, visitor: (path: string, isDirectory: boolean) => boo
       const full = join(directory, item);
       let isDirectory = false;
       try {
-        isDirectory = statSync(full).isDirectory();
+        const entry = lstatSync(full);
+        // Never follow directory symlinks when scanning repository trees.
+        if (entry.isSymbolicLink()) continue;
+        isDirectory = entry.isDirectory();
       } catch {
         continue;
       }
