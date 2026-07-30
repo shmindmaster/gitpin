@@ -5,6 +5,7 @@ const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.me
 const server = JSON.parse(readFileSync(new URL('../server.json', import.meta.url), 'utf8'));
 const workflow = parse(readFileSync(new URL('../.github/workflows/publish-mcp.yml', import.meta.url), 'utf8'));
 const expectedName = 'io.github.shmindmaster/repocontext';
+const releaseInputExpression = '$' + '{{ inputs.release_ref }}';
 
 if (packageJson.mcpName !== expectedName || server.name !== expectedName) {
   throw new Error('package.json mcpName and server.json name must match the GitHub-owned RepoContext namespace.');
@@ -54,6 +55,15 @@ if (workflow.on?.push || workflow.on?.release || workflow.on?.schedule) {
 const publishJob = workflow.jobs?.publish;
 if (publishJob?.permissions?.contents !== 'read' || publishJob.permissions?.['id-token'] !== 'write') {
   throw new Error('MCP Registry publication must use least-privilege GitHub OIDC permissions.');
+}
+const metadataStep = (publishJob.steps ?? []).find((step) => step.name === 'Match metadata to the release tag');
+if (
+  metadataStep?.env?.RELEASE_REF !== releaseInputExpression ||
+  !metadataStep.run?.includes('verify-release-tag.mjs "$RELEASE_REF"') ||
+  !metadataStep.run?.includes('show-ref --verify --quiet "refs/tags/$RELEASE_REF"') ||
+  metadataStep.run.includes(releaseInputExpression)
+) {
+  throw new Error('MCP Registry publication must validate its release tag without shell input interpolation.');
 }
 const commands = (publishJob.steps ?? []).map((step) => step.run ?? '').join('\n');
 for (const required of [
