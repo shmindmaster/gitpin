@@ -26,6 +26,22 @@ The repository also contains a static product site at [shmindmaster.github.io/re
 - Git available on `PATH`
 - pnpm 11 for source development (`corepack enable` will provide the version declared by the project)
 
+## Start with the published package
+
+From a committed Git repository with a README or other supported documentation, run:
+
+```bash
+npx -y @shmindmaster/repocontext@latest init --client codex
+```
+
+`init` creates `~/.repocontext/repositories.yaml` outside the indexed repository, runs the same readiness checks as
+`doctor`, returns one commit-pinned Context Brief fact, and prints a paste-ready MCP configuration. It never changes
+the indexed repository. Choose `codex`, `cursor`, `windsurf`, `zed`, or `continue`; repeat `--repository <path>` to
+register multiple Git roots, or use `--registry <path>` for a separate registry.
+
+An identical rerun is safe and leaves the registry unchanged. If the destination already contains different
+configuration, `init` refuses to overwrite it and tells you how to choose another path.
+
 ## Install from source
 
 ```bash

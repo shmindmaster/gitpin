@@ -1,5 +1,6 @@
 import { BRIEF_AUDIENCES, type BriefAudience, getContextBrief } from './context-brief';
 import { doctorExitCode, formatDoctorReport, getDoctorReport } from './doctor';
+import { initializeRepoContext, parseInitOptions, supportedInitClients } from './onboarding';
 
 export async function runCli(args: string[]): Promise<void> {
   const [command, ...options] = args;
@@ -13,6 +14,12 @@ export async function runCli(args: string[]): Promise<void> {
   if (command === 'brief') {
     const input = parseBriefOptions(options);
     console.log(JSON.stringify(await getContextBrief(input), null, 2));
+    return;
+  }
+  if (command === 'init') {
+    const result = await initializeRepoContext(parseInitOptions(options));
+    console.log(formatInitResult(result));
+    process.exitCode = doctorExitCode(result.readiness);
     return;
   }
   if (command === 'help' || command === '--help' || command === '-h') {
@@ -83,8 +90,14 @@ function cliHelp(): string {
 
 Usage:
   repocontext                         Start the stdio MCP server
+  repocontext init --client <name>    Create a registry, verify it, and print client configuration
   repocontext doctor                  Validate registry readiness
   repocontext brief [options]         Print a deterministic Context Brief as JSON
+
+Init options:
+  --client <name>                     ${supportedInitClients.join(', ')}
+  --repository <path>                 Git repository root; repeat for multiple (default: current directory)
+  --registry <path>                   Registry destination (default: ~/.repocontext/repositories.yaml)
 
 Brief options:
   --audience <name>                   technical, product, design, support, operations, or leadership
@@ -93,4 +106,22 @@ Brief options:
   --base <sha> --head <sha>           Compare two 7-40 character Git revisions
 
 RepoContext writes the brief only to stdout. Redirect it explicitly when an artifact is required.`;
+}
+
+function formatInitResult(result: Awaited<ReturnType<typeof initializeRepoContext>>): string {
+  const first = result.firstContext;
+  return [
+    `RepoContext initialized: ${result.readiness.status}`,
+    `Registry: ${result.registry.path} (${result.registry.created ? 'created' : 'already matched'})`,
+    formatDoctorReport(result.readiness),
+    '',
+    `First context: ${first.statement}`,
+    `Source: ${first.repository}/${first.sourcePath}:${first.line}`,
+    `Commit: ${first.commitSha}`,
+    '',
+    `Client configuration (${result.client}):`,
+    result.clientConfig,
+    '',
+    'Next: add this configuration to your MCP client, restart it, and call wiki.catalog.',
+  ].join('\n');
 }
