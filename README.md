@@ -8,7 +8,9 @@
 
 ### Commit-pinned context for coding agents—read-only, multi-repo, and verifiable.
 
-RepoContext is an open-source [MCP](https://modelcontextprotocol.io) server that gives Claude Code, Codex, Cursor, Windsurf, Zed, Continue, and other MCP clients **bounded evidence from the Git repositories you register**. Content search and read results carry a **path, line number, and full commit SHA**; catalog and comparison results stay commit-pinned. Dirty worktrees are never presented as committed truth.
+RepoContext (`@shmindmaster/repocontext`) is an open-source [MCP](https://modelcontextprotocol.io) server that gives Claude Code, Codex, Cursor, Windsurf, Zed, Continue, and other MCP clients **bounded evidence from the Git repositories you register**. Content search and read results carry a **path, line number, and full commit SHA**; catalog and comparison results stay commit-pinned. Dirty worktrees are never presented as committed truth.
+
+> **Name is crowded.** Other projects also use “repo-context” / “RepoContext” (often with embeddings, SQLite indexes, or one-shot dumps). This package is deliberately **index-free**. See [docs/compare.md](docs/compare.md) and [competitive landscape](docs/research/competitive-landscape-corrected-2026-07-30.md).
 
 ```text
 Agent question → RepoContext (Git HEAD only) → cited docs/code → you verify the SHA
@@ -30,7 +32,7 @@ RepoContext's Registry identity is `io.github.shmindmaster/repocontext`. The ver
 
 Product site: [shmindmaster.github.io/repocontext](https://shmindmaster.github.io/repocontext/). Website analytics are optional, cookieless, and isolated; the CLI and MCP transports contain **no telemetry**.
 
-**Docs:** [Tools](docs/tools.md) · [Compare](docs/compare.md) · [FAQ](docs/faq.md) · [Clients](docs/clients.md) · [Troubleshooting](docs/troubleshooting.md) · [Architecture](docs/architecture.md) · [Research](docs/research/deep-research-2026-07-30.md) · [Launch notes](docs/launch.md)
+**Docs:** [Tools](docs/tools.md) · [Compare](docs/compare.md) · [FAQ](docs/faq.md) · [Clients](docs/clients.md) · [Troubleshooting](docs/troubleshooting.md) · [Architecture](docs/architecture.md) · [Competitive landscape](docs/research/competitive-landscape-corrected-2026-07-30.md) · [Launch notes](docs/launch.md)
 
 ## Prerequisites
 

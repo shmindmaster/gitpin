@@ -7,6 +7,7 @@ All notable changes to RepoContext are documented here. The project follows [Kee
 ### Added
 
 - Add market deep-research notes, FAQ, and launch copy grounded in multi-agent competitive research.
+- Correct the competitive landscape after a name-collision sweep (many `repo-context*` / multi-repo MCP peers).
 - Harden repository path containment with realpath checks and refuse directory symlink traversal while indexing snapshots.
 - Expand product-site Playwright coverage for navigation, keyboard audience tabs, skip link, network failures, and CI failure artifacts.
 

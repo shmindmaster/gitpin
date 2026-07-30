@@ -2,6 +2,8 @@
 
 Honest comparison for developers choosing a repository-context path for coding agents. Strengths of alternatives are real; pick the tool that matches the job.
 
+**Important:** the phrase “repo context” is **not unique**. Multiple open-source MCP/CLI products use names like `mcp-repo-context`, `repo-context`, `repo-ctx`, `repoctx`, and `Repo Context`. See [competitive landscape (corrected)](research/competitive-landscape-corrected-2026-07-30.md). This package is `@shmindmaster/repocontext` / `io.github.shmindmaster/repocontext` — an **index-free, read-only, Git-HEAD-pinned** multi-repo MCP, not a vector-index or dump tool.
+
 | Dimension | RepoContext | Filesystem MCP | Official Git MCP (typical) | GitHub MCP | Embedding / RAG indexers | Sourcegraph-class search |
 | --- | --- | --- | --- | --- | --- | --- |
 | Setup | One `npx init` + registry | Mount paths | Git tools in one repo | OAuth / token | Indexer + storage | Hosted or large self-host |
@@ -32,18 +34,21 @@ Honest comparison for developers choosing a repository-context path for coding a
 - You need **semantic** “find code like this” across huge monorepos → embeddings / Sourcegraph-class tools.
 - You only care about the **live dirty worktree** the human is editing → filesystem MCP (RepoContext intentionally excludes uncommitted content as evidence).
 
-## Named ecosystem peers (research snapshot, 2026-07-30)
+## Named ecosystem peers (corrected research, 2026-07-30)
 
-| Peer | Stronger when… | RepoContext stronger when… |
+| Peer | Stronger when… | This package stronger when… |
 | --- | --- | --- |
-| `@modelcontextprotocol/server-filesystem` | Agent must edit files | Commit pins + no write tools |
-| `mcp-server-git` | Agent must stage/commit/branch | Multi-repo registry + no mutation |
+| `mcp-repo-context`, `repo-ctx`, HutsonLabs `repo-context-mcp`, SRC | You want AST/call graphs, embeddings, SQLite/Lance indexes | You refuse index lag and want live Git HEAD + full SHA |
+| `codesearch`, `code-intel-mcp` | Multi-repo hybrid/semantic search at scale | You want zero embed model / no Zoekt index |
+| `sourceplane-mcp` | Multi-host sources (GH/GL/BB + local) with allowlists | Local Git-root registry + docs/code wiki tools + Context Brief |
+| GitMCP / gitctx | Chat with a **remote** GitHub repo without cloning | Local multi-root, offline, private trees |
+| Official filesystem / git MCP | Agent must edit or mutate Git | Read-only + HEAD-only evidence contract |
 | GitHub MCP server | Issues, PRs, Actions, remote GH | Local/private multi-root HEAD evidence |
 | Context7 | Third-party **library docs** freshness | **Your** repo docs/code at a SHA |
-| Repomix / dump tools | One-shot full-repo paste | Bounded multi-repo cited evidence |
+| Repomix / dump CLIs (`repo-context` generators) | One-shot full-repo paste into a chat | Live MCP tools + bounded cited evidence |
 | codebase-memory / Sourcegraph-class | Call graphs, org-scale semantic search | Zero index infra, reproducible cites |
 
-Full research notes: [research/deep-research-2026-07-30.md](research/deep-research-2026-07-30.md). FAQ: [faq.md](faq.md).
+Full corrected landscape: [research/competitive-landscape-corrected-2026-07-30.md](research/competitive-landscape-corrected-2026-07-30.md). Earlier notes (pain points still useful): [research/deep-research-2026-07-30.md](research/deep-research-2026-07-30.md). FAQ: [faq.md](faq.md).
 
 ## Positioning statement (validated against the implementation + market research)
 

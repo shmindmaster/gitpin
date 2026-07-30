@@ -18,6 +18,10 @@ GitHub MCP is for **GitHub’s platform** (issues, PRs, Actions, remote APIs). R
 
 Indexes excel at **semantic** “find similar” and large fleets, but they introduce **reindex lag**, branch/rebase drift, and opaque chunks. RepoContext trades semantic search for **immediate HEAD freshness** and **reproducible citations**. Prefer Sourcegraph-class or graph MCP tools when structure/semantics dominate.
 
+## Is this the only “RepoContext” / “repo-context” tool?
+
+**No.** The name is crowded. Other open-source projects include `mcp-repo-context`, `repo-context-mcp-server`, `repo-ctx`, `repoctx`, dump-style `repo-context` CLIs, and vector-index servers that reuse the same language. This package is specifically **`@shmindmaster/repocontext`**: multi-repo local Git roots, **no embeddings/DB**, **read-only**, content from **Git HEAD** with **path / line / full SHA**. See [competitive landscape (corrected)](research/competitive-landscape-corrected-2026-07-30.md).
+
 ## Why is commit pinning useful?
 
 Agents cache earlier tool results as if they were eternal facts. Branch switches, pulls, and multi-agent checkouts create **branch-state drift**. Pinning answers to a **full SHA** makes each fact auditable with `git show <sha>:<path>` and stops dirty work from masquerading as committed truth.
