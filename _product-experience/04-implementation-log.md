@@ -34,6 +34,7 @@ it does not modify MCP client configuration.
 - `src/onboarding.ts`, `src/onboarding.test.ts`, `src/cli.ts`
 - `site/index.html`, `tests/browser/site.spec.mjs`
 - `README.md`, `docs/clients.md`, `CHANGELOG.md`
+- `.github/workflows/ci.yml`, `scripts/verify-ci-runner-routing.mjs`
 - `_product-experience/04-implementation-log.md`
 
 ## Validation
