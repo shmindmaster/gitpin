@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { extname, join, relative } from 'node:path';
 import { isDocumentationAllowed, parseExposurePolicy } from './policy';
 import type { RepoEntry } from './registry';
@@ -117,7 +117,7 @@ function gitNullSeparated(repositoryPath: string, args: string[]): string[] {
 }
 
 function gitStatusPaths(repositoryPath: string): string[] {
-  const output = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=no'], {
+  const output = execFileSync('git', ['--no-optional-locks', 'status', '--porcelain=v1', '--untracked-files=no'], {
     cwd: repositoryPath,
     encoding: 'utf-8',
     windowsHide: true,

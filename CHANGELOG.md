@@ -2,6 +2,16 @@
 
 All notable changes to RepoContext are documented here. The project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and intends to use [Semantic Versioning](https://semver.org/spec/v2.0.0.html) after the first public release.
 
+## [Unreleased]
+
+### Added
+
+- Add `repocontext init --client <name>` for safe npm-first onboarding from install to a commit-pinned first fact.
+
+### Changed
+
+- Make the public website's primary activation path the published npm package.
+
 ## [0.2.4] - 2026-07-29
 
 ### Fixed

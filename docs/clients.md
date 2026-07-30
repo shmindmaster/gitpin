@@ -2,7 +2,22 @@
 
 RepoContext works as a local stdio server in MCP clients that accept a command, arguments, and environment variables. These examples use a source build; use the public `npx` command below when a local checkout is unnecessary.
 
-Before configuring a client:
+## Fast path from npm
+
+Run `init` from a committed Git repository:
+
+```bash
+npx -y @shmindmaster/repocontext@latest init --client codex
+```
+
+Choose `claude-code`, `codex`, `cursor`, `windsurf`, `zed`, or `continue`. The command creates an external registry,
+verifies readiness, prints one commit-pinned result, and returns a client configuration using the published package.
+It does not edit the indexed repository or your MCP client configuration. Repeat `--repository <path>` for a
+multi-repository registry.
+
+## Source-build setup
+
+For the source-based configurations below:
 
 ```bash
 corepack enable

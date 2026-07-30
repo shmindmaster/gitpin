@@ -19,7 +19,7 @@ jobs:
       matrix:
         node: [22, 24]
     runs-on: >-
-      ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork && 'ubuntu-latest' || fromJSON('["self-hosted", "Linux", "X64", "sh-runner-repocontext", "repocontext"]') }}
+      ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork && 'ubuntu-latest' || fromJSON('["self-hosted", "Linux", "X64", "sh-runner-repocontext"]') }}
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v7
@@ -33,7 +33,7 @@ jobs:
   package:
     needs: validate
     runs-on: >-
-      ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork && 'ubuntu-latest' || fromJSON('["self-hosted", "Linux", "X64", "sh-runner-repocontext", "repocontext"]') }}
+      ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork && 'ubuntu-latest' || fromJSON('["self-hosted", "Linux", "X64", "sh-runner-repocontext"]') }}
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v7
@@ -59,7 +59,7 @@ jobs:
       matrix:
         node: [20, 22, 24]
     runs-on: >-
-      ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork && 'ubuntu-latest' || fromJSON('["self-hosted", "Linux", "X64", "sh-runner-repocontext", "repocontext"]') }}
+      ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork && 'ubuntu-latest' || fromJSON('["self-hosted", "Linux", "X64", "sh-runner-repocontext"]') }}
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v7
@@ -74,7 +74,7 @@ jobs:
   website:
     needs: validate
     runs-on: >-
-      ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork && 'ubuntu-latest' || fromJSON('["self-hosted", "Linux", "X64", "sh-runner-repocontext", "repocontext"]') }}
+      ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork && 'ubuntu-latest' || fromJSON('["self-hosted", "Linux", "X64", "sh-runner-repocontext"]') }}
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v7
@@ -92,4 +92,3 @@ jobs:
             playwright-report
             test-results
           if-no-files-found: ignore
-

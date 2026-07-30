@@ -25,7 +25,7 @@ test('presents the release path and safety boundary without analytics by default
   await expect(page.getByRole('heading', { name: 'A deliberately narrow trust boundary.' })).toBeVisible();
   if (await menu.isVisible()) await menu.click();
   await page.getByRole('link', { name: 'Install', exact: true }).click();
-  await expect(page.locator('.terminal')).toContainText('@shmindmaster/repocontext@latest help');
+  await expect(page.locator('.terminal')).toContainText('@shmindmaster/repocontext@latest init --client codex');
   await expect(page.locator('body')).not.toContainText(/release candidate/i);
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
     'href',
@@ -33,6 +33,16 @@ test('presents the release path and safety boundary without analytics by default
   );
   await expect(page.getByRole('link', { name: 'Privacy', exact: true })).toHaveAttribute('href', './privacy.html');
   expect(analyticsRequests).toEqual([]);
+});
+
+test('makes npm-first onboarding the primary activation path', async ({ page }) => {
+  const primaryAction = page.getByRole('link', { name: 'Start with npx', exact: true });
+  await expect(primaryAction).toHaveAttribute('href', '#install');
+  await primaryAction.click();
+  await expect(page.getByRole('heading', { name: 'From install to cited answer.' })).toBeVisible();
+  await expect(page.locator('.terminal')).toContainText('init --client codex');
+  await expect(page.locator('.terminal')).toContainText('Registry: ~/.repocontext/repositories.yaml');
+  await expect(page.locator('.terminal')).toContainText('First context: README.md:1');
 });
 
 test('publishes a narrow, accessible privacy statement', async ({ page }) => {

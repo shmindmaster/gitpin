@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -90,6 +90,25 @@ try {
   }
 
   const serverPath = join(packageRoot, 'dist', 'server.js');
+  const initializedRegistryPath = join(temporaryRoot, 'initialized', 'repositories.yaml');
+  const initialization = execFileSync(
+    process.execPath,
+    [serverPath, 'init', '--client', 'codex', '--repository', repositoryPath, '--registry', initializedRegistryPath],
+    {
+      cwd: clientPath,
+      env: commandEnvironment,
+      encoding: 'utf8',
+      windowsHide: true,
+    },
+  );
+  if (
+    !initialization.includes('RepoContext initialized: ready') ||
+    !initialization.includes('First context: repository exposes README at README.md.') ||
+    !initialization.includes('codex mcp add --env') ||
+    !existsSync(initializedRegistryPath)
+  ) {
+    throw new Error(`Packed init journey did not reach a configured first fact: ${initialization.trim()}`);
+  }
   const environment = { ...commandEnvironment, REPOCONTEXT_REGISTRY: registryPath };
   const doctor = execFileSync(process.execPath, [serverPath, 'doctor'], {
     cwd: clientPath,
@@ -144,6 +163,7 @@ try {
       status: 'ready',
       package: basename(tarballPath),
       cleanInstall: 'verified',
+      initialization: 'verified',
       doctor: 'verified',
       contextBrief: 'verified',
       firstAnswer: 'verified',

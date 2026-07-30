@@ -9,10 +9,11 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { stringify } from 'yaml';
-import { loadRegistry } from './registry';
 import { parseExposurePolicy } from './policy';
+import { loadRegistry } from './registry';
 import { isSensitiveSnapshotPath, isSnapshotFile } from './snapshot-files';
 import { prepareSnapshotOutput } from './snapshot-output';
+
 const MAX_FILE_BYTES = 500_000;
 
 export interface SnapshotReportEntry {
@@ -50,7 +51,7 @@ export function buildSnapshot(outputPath?: string): SnapshotReportEntry[] {
 
     const commitSha = gitText(repository.path, ['rev-parse', 'HEAD']);
     const branch = gitText(repository.path, ['branch', '--show-current']) || null;
-    const dirtyEntriesExcluded = gitLines(repository.path, ['status', '--porcelain=v1']).length;
+    const dirtyEntriesExcluded = gitLines(repository.path, ['--no-optional-locks', 'status', '--porcelain=v1']).length;
     const tracked = gitNullSeparated(repository.path, ['ls-tree', '-r', '--name-only', '-z', 'HEAD']);
     if (branch && repository.branches.length > 0 && !repository.branches.includes(branch)) {
       throw new Error(
