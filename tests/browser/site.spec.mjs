@@ -15,7 +15,7 @@ test.beforeEach(async ({ page }) => {
   });
   await page.goto('/');
   await expect(page).toHaveTitle(/GitPin/);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Pin agent answers to Git HEAD.');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Prove agent answers. Then verify them.');
   expect(errors, `console errors: ${errors.join('; ')}`).toEqual([]);
   expect(failedRequests, `failed network: ${failedRequests.join('; ')}`).toEqual([]);
 });
