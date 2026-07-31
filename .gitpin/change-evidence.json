@@ -1,18 +1,44 @@
 {
   "schemaVersion": 1,
-  "summary": "Exercise the released GitPin Action on a real pull request.",
+  "summary": "Align the public website with GitPin's released pull-request evidence gate.",
   "claims": [
     {
-      "id": "DOGFOOD-PR",
-      "statement": "The repository documents its end-to-end pull-request self-test.",
-      "covers": ["docs/pr-evidence-gate.md"],
+      "id": "SITE-PR-GATE",
+      "statement": "The public website leads with the required pull-request evidence gate and tests that activation path.",
+      "covers": [
+        "docs/website.md",
+        "site/index.html",
+        "site/social-card.svg",
+        "tests/browser/site.spec.mjs"
+      ],
       "evidence": [
         {
           "ref": "head",
-          "path": "docs/pr-evidence-gate.md",
-          "lineStart": 90,
-          "lineEnd": 90,
-          "contentSha256": "df88fdc9991f927e74b8d70bdb8f9c5abb23dd07da0476036a758c1aa535b5d2"
+          "path": "site/index.html",
+          "lineStart": 54,
+          "lineEnd": 54,
+          "contentSha256": "65952291cef5c414b0f74bebff617ea579b13f87b302300ed9a20519765da1fc"
+        },
+        {
+          "ref": "head",
+          "path": "site/social-card.svg",
+          "lineStart": 6,
+          "lineEnd": 6,
+          "contentSha256": "e8e0fd334febf9eda0f5af514d65f1cadde758661c82a58fd7d29220904ed529"
+        },
+        {
+          "ref": "head",
+          "path": "tests/browser/site.spec.mjs",
+          "lineStart": 49,
+          "lineEnd": 49,
+          "contentSha256": "de4a5e4621f9838869400ca1f3ebe9244c655b33ec35c79e3082f8aa211127b2"
+        },
+        {
+          "ref": "head",
+          "path": "docs/website.md",
+          "lineStart": 3,
+          "lineEnd": 3,
+          "contentSha256": "95a23c9336d3d8c13689905c5508db6fe9b45d303bceb519f2443ccc94b52742"
         }
       ]
     }
