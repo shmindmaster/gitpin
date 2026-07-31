@@ -85,7 +85,7 @@ See [Zed MCP docs](https://zed.dev/docs/ai/mcp).
 <!-- config:continue:start -->
 ```yaml
 name: GitPin
-version: 0.5.3
+version: 0.6.0
 schema: v1
 mcpServers:
   - name: GitPin

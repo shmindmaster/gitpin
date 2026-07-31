@@ -1,4 +1,5 @@
 import { BRIEF_AUDIENCES, type BriefAudience, getContextBrief } from './context-brief';
+import { runGateCommand } from './cli-gate';
 import { exitForVerify, parseProveSetOptions, runVerifyCitesCommand, runVerifyCommand } from './cli-verify';
 import { doctorExitCode, formatDoctorReport, getDoctorReport } from './doctor';
 import { buildEvidenceSet } from './evidence';
@@ -35,6 +36,12 @@ export async function runCli(args: string[]): Promise<void> {
   }
   if (command === 'verify-cites') {
     const report = await runVerifyCitesCommand(options);
+    console.log(JSON.stringify(report, null, 2));
+    process.exitCode = exitForVerify(report);
+    return;
+  }
+  if (command === 'gate') {
+    const report = await runGateCommand(options);
     console.log(JSON.stringify(report, null, 2));
     process.exitCode = exitForVerify(report);
     return;
@@ -117,6 +124,7 @@ Usage:
   gitpin verify --from-pack <pack.json>
   gitpin verify-cites --file <notes.md>
   gitpin prove-set --from-json <items.json>
+  gitpin gate --base <full-sha> --head <full-sha> [--root <repo>] [--policy <path>]
 
 Init options:
   --client <name>                     ${supportedInitClients.join(', ')}
@@ -139,6 +147,7 @@ Verify options:
   --from-pack <file>                  Verify evidence-pack or evidence-set JSON
 
 Cite mini-spec: docs/cite-spec.md
+PR evidence gate: docs/pr-evidence-gate.md
 Migration: REPOCONTEXT_* env vars and ~/.repocontext still work as aliases.
 GitPin writes briefs only to stdout. Redirect explicitly for artifacts.`;
 }

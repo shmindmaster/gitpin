@@ -1,0 +1,79 @@
+name: GitPin Evidence Gate
+description: Verify that material PR claims cover the actual diff and point to exact committed evidence.
+author: Sarosh Hussain
+branding:
+  icon: check-square
+  color: green
+
+inputs:
+  base-sha:
+    description: Full base commit SHA from github.event.pull_request.base.sha.
+    required: true
+  head-sha:
+    description: Full head commit SHA from github.event.pull_request.head.sha.
+    required: true
+  policy-path:
+    description: Trusted gate policy path read from the base commit.
+    required: false
+    default: .gitpin/gate.yml
+  repository-name:
+    description: Name used in generated full-SHA citations.
+    required: false
+    default: ""
+  gitpin-version:
+    description: Exact npm version to execute. Override only from a trusted workflow.
+    required: false
+    default: 0.6.0
+
+outputs:
+  report-path:
+    description: Path to the deterministic JSON gate report.
+    value: ${{ steps.gate.outputs.report-path }}
+  report-id:
+    description: Stable identifier for this gate result.
+    value: ${{ steps.gate.outputs.report-id }}
+  status:
+    description: ok or failed.
+    value: ${{ steps.gate.outputs.status }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Node.js
+      uses: actions/setup-node@v7
+      with:
+        node-version: 24
+
+    - name: Verify PR evidence
+      id: gate
+      shell: bash
+      env:
+        BASE_SHA: ${{ inputs.base-sha }}
+        HEAD_SHA: ${{ inputs.head-sha }}
+        POLICY_PATH: ${{ inputs.policy-path }}
+        REPOSITORY_NAME: ${{ inputs.repository-name }}
+        GITPIN_VERSION: ${{ inputs.gitpin-version }}
+        NPM_CONFIG_REGISTRY: https://registry.npmjs.org
+      run: |
+        set -uo pipefail
+        REPORT_PATH="${RUNNER_TEMP}/gitpin-gate-report.json"
+        REPOSITORY_NAME="${REPOSITORY_NAME:-${GITHUB_REPOSITORY:-repository}}"
+        EMPTY_NPMRC="${RUNNER_TEMP}/gitpin-empty.npmrc"
+        : > "$EMPTY_NPMRC"
+        cd "$RUNNER_TEMP"
+        set +e
+        npm exec --yes \
+          --registry="https://registry.npmjs.org" \
+          --userconfig="$EMPTY_NPMRC" \
+          --package="gitpin@${GITPIN_VERSION}" -- gitpin gate \
+          --root "$GITHUB_WORKSPACE" \
+          --base "$BASE_SHA" \
+          --head "$HEAD_SHA" \
+          --policy "$POLICY_PATH" \
+          --repository "$REPOSITORY_NAME" > "$REPORT_PATH"
+        GATE_EXIT=$?
+        set -e
+
+        echo "report-path=$REPORT_PATH" >> "$GITHUB_OUTPUT"
+        node "${GITHUB_ACTION_PATH}/scripts/render-gate-action-report.mjs" "$REPORT_PATH"
+        exit "$GATE_EXIT"

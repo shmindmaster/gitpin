@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "summary": "Describe the user-visible or operational outcome of this change.",
+  "claims": [
+    {
+      "id": "CHANGE-1",
+      "statement": "Describe one material claim without asserting more than the evidence shows.",
+      "covers": ["src/example.ts"],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "src/example.ts",
+          "lineStart": 1,
+          "lineEnd": 10,
+          "contentSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+schemaVersion: 1
+manifestPath: .gitpin/change-evidence.json
+
+coverage:
+  include:
+    - "**"
+  exclude:
+    - "docs/generated/**"
+
+policyChanges: block
+
+limits:
+  changedPaths: 100
+  claims: 50
+  evidencePerClaim: 8
+  fileBytes: 2097152

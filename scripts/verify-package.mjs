@@ -1,4 +1,5 @@
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, join, resolve } from 'node:path';
@@ -19,12 +20,52 @@ let client;
 try {
   mkdirSync(repositoryPath, { recursive: true });
   mkdirSync(clientPath, { recursive: true });
+  mkdirSync(join(repositoryPath, '.gitpin'), { recursive: true });
   writeFileSync(join(repositoryPath, 'README.md'), `# Package fixture\n\n${marker}\n`, 'utf8');
+  writeFileSync(
+    join(repositoryPath, '.gitpin', 'gate.yml'),
+    'schemaVersion: 1\nmanifestPath: .gitpin/change-evidence.json\ncoverage:\n  include: ["**"]\npolicyChanges: block\n',
+    'utf8',
+  );
   run('git', ['init', '-q'], repositoryPath);
   run('git', ['config', 'user.email', 'gitpin-test@example.invalid'], repositoryPath);
   run('git', ['config', 'user.name', 'GitPin Test'], repositoryPath);
-  run('git', ['add', 'README.md'], repositoryPath);
+  run('git', ['add', 'README.md', '.gitpin/gate.yml'], repositoryPath);
   run('git', ['commit', '-qm', 'package fixture'], repositoryPath);
+  const gateBaseSha = runOutput('git', ['rev-parse', 'HEAD'], repositoryPath).trim();
+  const gateEvidence = 'Gate evidence locator';
+  writeFileSync(join(repositoryPath, 'README.md'), `# Package fixture\n\n${marker}\n${gateEvidence}\n`, 'utf8');
+  writeFileSync(
+    join(repositoryPath, '.gitpin', 'change-evidence.json'),
+    `${JSON.stringify(
+      {
+        schemaVersion: 1,
+        summary: 'Verify the packed PR evidence gate.',
+        claims: [
+          {
+            id: 'PACKAGE-GATE',
+            statement: 'The packed gate verifies exact committed evidence.',
+            covers: ['README.md'],
+            evidence: [
+              {
+                ref: 'head',
+                path: 'README.md',
+                lineStart: 4,
+                lineEnd: 4,
+                contentSha256: createHash('sha256').update(gateEvidence, 'utf8').digest('hex'),
+              },
+            ],
+          },
+        ],
+      },
+      null,
+      2,
+    )}\n`,
+    'utf8',
+  );
+  run('git', ['add', 'README.md', '.gitpin/change-evidence.json'], repositoryPath);
+  run('git', ['commit', '-qm', 'package gate fixture'], repositoryPath);
+  const gateHeadSha = runOutput('git', ['rev-parse', 'HEAD'], repositoryPath).trim();
 
   writeFileSync(
     registryPath,
@@ -66,11 +107,17 @@ try {
     'ROADMAP.md',
     'SECURITY.md',
     'server.json',
+    'action.yml',
+    'scripts/render-gate-action-report.mjs',
     'docs/clients.md',
     'docs/configuration.md',
     'docs/migration-gitpin.md',
+    'docs/pr-evidence-gate.md',
     'docs/remote-deployment.md',
+    'docs/schemas/change-evidence.schema.json',
     'docs/website.md',
+    'templates/change-evidence.json',
+    'templates/gate.yml',
     'templates/wiki.yaml',
   ];
   const missingPublicFiles = requiredPublicFiles.filter((file) => !existsSync(join(packageRoot, file)));
@@ -113,6 +160,27 @@ try {
   }
 
   const serverPath = join(packageRoot, 'dist', 'server.js');
+  const gateReport = JSON.parse(
+    execFileSync(
+      process.execPath,
+      [
+        serverPath,
+        'gate',
+        '--root',
+        repositoryPath,
+        '--repository',
+        'package-fixture',
+        '--base',
+        gateBaseSha,
+        '--head',
+        gateHeadSha,
+      ],
+      { cwd: clientPath, env: commandEnvironment, encoding: 'utf8', windowsHide: true },
+    ),
+  );
+  if (gateReport.status !== 'ok' || gateReport.claims?.[0]?.status !== 'evidence-verified') {
+    throw new Error('Packed PR evidence gate did not verify exact committed evidence.');
+  }
   const legacyCommand = join(
     clientPath,
     'node_modules',
@@ -211,6 +279,7 @@ try {
       doctor: 'verified',
       contextBrief: 'verified',
       firstAnswer: 'verified',
+      prEvidenceGate: 'verified',
       publicDocs: 'verified',
     }),
   );

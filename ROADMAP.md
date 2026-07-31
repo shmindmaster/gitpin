@@ -4,6 +4,8 @@ GitPin's roadmap is evidence-led. Planned work may change when validation shows 
 
 ## Current product
 
+- Read-only `gitpin gate` for base-trusted PR policy, changed-path coverage, and exact-commit evidence locators.
+- GitHub Action that emits a deterministic report suitable for a required merge check.
 - Twelve bounded, read-only `pin.*` MCP tools for discovery, evidence, verification, and decision support.
 - Git `HEAD` pinning with path, line, content hash, and full commit provenance.
 - Exposure policies that fail closed and sensitive-path blocking.
@@ -22,6 +24,8 @@ GitPin's roadmap is evidence-led. Planned work may change when validation shows 
 
 ## P1 validation and adoption
 
+- Run the PR gate on real agent-authored changes and measure required-check retention, false blocking, and review decisions changed.
+- Validate CrewScore named controls as a separate written-policy check without using its aggregate coverage score.
 - Validate EvidenceBrief usefulness with technical and cross-functional users using synthetic fixtures.
 - Improve fixtures for workspace repositories, stale documentation, malformed policies, and remote snapshots.
 - Verify the documentation-only remote container in an approved hosting environment.

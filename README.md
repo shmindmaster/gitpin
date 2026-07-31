@@ -6,9 +6,9 @@
 [![MCP Protocol](https://img.shields.io/badge/MCP-1.30-blue.svg)](https://modelcontextprotocol.io)
 [![npm](https://img.shields.io/npm/v/gitpin.svg)](https://www.npmjs.com/package/gitpin)
 
-### Pin agent answers to Git HEAD. Path. Line. Full SHA. Prove. Verify.
+### Make agent-authored changes show exact evidence before merge.
 
-**GitPin is not another “repo context” MCP.** That category is full of vector indexes, dump files, and remote GitHub browsers. GitPin is a **trust product**: index-free, read-only, multi-repo **evidence** agents must prove and humans can re-check with `git show`.
+**GitPin is an agent-delivery assurance gate with a local evidence MCP.** It makes material PR claims cover the actual diff and point to exact committed line slices. The local MCP supplies index-free, read-only, multi-repo evidence that humans and CI can re-check with `git show`.
 
 ```text
 Agent claim
@@ -27,6 +27,14 @@ Agent claim
 | GitHub platform MCP | **Local Git roots (private/offline)** |
 
 Formerly RepoContext 0.3.x. See [migration](docs/migration-gitpin.md).
+
+## Required PR evidence gate
+
+```bash
+gitpin gate --base <full-base-sha> --head <full-head-sha>
+```
+
+The gate reads policy only from the trusted base commit, reads the submitted manifest only from the head commit, compares the merge-base diff, and verifies exact line-slice hashes. It never executes PR code and never labels a locator match as proof of semantic correctness. Use the [GitHub Action and CrewScore named-control setup](docs/pr-evidence-gate.md) as a required check.
 
 > **Release:** publish a version-matched GitPin release across npm, the MCP Registry, GitHub, and Pages before announcing. Install: `npx -y gitpin@latest`. Node 20+.
 

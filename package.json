@@ -1,9 +1,9 @@
 {
   "name": "gitpin",
-  "version": "0.5.3",
+  "version": "0.6.0",
   "mcpName": "io.github.shmindmaster/gitpin",
   "type": "commonjs",
-  "description": "Prove and verify multi-repo agent claims at Git HEAD—index-free evidence packs with path, line, and full SHA.",
+  "description": "Verify agent-authored change claims at exact Git commits with an evidence-first PR gate and local MCP.",
   "author": "Sarosh Hussain",
   "license": "MIT",
   "homepage": "https://shmindmaster.github.io/gitpin/",
@@ -34,7 +34,11 @@
     "SECURITY.md",
     "server.json",
     "docs",
-    "docs/migration-gitpin.md"
+    "docs/migration-gitpin.md",
+    "action.yml",
+    "scripts/render-gate-action-report.mjs",
+    "templates/gate.yml",
+    "templates/change-evidence.json"
   ],
   "publishConfig": {
     "access": "public"
@@ -98,6 +102,9 @@
     "read-only",
     "coding-agents",
     "provenance",
+    "pull-request",
+    "ci",
+    "ai-governance",
     "claude-code",
     "codex",
     "cursor"

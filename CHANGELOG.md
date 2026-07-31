@@ -4,6 +4,17 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-07-31
+
+### Added
+
+- Add a read-only `gitpin gate` command that loads policy from the trusted base commit, binds a submitted manifest to the exact head commit, compares the merge-base diff, and verifies full-SHA line-slice evidence hashes.
+- Add the GitPin Evidence Gate GitHub Action, deterministic JSON reports, base evidence for deletions, bootstrap templates, and documented CrewScore named-control composition.
+
+### Changed
+
+- Reposition GitPin around agent-delivery assurance and required PR evidence rather than repository-context retrieval.
+
 ## [0.5.3] - 2026-07-31
 
 ### Fixed
@@ -158,7 +169,8 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 - Snapshot generation replaces only marked RepoContext output directories and rejects registered repository roots or their ancestors.
 - Malformed exposure policies fail closed.
 
-[Unreleased]: https://github.com/shmindmaster/gitpin/compare/v0.5.3...HEAD
+[Unreleased]: https://github.com/shmindmaster/gitpin/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/shmindmaster/gitpin/releases/tag/v0.6.0
 [0.5.3]: https://github.com/shmindmaster/gitpin/releases/tag/v0.5.3
 [0.5.2]: https://github.com/shmindmaster/gitpin/releases/tag/v0.5.2
 [0.5.1]: https://github.com/shmindmaster/gitpin/releases/tag/v0.5.1
