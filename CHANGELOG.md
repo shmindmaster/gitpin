@@ -4,6 +4,13 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 
 ## [Unreleased]
 
+## [0.5.3] - 2026-07-31
+
+### Fixed
+
+- Accept npm 12's package-keyed `npm pack --json` output while retaining compatibility with earlier npm array output.
+- Run the CI package gate with the same pinned npm 12 toolchain used by releases.
+
 ## [0.5.2] - 2026-07-31
 
 ### Changed
@@ -151,7 +158,8 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 - Snapshot generation replaces only marked RepoContext output directories and rejects registered repository roots or their ancestors.
 - Malformed exposure policies fail closed.
 
-[Unreleased]: https://github.com/shmindmaster/gitpin/compare/v0.5.2...HEAD
+[Unreleased]: https://github.com/shmindmaster/gitpin/compare/v0.5.3...HEAD
+[0.5.3]: https://github.com/shmindmaster/gitpin/releases/tag/v0.5.3
 [0.5.2]: https://github.com/shmindmaster/gitpin/releases/tag/v0.5.2
 [0.5.1]: https://github.com/shmindmaster/gitpin/releases/tag/v0.5.1
 [0.5.0]: https://github.com/shmindmaster/gitpin/releases/tag/v0.5.0

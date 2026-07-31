@@ -39,7 +39,14 @@ try {
     tarballPath = resolve(providedTarball);
   } else {
     const packOutput = runOutput(npmCommand, ['pack', '--json', '--pack-destination', temporaryRoot], process.cwd());
-    const [{ filename }] = JSON.parse(packOutput);
+    const packResult = JSON.parse(packOutput);
+    const packMetadata = Array.isArray(packResult)
+      ? packResult[0]
+      : packResult.filename
+        ? packResult
+        : Object.values(packResult)[0];
+    const { filename } = packMetadata ?? {};
+    if (!filename) throw new Error('npm pack did not return a package filename.');
     tarballPath = join(temporaryRoot, filename);
   }
   const isolatedNpmCache = join(temporaryRoot, 'npm-cache');

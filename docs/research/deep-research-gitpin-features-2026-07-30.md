@@ -165,4 +165,4 @@ Do **not** expand tool count before multi-cite + batch verify land—those deepe
 
 ## Ops note (unchanged from ship path)
 
-`gitpin@0.5.1` was the manually bootstrapped npm release. `gitpin@0.5.2` is the first release intended to exercise GitHub Actions trusted publishing end to end. The published predecessor is `@shmindmaster/repocontext`; `@shmindmaster/gitpin` was an unpublished intermediate name.
+`gitpin@0.5.1` was the manually bootstrapped npm release. `gitpin@0.5.3` is the first release intended to exercise GitHub Actions trusted publishing end to end after npm 12 compatibility validation. The former `@shmindmaster/repocontext` package was removed from npm on 2026-07-31; `@shmindmaster/gitpin` was an unpublished intermediate name.
