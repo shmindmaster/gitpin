@@ -165,4 +165,4 @@ Do **not** expand tool count before multi-cite + batch verify land—those deepe
 
 ## Ops note (unchanged from ship path)
 
-`gitpin@0.5.1` still needs its **first npm publish**. The published predecessor is `@shmindmaster/repocontext`; `@shmindmaster/gitpin` was an unpublished intermediate name. Registry listing waits on the `gitpin` npm artifact.
+`gitpin@0.5.1` was the manually bootstrapped npm release. `gitpin@0.5.2` is the first release intended to exercise GitHub Actions trusted publishing end to end. The published predecessor is `@shmindmaster/repocontext`; `@shmindmaster/gitpin` was an unpublished intermediate name.

@@ -4,6 +4,12 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-07-31
+
+### Changed
+
+- Upgrade releases to npm CLI 12 and enforce trusted-publishing requirements in repository validation: GitHub-hosted release execution, OIDC permissions, supported Node/npm versions, npm registry configuration, matching repository identity, and no long-lived npm token fallback.
+
 ## [0.5.1] - 2026-07-31
 
 ### Changed
@@ -145,7 +151,8 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 - Snapshot generation replaces only marked RepoContext output directories and rejects registered repository roots or their ancestors.
 - Malformed exposure policies fail closed.
 
-[Unreleased]: https://github.com/shmindmaster/gitpin/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/shmindmaster/gitpin/compare/v0.5.2...HEAD
+[0.5.2]: https://github.com/shmindmaster/gitpin/releases/tag/v0.5.2
 [0.5.1]: https://github.com/shmindmaster/gitpin/releases/tag/v0.5.1
 [0.5.0]: https://github.com/shmindmaster/gitpin/releases/tag/v0.5.0
 [0.4.0]: https://github.com/shmindmaster/gitpin/releases/tag/v0.4.0

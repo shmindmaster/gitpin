@@ -1,4 +1,4 @@
-# Migration: RepoContext to GitPin (0.5.1)
+# Migration: RepoContext to GitPin (0.5.2)
 
 ## Why (product pivot, not just rename)
 
@@ -14,7 +14,7 @@ The name “RepoContext” collides with many open-source tools (often embedding
 
 ## What changed
 
-| Item | 0.3.x RepoContext | 0.5.1 GitPin |
+| Item | 0.3.x RepoContext | 0.5.2 GitPin |
 | --- | --- | --- |
 | npm package | `@shmindmaster/repocontext` | `gitpin` |
 | CLI | `repocontext` | `gitpin` (`repocontext` bin alias kept temporarily) |
@@ -66,7 +66,7 @@ Remove the old `repocontext` server entry to avoid dual servers.
 
 ## Publishing
 
-1. Publish `gitpin@0.5.1` via the tag workflow.
+1. Publish `gitpin@0.5.2` via the tag workflow to verify npm trusted publishing end to end.
 2. Optionally deprecate `@shmindmaster/repocontext` on npm with a message pointing at GitPin.
 3. Publish MCP Registry metadata for `io.github.shmindmaster/gitpin`.
 4. ~~GitHub repository folder may remain `repocontext` until a deliberate GitHub rename~~ — done on 2026-07-31. The repository is `shmindmaster/gitpin` and the site is `shmindmaster.github.io/gitpin/`. GitHub redirects the old paths, but every tracked URL now points at the new name directly.

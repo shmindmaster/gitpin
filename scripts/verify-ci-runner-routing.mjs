@@ -1,8 +1,15 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { parse } from 'yaml';
 
-const workflow = parse(readFileSync(new URL('../.github/workflows/ci.yml', import.meta.url), 'utf8'));
-const releaseWorkflow = parse(readFileSync(new URL('../.github/workflows/release.yml', import.meta.url), 'utf8'));
+const workflowsDirectory = new URL('../.github/workflows/', import.meta.url);
+const workflowFiles = readdirSync(workflowsDirectory).filter((file) => /\.ya?ml$/u.test(file));
+const workflows = Object.fromEntries(
+  workflowFiles.map((file) => [file, parse(readFileSync(new URL(file, workflowsDirectory), 'utf8'))]),
+);
+const workflow = workflows['ci.yml'];
+const releaseWorkflow = workflows['release.yml'];
+const rawReleaseWorkflow = readFileSync(new URL('release.yml', workflowsDirectory), 'utf8');
+const packageManifest = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 const githubTokenExpression = '$' + '{{ github.token }}';
 
 // CI used to route fork pull requests to ubuntu-latest and everything else to a
@@ -17,10 +24,7 @@ const githubTokenExpression = '$' + '{{ github.token }}';
 // reintroduce one. If one ever comes back, fork-routing has to come back with
 // it, and this check fails loudly rather than letting untrusted code onto a
 // persistent machine.
-for (const [file, parsed] of [
-  ['ci.yml', workflow],
-  ['release.yml', releaseWorkflow],
-]) {
+for (const [file, parsed] of Object.entries(workflows)) {
   for (const [jobName, job] of Object.entries(parsed.jobs ?? {})) {
     if (JSON.stringify(job['runs-on'] ?? '').includes('self-hosted')) {
       throw new Error(
@@ -39,6 +43,37 @@ for (const jobName of ['validate', 'package', 'package-runtime', 'website']) {
 const releaseJob = releaseWorkflow.jobs?.publish;
 if (releaseJob?.permissions?.contents !== 'write' || releaseJob.permissions?.['id-token'] !== 'write') {
   throw new Error('The trusted release job must have contents: write and id-token: write permissions.');
+}
+
+if (releaseJob?.['runs-on'] !== 'ubuntu-latest') {
+  throw new Error('The npm trusted publisher must run on a GitHub-hosted runner.');
+}
+
+const setupNodeStep = releaseJob.steps?.find((step) => String(step.uses ?? '').startsWith('actions/setup-node@'));
+if (
+  String(setupNodeStep?.with?.['node-version']) !== '24' ||
+  setupNodeStep?.with?.['registry-url'] !== 'https://registry.npmjs.org' ||
+  setupNodeStep?.with?.['package-manager-cache'] !== false
+) {
+  throw new Error('The trusted release job must use Node 24, the npm registry URL, and package-manager-cache: false.');
+}
+
+const toolchainStep = releaseJob.steps?.find((step) => step.name === 'Install release toolchain');
+if (!toolchainStep?.run?.includes('npm@12.0.2')) {
+  throw new Error('The trusted release job must use the pinned npm 12 toolchain.');
+}
+
+const publishStep = releaseJob.steps?.find((step) => step.name === 'Publish package or verify bootstrap artifact');
+if (!publishStep?.run?.includes('npm publish --access public')) {
+  throw new Error('The trusted release workflow must publish to npm from its OIDC-enabled job.');
+}
+
+if (/NODE_AUTH_TOKEN|NPM_TOKEN|secrets\./u.test(rawReleaseWorkflow)) {
+  throw new Error('The trusted release workflow must not fall back to a long-lived npm token.');
+}
+
+if (packageManifest.repository?.url !== 'git+https://github.com/shmindmaster/gitpin.git') {
+  throw new Error('package.json repository.url must match the npm trusted publisher repository.');
 }
 
 const releaseStep = releaseJob.steps?.find((step) => step.name === 'Create GitHub Release');
