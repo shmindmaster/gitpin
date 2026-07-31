@@ -86,3 +86,5 @@ gitpin gate --base <full-40-character-sha> --head <full-40-character-sha>
 ```
 
 Exit `0` means all required changed paths have material claims and all locators match committed content. Exit `1` means the gate failed. The deterministic JSON report goes to stdout.
+
+GitPin's own repository runs this Action on every pull request as an end-to-end self-test of the published package and base-trusted policy.
