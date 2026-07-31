@@ -16,10 +16,7 @@ if (server.version !== packageJson.version) {
 if (server.description.length > 100) {
   throw new Error('MCP Registry descriptions must not exceed 100 characters.');
 }
-if (
-  server.repository?.url !== 'https://github.com/shmindmaster/gitpin' ||
-  server.repository?.source !== 'github'
-) {
+if (server.repository?.url !== 'https://github.com/shmindmaster/gitpin' || server.repository?.source !== 'github') {
   throw new Error('server.json must point to the canonical public GitHub repository.');
 }
 
