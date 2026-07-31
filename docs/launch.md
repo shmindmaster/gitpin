@@ -1,146 +1,65 @@
-# Public launch package
+# GitPin public launch package
 
-Internal checklist and copy for RepoContext’s public beta / broader announcement. Do not invent metrics or user quotes.
+Internal checklist and copy for the GitPin release and discovery launch. Do not invent metrics, user quotes, registry status, or package availability.
 
-## Release verdict (2026-07-30)
+## Release gate
 
-**Ready for public beta / discovery launch.** npm `@shmindmaster/gitpin@0.3.1`, GitHub Release `v0.3.1`, and official MCP Registry listing (`io.github.shmindmaster/gitpin`, status **active**) are live as of 2026-07-30. Research basis: [docs/research/deep-research-2026-07-30.md](research/deep-research-2026-07-30.md).
+GitPin is launchable only when the exact same version is verified in the source tag, npm package, GitHub Release, Pages site, and official MCP Registry. A green source CI run alone is not a public release.
 
-## Golden-path demo (shareable)
+Required before announcement:
 
-**Story:** An agent answers a multi-repo release question with path, line, and full commit SHA—and refuses to treat a dirty worktree as committed evidence.
+1. Publish the new GitPin version from a new version tag; do not reuse `v0.4.0`.
+2. Verify clean-machine `npx -y @shmindmaster/gitpin@latest init --client codex` and first evidence output.
+3. Verify all 12 `pin.*` tools and read-only annotations.
+4. Publish matching MCP Registry metadata for `io.github.shmindmaster/gitpin`.
+5. Deploy the current GitPin site and confirm canonical links, package links, and migration guidance.
+
+## Golden path
 
 ```bash
-# From a clean machine
 npx -y @shmindmaster/gitpin@latest init --client codex
-# Paste printed MCP config into the client, then ask:
-
-# 1) Which repositories are ready?
-#    → pin.catalog (view: sync)
-
-# 2) Where is authentication documented?
-#    → pin.search_docs query: "bearer authentication"
-
-# 3) Prove the source
-#    → pin.get_doc / pin.read and verify path + line + full SHA
-
-# 4) What changed between two release commits?
-#    → pin.compare with hex base/head
-
-# Maintainer demo (synthetic fixture, never user repos):
-pnpm demo:verify
 ```
 
-**Aha moment:** same question after a local uncommitted edit still returns the **committed** line, while catalog/doctor report **stale/attention**—so the agent cannot silently mix dirty files into “facts.”
+Then ask a coding agent:
 
-## Primary audience
+1. Which registered repositories are ready? Use `pin.catalog`.
+2. Where is authentication documented? Search, then treat results as candidates.
+3. Prove the source with `pin.prove` and verify it with `pin.verify`.
+4. Build an EvidenceBrief for a bounded cross-repository release question.
 
-**Primary:** Individual developers and small teams using MCP coding agents (Claude Code, Codex, Cursor, Windsurf, Zed, Continue) across **multiple local repositories**.
+The trust moment is that the answer carries a path, line, and full commit SHA that a human can re-check with `git show`.
 
-**Secondary:** Release / platform engineers who need a source-cited Context Brief for cross-functional handoff; security-conscious teams that reject write-capable or black-box context tools.
+## Positioning
 
-## Channels and posts (templates)
+GitPin is a read-only MCP server for multi-repo evidence pinned to Git HEAD. It does not index, embed, write, commit, push, or claim that a search hit is proof. Search finds candidates; prove and verify close the evidence loop.
 
-### README / website one-liner
+GitPin is maintained by Sarosh Hussain, who leads its technical direction. Pendoah is his company and operating context. Keep launch copy product-first and do not attribute unrelated products to Pendoah.
 
-Commit-pinned context for coding agents—read-only, multi-repo, path + line + SHA, no embeddings.
+## Announcement draft
 
-### X / short post
+> Coding agents can quote the wrong branch, dirty worktree, or stale index with confidence.
+>
+> GitPin is a read-only MCP server that keeps multi-repo answers pinned to Git HEAD. Search finds candidates; `pin.prove` creates an evidence pack; `pin.verify` re-checks it with path, line, and full commit SHA.
+>
+> No database, embeddings, write access, or hosted account. Install with `npx -y @shmindmaster/gitpin@latest init --client codex`.
+>
+> https://github.com/shmindmaster/gitpin
+>
+> Maintained by Sarosh Hussain. Pendoah is his company and operating context.
 
-```text
-Coding agents guess across repos.
+## First week
 
-RepoContext is a read-only MCP server that answers from Git HEAD only—
-with path, line, and full commit SHA. No DB. No embeddings. No write tools.
-
-npx -y @shmindmaster/gitpin@latest init --client codex
-https://github.com/shmindmaster/gitpin
-```
-
-### Show HN
-
-**Title:** RepoContext – commit-pinned, read-only multi-repo context for coding agents (MCP)
-
-**Body (draft for human posting):**
-
-```text
-Agents confidently quote code that is on the wrong branch, only in a dirty worktree,
-or never existed. Filesystem MCP tools often write. Embeddings lag after rebase.
-
-RepoContext is a small MCP server that answers only from Git HEAD across the repos
-you register—every useful hit carries path, line, and full commit SHA. No database,
-no embeddings, no write tools.
-
-npx -y @shmindmaster/gitpin@latest init --client codex
-
-https://github.com/shmindmaster/gitpin
-
-Curious how others pin multi-repo agent context without a vector store.
-```
-
-### LinkedIn
-
-```text
-Coding agents fail quietly when repository context is wrong—wrong branch, dirty tree,
-or an index that still thinks last week’s API exists.
-
-I open-sourced RepoContext: a read-only MCP server for multi-repo, commit-pinned
-evidence (path + line + full SHA). Git stays the source of truth.
-
-Try: npx -y @shmindmaster/gitpin@latest init --client codex
-Repo: https://github.com/shmindmaster/gitpin
-```
-
-### Client auto-invoke rule (paste into AGENTS.md / Cursor rules)
-
-```text
-When answering questions about architecture, ownership, docs, or implementation across
-registered local repositories, use RepoContext MCP tools (wiki.* / repo.*) and cite
-path, line, and full commit SHA. Do not invent file contents. Prefer pin.catalog
-before broad search. Treat gaps and blocked paths as real absences.
-```
-
-### Likely objections (see docs/faq.md)
-
-| Objection | Short answer |
+| Window | Action |
 | --- | --- |
-| Just use filesystem MCP | That tool writes; no commit pin |
-| Just use git MCP | Mutates repos; not multi-repo registry-first |
-| Just use embeddings | Better semantics; worse lag and opaque cites |
-| Just use git grep | One repo CLI; no policy, brief, doctor, MCP chain |
-| Can it write? | No |
-| Monorepos? | Git roots yes; package graphs later |
-
-### GitHub release notes focus
-
-- Install-to-first-cited-fact via `init`
-- Trust boundary table
-- Link to docs/compare.md and docs/tools.md
-- MCP Registry identity when published (`io.github.shmindmaster/gitpin`)
-
-## First-day / first-week / first-month
-
-| Window | Actions |
-| --- | --- |
-| Day 0 | Merge registry PR, tag 0.3.1, npm + MCP Registry publish, deploy site if needed, seed 3 GitHub issues from backlog |
-| Day 1 | Post short demo + Show HN / relevant communities; watch issues and doctor failures |
-| Week 1 | Answer every issue; capture install friction; no new tools unless a blocker |
-| Month 1 | Run moderated validation (SH-2395); decide hosted docs-only remote; publish one user-validated brief story if consented |
-
-## Success metrics (honest)
-
-| Metric | Why it matters | Guardrail |
-| --- | --- | --- |
-| Successful `init` + first cited fact | Activation | Do not add CLI telemetry; infer from issues and support |
-| Stars / forks / npm downloads | Discovery | Vanity alone is insufficient |
-| Quality issues filed | Real usage | Empty issues may mean no users |
-| Repeat agent workflows described by users | Retention | Prefer qualitative proof early |
-| Registry listing present | Ecosystem discovery | Binary gate for “broad” launch |
+| Day 0 | Publish npm, MCP Registry, GitHub Release, and Pages; verify the clean install |
+| Day 1 | Post the factual announcement and answer technical questions |
+| Days 1-7 | Watch install, `doctor`, citation, and registry issues; fix blockers before adding tools |
+| Week 2 | Run EvidenceBrief validation with approved synthetic repositories |
 
 ## Do not claim
 
-- Semantic or embedding search quality
-- Guaranteed older-version security maintenance windows
-- Hosted multi-tenant SaaS
-- That dirty worktrees are searchable as evidence
-- Stars or adoption numbers that are not measured
+- Semantic or embedding search quality.
+- Hosted multi-tenant SaaS.
+- That dirty worktrees are searchable as evidence.
+- User adoption, registry status, or package availability without current verification.
+- That GitPin replaces code review, tests, source control, or repository-owned documentation.

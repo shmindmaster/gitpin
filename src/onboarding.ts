@@ -228,7 +228,7 @@ function clientConfiguration(client: InitClient, registryPath: string): string {
   if (client === 'continue') {
     return stringify({
       name: 'GitPin',
-      version: '0.4.0',
+      version: '0.5.0',
       schema: 'v1',
       mcpServers: [{ name: 'GitPin', type: 'stdio', ...server }],
     }).trim();

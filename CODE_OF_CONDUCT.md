@@ -1,6 +1,6 @@
 # Code of conduct
 
-RepoContext welcomes people of every background and experience level. Participation in repository issues, pull requests, reviews, and related community spaces requires respectful, professional conduct.
+GitPin welcomes people of every background and experience level. Participation in repository issues, pull requests, reviews, and related community spaces requires respectful, professional conduct.
 
 ## Expected behavior
 

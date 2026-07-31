@@ -28,7 +28,11 @@ export interface SnapshotReportEntry {
 
 export function buildSnapshot(outputPath?: string): SnapshotReportEntry[] {
   const workspace = resolve(process.cwd());
-  const targetPath = outputPath ?? process.env.GITPIN_INDEX_PATH ?? join(workspace, '.repocontext-index');
+  const targetPath =
+    outputPath ??
+    process.env.GITPIN_INDEX_PATH ??
+    process.env.REPOCONTEXT_INDEX_PATH ??
+    join(workspace, '.repocontext-index');
   const repositories = loadRegistry();
   const outputRoot = prepareSnapshotOutput(
     workspace,
@@ -94,7 +98,7 @@ export function buildSnapshot(outputPath?: string): SnapshotReportEntry[] {
       ],
       unversionedDocuments: [],
     };
-    const metadataPath = join(destinationRoot, '.repocontext', 'snapshot.json');
+    const metadataPath = join(destinationRoot, '.gitpin', 'snapshot.json');
     mkdirSync(dirname(metadataPath), { recursive: true });
     writeFileSync(metadataPath, `${JSON.stringify(metadata, null, 2)}\n`, 'utf-8');
 
@@ -130,7 +134,9 @@ export function buildSnapshot(outputPath?: string): SnapshotReportEntry[] {
 }
 
 function loadGitPolicy(repositoryPath: string, tracked: string[]): ReturnType<typeof parseExposurePolicy> {
-  const policyPath = ['.repocontext/wiki.yaml', 'docs/wiki.yaml', 'wiki.yaml'].find((path) => tracked.includes(path));
+  const policyPath = ['.gitpin/wiki.yaml', '.repocontext/wiki.yaml', 'docs/wiki.yaml', 'wiki.yaml'].find((path) =>
+    tracked.includes(path),
+  );
   if (!policyPath) return parseExposurePolicy(null);
   const raw = execFileSync('git', ['show', `HEAD:${policyPath}`], {
     cwd: repositoryPath,
@@ -152,7 +158,7 @@ function scanSnapshot(outputRoot: string): void {
   } catch (error) {
     const result = error as { stderr?: Buffer | string };
     const detail = result.stderr ? String(result.stderr).trim() : '';
-    throw new Error(`Secret scan failed for the generated RepoContext snapshot.${detail ? ` ${detail}` : ''}`);
+    throw new Error(`Secret scan failed for the generated GitPin snapshot.${detail ? ` ${detail}` : ''}`);
   }
 }
 
@@ -241,7 +247,7 @@ if (require.main === module) {
           files: report.reduce((total, item) => total + item.files, 0),
           bytes: report.reduce((total, item) => total + item.bytes, 0),
           dirtyRepositoriesExcluded: report.filter((item) => item.dirtyEntriesExcluded > 0).length,
-          report: `${customOutput ?? process.env.GITPIN_INDEX_PATH ?? '.repocontext-index'}/snapshot-report.json`,
+          report: `${customOutput ?? process.env.GITPIN_INDEX_PATH ?? process.env.REPOCONTEXT_INDEX_PATH ?? '.repocontext-index'}/snapshot-report.json`,
         },
         null,
         2,

@@ -96,6 +96,7 @@ pre { margin: 0; white-space: pre-wrap; }
 .contribute { display: flex; justify-content: space-between; gap: 48px; align-items: center; padding: 54px max(32px, calc((100% - 1440px) / 2)); border-block: 1px solid var(--line); }
 .contribute p { font-size: clamp(1.35rem, 2.2vw, 2.4rem); font-weight: 760; }
 .contribute .actions { margin: 0; }
+footer .attribution { margin: 0; color: var(--muted); font-size: .78rem; }
 footer nav { font-size: .82rem; }
 
 @media (max-width: 980px) {

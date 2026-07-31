@@ -1,6 +1,6 @@
 {
   "name": "@shmindmaster/gitpin",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "mcpName": "io.github.shmindmaster/gitpin",
   "type": "commonjs",
   "description": "Prove and verify multi-repo agent claims at Git HEAD—index-free evidence packs with path, line, and full SHA.",

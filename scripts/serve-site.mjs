@@ -27,5 +27,5 @@ createServer((request, response) => {
   });
   createReadStream(path).pipe(response);
 }).listen(port, '127.0.0.1', () => {
-  process.stderr.write(`RepoContext site ready at http://127.0.0.1:${port}\n`);
+  process.stderr.write(`GitPin site ready at http://127.0.0.1:${port}\n`);
 });

@@ -5,5 +5,5 @@ runs:
   steps:
     - name: Mark runner context
       run: |
-        echo "repo: repocontext"
-        echo "runner-label: sh-runner-repocontext"
+        echo "repo: gitpin"
+        echo "runner-label: github-hosted"

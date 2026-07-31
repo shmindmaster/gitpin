@@ -1,8 +1,8 @@
-# AGENTS.md - GitPin (repo folder: repocontext)
+# AGENTS.md - GitPin
 
 ## What this is
 
-**GitPin** — index-free, read-only MCP server for multi-repo evidence pinned to Git HEAD. Path, line, full SHA. No databases, embeddings, queues, or write tools.
+**GitPin** is an index-free, read-only MCP server for multi-repo evidence pinned to Git HEAD. Answers carry path, line, and full SHA. It has no databases, embeddings, queues, or write tools.
 
 Package: `@shmindmaster/gitpin`. Tools: `pin.*`. CLI: `gitpin`.
 
@@ -26,11 +26,11 @@ One bounded responsibility per file. No monorepo packages.
 1. Read-only. Zero writes to indexed repositories.
 2. Commit-pinned. Content answers include full SHA; blocked/unavailable are explicit.
 3. Sensitive paths blocked at read time.
-4. Exposure via docs/wiki.yaml or `.gitpin/wiki.yaml` (`.repocontext/wiki.yaml` still accepted).
+4. Exposure via `docs/wiki.yaml` or `.gitpin/wiki.yaml` (`.repocontext/wiki.yaml` remains a migration alias).
 5. Local stdio may expose source; HTTP image is docs/manifests only.
 6. No databases, caches, workers, or embeddings.
-7. Registry = Git roots only.
-8. HTTP requires bearer token; never commit it.
+7. Registry entries point only to Git roots.
+8. HTTP requires a bearer token; never commit it.
 
 ## Commands
 
@@ -45,4 +45,4 @@ pnpm site:test
 
 ## Product pivot (0.4)
 
-Compete on **verifiable HEAD evidence**, not “repo context” commodity. Product loop: `pin.catalog` → search candidates → `pin.prove` → `pin.verify`. Prefer EvidenceBrief for multi-repo decisions. Do not ship rename-only changes without functionality that forces prove/verify behavior.
+Compete on **verifiable HEAD evidence**, not generic repo context. Product loop: `pin.catalog` -> search candidates -> `pin.prove` -> `pin.verify`. Prefer EvidenceBrief for multi-repo decisions. Do not ship rename-only changes without functionality that forces prove/verify behavior.

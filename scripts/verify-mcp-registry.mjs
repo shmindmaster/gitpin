@@ -8,7 +8,7 @@ const expectedName = 'io.github.shmindmaster/gitpin';
 const releaseInputExpression = '$' + '{{ inputs.release_ref }}';
 
 if (packageJson.mcpName !== expectedName || server.name !== expectedName) {
-  throw new Error('package.json mcpName and server.json name must match the GitHub-owned RepoContext namespace.');
+  throw new Error('package.json mcpName and server.json name must match the GitHub-owned GitPin namespace.');
 }
 if (server.version !== packageJson.version) {
   throw new Error(`server.json version ${server.version} does not match package version ${packageJson.version}.`);
@@ -37,7 +37,7 @@ if (
   registryEnvironment[0].isRequired !== false ||
   registryEnvironment[0].isSecret !== false
 ) {
-  throw new Error('server.json must describe the optional, non-secret RepoContext registry path.');
+  throw new Error('server.json must describe the optional, non-secret GitPin registry path.');
 }
 
 if (workflow.on?.workflow_dispatch?.inputs?.release_ref?.required !== true) {

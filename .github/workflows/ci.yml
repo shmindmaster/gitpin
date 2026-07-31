@@ -46,7 +46,7 @@ jobs:
       - run: npm pack --pack-destination artifacts
       - uses: actions/upload-artifact@v7
         with:
-          name: repocontext-package
+          name: gitpin-package
           path: artifacts/*.tgz
           if-no-files-found: error
 
@@ -64,7 +64,7 @@ jobs:
           node-version: ${{ matrix.node }}
       - uses: actions/download-artifact@v8
         with:
-          name: repocontext-package
+          name: gitpin-package
           path: artifacts
       - run: node scripts/verify-package.mjs artifacts/*.tgz
 

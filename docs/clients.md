@@ -28,7 +28,7 @@ Create `.cursor/mcp.json` or `~/.cursor/mcp.json`.
     "gitpin": {
       "type": "stdio",
       "command": "node",
-      "args": ["/absolute/path/to/repocontext/dist/server.js"],
+      "args": ["/absolute/path/to/gitpin/dist/server.js"],
       "env": {
         "GITPIN_REGISTRY": "/absolute/path/to/gitpin.repositories.yaml"
       }
@@ -48,7 +48,7 @@ See [Cursor MCP docs](https://cursor.com/docs/mcp).
   "mcpServers": {
     "gitpin": {
       "command": "node",
-      "args": ["/absolute/path/to/repocontext/dist/server.js"],
+      "args": ["/absolute/path/to/gitpin/dist/server.js"],
       "env": {
         "GITPIN_REGISTRY": "/absolute/path/to/gitpin.repositories.yaml"
       }
@@ -68,7 +68,7 @@ See [Windsurf MCP docs](https://docs.devin.ai/windsurf/plugins/cascade/mcp).
   "context_servers": {
     "gitpin": {
       "command": "node",
-      "args": ["/absolute/path/to/repocontext/dist/server.js"],
+      "args": ["/absolute/path/to/gitpin/dist/server.js"],
       "env": {
         "GITPIN_REGISTRY": "/absolute/path/to/gitpin.repositories.yaml"
       }
@@ -85,14 +85,14 @@ See [Zed MCP docs](https://zed.dev/docs/ai/mcp).
 <!-- config:continue:start -->
 ```yaml
 name: GitPin
-version: 0.4.0
+version: 0.5.0
 schema: v1
 mcpServers:
   - name: GitPin
     type: stdio
     command: node
     args:
-      - /absolute/path/to/repocontext/dist/server.js
+       - /absolute/path/to/gitpin/dist/server.js
     env:
       GITPIN_REGISTRY: /absolute/path/to/gitpin.repositories.yaml
 ```

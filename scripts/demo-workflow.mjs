@@ -15,7 +15,7 @@ export async function runDemoWorkflow({ presentation = true } = {}) {
     encoding: 'utf8',
     windowsHide: true,
   });
-  const client = new Client({ name: 'repocontext-demo-workflow', version: '1.0.0' });
+  const client = new Client({ name: 'gitpin-demo-workflow', version: '1.0.0' });
   const transport = new StdioClientTransport({
     command: process.execPath,
     args: [serverPath],
@@ -76,8 +76,8 @@ function verifyWorkflow({ fixture, tools, catalog, search, comparison, brief, re
     throw new Error('The demo brief document count diverged from fixture truth.');
   if (!staleRepository?.stale || !staleGap) throw new Error('The demo did not surface the stale-evidence guardrail.');
   if (brief.evidenceSetId !== repeatedBrief.evidenceSetId)
-    throw new Error('Context Brief evidence changed across presentation audiences.');
-  if (toolNames.length !== 10 || !tools.tools.every((tool) => tool.annotations?.readOnlyHint === true)) {
+    throw new Error('EvidenceBrief evidence changed across presentation audiences.');
+  if (toolNames.length !== 12 || !tools.tools.every((tool) => tool.annotations?.readOnlyHint === true)) {
     throw new Error('The demo MCP server did not expose the expected read-only tool surface.');
   }
   if (!toolNames.includes('pin.prove') || !toolNames.includes('pin.verify')) {
@@ -111,7 +111,7 @@ function printPresentation({ fixture, toolNames, catalog, search, comparison, br
   line(`   ${searchHit.repository} ${searchHit.sourcePath}:${searchHit.line} · ${searchHit.snippet.trim()}`);
   line(`   Compare ${comparison.files.length} changed path · ${comparison.files.map((file) => file.path).join(', ')}`);
   pause();
-  line('3. Generate the source-cited Context Brief');
+  line('3. Generate the source-cited EvidenceBrief');
   line(`   ${brief.presentation.summary}`);
   line(`   Evidence set: ${brief.evidenceSetId}`);
   for (const trace of sourceTrace) {
@@ -135,7 +135,7 @@ function line(value) {
 }
 
 function pause() {
-  const delay = Number.parseInt(process.env.REPOCONTEXT_DEMO_PACE_MS ?? '0', 10);
+  const delay = Number.parseInt(process.env.GITPIN_DEMO_PACE_MS ?? process.env.REPOCONTEXT_DEMO_PACE_MS ?? '0', 10);
   if (!Number.isInteger(delay) || delay <= 0) return;
   Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, delay);
 }

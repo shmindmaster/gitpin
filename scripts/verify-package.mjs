@@ -61,6 +61,7 @@ try {
     'server.json',
     'docs/clients.md',
     'docs/configuration.md',
+    'docs/migration-gitpin.md',
     'docs/remote-deployment.md',
     'docs/website.md',
     'templates/wiki.yaml',
@@ -71,6 +72,9 @@ try {
   }
   const packedManifest = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8'));
   const packedRegistryMetadata = JSON.parse(readFileSync(join(packageRoot, 'server.json'), 'utf8'));
+  if (packedManifest.bin?.gitpin !== 'dist/server.js' || packedManifest.bin?.repocontext !== 'dist/server.js') {
+    throw new Error('Packed npm manifest must retain both the GitPin command and its repocontext migration alias.');
+  }
   if (
     packedManifest.mcpName !== 'io.github.shmindmaster/gitpin' ||
     packedRegistryMetadata.name !== packedManifest.mcpName ||
@@ -102,6 +106,25 @@ try {
   }
 
   const serverPath = join(packageRoot, 'dist', 'server.js');
+  const legacyCommand = join(
+    clientPath,
+    'node_modules',
+    '.bin',
+    process.platform === 'win32' ? 'repocontext.cmd' : 'repocontext',
+  );
+  const legacyInvocation =
+    process.platform === 'win32'
+      ? { command: process.env.ComSpec ?? 'cmd.exe', args: ['/d', '/s', '/c', legacyCommand, 'help'] }
+      : { command: legacyCommand, args: ['help'] };
+  const legacyHelp = execFileSync(legacyInvocation.command, legacyInvocation.args, {
+    cwd: clientPath,
+    env: commandEnvironment,
+    encoding: 'utf8',
+    windowsHide: true,
+  });
+  if (!legacyHelp.includes('GitPin') || !legacyHelp.includes('gitpin init')) {
+    throw new Error('Packed repocontext migration alias did not invoke the GitPin CLI.');
+  }
   const initializedRegistryPath = join(temporaryRoot, 'initialized', 'repositories.yaml');
   const initialization = execFileSync(
     process.execPath,

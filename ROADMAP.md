@@ -1,34 +1,34 @@
 # Roadmap
 
-RepoContext's roadmap is evidence-led. Planned work may change when validation shows a different user need. Feature requests should describe the workflow and provenance requirement, not only a proposed interface.
+GitPin's roadmap is evidence-led. Planned work may change when validation shows a different user need. Feature requests should describe the workflow and provenance requirement, not only a proposed interface.
 
-## Completed in the 0.2 release
+## Current product
 
-- Eight bounded, read-only MCP tools for cross-repository documentation and source evidence.
-- Git `HEAD` pinning with path, line, and commit provenance.
+- Twelve bounded, read-only `pin.*` MCP tools for discovery, evidence, verification, and decision support.
+- Git `HEAD` pinning with path, line, content hash, and full commit provenance.
 - Exposure policies that fail closed and sensitive-path blocking.
-- Local stdio and bearer-authenticated, snapshot-backed HTTP transports.
-- A `doctor` onboarding check, deterministic test suite, and clean packed install-to-first-answer verification.
-- Deterministic, source-cited Context Briefs for technical and cross-functional audiences.
-- Tested MCP configuration templates for Cursor, Windsurf, Zed, and Continue.
+- Local stdio and bearer-authenticated, documentation-only HTTP transports.
+- `init`, `doctor`, EvidenceBrief, deterministic tests, and clean packed install verification.
+- Tested MCP configuration templates for major coding-agent clients.
 - Node 20/22/24 CI and tag-triggered npm trusted-publishing automation.
 - Static public website, cookieless analytics, and cross-browser regression tests.
 
-## Current priorities
+## P0 release work
 
-- Finish official MCP Registry publication for the version-matched npm artifact (manual OIDC workflow).
-- Validate the existing workflow with technical and cross-functional users before expanding the tool contract.
-- Keep public beta positioning accurate: read-only, commit-pinned, multi-repo, no embeddings.
+- Publish a version-matched `@shmindmaster/gitpin` artifact after the repository rename.
+- Publish matching `io.github.shmindmaster/gitpin` metadata to the official MCP Registry.
+- Align package, server metadata, launch copy, site copy, demos, and docs to the 12-tool contract.
+- Verify a clean-machine install-to-first-evidence path.
 
-## Planned improvements
+## P1 validation and adoption
 
+- Validate EvidenceBrief usefulness with technical and cross-functional users using synthetic fixtures.
 - Improve fixtures for workspace repositories, stale documentation, malformed policies, and remote snapshots.
-- Validate Context Brief usefulness with technical and cross-functional users using synthetic fixtures.
 - Verify the documentation-only remote container in an approved hosting environment.
 
 ## Longer-term ideas
 
-- Explore more useful documentation-health signals without introducing opaque scoring or generated claims.
+- Explore documentation-health signals without opaque scoring or generated claims.
 - Evaluate monorepo package-boundary discovery without indexing non-Git umbrella folders.
 - Evaluate additional Git-hosting and deployment examples based on contributor demand.
 

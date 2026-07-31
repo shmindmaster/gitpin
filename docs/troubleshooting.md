@@ -7,8 +7,8 @@
 | `npx` fails on Node | Node older than 20 | Install Node 20+ and retry `npx -y @shmindmaster/gitpin@latest init --client codex` |
 | Init says path is not a Git root | Directory has no `.git` | Run from a repository root or pass `--repository` to a real root |
 | Init refuses to write the registry | Destination already has different content | Choose `--registry <other-path>` or remove the conflicting file deliberately |
-| Init refuses registry inside a repo | Registry would live under an indexed root | Keep the default `~/.repocontext/repositories.yaml` or another external path |
-| Doctor reports `blocked` | Empty registry, missing path, or non-Git entry | Fix registry paths; run `repocontext doctor` again |
+| Init refuses registry inside a repo | Registry would live under an indexed root | Keep the default `~/.gitpin/repositories.yaml` or another external path |
+| Doctor reports `blocked` | Empty registry, missing path, or non-Git entry | Fix registry paths; run `gitpin doctor` again |
 | Doctor reports `attention` | Dirty or stale documentation vs HEAD | Commit, stash, or accept that agents only see committed HEAD |
 
 ## MCP client connection
@@ -18,7 +18,7 @@
 | Client never lists tools | Wrong command/args/env | Paste the config printed by `init`; on Windows use `npx.cmd` when the client requires it |
 | Tools listed but every call fails | Registry path not visible to the client process | Set `GITPIN_REGISTRY` to an absolute path the client can read |
 | Only some repositories appear | Registry omits them or paths are wrong | Edit the YAML (outside the repo) and re-run `doctor` |
-| Client shows write/dangerous tools | Wrong server connected | Confirm the server name is RepoContext and tools are the eight `wiki.*` / `repo.*` tools |
+| Client shows write/dangerous tools | Wrong server connected | Confirm the server name is GitPin and tools are the 12 read-only `pin.*` tools |
 
 ## Evidence and trust
 

@@ -4,10 +4,10 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const fixtureAuthor = {
-  GIT_AUTHOR_NAME: 'RepoContext Demo',
-  GIT_AUTHOR_EMAIL: 'demo@repocontext.invalid',
-  GIT_COMMITTER_NAME: 'RepoContext Demo',
-  GIT_COMMITTER_EMAIL: 'demo@repocontext.invalid',
+  GIT_AUTHOR_NAME: 'GitPin Demo',
+  GIT_AUTHOR_EMAIL: 'demo@gitpin.invalid',
+  GIT_COMMITTER_NAME: 'GitPin Demo',
+  GIT_COMMITTER_EMAIL: 'demo@gitpin.invalid',
 };
 
 export function resetDemoFixture(workspace = process.cwd()) {

@@ -3,6 +3,6 @@
 # Every entry must point at a Git repository root.
 
 repositories:
-  - name: repocontext
+  - name: gitpin
     path: ..
     branches: [main]

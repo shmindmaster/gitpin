@@ -1,4 +1,6 @@
-# Deep research: RepoContext market and positioning (2026-07-30)
+# Deep research: GitPin market and positioning (2026-07-30)
+
+> Historical research captured during the RepoContext-to-GitPin pivot. The release-status table below is superseded by the current GitPin release gate in [docs/launch.md](../launch.md).
 
 Multi-agent fan-out research (Exa + product audit). **Sources reviewed across subagents: ~118** (pain 68 + competitors 22 + launches 28). This document grounds launch claims. It does not invent metrics.
 
@@ -9,7 +11,7 @@ Four parallel research/audit agents:
 1. Agent context pain points (Exa, 6 search angles)
 2. MCP / repo-context competitors (Exa + README fetches)
 3. OSS MCP launch and discovery patterns (Exa + official docs)
-4. RepoContext product state (repo/tests/docs)
+4. GitPin product state (repo/tests/docs)
 
 Tavily research API was rate-limited this session; findings rely on Exa, GitHub/npm primary pages, and official MCP/GitHub registry docs.
 
@@ -27,7 +29,7 @@ Coding agents routinely fail on **repository ground truth**, not only model clev
 | Write-capable filesystem MCP blast radius | Critical (security) | Official FS server includes write tools; CVE writeups on FS MCP sandbox escapes |
 | Unverifiable claims (no path/line/commit) | Medium–High | Agentic SDLC handbooks: audit agent narrative vs `git` |
 
-### Implications for RepoContext
+### Implications for GitPin
 
 - **Commit SHA on every content result** attacks fossil session memory and unverifiable prose.
 - **Read-only by construction** matches security guidance and avoids FS MCP write blast radius.
@@ -37,7 +39,7 @@ Coding agents routinely fail on **repository ground truth**, not only model clev
 
 ### What would convince adopters
 
-1. Demo: dirty edit / branch switch → bare FS tools wrong; RepoContext still returns HEAD + SHA (or blocked).
+1. Demo: dirty edit / branch switch -> bare FS tools wrong; GitPin still returns HEAD + SHA (or blocked).
 2. Explicit blocked/unavailable (never invent content).
 3. One-command install + multi-client config.
 4. Security one-liner: no write tools, sensitive paths blocked.
@@ -45,7 +47,7 @@ Coding agents routinely fail on **repository ground truth**, not only model clev
 
 ## Competitive map (honest)
 
-| Name | Job | Writes | Multi-repo | Index | Provenance | vs RepoContext |
+| Name | Job | Writes | Multi-repo | Index | Provenance | vs GitPin |
 | --- | --- | --- | --- | --- | --- | --- |
 | Official filesystem MCP | Local R/W files | **Yes** | Via dirs | None | Path, no commit model | We: Git-pinned, no writes |
 | Official mcp-server-git | Git inspect **and mutate** | **Yes** | Per path | None | Git hashes | We: no mutate, fleet registry |
@@ -73,7 +75,7 @@ Do **not** claim better semantic search, GitHub workflow automation, bulk dump c
 - Context7 pattern that wins: **sharp daily pain**, **tiny tool surface**, **`npx -y`**, tool descriptions that teach the agent, optional zero-key path.
 - Show HN works when demo is concrete, install is one line, tone is technical not PR.
 
-### Ranked discovery channels for RepoContext
+### Ranked discovery channels for GitPin
 
 1. `npx -y` + client paste config  
 2. Official MCP Registry (`io.github.shmindmaster/gitpin`)  
@@ -87,20 +89,20 @@ Do **not** claim better semantic search, GitHub workflow automation, bulk dump c
 
 Weekly npm downloads, time-to-first-cited-fact, successful tool-call rate, 90-day maintenance, namespace ownership. Stars alone are lagging vanity.
 
-## Product state at research time
+## Product state at research time (superseded)
 
 | Gate | Status |
 | --- | --- |
-| npm `@shmindmaster/gitpin@0.3.1` | **Published** (`mcpName` set; `gitHead` on main) |
-| GitHub Release `v0.3.1` | **Published** |
-| Official MCP Registry search | **Empty until OIDC publish succeeds** |
+| npm `@shmindmaster/repocontext@0.3.1` | Historical RepoContext-era record; reverify current GitPin publication |
+| GitHub Release `v0.3.1` | Historical RepoContext-era record; do not use as current GitPin release evidence |
+| Official MCP Registry search | Reverify after the current GitPin OIDC publication |
 | Core tests / package verify | **Green on PR #19 merge** |
 | Runtime realpath on content paths | Gap (init uses realpath; content path use resolve) |
 | Monorepo package graph | Deferred (Git roots only — intentional) |
 
 ## Positioning (research-validated wording)
 
-> RepoContext gives coding agents **read-only, multi-repository context pinned to Git HEAD**, with **path, line, and full commit SHA**—and **no indexing infrastructure**.
+> GitPin gives coding agents **read-only, multi-repository evidence pinned to Git HEAD**, with **path, line, and full commit SHA**—and **no indexing infrastructure**.
 
 Analogous to Context7’s “freshness” story, but for **your Git roots’ committed evidence**, not third-party library docs.
 
@@ -109,16 +111,16 @@ Analogous to Context7’s “freshness” story, but for **your Git roots’ com
 | Rank | Audience | Why research supports it |
 | --- | --- | --- |
 | Primary | MCP coding-agent users with **multiple local Git roots** | Multi-repo pain + daily agent use |
-| Secondary | Release / platform engineers needing **citable briefs** | Provenance + compare + Context Brief |
+| Secondary | Release / platform engineers needing **citable briefs** | Provenance + compare + EvidenceBrief |
 | Secondary | Security-conscious teams rejecting **write-capable FS MCP** | CVE/write blast radius narrative |
 
 ## Research → product actions
 
 1. **Ship Registry listing** (ops) — primary discovery gate after npm.  
-2. **Keep tool surface at 8** — research rewards fewer intent tools, not sprawl.  
+2. **Keep the current tool surface bounded at 12** — research rewards fewer intent tools, not sprawl.
 3. **Golden demo = dirty worktree / multi-repo / SHA** — maps to documented failure modes.  
 4. **FAQ: vs filesystem, vs git MCP, vs embeddings, vs git grep** — pre-answer HN.  
-5. **Auto-invoke rule snippets** — Context7-style “always use when…” for client rules.  
+5. **Auto-invoke rule snippets** — concise “always use when…” guidance for client rules.
 6. **Do not add embeddings/DB/writes** — would erase the only durable differentiation.  
 7. **Post-launch:** user validation, realpath hardening, hosted docs snapshot proof.
 

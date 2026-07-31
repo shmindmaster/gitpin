@@ -38,6 +38,9 @@ test('presents the release path and safety boundary without analytics by default
   await expect(page.locator('body')).not.toContainText(/release candidate/i);
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://shmindmaster.github.io/gitpin/');
   await expect(page.getByRole('link', { name: 'Privacy', exact: true })).toHaveAttribute('href', './privacy.html');
+  await expect(
+    page.getByText('Maintained by Sarosh Hussain. Pendoah is his company and operating context.'),
+  ).toBeVisible();
   expect(analyticsRequests).toEqual([]);
 });
 
@@ -65,7 +68,7 @@ test('switches audience presentation while preserving the evidence set', async (
   await page.getByRole('tab', { name: 'Product' }).click();
   await expect(page.getByRole('tab', { name: 'Product' })).toHaveAttribute('aria-selected', 'true');
   await expect(page.getByRole('tabpanel')).toBeVisible();
-  await expect(page.locator('#audience-question')).toHaveText('What can users trust in a Context Brief?');
+  await expect(page.locator('#audience-question')).toHaveText('What can users trust in an EvidenceBrief?');
   await expect(page.locator('.evidence-id code')).toHaveText(evidenceSet);
 
   await page.getByRole('tab', { name: 'Product' }).press('ArrowRight');
@@ -124,7 +127,7 @@ test('delivers custom events after the asynchronous analytics loader replaces it
   await page.goto('/analytics-fixture');
   await expect.poll(() => page.evaluate(() => Array.isArray(window.__capturedEvents))).toBe(true);
 
-  await page.evaluate(() => window.repocontextTrack('audience_changed', { audience: 'product' }));
+  await page.evaluate(() => window.gitpinTrack('audience_changed', { audience: 'product' }));
   await expect
     .poll(() => page.evaluate(() => window.__capturedEvents))
     .toContainEqual(['audience_changed', { audience: 'product' }]);

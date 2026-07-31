@@ -15,7 +15,7 @@ if (projectKey && apiHost) {
     document.head.append(script);
   };
   window.posthog = posthog;
-  window.repocontextTrack = (event, properties = {}) => window.posthog.capture(event, properties);
+  window.gitpinTrack = (event, properties = {}) => window.posthog.capture(event, properties);
   posthog.init(projectKey, {
     api_host: apiHost,
     autocapture: false,
@@ -28,5 +28,5 @@ if (projectKey && apiHost) {
 }
 
 for (const link of document.querySelectorAll('[data-analytics]')) {
-  link.addEventListener('click', () => window.repocontextTrack?.('cta_clicked', { placement: link.dataset.analytics }));
+  link.addEventListener('click', () => window.gitpinTrack?.('cta_clicked', { placement: link.dataset.analytics }));
 }

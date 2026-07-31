@@ -165,4 +165,4 @@ Do **not** expand tool count before multi-cite + batch verify land—those deepe
 
 ## Ops note (unchanged from ship path)
 
-`@shmindmaster/gitpin@0.4.0` still needs **first npm publish** (new package name vs OIDC trusted publisher on old name). Feature work can proceed on main; Registry listing waits on npm artifact.
+`@shmindmaster/gitpin@0.5.0` still needs **first npm publish** (new package name vs OIDC trusted publisher on old name). Feature work can proceed on main; Registry listing waits on the npm artifact.

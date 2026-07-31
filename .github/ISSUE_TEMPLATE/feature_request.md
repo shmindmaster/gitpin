@@ -14,4 +14,4 @@ Describe the MCP result an agent should receive, including provenance and safety
 
 ## Alternatives considered
 
-Explain why the existing eight read-only tools or a client-side workflow cannot solve it.
+Explain why the existing 12 read-only tools or a client-side workflow cannot solve it.

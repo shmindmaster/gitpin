@@ -7,7 +7,7 @@ const audienceContent = {
     gap: 'Production endpoint ownership is not registered.',
   },
   product: {
-    question: 'What can users trust in a Context Brief?',
+    question: 'What can users trust in an EvidenceBrief?',
     fact: 'Every known fact includes a path, line, and commit SHA.',
     known: 'Evidence selection remains stable across audiences.',
     inference: 'Cross-functional reviews can share one evidence set.',
@@ -42,7 +42,7 @@ function selectAudience(tab, moveFocus = false) {
   for (const [name, node] of Object.entries(fields)) node.textContent = content[name];
   document.querySelector('#evidence-panel').setAttribute('aria-labelledby', tab.id);
   if (moveFocus) tab.focus();
-  window.repocontextTrack?.('audience_changed', { audience: tab.dataset.audience });
+  window.gitpinTrack?.('audience_changed', { audience: tab.dataset.audience });
 }
 
 for (const tab of tabs) {

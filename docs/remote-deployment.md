@@ -14,7 +14,7 @@ docker build -f Dockerfile.remote -t gitpin:local .
 ```
 
 `index:build` rejects a registry entry that is not a Git root, excludes sensitive paths, and fails if gitleaks detects a secret in the selected output. Its report records each repository, branch, source SHA, selected files, bytes, and excluded dirty entries.
-The output path must be new or a directory marked by an earlier successful RepoContext snapshot build. Existing unmarked directories, registered repository roots, and ancestors of registered repositories are rejected before any removal occurs.
+The output path must be new or a directory marked by an earlier successful GitPin snapshot build. Existing unmarked directories, registered repository roots, and ancestors of registered repositories are rejected before any removal occurs.
 
 ## Run
 
@@ -42,7 +42,7 @@ For a credential-free local container check, run:
 pnpm verify:container
 ```
 
-It builds the current snapshot, starts an isolated loopback container with a generated throwaway token, verifies health, authentication, tool discovery, and catalog access, then removes the container and image. Set `REPOCONTEXT_CONTAINER_PORT` only when port `3100` is unavailable.
+It builds the current snapshot, starts an isolated loopback container with a generated throwaway token, verifies health, authentication, tool discovery, and catalog access, then removes the container and image. Set `GITPIN_CONTAINER_PORT` only when port `3100` is unavailable.
 
 ```bash
 GITPIN_MCP_URL=https://mcp.example.com/api/mcp \
@@ -50,4 +50,4 @@ GITPIN_MCP_TOKEN="your-token" \
 pnpm verify:remote
 ```
 
-The verification checks readiness, rejects unauthenticated MCP calls, and confirms the authenticated server lists the eight read-only tools and returns a catalog.
+The verification checks readiness, rejects unauthenticated MCP calls, and confirms the authenticated server lists the 12 read-only tools and returns a catalog.

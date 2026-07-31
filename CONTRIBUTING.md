@@ -1,18 +1,20 @@
-# Contributing
+# Contributing to GitPin
 
-Thanks for improving RepoContext.
+Thanks for improving GitPin.
+
+GitPin is maintained by Sarosh Hussain, who leads the project's technical direction. Pendoah is his company and operating context.
 
 ## Before you start
 
 - Use a GitHub issue for bugs and feature proposals so scope and safety implications can be discussed first.
 - Use GitHub's private security-advisory flow for vulnerabilities; do not disclose them in issues or pull requests.
-- Keep changes within RepoContext's Git-only, read-only, commit-pinned architecture.
+- Keep changes within GitPin's Git-only, read-only, commit-pinned architecture.
 
 ## Local setup
 
 ```bash
 git clone https://github.com/shmindmaster/gitpin.git
-cd repocontext
+cd gitpin
 corepack enable
 pnpm install --frozen-lockfile
 pnpm exec playwright install --with-deps chromium firefox webkit
@@ -36,20 +38,9 @@ Node.js 22.13 or newer and Git are required for source development. The packed p
 
 Do not mix unrelated refactors with behavioral work. Maintainers may ask for a design discussion before accepting new MCP tools, transports, dependencies, or exposure-policy changes.
 
-## CI runner isolation
+## CI and security
 
-Every job runs on ephemeral GitHub-hosted `ubuntu-latest` runners. This repository is public, so those minutes are free and unmetered, and an ephemeral machine can safely execute fork and bot pull requests — which is why fork PRs now get the same full validation as everything else rather than a reduced routing.
-
-CI used to split traffic: same-repository work went to a dedicated DigitalOcean self-hosted runner, forks to hosted runners, precisely so untrusted code never touched a persistent host carrying state and credentials. That droplet is retired. `pnpm verify:ci` still enforces the security property underneath — no workflow may reintroduce a `self-hosted` runner, because doing so would require restoring the fork-routing guard with it.
-
-## Coding standards
-
-- TypeScript is strict; avoid `any` in new code.
-- Use named exports and domain-specific names.
-- Keep production modules at or below 300 lines and one bounded responsibility per file.
-- Errors must explain what failed and how the operator can correct it.
-- Run `pnpm format` before committing; CI enforces Biome linting and formatting.
-- Add dependencies only when the pull request documents why existing platform or project APIs are insufficient.
+Every job runs on ephemeral GitHub-hosted runners. Do not reintroduce persistent self-hosted runners for fork or bot pull requests. Release and MCP Registry jobs use explicit OIDC permissions and must remain manual where publication is irreversible.
 
 ## Design constraints
 
@@ -62,7 +53,7 @@ CI used to split traffic: same-repository work went to a dedicated DigitalOcean 
 
 Behavior changes need regression coverage. Security-boundary changes should include both allowed and denied cases. Transport changes should verify the MCP contract, authentication behavior, and health checks. Packaging changes must pass the clean packed install-to-first-answer test. Website changes must pass the Chromium, Firefox, WebKit, and mobile Chromium regression suite.
 
-Pull requests should state the problem, approach, user-visible behavior, validation performed, security impact, and documentation changes. A passing check is not a substitute for review, and maintainers will not merge changes that weaken tests or suppress findings without a documented reason.
+Pull requests should state the problem, approach, user-visible behavior, validation performed, security impact, and documentation changes. A passing check is not a substitute for review.
 
 ## Bug reports
 
@@ -70,7 +61,7 @@ Open an issue with the MCP tool call, expected result, actual result, relevant c
 
 ## Feature proposals
 
-Describe the coding-agent workflow that is currently blocked, the evidence the agent should receive, alternatives using the existing eight tools, provenance requirements, and any new exposure risk. Proposals are evaluated against [ROADMAP.md](ROADMAP.md) and may remain research-gated until validated with users.
+Describe the coding-agent workflow that is currently blocked, the evidence the agent should receive, alternatives using the existing 12 tools, provenance requirements, and any new exposure risk. Proposals are evaluated against [ROADMAP.md](ROADMAP.md) and may remain research-gated until validated with users.
 
 ## Releases
 

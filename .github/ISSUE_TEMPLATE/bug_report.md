@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a reproducible RepoContext defect
+about: Report a reproducible GitPin defect
 labels: bug
 ---
 
@@ -10,7 +10,7 @@ Describe the actual result and the expected result.
 
 ## Safe reproduction
 
-Include the tool call, RepoContext version, Git commit SHA, and a minimal safe registry or fixture. Do not include credentials, customer data, or proprietary source.
+Include the tool call, GitPin version, Git commit SHA, and a minimal safe registry or fixture. Do not include credentials, customer data, or proprietary source.
 
 ## Environment
 

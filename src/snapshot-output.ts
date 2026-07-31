@@ -42,7 +42,7 @@ function assertDedicatedSnapshotOutput(outputRoot: string): void {
   const markerPath = join(outputRoot, OUTPUT_MARKER);
   if (!existsSync(markerPath)) {
     throw new Error(
-      `Refusing to replace existing unmarked directory: ${outputRoot}. Choose a new path or a RepoContext snapshot output.`,
+      `Refusing to replace existing unmarked directory: ${outputRoot}. Choose a new path or a GitPin snapshot output.`,
     );
   }
   try {

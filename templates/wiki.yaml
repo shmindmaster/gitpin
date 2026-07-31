@@ -1,6 +1,6 @@
-# RepoContext exposure-policy template
+# GitPin exposure-policy template
 #
-# Drop this file in a repository registered with RepoContext.
+# Drop this file in a repository registered with GitPin.
 # It narrows the documentation exposed to MCP clients.
 #
 # Copy from: templates/wiki.yaml
@@ -8,7 +8,7 @@
 
 version: 2
 
-# Default RepoContext behavior exposes supported documentation files. Add an
+# Default GitPin behavior exposes supported documentation files. Add an
 # explicit collection when only selected paths should be visible.
 collections:
   - id: agent-context

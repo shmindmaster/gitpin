@@ -8,7 +8,7 @@ export function buildSections(transcriptValue, narrationDisclosure = 'Local spee
     return found;
   };
   return new Map([
-    ['cold-open', [line('RepoContext ·'), line('Synthetic fixture:'), line('MCP contract:')]],
+    ['cold-open', [line('GitPin ·'), line('Synthetic fixture:'), line('MCP contract:')]],
     ['catalog', [line('1. Catalog'), line('atlas-api'), line('merchant-web'), line('support-ops')]],
     ['source-trace', [line('2. Find'), line('atlas-api docs/architecture.md'), line('Compare 1 changed path')]],
     [

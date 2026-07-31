@@ -23,9 +23,9 @@ This pass used targeted Exa + GitHub research searches for `repo-context`, `repo
 | **repo-context-hooks** | https://github.com/narendranathe/repo-context-hooks | Session handoff skill/hooks, not a context server | Different problem (continuity) |
 | **repocontext.ai** | https://repocontext.ai / wip.co project | Dev dependency documentation MCP (unrelated product) | Name/domain collision |
 
-**Implication:** The package name `@shmindmaster/gitpin` and brand “RepoContext” are **not unique** in the market. Discovery and README must disambiguate in the first screen.
+**Implication:** The package name `@shmindmaster/gitpin` is distinct, but the old “repo context” language is crowded. Discovery and README must disambiguate GitPin in the first screen.
 
-## Adjacent crowded category (not named RepoContext, same job family)
+## Adjacent crowded category (not named GitPin, same job family)
 
 | Product | Lane |
 | --- | --- |
@@ -45,7 +45,7 @@ This pass used targeted Exa + GitHub research searches for `repo-context`, `repo
 
 The ecosystem has **thousands** of MCP servers; “code/repo context for agents” is one of the densest subcategories.
 
-## Honest positioning for *this* RepoContext
+## Honest positioning for *this* GitPin
 
 What is **not** a defensible uniqueness claim:
 
@@ -61,7 +61,7 @@ What **can** still be a coherent niche **if** true in implementation and marketi
 | **Git HEAD only as evidence** (dirty excluded, SHA on results) | True — rare as a *product contract* |
 | **Read-only, no write tools** | True — vs filesystem/git MCP |
 | **Multi-repo YAML registry of local Git roots** | True — but not unique |
-| **Context Brief + doctor + init** | Differentiating *packaging*, not category monopoly |
+| **EvidenceBrief + doctor + init** | Differentiating *packaging*, not category monopoly |
 | **Official Registry + npm public package** | Distribution hygiene, not moat |
 
 **Stronger one-liner (disambiguating):**

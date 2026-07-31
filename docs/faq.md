@@ -44,4 +44,4 @@ Uncommitted edits are **not evidence**. `pin.inspect` with `operation: status` c
 
 ## Migration from RepoContext 0.3.x?
 
-See [migration-gitpin.md](migration-gitpin.md). Package `@shmindmaster/gitpin`, tools `pin.*`, env `GITPIN_*`. Legacy names remain aliases for one major line.
+See [migration-gitpin.md](migration-gitpin.md). Package `@shmindmaster/gitpin`, tools `pin.*`, env `GITPIN_*`. Supported compatibility aliases are the `repocontext` bin, `REPOCONTEXT_*` environment variables, `~/.repocontext`, and `.repocontext/wiki.yaml`; the removed `wiki.*` and `repo.*` tools are not served.

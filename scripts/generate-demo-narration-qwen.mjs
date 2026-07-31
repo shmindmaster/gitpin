@@ -3,15 +3,15 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
 const [storyboardPath, outputDirectory] = process.argv.slice(2);
-const python = process.env.REPOCONTEXT_QWEN_TTS_PYTHON;
-const cli = process.env.REPOCONTEXT_QWEN_TTS_CLI;
+const python = process.env.GITPIN_QWEN_TTS_PYTHON;
+const cli = process.env.GITPIN_QWEN_TTS_CLI;
 
 if (!storyboardPath || !outputDirectory) {
   throw new Error('Usage: node scripts/generate-demo-narration-qwen.mjs <storyboard-path> <output-directory>');
 }
 if (!python || !cli) {
   throw new Error(
-    'Qwen narration requires REPOCONTEXT_QWEN_TTS_PYTHON and REPOCONTEXT_QWEN_TTS_CLI to reference the local runtime.',
+    'Qwen narration requires GITPIN_QWEN_TTS_PYTHON and GITPIN_QWEN_TTS_CLI to reference the local runtime.',
   );
 }
 if (!existsSync(python) || !existsSync(cli)) {
@@ -54,7 +54,7 @@ execFileSync(python, [cli, '--batch', batchPath, '--manifest-out', manifestPath]
   windowsHide: true,
   env: {
     ...process.env,
-    HF_HOME: process.env.HF_HOME ?? 'D:\\AI-Platform\\models\\library\\ai\\huggingface',
+    ...(process.env.HF_HOME ? { HF_HOME: process.env.HF_HOME } : {}),
   },
 });
 
@@ -71,5 +71,5 @@ for (const job of jobs) {
 console.log(JSON.stringify({ status: 'generated', batchPath, manifestPath, jobs: jobs.length }));
 
 function spokenText(value) {
-  return String(value).replaceAll('RepoContext', 'Repo Context').replaceAll('API', 'A P I');
+  return String(value).replaceAll('RepoContext', 'GitPin').replaceAll('API', 'A P I');
 }

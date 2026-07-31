@@ -1,6 +1,6 @@
 # Security policy
 
-RepoContext is intentionally read-only, but it can expose repository context to MCP clients. Treat registry configuration and remote deployment as security-sensitive.
+GitPin is intentionally read-only, but it can expose repository evidence to MCP clients. Treat registry configuration and remote deployment as security-sensitive.
 
 ## Supported versions
 
@@ -18,4 +18,4 @@ If the private reporting form is unavailable, contact the repository owner throu
 
 Relevant issues include bypasses of sensitive-path or documentation-deny rules, working-tree or untracked-data exposure, access without the configured HTTP bearer token, path traversal, snapshot contamination, and secrets included in packaged or container artifacts.
 
-Use repositories and credentials you own or are authorized to test. Do not test against third-party deployments, degrade service, or retain exposed data. Maintainers will coordinate disclosure after a fix is available; please avoid public discussion until that process is complete.
+Use repositories and credentials you own or are authorized to test. Do not test against third-party deployments, degrade service, or retain exposed data. Maintainers will coordinate disclosure after a fix is available; avoid public discussion until that process is complete.

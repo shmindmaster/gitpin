@@ -2,14 +2,14 @@ import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { setTimeout as wait } from 'node:timers/promises';
 
-const port = Number.parseInt(process.env.REPOCONTEXT_CONTAINER_PORT ?? '3100', 10);
+const port = Number.parseInt(process.env.GITPIN_CONTAINER_PORT ?? process.env.REPOCONTEXT_CONTAINER_PORT ?? '3100', 10);
 if (!Number.isInteger(port) || port < 1 || port > 65_535) {
-  throw new Error('REPOCONTEXT_CONTAINER_PORT must be a valid TCP port.');
+  throw new Error('GITPIN_CONTAINER_PORT must be a valid TCP port.');
 }
 
 const nonce = randomUUID().replaceAll('-', '').slice(0, 12);
 const image = `gitpin:verify-${nonce}`;
-const container = `repocontext-verify-${nonce}`;
+const container = `gitpin-verify-${nonce}`;
 const token = randomUUID().replaceAll('-', '') + randomUUID().replaceAll('-', '');
 const endpoint = `http://127.0.0.1:${port}/api/mcp`;
 

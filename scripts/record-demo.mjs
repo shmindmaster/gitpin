@@ -21,7 +21,9 @@ const timestamp = new Date().toISOString().replaceAll(/[:.]/g, '-');
 const capturedAt = new Date().toISOString();
 const runDirectory = join(workspace, '.demo', 'recordings', `${episodeId}-${timestamp}`);
 const outputDirectory = resolve(
-  process.env.REPOCONTEXT_DEMO_VIDEO_DIR ?? join(process.env.USERPROFILE ?? workspace, 'Videos', 'RepoContext'),
+  process.env.GITPIN_DEMO_VIDEO_DIR ??
+    process.env.REPOCONTEXT_DEMO_VIDEO_DIR ??
+    join(process.env.USERPROFILE ?? workspace, 'Videos', 'GitPin'),
 );
 const storyboardPath = join(workspace, 'docs', 'demos', `${episodeId}.storyboard.json`);
 const truthSheetPath = join(workspace, 'docs', 'demos', `${episodeId}.truth.json`);
@@ -35,7 +37,7 @@ const storyboard = JSON.parse(read(storyboardPath));
 const truthSheet = JSON.parse(read(truthSheetPath));
 const claimLedger = JSON.parse(read(claimLedgerPath));
 const transcript = exec(process.execPath, [join(workspace, 'scripts', 'demo-workflow.mjs')], {
-  env: { ...process.env, REPOCONTEXT_DEMO_PACE_MS: '0' },
+  env: { ...process.env, GITPIN_DEMO_PACE_MS: '0' },
 });
 const transcriptPath = join(runDirectory, 'live-mcp-transcript.txt');
 write(transcriptPath, transcript);
@@ -125,7 +127,7 @@ write(captionsJsonPath, `${JSON.stringify(captionEntries, null, 2)}\n`);
 const transcriptTextPath = join(runDirectory, `${episodeId}.transcript.txt`);
 write(transcriptTextPath, `${storyboard.segments.map((segment) => segment.narration).join('\n')}\n`);
 
-const masterPath = uniqueOutputPath(outputDirectory, `RepoContext-${episodeId}-${timestamp}`, '.mp4');
+const masterPath = uniqueOutputPath(outputDirectory, `GitPin-${episodeId}-${timestamp}`, '.mp4');
 exec('ffmpeg.exe', [
   '-hide_banner',
   '-loglevel',
@@ -150,7 +152,7 @@ exec('ffmpeg.exe', [
   '-c:a',
   'copy',
   '-metadata',
-  'title=RepoContext: Release Evidence Brief',
+  'title=GitPin: Release Evidence Brief',
   '-metadata',
   'comment=Programmatic terminal recording from a live synthetic MCP workflow. Local speech synthesis.',
   '-movflags',
@@ -178,7 +180,7 @@ const manifest = {
   episodeId,
   status: 'candidate-needs-human-watch-through',
   sourceRevision,
-  product: 'RepoContext',
+  product: 'GitPin',
   captureMethod: 'Programmatic terminal recording from the stdout of a live stdio MCP session.',
   fixture: 'scripts/demo-fixture.mjs; three isolated synthetic Git repositories; no indexed repository writes.',
   transcript: { path: transcriptPath, sha256: sha256(transcript) },
@@ -246,7 +248,7 @@ console.log(
 function captureManifest(segment) {
   return {
     scenario: segment.id,
-    route: 'stdio://local/repocontext',
+    route: 'stdio://local/gitpin',
     sourceRevision,
     fixture: 'scripts/demo-fixture.mjs',
     environment: 'synthetic-local',

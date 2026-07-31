@@ -38,7 +38,7 @@ Product-direction research for the next evidence-loop features (multi-cite packs
 **Acceptance criteria:**
 
 - Deploy an immutable reviewed image through the authorized provider path.
-- Confirm `/healthz`, unauthenticated `401`, the eight read-only tools, and one catalog call.
+- Confirm `/healthz`, unauthenticated `401`, the 12 read-only tools, and one catalog call.
 - Inspect the image to confirm source, dirty work, local roots, and secrets are absent.
 - Record teardown, rotation, and ownership instructions outside the public repository when sensitive.
 

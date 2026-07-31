@@ -23,16 +23,20 @@ if (unauthorized.status !== 401) {
 }
 
 const expectedTools = [
-  'pin.compare',
-  'pin.inspect',
-  'pin.read',
-  'pin.search_code',
   'pin.analyze',
   'pin.catalog',
+  'pin.compare',
   'pin.get_doc',
+  'pin.inspect',
+  'pin.prove',
+  'pin.prove_set',
+  'pin.read',
+  'pin.search_code',
   'pin.search_docs',
+  'pin.verify',
+  'pin.verify_set',
 ];
-const client = new Client({ name: 'repocontext-remote-verifier', version: '1.0.0' });
+const client = new Client({ name: 'gitpin-remote-verifier', version: '1.0.0' });
 const transport = new StreamableHTTPClientTransport(endpoint, {
   requestInit: { headers: { Authorization: `Bearer ${token}` } },
 });

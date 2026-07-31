@@ -12,7 +12,7 @@ interface HttpServerOptions {
 }
 
 export function createHttpServer(options: HttpServerOptions): Server {
-  if (!options.token) throw new Error('GITPIN_MCP_TOKEN (or GITPIN_MCP_TOKEN) is required for the HTTP server.');
+  if (!options.token) throw new Error('GITPIN_MCP_TOKEN (or REPOCONTEXT_MCP_TOKEN) is required for the HTTP server.');
   const allowedHosts = new Set((options.allowedHosts ?? []).map((host) => host.toLowerCase()));
 
   return createNodeServer(async (request, response) => {

@@ -25,7 +25,7 @@ try {
     if (Test-Path -LiteralPath $target) {
       throw "Narration target already exists: $target"
     }
-    $spokenText = $segment.narration -replace 'RepoContext', 'Repo Context' -replace 'API', 'A P I'
+    $spokenText = $segment.narration -replace 'RepoContext', 'GitPin' -replace 'API', 'A P I'
     $synth.SetOutputToWaveFile($target)
     $synth.Speak($spokenText)
     $synth.SetOutputToNull()

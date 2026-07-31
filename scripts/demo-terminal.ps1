@@ -2,7 +2,7 @@ $ErrorActionPreference = 'Stop'
 
 $workspace = Split-Path -Parent $PSScriptRoot
 Set-Location $workspace
-$Host.UI.RawUI.WindowTitle = 'RepoContext Demo'
+$Host.UI.RawUI.WindowTitle = 'GitPin Demo'
 
 try {
   $Host.UI.RawUI.BufferSize = New-Object System.Management.Automation.Host.Size(132, 40)

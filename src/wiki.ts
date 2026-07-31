@@ -34,7 +34,7 @@ export interface DocumentPage {
 }
 
 export function clearWikiCache(): void {
-  // Retained as a harmless test helper. RepoContext deliberately keeps no cache.
+  // Retained as a harmless test helper. GitPin deliberately keeps no cache.
 }
 
 export async function getCatalog(): Promise<CatalogEntry[]> {

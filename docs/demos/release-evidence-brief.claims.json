@@ -16,7 +16,7 @@
     },
     {
       "id": "read-only-contract",
-      "text": "The live MCP session exposes eight read-only tools.",
+      "text": "The live MCP session exposes twelve read-only tools.",
       "audience": "Engineering and release leads",
       "episode": "release-evidence-brief",
       "scene": "cold-open",
@@ -44,7 +44,7 @@
     },
     {
       "id": "stable-evidence-set",
-      "text": "The actual Context Brief returns one stable evidence-set identifier with source commits.",
+      "text": "The actual EvidenceBrief returns one stable evidence-set identifier with source commits.",
       "audience": "Engineering and release leads",
       "episode": "release-evidence-brief",
       "scene": "brief",
@@ -114,7 +114,7 @@
     },
     {
       "id": "narration-brief",
-      "text": "Here is the Context Brief. Three repositories. Seven committed documents. One stale worktree. And one stable evidence set you can review before asking an agent to act.",
+      "text": "Here is the EvidenceBrief. Three repositories. Seven committed documents. One stale worktree. And one stable evidence set you can review before asking an agent to act.",
       "audience": "Engineering and release leads",
       "episode": "release-evidence-brief",
       "scene": "brief",

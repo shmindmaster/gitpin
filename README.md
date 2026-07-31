@@ -26,9 +26,11 @@ Agent claim
 | Grep hits as “the answer” | **Candidates → evidence pack → verification report** |
 | GitHub platform MCP | **Local Git roots (private/offline)** |
 
-Formerly `@shmindmaster/gitpin` (0.3.x). See [migration](docs/migration-gitpin.md).
+Formerly RepoContext 0.3.x. See [migration](docs/migration-gitpin.md).
 
-> **Release:** `@shmindmaster/gitpin@0.4.0`. Install: `npx -y @shmindmaster/gitpin@latest`. Node 20+.
+> **Release:** publish a version-matched GitPin release across npm, the MCP Registry, GitHub, and Pages before announcing. Install: `npx -y @shmindmaster/gitpin@latest`. Node 20+.
+
+GitPin is maintained by **Sarosh Hussain**, who leads the project's technical direction. **Pendoah** is his company and operating context; GitPin remains the product and repository.
 
 ## Five-minute path
 
@@ -98,7 +100,7 @@ Default registry: `~/.gitpin/repositories.yaml` (falls back to `~/.repocontext/.
 
 [Tools](docs/tools.md) · [Compare](docs/compare.md) · [FAQ](docs/faq.md) · [Migration](docs/migration-gitpin.md) · [Clients](docs/clients.md) · [Architecture](docs/architecture.md) · [Competitive landscape](docs/research/competitive-landscape-corrected-2026-07-30.md)
 
-Site: [shmindmaster.github.io/gitpin](https://shmindmaster.github.io/gitpin/) (GitHub path may stay `repocontext`; product name is **GitPin**).
+Site: [shmindmaster.github.io/gitpin](https://shmindmaster.github.io/gitpin/). GitPin is the canonical product and repository name; legacy `repocontext` references exist only for migration compatibility.
 
 ## Development
 
