@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="GitPin: index-free multi-repo evidence pinned to Git HEAD—path, line, full SHA. No embeddings. No write tools."
+      content="GitPin requires agent-authored pull requests to cover material changes with exact, commit-pinned evidence before merge."
     />
     <meta name="theme-color" content="#ffffff" />
     <link rel="canonical" href="https://shmindmaster.github.io/gitpin/" />
@@ -14,20 +14,20 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="GitPin" />
     <meta property="og:url" content="https://shmindmaster.github.io/gitpin/" />
-    <meta property="og:title" content="GitPin — pin agent answers to Git HEAD" />
+    <meta property="og:title" content="GitPin — require exact PR evidence before merge" />
     <meta
       property="og:description"
-      content="Index-free multi-repo evidence. Path, line, and full commit SHA. No database, embeddings, or write tools."
+      content="A base-trusted GitHub gate that checks changed-path coverage and exact line hashes at the pull request head."
     />
     <meta property="og:image" content="https://shmindmaster.github.io/gitpin/social-card.svg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="GitPin — pin agent answers to Git HEAD" />
+    <meta name="twitter:title" content="GitPin — require exact PR evidence before merge" />
     <meta
       name="twitter:description"
-      content="Index-free, read-only multi-repo evidence. Path, line, full SHA. No reindex lag."
+      content="Make agent-authored changes carry exact, independently re-checkable evidence before merge."
     />
     <meta name="twitter:image" content="https://shmindmaster.github.io/gitpin/social-card.svg" />
-    <title>GitPin — pin agent answers to Git HEAD</title>
+    <title>GitPin — require exact PR evidence before merge</title>
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="./styles.css" />
     <script src="./analytics.js" defer></script>
@@ -41,7 +41,7 @@
         Open navigation
       </button>
       <nav id="primary-nav" aria-label="Primary navigation">
-        <a href="#how-it-works">How it works</a>
+        <a href="#how-it-works">PR gate</a>
         <a href="#safety">Safety</a>
         <a href="#install">Install</a>
         <a data-analytics="github_nav" href="https://github.com/shmindmaster/gitpin">GitHub</a>
@@ -51,21 +51,21 @@
     <main id="main">
       <section class="hero page-section" id="top">
         <div class="hero-copy">
-          <h1>Prove agent answers. Then verify them.</h1>
+          <h1>Make agent-authored changes show exact evidence before merge.</h1>
           <p class="lead">
-            Not another repo-context MCP. GitPin is index-free multi-repo <strong>evidence</strong>: path, line, full SHA,
-            then <code>pin.verify</code> / <code>git show</code>. No database, embeddings, or write tools. Dirty worktrees
-            are never evidence.
+            GitPin is an <strong>agent-delivery assurance gate</strong>. It checks that material pull-request changes are
+            covered by named claims and exact committed line hashes. Policy comes from the trusted base branch; evidence
+            comes from the pull-request head.
           </p>
           <div class="actions">
             <a class="button primary" data-analytics="setup_hero" href="#install">
-              Start with npx <span aria-hidden="true">→</span>
+              Add the PR gate <span aria-hidden="true">→</span>
             </a>
             <a class="button secondary" data-analytics="github_hero" href="https://github.com/shmindmaster/gitpin">
               View on GitHub
             </a>
           </div>
-          <p class="proof-line">No database. No embeddings. No write tools. No local reindex lag.</p>
+          <p class="proof-line">Read-only. Base-trusted. Full SHAs. No arbitrary command execution.</p>
           <div class="audience-tabs" role="tablist" aria-label="EvidenceBrief audience">
             <button id="tab-technical" role="tab" aria-selected="true" aria-controls="evidence-panel" data-audience="technical">
               Technical
@@ -119,32 +119,30 @@
 
       <section class="process page-section" id="how-it-works">
         <header class="section-heading">
-          <h2>Product loop: candidates → prove → verify.</h2>
+          <h2>Pull-request loop: diff → claim → exact evidence → required check.</h2>
           <p>
-            Search hits are candidates, not claims. <code>pin.prove</code> builds an evidence pack;
-            <code>pin.verify</code> re-checks path@SHA with <code>git show</code>. Git HEAD is the only truth source.
+            GitPin compares the merge-base diff with a committed evidence manifest, then re-checks every locator against
+            the exact base or head commit. It verifies evidence integrity—not whether a claim is semantically true.
           </p>
         </header>
         <div class="process-rail">
           <article>
-            <h3><span>1</span> Register Git roots</h3>
-            <pre><code>repositories:
-  - name: storefront
-    path: ../storefront
-    branches: [main]
-  - name: api
-    path: ../api
-    branches: [main]</code></pre>
+            <h3><span>1</span> Trust policy from base</h3>
+            <pre><code>schemaVersion: 1
+manifestPath: .gitpin/change-evidence.json
+coverage:
+  include: ["**"]
+policyChanges: block</code></pre>
           </article>
           <div class="policy-flow" aria-label="Committed evidence passes through Git HEAD and repository exposure policy">
-            <span>Git HEAD</span>
+            <span>Merge-base diff</span>
             <i aria-hidden="true"></i>
-            <span>Prove · Verify</span>
+            <span>Cover · Verify</span>
           </div>
           <article>
-            <h3><span>2</span> Prove a claim</h3>
-            <div class="question-block">pin.prove → evidence pack</div>
-            <h3><span>3</span> Verify independently</h3>
+            <h3><span>2</span> Cover material changes</h3>
+            <div class="question-block">claim → changed paths → exact locators</div>
+            <h3><span>3</span> Require the check</h3>
             <div class="result-block">
               <strong>docs/architecture.md:42</strong>
               <code>990c830d58cc68d63901985e5234ed3137819802</code>
@@ -159,29 +157,50 @@
           <a href="https://github.com/shmindmaster/gitpin/blob/main/docs/architecture.md">Read the architecture <span aria-hidden="true">→</span></a>
         </div>
         <dl class="safety-points">
-          <div><dt>Read-only tools</dt><dd>GitPin never writes, commits, or changes repository state.</dd></div>
+          <div><dt>Read-only gate</dt><dd>GitPin never writes, commits, executes repository commands, or changes repository state.</dd></div>
+          <div><dt>Base-trusted policy</dt><dd>A pull request cannot weaken the policy used to judge itself.</dd></div>
           <div><dt>Sensitive paths blocked</dt><dd>Environment files, credentials, keys, tokens, and secrets fail closed.</dd></div>
           <div><dt>Dirty work excluded</dt><dd>Local answers come from committed HEAD, with stale documentation signaled.</dd></div>
-          <div><dt>Documentation-only HTTP</dt><dd>Remote images contain a generated docs and manifest snapshot, not source code.</dd></div>
+          <div><dt>Evidence, not truth theater</dt><dd>The report says a locator was verified; it never claims semantic proof.</dd></div>
         </dl>
       </section>
 
       <section class="install page-section" id="install">
         <header class="section-heading">
-          <h2>From install to cited answer.</h2>
-          <p>Run init to create an external registry, verify a cited result, and print your MCP client handoff.</p>
+          <h2>Require evidence before merge.</h2>
+          <p>
+            First commit the base policy and evidence manifest from the setup guide. Then add the released Action with
+            read-only permissions and make its <code>evidence</code> job a required check.
+          </p>
+          <p>
+            <a href="https://github.com/shmindmaster/gitpin/blob/main/docs/pr-evidence-gate.md">
+              Open the complete setup guide <span aria-hidden="true">→</span>
+            </a>
+          </p>
         </header>
         <div class="install-layout">
           <div>
-            <pre class="terminal" aria-label="Published package commands"><code><span>npx</span> -y gitpin@latest init --client codex
+            <pre class="terminal" aria-label="GitHub Action example"><code>name: GitPin Evidence Gate
+on:
+  pull_request:
 
-<span>✓</span> Registry: ~/.gitpin/repositories.yaml
-<span>✓</span> Readiness: ready
-<span>✓</span> First evidence: README.md:1 at a full Git commit SHA</code></pre>
-            <p class="clients">Works with Claude Code, Codex, Cursor, Windsurf, Zed, and Continue.</p>
+permissions:
+  contents: read
+
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with: { fetch-depth: 0 }
+      - uses: shmindmaster/gitpin@v0.6.0
+        with:
+          base-sha: ${{ github.event.pull_request.base.sha }}
+          head-sha: ${{ github.event.pull_request.head.sha }}</code></pre>
+            <p class="clients">Keep retrieval local with the optional MCP server for Claude Code, Codex, Cursor, Windsurf, Zed, and Continue.</p>
           </div>
           <div class="tool-index">
-            <h3>Twelve read-only pin.* tools</h3>
+            <h3>Local evidence remains lightweight</h3>
             <ul>
               <li>pin.catalog</li><li>pin.search_docs</li><li>pin.search_code</li><li>pin.prove</li><li>pin.verify</li>
               <li>pin.prove_set</li><li>pin.verify_set</li><li>pin.get_doc</li><li>pin.read</li><li>pin.analyze</li><li>pin.inspect</li><li>pin.compare</li>

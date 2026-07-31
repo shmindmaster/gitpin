@@ -15,7 +15,9 @@ test.beforeEach(async ({ page }) => {
   });
   await page.goto('/');
   await expect(page).toHaveTitle(/GitPin/);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Prove agent answers. Then verify them.');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+    'Make agent-authored changes show exact evidence before merge.',
+  );
   expect(errors, `console errors: ${errors.join('; ')}`).toEqual([]);
   expect(failedRequests, `failed network: ${failedRequests.join('; ')}`).toEqual([]);
 });
@@ -26,15 +28,15 @@ test('presents the release path and safety boundary without analytics by default
     if (request.url().includes('posthog')) analyticsRequests.push(request.url());
   });
 
-  await expect(page.getByText(/No database\. No embeddings\. No write tools\./)).toBeVisible();
-  await expect(page.getByText(/No local reindex lag/)).toBeVisible();
+  await expect(page.getByText(/Read-only\. Base-trusted\. Full SHAs\./)).toBeVisible();
+  await expect(page.getByText(/No arbitrary command execution/)).toBeVisible();
   const menu = page.getByRole('button', { name: /navigation/i });
   if (await menu.isVisible()) await menu.click();
   await page.getByRole('link', { name: 'Safety', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'A deliberately narrow trust boundary.' })).toBeVisible();
   if (await menu.isVisible()) await menu.click();
   await page.getByRole('link', { name: 'Install', exact: true }).click();
-  await expect(page.locator('.terminal')).toContainText('gitpin@latest init --client codex');
+  await expect(page.locator('.terminal')).toContainText('shmindmaster/gitpin@v0.6.0');
   await expect(page.locator('body')).not.toContainText(/release candidate/i);
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://shmindmaster.github.io/gitpin/');
   await expect(page.getByRole('link', { name: 'Privacy', exact: true })).toHaveAttribute('href', './privacy.html');
@@ -44,15 +46,20 @@ test('presents the release path and safety boundary without analytics by default
   expect(analyticsRequests).toEqual([]);
 });
 
-test('makes npm-first onboarding the primary activation path', async ({ page }) => {
-  const primaryAction = page.getByRole('link', { name: /Start with npx/i });
+test('makes the pull-request gate the primary activation path', async ({ page }) => {
+  const primaryAction = page.getByRole('link', { name: /Add the PR gate/i });
   await expect(primaryAction).toHaveAttribute('href', '#install');
   await primaryAction.click();
-  await expect(page.getByRole('heading', { name: 'From install to cited answer.' })).toBeVisible();
-  await expect(page.locator('.terminal')).toContainText('init --client codex');
-  await expect(page.locator('.terminal')).toContainText('Registry: ~/.gitpin/repositories.yaml');
-  await expect(page.locator('.terminal')).toContainText('First evidence: README.md:1');
-  await expect(page.getByText('Works with Claude Code, Codex, Cursor, Windsurf, Zed, and Continue.')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Require evidence before merge.' })).toBeVisible();
+  await expect(page.locator('.terminal')).toContainText('pull_request:');
+  await expect(page.locator('.terminal')).toContainText('runs-on: ubuntu-latest');
+  await expect(page.locator('.terminal')).toContainText('uses: shmindmaster/gitpin@v0.6.0');
+  await expect(page.locator('.terminal')).toContainText('contents: read');
+  await expect(page.getByRole('link', { name: 'Open the complete setup guide' })).toHaveAttribute(
+    'href',
+    'https://github.com/shmindmaster/gitpin/blob/main/docs/pr-evidence-gate.md',
+  );
+  await expect(page.getByText(/Keep retrieval local with the optional MCP server/)).toBeVisible();
 });
 
 test('publishes a narrow, accessible privacy statement', async ({ page }) => {
@@ -139,5 +146,5 @@ test('keeps the primary content within the viewport', async ({ page }) => {
   );
   expect(overflow).toBeLessThanOrEqual(1);
   await expect(page.getByRole('link', { name: /View on GitHub/i }).first()).toBeVisible();
-  await expect(page.getByRole('link', { name: /Start with npx/i })).toBeVisible();
+  await expect(page.getByRole('link', { name: /Add the PR gate/i })).toBeVisible();
 });

@@ -1,6 +1,6 @@
 # Website and analytics
 
-GitPin ships a static public site in `site/`. It explains the product boundary, demonstrates an audience-aware EvidenceBrief, and links directly to source setup and contributor documentation.
+GitPin ships a static public site in `site/`. It leads with the required PR evidence gate, explains the trust boundary, demonstrates the local EvidenceBrief companion, and links directly to source setup and contributor documentation.
 
 The deployable surface includes a privacy page, canonical and social metadata, `robots.txt`, and a sitemap for the GitHub Pages URL. These are static release artifacts; they do not change the MCP server's read-only boundary.
 
