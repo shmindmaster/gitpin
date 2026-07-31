@@ -4,7 +4,7 @@
   "title": "GitPin",
   "description": "Prove and verify multi-repo claims at Git HEAD: path, line, full SHA, no index.",
   "repository": {
-    "url": "https://github.com/shmindmaster/repocontext",
+    "url": "https://github.com/shmindmaster/gitpin",
     "source": "github"
   },
   "version": "0.4.0",

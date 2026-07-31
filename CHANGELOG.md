@@ -136,12 +136,12 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 - Snapshot generation replaces only marked RepoContext output directories and rejects registered repository roots or their ancestors.
 - Malformed exposure policies fail closed.
 
-[Unreleased]: https://github.com/shmindmaster/repocontext/compare/v0.4.0...HEAD
-[0.4.0]: https://github.com/shmindmaster/repocontext/releases/tag/v0.4.0
-[0.3.1]: https://github.com/shmindmaster/repocontext/releases/tag/v0.3.1
-[0.3.0]: https://github.com/shmindmaster/repocontext/releases/tag/v0.3.0
-[0.2.4]: https://github.com/shmindmaster/repocontext/releases/tag/v0.2.4
-[0.2.3]: https://github.com/shmindmaster/repocontext/releases/tag/v0.2.3
-[0.2.2]: https://github.com/shmindmaster/repocontext/releases/tag/v0.2.2
-[0.2.1]: https://github.com/shmindmaster/repocontext/releases/tag/v0.2.1
-[0.2.0]: https://github.com/shmindmaster/repocontext/releases/tag/v0.2.0
+[Unreleased]: https://github.com/shmindmaster/gitpin/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/shmindmaster/gitpin/releases/tag/v0.4.0
+[0.3.1]: https://github.com/shmindmaster/gitpin/releases/tag/v0.3.1
+[0.3.0]: https://github.com/shmindmaster/gitpin/releases/tag/v0.3.0
+[0.2.4]: https://github.com/shmindmaster/gitpin/releases/tag/v0.2.4
+[0.2.3]: https://github.com/shmindmaster/gitpin/releases/tag/v0.2.3
+[0.2.2]: https://github.com/shmindmaster/gitpin/releases/tag/v0.2.2
+[0.2.1]: https://github.com/shmindmaster/gitpin/releases/tag/v0.2.1
+[0.2.0]: https://github.com/shmindmaster/gitpin/releases/tag/v0.2.0

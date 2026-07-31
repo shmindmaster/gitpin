@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://shmindmaster.github.io/repocontext/sitemap.xml
+Sitemap: https://shmindmaster.github.io/gitpin/sitemap.xml

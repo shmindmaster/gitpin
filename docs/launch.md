@@ -54,7 +54,7 @@ RepoContext is a read-only MCP server that answers from Git HEAD only—
 with path, line, and full commit SHA. No DB. No embeddings. No write tools.
 
 npx -y @shmindmaster/gitpin@latest init --client codex
-https://github.com/shmindmaster/repocontext
+https://github.com/shmindmaster/gitpin
 ```
 
 ### Show HN
@@ -73,7 +73,7 @@ no embeddings, no write tools.
 
 npx -y @shmindmaster/gitpin@latest init --client codex
 
-https://github.com/shmindmaster/repocontext
+https://github.com/shmindmaster/gitpin
 
 Curious how others pin multi-repo agent context without a vector store.
 ```
@@ -88,7 +88,7 @@ I open-sourced RepoContext: a read-only MCP server for multi-repo, commit-pinned
 evidence (path + line + full SHA). Git stays the source of truth.
 
 Try: npx -y @shmindmaster/gitpin@latest init --client codex
-Repo: https://github.com/shmindmaster/repocontext
+Repo: https://github.com/shmindmaster/gitpin
 ```
 
 ### Client auto-invoke rule (paste into AGENTS.md / Cursor rules)

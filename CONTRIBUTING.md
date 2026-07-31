@@ -11,7 +11,7 @@ Thanks for improving RepoContext.
 ## Local setup
 
 ```bash
-git clone https://github.com/shmindmaster/repocontext.git
+git clone https://github.com/shmindmaster/gitpin.git
 cd repocontext
 corepack enable
 pnpm install --frozen-lockfile

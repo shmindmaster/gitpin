@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://shmindmaster.github.io/repocontext/schemas/evidence-pack.schema.json",
+  "$id": "https://shmindmaster.github.io/gitpin/schemas/evidence-pack.schema.json",
   "title": "GitPin Evidence Pack",
   "type": "object",
   "required": ["kind", "product", "contract", "status", "citation", "repository", "sourcePath"],

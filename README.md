@@ -1,6 +1,6 @@
 # GitPin
 
-[![Validate](https://github.com/shmindmaster/repocontext/actions/workflows/ci.yml/badge.svg)](https://github.com/shmindmaster/repocontext/actions/workflows/ci.yml)
+[![Validate](https://github.com/shmindmaster/gitpin/actions/workflows/ci.yml/badge.svg)](https://github.com/shmindmaster/gitpin/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](package.json)
 [![MCP Protocol](https://img.shields.io/badge/MCP-1.30-blue.svg)](https://modelcontextprotocol.io)
@@ -26,7 +26,7 @@ Agent claim
 | Grep hits as “the answer” | **Candidates → evidence pack → verification report** |
 | GitHub platform MCP | **Local Git roots (private/offline)** |
 
-Formerly `@shmindmaster/repocontext` (0.3.x). See [migration](docs/migration-gitpin.md).
+Formerly `@shmindmaster/gitpin` (0.3.x). See [migration](docs/migration-gitpin.md).
 
 > **Release:** `@shmindmaster/gitpin@0.4.0`. Install: `npx -y @shmindmaster/gitpin@latest`. Node 20+.
 
@@ -98,7 +98,7 @@ Default registry: `~/.gitpin/repositories.yaml` (falls back to `~/.repocontext/.
 
 [Tools](docs/tools.md) · [Compare](docs/compare.md) · [FAQ](docs/faq.md) · [Migration](docs/migration-gitpin.md) · [Clients](docs/clients.md) · [Architecture](docs/architecture.md) · [Competitive landscape](docs/research/competitive-landscape-corrected-2026-07-30.md)
 
-Site: [shmindmaster.github.io/repocontext](https://shmindmaster.github.io/repocontext/) (GitHub path may stay `repocontext`; product name is **GitPin**).
+Site: [shmindmaster.github.io/gitpin](https://shmindmaster.github.io/gitpin/) (GitHub path may stay `repocontext`; product name is **GitPin**).
 
 ## Development
 

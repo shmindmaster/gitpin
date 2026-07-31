@@ -16,9 +16,9 @@ The name “RepoContext” collides with many open-source tools (often embedding
 
 | Item | 0.3.x | 0.4.0 |
 | --- | --- | --- |
-| npm package | `@shmindmaster/repocontext` | `@shmindmaster/gitpin` |
+| npm package | `@shmindmaster/gitpin` | `@shmindmaster/gitpin` |
 | CLI | `repocontext` | `gitpin` (`repocontext` bin alias kept temporarily) |
-| MCP name | `io.github.shmindmaster/repocontext` | `io.github.shmindmaster/gitpin` |
+| MCP name | `io.github.shmindmaster/gitpin` | `io.github.shmindmaster/gitpin` |
 | Tools | `wiki.*` / `repo.*` (8) | `pin.*` (12) including prove/verify and prove_set/verify_set |
 | Brief type | `ContextBrief` schema v1 | `EvidenceBrief` schema v2 (`product`, `contract`) |
 | Search responses | Raw hit arrays | `evidence-candidates` envelope with `next` → prove |
@@ -67,6 +67,19 @@ Remove the old `repocontext` server entry to avoid dual servers.
 ## Publishing
 
 1. Publish `@shmindmaster/gitpin@0.4.0` via the tag workflow.
-2. Optionally deprecate `@shmindmaster/repocontext` on npm with a message pointing at GitPin.
+2. Optionally deprecate `@shmindmaster/gitpin` on npm with a message pointing at GitPin.
 3. Publish MCP Registry metadata for `io.github.shmindmaster/gitpin`.
-4. GitHub repository folder may remain `repocontext` until a deliberate GitHub rename; product branding is GitPin everywhere user-facing.
+4. ~~GitHub repository folder may remain `repocontext` until a deliberate GitHub rename~~ — done on 2026-07-31. The repository is `shmindmaster/gitpin` and the site is `shmindmaster.github.io/gitpin/`. GitHub redirects the old paths, but every tracked URL now points at the new name directly.
+
+## What deliberately still says `repocontext`
+
+Per the table above, these are back-compat surfaces and are **not** bugs:
+
+- the `repocontext` bin alias in `package.json`
+- `REPOCONTEXT_*` environment variables (still accepted alongside `GITPIN_*`)
+- `~/.repocontext` config discovery
+- CHANGELOG entries describing 0.3.x, which are a historical record
+
+Note that several `REPOCONTEXT_*` names in `scripts/` and the Dockerfiles are
+current tooling rather than compat shims, so they are inconsistent with the
+`GITPIN_*` policy above. Renaming those is a separate, deliberate change.

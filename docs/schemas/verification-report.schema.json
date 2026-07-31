@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://shmindmaster.github.io/repocontext/schemas/verification-report.schema.json",
+  "$id": "https://shmindmaster.github.io/gitpin/schemas/verification-report.schema.json",
   "title": "GitPin Verification Report",
   "type": "object",
   "required": [

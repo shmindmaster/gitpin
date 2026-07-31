@@ -6,13 +6,13 @@
   "description": "Prove and verify multi-repo agent claims at Git HEAD—index-free evidence packs with path, line, and full SHA.",
   "author": "Sarosh Hussain",
   "license": "MIT",
-  "homepage": "https://shmindmaster.github.io/repocontext/",
+  "homepage": "https://shmindmaster.github.io/gitpin/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shmindmaster/repocontext.git"
+    "url": "git+https://github.com/shmindmaster/gitpin.git"
   },
   "bugs": {
-    "url": "https://github.com/shmindmaster/repocontext/issues"
+    "url": "https://github.com/shmindmaster/gitpin/issues"
   },
   "bin": {
     "gitpin": "dist/server.js",

@@ -76,7 +76,7 @@ Do **not** claim better semantic search, GitHub workflow automation, bulk dump c
 ### Ranked discovery channels for RepoContext
 
 1. `npx -y` + client paste config  
-2. Official MCP Registry (`io.github.shmindmaster/repocontext`)  
+2. Official MCP Registry (`io.github.shmindmaster/gitpin`)  
 3. GitHub MCP Registry / stars + activity  
 4. Pain narrative (branch drift / dirty-as-truth / multi-repo)  
 5. Smithery / quality marketplaces  
@@ -91,7 +91,7 @@ Weekly npm downloads, time-to-first-cited-fact, successful tool-call rate, 90-da
 
 | Gate | Status |
 | --- | --- |
-| npm `@shmindmaster/repocontext@0.3.1` | **Published** (`mcpName` set; `gitHead` on main) |
+| npm `@shmindmaster/gitpin@0.3.1` | **Published** (`mcpName` set; `gitHead` on main) |
 | GitHub Release `v0.3.1` | **Published** |
 | Official MCP Registry search | **Empty until OIDC publish succeeds** |
 | Core tests / package verify | **Green on PR #19 merge** |

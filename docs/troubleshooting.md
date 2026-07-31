@@ -43,4 +43,4 @@
 
 1. Run `npx -y @shmindmaster/gitpin@latest doctor` with `GITPIN_REGISTRY` set.
 2. Run `pnpm verify:package` from a source checkout to compare a clean packed install.
-3. Open a [GitHub issue](https://github.com/shmindmaster/repocontext/issues) with the doctor JSON (redact private paths if needed) and client name.
+3. Open a [GitHub issue](https://github.com/shmindmaster/gitpin/issues) with the doctor JSON (redact private paths if needed) and client name.

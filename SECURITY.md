@@ -8,7 +8,7 @@ Security fixes are applied to the latest published release on npm and to `main`.
 
 ## Report a vulnerability
 
-Use [GitHub's private vulnerability-reporting form](https://github.com/shmindmaster/repocontext/security/advisories/new). Do not open a public issue or pull request for an undisclosed vulnerability, and do not include live credentials or proprietary repository content.
+Use [GitHub's private vulnerability-reporting form](https://github.com/shmindmaster/gitpin/security/advisories/new). Do not open a public issue or pull request for an undisclosed vulnerability, and do not include live credentials or proprietary repository content.
 
 When reporting, include the affected version, reproduction steps, impact, and any relevant path or policy configuration. We will acknowledge valid reports, investigate, and coordinate a fix before disclosure.
 

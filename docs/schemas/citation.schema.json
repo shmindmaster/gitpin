@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://shmindmaster.github.io/repocontext/schemas/citation.schema.json",
+  "$id": "https://shmindmaster.github.io/gitpin/schemas/citation.schema.json",
   "title": "GitPin Citation",
   "type": "object",
   "required": [
