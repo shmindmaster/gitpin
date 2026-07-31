@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "summary": "Enable GitPin's released evidence gate as a read-only pull-request check.",
+  "claims": [
+    {
+      "id": "SELF-HOSTED-GATE",
+      "statement": "Pull requests run the version-pinned GitPin evidence gate with read-only repository permissions.",
+      "covers": [".github/workflows/evidence-gate.yml"],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": ".github/workflows/evidence-gate.yml",
+          "lineStart": 1,
+          "lineEnd": 24,
+          "contentSha256": "d1154f6dbaeb36249826c7487564b26309a1e21cad55939a5c253eda249e9d12"
+        }
+      ]
+    }
+  ]
+}
