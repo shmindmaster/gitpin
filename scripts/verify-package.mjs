@@ -89,7 +89,7 @@ try {
     throw new Error('Packed .env.example must keep GITPIN_MCP_TOKEN empty.');
   }
   const packageReadme = readFileSync(join(packageRoot, 'README.md'), 'utf8');
-  if (!packageReadme.includes('@shmindmaster/gitpin@latest')) {
+  if (!packageReadme.includes('gitpin@latest')) {
     throw new Error('Packed README must document the published GitPin package.');
   }
   if (
@@ -141,7 +141,7 @@ try {
     !initialization.includes('First evidence:') ||
     !initialization.includes('README.md') ||
     !initialization.includes('codex mcp add --env') ||
-    !initialization.includes('@shmindmaster/gitpin@latest') ||
+    !initialization.includes('gitpin@latest') ||
     !existsSync(initializedRegistryPath)
   ) {
     throw new Error(`Packed init journey did not reach a configured first fact: ${initialization.trim()}`);

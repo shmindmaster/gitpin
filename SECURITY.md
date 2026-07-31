@@ -4,7 +4,7 @@ GitPin is intentionally read-only, but it can expose repository evidence to MCP 
 
 ## Supported versions
 
-Security fixes are applied to the latest published release on npm and to `main`. Older patch lines do not receive a separate long-term maintenance window. Always prefer the latest `@shmindmaster/gitpin` version.
+Security fixes are applied to the latest published release on npm and to `main`. Older patch lines do not receive a separate long-term maintenance window. Always prefer the latest `gitpin` version.
 
 ## Report a vulnerability
 

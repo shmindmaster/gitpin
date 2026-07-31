@@ -8,7 +8,7 @@ import { registerProvePrompt } from './pin-prompt';
 import { registerPinTools } from './pin-tools';
 
 export function createServer(): McpServer {
-  const server = new McpServer({ name: 'gitpin', version: '0.5.0' });
+  const server = new McpServer({ name: 'gitpin', version: '0.5.1' });
   registerPinTools(server);
   registerProvePrompt(server);
   return server;

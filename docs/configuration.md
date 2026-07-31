@@ -22,7 +22,7 @@ Run the readiness check from the project directory or with `GITPIN_REGISTRY` set
 node dist/server.js doctor
 ```
 
-`npx -y @shmindmaster/gitpin doctor` provides the same check after the matching npm version is published.
+`npx -y gitpin doctor` provides the same check after the matching npm version is published.
 
 `ready` means every configured repository has committed documentation available. `attention` means evidence is available but at least one repository is stale or empty. `blocked` means a repository is unavailable or no committed documentation can be used; fix the reported registry entry before asking an agent to rely on it.
 

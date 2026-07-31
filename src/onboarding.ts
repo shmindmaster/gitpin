@@ -213,7 +213,7 @@ function writeRegistryIfAbsentOrIdentical(path: string, content: string): boolea
 
 function clientConfiguration(client: InitClient, registryPath: string): string {
   const command = process.platform === 'win32' ? 'npx.cmd' : 'npx';
-  const packageSpec = '@shmindmaster/gitpin@latest';
+  const packageSpec = 'gitpin@latest';
   const server = {
     command,
     args: ['-y', packageSpec],
@@ -228,7 +228,7 @@ function clientConfiguration(client: InitClient, registryPath: string): string {
   if (client === 'continue') {
     return stringify({
       name: 'GitPin',
-      version: '0.5.0',
+      version: '0.5.1',
       schema: 'v1',
       mcpServers: [{ name: 'GitPin', type: 'stdio', ...server }],
     }).trim();

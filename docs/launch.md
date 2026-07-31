@@ -9,7 +9,7 @@ GitPin is launchable only when the exact same version is verified in the source 
 Required before announcement:
 
 1. Publish the new GitPin version from a new version tag; do not reuse `v0.4.0`.
-2. Verify clean-machine `npx -y @shmindmaster/gitpin@latest init --client codex` and first evidence output.
+2. Verify clean-machine `npx -y gitpin@latest init --client codex` and first evidence output.
 3. Verify all 12 `pin.*` tools and read-only annotations.
 4. Publish matching MCP Registry metadata for `io.github.shmindmaster/gitpin`.
 5. Deploy the current GitPin site and confirm canonical links, package links, and migration guidance.
@@ -17,7 +17,7 @@ Required before announcement:
 ## Golden path
 
 ```bash
-npx -y @shmindmaster/gitpin@latest init --client codex
+npx -y gitpin@latest init --client codex
 ```
 
 Then ask a coding agent:
@@ -41,7 +41,7 @@ GitPin is maintained by Sarosh Hussain, who leads its technical direction. Pendo
 >
 > GitPin is a read-only MCP server that keeps multi-repo answers pinned to Git HEAD. Search finds candidates; `pin.prove` creates an evidence pack; `pin.verify` re-checks it with path, line, and full commit SHA.
 >
-> No database, embeddings, write access, or hosted account. Install with `npx -y @shmindmaster/gitpin@latest init --client codex`.
+> No database, embeddings, write access, or hosted account. Install with `npx -y gitpin@latest init --client codex`.
 >
 > https://github.com/shmindmaster/gitpin
 >

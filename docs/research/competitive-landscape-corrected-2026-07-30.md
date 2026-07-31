@@ -8,7 +8,7 @@ This pass used targeted Exa + GitHub research searches for `repo-context`, `repo
 
 ## Name collisions (same or near-same product language)
 
-| Name | URL | What it is | vs this product (`@shmindmaster/gitpin`) |
+| Name | URL | What it is | vs this product (`gitpin`) |
 | --- | --- | --- | --- |
 | **mcp-repo-context** | https://github.com/yashpalsinhc/mcp-repo-context | MCP + AST + call graphs + **SQLite vectors** + multi-repo compare | Index/embeddings/infra; not HEAD-only no-DB |
 | **repo-context-mcp-server** | https://github.com/HutsonLabs/repo-context-mcp-server | Vector + dependency graph + wiki in **`.repo-context/index.db`** | Explicit local index DB |
@@ -23,7 +23,7 @@ This pass used targeted Exa + GitHub research searches for `repo-context`, `repo
 | **repo-context-hooks** | https://github.com/narendranathe/repo-context-hooks | Session handoff skill/hooks, not a context server | Different problem (continuity) |
 | **repocontext.ai** | https://repocontext.ai / wip.co project | Dev dependency documentation MCP (unrelated product) | Name/domain collision |
 
-**Implication:** The package name `@shmindmaster/gitpin` is distinct, but the old “repo context” language is crowded. Discovery and README must disambiguate GitPin in the first screen.
+**Implication:** The package name `gitpin` is distinct, but the old “repo context” language is crowded. Discovery and README must disambiguate GitPin in the first screen.
 
 ## Adjacent crowded category (not named GitPin, same job family)
 
@@ -55,7 +55,7 @@ What is **not** a defensible uniqueness claim:
 
 What **can** still be a coherent niche **if** true in implementation and marketing:
 
-| Claim | Status for `@shmindmaster/gitpin` |
+| Claim | Status for `gitpin` |
 | --- | --- |
 | **No embeddings / no DB / no index rebuild** | True — differentiates from most “repo-context*” tools above |
 | **Git HEAD only as evidence** (dirty excluded, SHA on results) | True — rare as a *product contract* |

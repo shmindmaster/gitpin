@@ -15,7 +15,7 @@ GitPin's roadmap is evidence-led. Planned work may change when validation shows 
 
 ## P0 release work
 
-- Publish a version-matched `@shmindmaster/gitpin` artifact after the repository rename.
+- Publish a version-matched `gitpin` artifact after the repository rename.
 - Publish matching `io.github.shmindmaster/gitpin` metadata to the official MCP Registry.
 - Align package, server metadata, launch copy, site copy, demos, and docs to the 12-tool contract.
 - Verify a clean-machine install-to-first-evidence path.

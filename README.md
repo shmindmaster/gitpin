@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](package.json)
 [![MCP Protocol](https://img.shields.io/badge/MCP-1.30-blue.svg)](https://modelcontextprotocol.io)
-[![npm](https://img.shields.io/npm/v/@shmindmaster/gitpin.svg)](https://www.npmjs.com/package/@shmindmaster/gitpin)
+[![npm](https://img.shields.io/npm/v/gitpin.svg)](https://www.npmjs.com/package/gitpin)
 
 ### Pin agent answers to Git HEAD. Path. Line. Full SHA. Prove. Verify.
 
@@ -28,7 +28,7 @@ Agent claim
 
 Formerly RepoContext 0.3.x. See [migration](docs/migration-gitpin.md).
 
-> **Release:** publish a version-matched GitPin release across npm, the MCP Registry, GitHub, and Pages before announcing. Install: `npx -y @shmindmaster/gitpin@latest`. Node 20+.
+> **Release:** publish a version-matched GitPin release across npm, the MCP Registry, GitHub, and Pages before announcing. Install: `npx -y gitpin@latest`. Node 20+.
 
 GitPin is maintained by **Sarosh Hussain**, who leads the project's technical direction. **Pendoah** is his company and operating context; GitPin remains the product and repository.
 
@@ -36,14 +36,14 @@ GitPin is maintained by **Sarosh Hussain**, who leads the project's technical di
 
 ```bash
 # From a committed Git repository
-npx -y @shmindmaster/gitpin@latest init --client codex
+npx -y gitpin@latest init --client codex
 ```
 
 `init` creates `~/.gitpin/repositories.yaml` **outside** the repo, runs `doctor`, prints a **first evidence line with full SHA**, and paste-ready MCP config. It never edits the indexed repository.
 
 ```bash
 # Independently verify any claim (same contract as pin.verify)
-npx -y @shmindmaster/gitpin@latest verify \
+npx -y gitpin@latest verify \
   --repository my-service \
   --path docs/architecture.md \
   --line 42 \

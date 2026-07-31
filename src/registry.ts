@@ -43,9 +43,7 @@ function findRegistryPath(): string {
     join(homeDirectory(), '.repocontext', 'repositories.yaml'),
   ].filter((candidate): candidate is string => Boolean(candidate));
   for (const c of candidates) if (existsSync(c)) return c;
-  throw new Error(
-    'No GitPin registry found. Set GITPIN_REGISTRY or run: npx -y @shmindmaster/gitpin@latest init --client codex',
-  );
+  throw new Error('No GitPin registry found. Set GITPIN_REGISTRY or run: npx -y gitpin@latest init --client codex');
 }
 
 export function loadRegistry(): RepoEntry[] {

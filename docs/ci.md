@@ -23,7 +23,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
-      - run: npm install --global @shmindmaster/gitpin@latest
+      - run: npm install --global gitpin@latest
       - name: Build registry
         shell: bash
         run: |

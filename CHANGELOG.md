@@ -4,6 +4,13 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-07-31
+
+### Changed
+
+- Publish GitPin under the available unscoped npm package `gitpin`.
+- Document `@shmindmaster/repocontext` as the published predecessor and remove the unpublished `@shmindmaster/gitpin` intermediate identity from install instructions.
+
 ## [0.5.0] - 2026-07-31
 
 ### Added
@@ -25,7 +32,7 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 ### Changed
 
 - **Full product pivot (not rename-only)** to GitPin: trust/evidence job, prove→verify functionality, and category exit from “repo context.”
-- Package/MCP identity: `@shmindmaster/gitpin`, `io.github.shmindmaster/gitpin`, CLI `gitpin` (legacy `repocontext` bin alias retained).
+- Package/MCP identity: `gitpin`, `io.github.shmindmaster/gitpin`, CLI `gitpin` (legacy `repocontext` bin alias retained).
 - Tool surface reorganized around the product loop: discover → candidates → prove → verify → decide.
 - Search tools return `evidence-candidates` envelopes with `citation` and `next: pin.prove` (hits are not claims).
 - Read/get_doc return evidence-oriented slices with contract metadata.
@@ -138,7 +145,8 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 - Snapshot generation replaces only marked RepoContext output directories and rejects registered repository roots or their ancestors.
 - Malformed exposure policies fail closed.
 
-[Unreleased]: https://github.com/shmindmaster/gitpin/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/shmindmaster/gitpin/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/shmindmaster/gitpin/releases/tag/v0.5.1
 [0.5.0]: https://github.com/shmindmaster/gitpin/releases/tag/v0.5.0
 [0.4.0]: https://github.com/shmindmaster/gitpin/releases/tag/v0.4.0
 [0.3.1]: https://github.com/shmindmaster/gitpin/releases/tag/v0.3.1

@@ -4,7 +4,7 @@
 
 **GitPin** is an index-free, read-only MCP server for multi-repo evidence pinned to Git HEAD. Answers carry path, line, and full SHA. It has no databases, embeddings, queues, or write tools.
 
-Package: `@shmindmaster/gitpin`. Tools: `pin.*`. CLI: `gitpin`.
+Package: `gitpin`. Tools: `pin.*`. CLI: `gitpin`.
 
 ## Architecture
 
