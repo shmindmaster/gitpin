@@ -1,18 +1,18 @@
 {
   "schemaVersion": 1,
-  "summary": "Enable GitPin's released evidence gate as a read-only pull-request check.",
+  "summary": "Exercise the released GitPin Action on a real pull request.",
   "claims": [
     {
-      "id": "SELF-HOSTED-GATE",
-      "statement": "Pull requests run the version-pinned GitPin evidence gate with read-only repository permissions.",
-      "covers": [".github/workflows/evidence-gate.yml"],
+      "id": "DOGFOOD-PR",
+      "statement": "The repository documents its end-to-end pull-request self-test.",
+      "covers": ["docs/pr-evidence-gate.md"],
       "evidence": [
         {
           "ref": "head",
-          "path": ".github/workflows/evidence-gate.yml",
-          "lineStart": 1,
-          "lineEnd": 24,
-          "contentSha256": "d1154f6dbaeb36249826c7487564b26309a1e21cad55939a5c253eda249e9d12"
+          "path": "docs/pr-evidence-gate.md",
+          "lineStart": 90,
+          "lineEnd": 90,
+          "contentSha256": "df88fdc9991f927e74b8d70bdb8f9c5abb23dd07da0476036a758c1aa535b5d2"
         }
       ]
     }
