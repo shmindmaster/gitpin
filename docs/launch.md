@@ -57,6 +57,72 @@ GitPin is maintained by Sarosh Hussain, who leads its technical direction. Pendo
 >
 > Maintained by Sarosh Hussain. Pendoah is his company and operating context.
 
+## Canonical announcement package (v0.6.0)
+
+Canonical links for this release package:
+
+- npm: https://www.npmjs.com/package/gitpin
+- GitHub release: https://github.com/shmindmaster/gitpin/releases/tag/v0.6.0
+- GitHub Actions evidence gate workflow: https://github.com/shmindmaster/gitpin/actions/workflows/evidence-gate.yml
+- MCP Registry entry search (live): https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.shmindmaster/gitpin&limit=20
+- Project site: https://shmindmaster.github.io/gitpin/
+- GitHub Action setup:
+  - `uses: shmindmaster/gitpin@v0.6.0` in workflow YAML
+  - CLI bootstrap: `npx -y gitpin@latest init --client codex`
+
+## Show HN draft
+
+**GitPin 0.6.0: commit-level PR evidence for agent-authored changes**
+
+GitPin is a base-trusted PR gate that compares the merge-base diff and validates evidence claims against exact file, line, and full-SHA locations. It is designed so reviewers can independently re-check every accepted locator with `git show`.
+
+For merge requests that include material file changes, GitPin enforces that required paths are covered by committed evidence. A missing locator blocks merge. This is not a quality-scoring product and it does not infer semantics from search hits.
+
+Release setup for this version:
+
+```bash
+npx -y gitpin@latest
+gitpin gate --base <full-base-sha> --head <full-head-sha>
+uses: shmindmaster/gitpin@v0.6.0
+```
+
+Relevant links:
+
+- https://github.com/shmindmaster/gitpin
+- https://www.npmjs.com/package/gitpin
+- https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.shmindmaster/gitpin&limit=20
+
+## LinkedIn draft
+
+GitPin 0.6.0 is now the shipped PR evidence gate for agent-authored changes. It enforces material-path coverage and validates locators at exact commit SHAs (`path@full-SHA` + line ranges), with an independent `git show` verification path.
+
+The focus is narrow: deterministic evidence integrity, not semantic certainty or platform-wide scoring. This is a review gate, not a replacement for testing, source control review, or human judgment.
+
+Try the setup:
+`gitpin gate --base <full-base-sha> --head <full-head-sha>`
+
+## X draft
+
+GitPin 0.6.0 now ships a required PR gate path-coverage loop for agent-authored changes. If a material file is changed without evidence, merge is blocked. If evidence is complete, `path@full-SHA` claims can be re-checked via `git show`.
+
+Signals to use this as infrastructure:
+- `uses: shmindmaster/gitpin@v0.6.0`
+- https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.shmindmaster/gitpin&limit=20
+- https://www.npmjs.com/package/gitpin
+
+## Adaptable community post draft
+
+GitPin 0.6.0 enforces commit-pinned PR evidence for material diff paths: the gate requires coverage for changed files and checks exact file-line evidence against full SHA sources at merge time. It is intended as a trust-boundary control for review, not as a rollout claim or replacement for human code review.
+
+Quick rollout setup:
+1) Install: `npx -y gitpin@latest`
+2) Configure `.gitpin/gate.yml` on the trusted base commit
+3) Add `.gitpin/change-evidence.json` in PR heads
+4) Enable `uses: shmindmaster/gitpin@v0.6.0` on PR checks
+5) Verify in CI with deterministic pass/fail outputs before merge
+
+If your audience needs concrete proof of behavior, point them to the deterministic artifact in `docs/demos/pr-gate-fail-to-pass.md` and the synthetic fixture in the same directory.
+
 ## First week
 
 | Window | Action |
@@ -71,6 +137,6 @@ GitPin is maintained by Sarosh Hussain, who leads its technical direction. Pendo
 - Semantic or embedding search quality.
 - Hosted multi-tenant SaaS.
 - That dirty worktrees are searchable as evidence.
-- User adoption, registry status, or package availability without current verification.
+- Unverified user-traction claims, registry status, or package availability without current verification.
 - That GitPin replaces code review, tests, source control, or repository-owned documentation.
 - That a passing locator proves the claim is semantically true.

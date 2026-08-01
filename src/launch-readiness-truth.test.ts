@@ -22,6 +22,26 @@ const publicArtifacts = [
   'site/index.html',
 ];
 
+const announcementArtifacts = [
+  'docs/launch.md',
+  'docs/demos/pr-gate-fail-to-pass.md',
+  'docs/demos/pr-gate-fail-to-pass.artifact.json',
+];
+
+const syntheticFailPassArtifacts = {
+  base: '982608f3b7521706cabbc39cd0ccf4b4036898fa',
+  head: 'bab63b08df51151b6b375f2b6376fb441bcf3a8e',
+};
+
+const launchCanonicalLinks = [
+  'https://www.npmjs.com/package/gitpin',
+  'https://github.com/shmindmaster/gitpin/releases/tag/v0.6.0',
+  'https://github.com/shmindmaster/gitpin/actions/workflows/evidence-gate.yml',
+  'https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.shmindmaster/gitpin&limit=20',
+  'https://shmindmaster.github.io/gitpin/',
+  'uses: shmindmaster/gitpin@v0.6.0',
+];
+
 const legacyBrandPattern = /\bRepoContext\b|\bRepocontext\b|\brepocontext\b|\bREPOCONTEXT\b/;
 const legacyBrandCompatibilityAllowlist: Record<string, ((line: string) => boolean)[]> = {
   'AGENTS.md': [(line) => line.includes('.repocontext/wiki.yaml') && line.includes('migration alias')],
@@ -55,6 +75,10 @@ function isAllowlistedLegacyLine(relativePath: string, line: string): boolean {
 
 function readArtifact(relativePath: string): string {
   return readFileSync(join(rootDirectory, relativePath), 'utf8');
+}
+
+function readArtifactJson(relativePath: string): unknown {
+  return JSON.parse(readArtifact(relativePath));
 }
 
 function detectUnmarkedLegacyBranding(relativePath: string, fileContent: string): string[] {
@@ -137,6 +161,78 @@ describe('public launch truth', () => {
     expect(detectUnmarkedLegacyBranding(syntheticArtifact, syntheticContent)).toEqual([
       'README.md#1: RepoContext references must be explicit and explicit-compat lines cannot be inferred from neighbors.',
     ]);
+  });
+
+  it('locks canonical release/setup links and channel copy version claims', () => {
+    const launchCopy = readArtifact('docs/launch.md');
+    const releaseArtifact = readArtifactJson('docs/demos/pr-gate-fail-to-pass.artifact.json') as {
+      links?: { [key: string]: string };
+      version?: string;
+    };
+
+    for (const link of launchCanonicalLinks) {
+      expect(launchCopy, `docs/launch.md missing canonical link: ${link}`).toContain(link);
+    }
+
+    for (const link of launchCanonicalLinks) {
+      expect(JSON.stringify(releaseArtifact)).toContain(link);
+      if (link === 'uses: shmindmaster/gitpin@v0.6.0') {
+        expect(JSON.stringify(releaseArtifact.links)).toContain(link);
+      }
+    }
+
+    for (const file of announcementArtifacts) {
+      const artifact = readArtifact(file);
+      expect(artifact, `${file} missed current release version`).toContain(`v${packageVersion}`);
+      expect(
+        artifact,
+        `${file} has stale claim boundary text (adoption/security proof/product-market-fit)`,
+      ).not.toMatch(/\badoption\b/i);
+      expect(
+        artifact,
+        `${file} has stale claim boundary text (adoption/security proof/product-market-fit)`,
+      ).not.toMatch(/\bsecurity proof\b/i);
+      expect(
+        artifact,
+        `${file} has stale claim boundary text (adoption/security proof/product-market-fit)`,
+      ).not.toMatch(/\bproduct[- ]market fit\b/i);
+      expect(
+        artifact,
+        `${file} has stale claim boundary text (adoption/security proof/product-market-fit)`,
+      ).not.toMatch(/\bcertif/i);
+    }
+
+    expect(releaseArtifact).toMatchObject({
+      version: packageVersion,
+      reducedMotionSafe: true,
+      failCase: { status: 1 },
+      passCase: { status: 0 },
+      accessibility: { staticOnly: true },
+      links: { mcp_registry: expect.any(String) },
+    });
+  });
+
+  it('contains deterministic fail-to-pass evidence locus with exact full-SHA path and line data', () => {
+    const artifact = readArtifactJson('docs/demos/pr-gate-fail-to-pass.artifact.json') as {
+      fixture: { base: string; head: string; changedPath: string };
+      passCase: {
+        coverage: { path: string; lineStart: number; lineEnd: number; sha: string; contentSha256: string };
+      };
+    };
+
+    expect(typeof artifact.fixture.base).toBe('string');
+    expect(typeof artifact.fixture.head).toBe('string');
+    expect(artifact.fixture.base).toMatch(/^[0-9a-f]{40}$/);
+    expect(artifact.fixture.head).toMatch(/^[0-9a-f]{40}$/);
+    expect(artifact.fixture.base).toBe(syntheticFailPassArtifacts.base);
+    expect(artifact.fixture.head).toBe(syntheticFailPassArtifacts.head);
+    expect(artifact.fixture.changedPath).toBe('docs/protocol.md');
+    expect(artifact.passCase.coverage.path).toBe(artifact.fixture.changedPath);
+    expect(artifact.passCase.coverage.lineStart).toBe(5);
+    expect(artifact.passCase.coverage.lineEnd).toBe(5);
+    expect(artifact.passCase.coverage.sha).toBe(artifact.fixture.head);
+    expect(artifact.passCase.coverage.contentSha256).toMatch(/^[0-9a-f]{64}$/);
+    expect(artifact.passCase.coverage.path).toMatch(/^docs\/protocol\.md$/);
   });
 
   it('keeps public release/version assertions on the current package version', () => {

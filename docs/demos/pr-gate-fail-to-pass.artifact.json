@@ -1,0 +1,49 @@
+{
+  "artifactId": "pr-gate-fail-to-pass",
+  "name": "GitPin PR evidence gate fail-to-pass sample",
+  "version": "0.6.0",
+  "scenario": "deterministic synthetic PR evidence flow",
+  "reducedMotionSafe": true,
+  "accessibility": {
+    "altText": "A flow diagram that shows one synthetic PR gate run failing on a missing material-path locator, then passing after adding a full-SHA evidence claim.",
+    "caption": "Fail-to-pass summary: one uncovered material path blocks the gate at status 1, then the same path passes at status 0 once an exact path/line/SHA locator is added.",
+    "staticOnly": true
+  },
+  "links": {
+    "npm": "https://www.npmjs.com/package/gitpin",
+    "github_release": "https://github.com/shmindmaster/gitpin/releases/tag/v0.6.0",
+    "github_action": "https://github.com/shmindmaster/gitpin/actions/workflows/evidence-gate.yml",
+    "github_action_snippet": "uses: shmindmaster/gitpin@v0.6.0",
+    "mcp_registry": "https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.shmindmaster/gitpin&limit=20",
+    "pages": "https://shmindmaster.github.io/gitpin/"
+  },
+  "fixture": {
+    "base": "982608f3b7521706cabbc39cd0ccf4b4036898fa",
+    "head": "bab63b08df51151b6b375f2b6376fb441bcf3a8e",
+    "repository": "task-2-synthetic-pr-fixture",
+    "changedPath": "docs/protocol.md",
+    "lineAdded": 5
+  },
+  "failCase": {
+    "command": "gitpin gate --base 982608f3b7521706cabbc39cd0ccf4b4036898fa --head bab63b08df51151b6b375f2b6376fb441bcf3a8e",
+    "status": 1,
+    "output": "FAIL: material path is uncovered: docs/protocol.md"
+  },
+  "passCase": {
+    "command": "gitpin gate --base 982608f3b7521706cabbc39cd0ccf4b4036898fa --head bab63b08df51151b6b375f2b6376fb441bcf3a8e",
+    "status": 0,
+    "coverage": {
+      "repository": "task-2-synthetic-pr-fixture",
+      "path": "docs/protocol.md",
+      "lineStart": 5,
+      "lineEnd": 5,
+      "sha": "bab63b08df51151b6b375f2b6376fb441bcf3a8e",
+      "contentSha256": "3abe23f770304e0849977cb46aac0cf5dc4a4d0ce7b92a8bf12f6960386f5ce1"
+    }
+  },
+  "disclaimer": {
+    "type": "synthetic",
+    "scope": "synthetic local repository fixture with deterministic SHAs",
+    "privacy": "No customer data, no credentials, no production repository paths."
+  }
+}
