@@ -639,19 +639,19 @@ function emitTextLines(value, x, y, className, maxChars, lineHeight = 18) {
 }
 
 function buildPanelBlock(x, y, width, title, rows) {
-  let cursorY = y + 24;
+  let cursorY = 24;
   const rendered = [];
-  const titleLine = emitTextLines(title, x + 24, cursorY, 'label', Math.floor((width - 50) / 8), 22);
+  const titleLine = emitTextLines(title, 24, cursorY, 'label', Math.floor((width - 50) / 8), 26);
   rendered.push(...titleLine.rendered);
   cursorY += titleLine.blockHeight + 14;
 
   for (const row of rows) {
-    const rowBlock = emitTextLines(row.text, x + 24, cursorY, row.className, Math.floor((width - 50) / 8), 18);
+    const rowBlock = emitTextLines(row.text, 24, cursorY, row.className, Math.floor((width - 50) / 8), 22);
     rendered.push(...rowBlock.rendered);
     cursorY += rowBlock.blockHeight + 10;
   }
 
-  const panelHeight = Math.max(190, cursorY - y + 14);
+  const panelHeight = Math.max(190, cursorY + 14);
   const block = [
     `  <g id="${title.toLowerCase().replace(/\s+/gu, '-')}" data-panel-width="${width}" data-panel-height="${panelHeight.toFixed(2)}" transform="translate(${x},${y})">`,
     `    <rect x="0" y="0" width="${width}" height="${panelHeight.toFixed(2)}" rx="10" class="box" />`,
@@ -747,7 +747,7 @@ function generateSvg(artifact) {
     ...passPanel.block,
     `  <path class="arrow" d="M 416 ${middleY} L 552 ${middleY}"/>`,
     `  <polygon points="552 ${middleY} 538 ${middleY - 6} 538 ${middleY + 6}" fill="#334155" />`,
-    `  <line x1="36" y1="${Math.round(middleY)}" x2="1084" y2="${Math.round(middleY)}" stroke="#cbd5e1" stroke-width="2"/>`,
+    `  <line x1="36" y1="${Math.round(panelBottom + 36)}" x2="1084" y2="${Math.round(panelBottom + 36)}" stroke="#cbd5e1" stroke-width="2"/>`,
     ...summaryLines,
     '</svg>',
   ].join('\n');

@@ -15,7 +15,7 @@ The launch-funnel schema is strict and deterministic:
 | `cta_clicked` | `placement` | `feedback_footer`, `feedback_footer_nav`, `feedback_nav`, `github_footer`, `github_hero`, `github_nav`, `setup_hero` |
 
 Data collected with each event is only these properties, after strict SDK stripping and allowlisted outbound filtering.
-No repository contents, filesystem paths, questions, prompt text, tokens, secrets, personal identifiers, URLs, or arbitrary free-text fields are recorded.
+No repository contents, filesystem paths, questions, prompt text, secret tokens, account identifiers, URLs, or arbitrary free-text fields are recorded. Transport retains only the public PostHog project key and cookieless anonymous identifiers documented below.
 
 ## Event sequence (actual site surfaces)
 
@@ -81,15 +81,15 @@ Median and p95 latency metrics:
 
 ## Two-session observed-validation protocol (synthetic-only)
 
-All sessions are synthetic-only. No real repository content, prompt text, tokens, secrets, or user identifiers are collected in protocol records.
+All sessions are synthetic-only. No real repository content, prompt text, secret tokens, or account identifiers are collected in protocol records. The only identifiers sent are cookieless anonymous transport/session identifiers.
 Actual participant sessions are still pending and not completed.
 
 Transport fields sent with each launch-funnel event are limited to:
 
-- project token (`token`) validated against the deployed PostHog project key,
+- public PostHog project key (`token`, not a secret) validated against the deployed project key,
 - anonymous `distinct_id`,
 - optional `$session_id` when retained by cookieless session analysis,
-- and optional `$process_person` when required by the SDK.
+- and optional `$process_person_profile` when required by the SDK.
 
 No other SDK-enrichment fields are retained.
 

@@ -215,14 +215,16 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
               screen_resolution: '1920x1080',
               app_version: '1.2.3',
               referrer_url: 'https://example.com/previous',
+              token: 'phc_test',
+              distinct_id: 'anon_session_001',
+              $session_id: 'session_abc1234567890',
+              $process_person_profile: false,
             },
-            token: 'phc_test',
-            distinct_id: 'anon_session_001',
-            $session_id: 'session_abc1234567890',
-            $process_person: true,
           };
           const filtered = applyBeforeSend(payload);
-          if (filtered) window.__capturedEvents.push(filtered);
+          if (filtered?.properties?.token && filtered?.properties?.distinct_id) {
+            window.__capturedEvents.push(filtered);
+          }
         };
         posthog.init = (key, config) => {
           posthog._i.push([key, config]);
@@ -278,51 +280,63 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
     .toEqual([
       {
         event: 'setup_intent',
-        properties: { surface: 'hero' },
-        token: 'phc_test',
-        distinct_id: 'anon_session_001',
-        $session_id: 'session_abc1234567890',
-        $process_person: true,
+        properties: {
+          surface: 'hero',
+          token: 'phc_test',
+          distinct_id: 'anon_session_001',
+          $session_id: 'session_abc1234567890',
+          $process_person_profile: false,
+        },
       },
       {
         event: 'setup_guide_intent',
-        properties: { step: 'open_setup_guide' },
-        token: 'phc_test',
-        distinct_id: 'anon_session_001',
-        $session_id: 'session_abc1234567890',
-        $process_person: true,
+        properties: {
+          step: 'open_setup_guide',
+          token: 'phc_test',
+          distinct_id: 'anon_session_001',
+          $session_id: 'session_abc1234567890',
+          $process_person_profile: false,
+        },
       },
       {
         event: 'sample_view_intent',
-        properties: { phase: 'sample_view' },
-        token: 'phc_test',
-        distinct_id: 'anon_session_001',
-        $session_id: 'session_abc1234567890',
-        $process_person: true,
+        properties: {
+          phase: 'sample_view',
+          token: 'phc_test',
+          distinct_id: 'anon_session_001',
+          $session_id: 'session_abc1234567890',
+          $process_person_profile: false,
+        },
       },
       {
         event: 'gate_result_intent',
-        properties: { result: 'pass_demo' },
-        token: 'phc_test',
-        distinct_id: 'anon_session_001',
-        $session_id: 'session_abc1234567890',
-        $process_person: true,
+        properties: {
+          result: 'pass_demo',
+          token: 'phc_test',
+          distinct_id: 'anon_session_001',
+          $session_id: 'session_abc1234567890',
+          $process_person_profile: false,
+        },
       },
       {
         event: 'gate_result_intent',
-        properties: { result: 'fail_demo' },
-        token: 'phc_test',
-        distinct_id: 'anon_session_001',
-        $session_id: 'session_abc1234567890',
-        $process_person: true,
+        properties: {
+          result: 'fail_demo',
+          token: 'phc_test',
+          distinct_id: 'anon_session_001',
+          $session_id: 'session_abc1234567890',
+          $process_person_profile: false,
+        },
       },
       {
         event: 'feedback_intent',
-        properties: { surface: 'footer' },
-        token: 'phc_test',
-        distinct_id: 'anon_session_001',
-        $session_id: 'session_abc1234567890',
-        $process_person: true,
+        properties: {
+          surface: 'footer',
+          token: 'phc_test',
+          distinct_id: 'anon_session_001',
+          $session_id: 'session_abc1234567890',
+          $process_person_profile: false,
+        },
       },
     ]);
 
@@ -355,20 +369,32 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
         };
       }),
     )
-    .toEqual({ hasSensitiveKeys: false, keys: ['surface'] });
+    .toEqual({
+      hasSensitiveKeys: false,
+      keys: ['surface', 'token', 'distinct_id', '$session_id', '$process_person_profile'],
+    });
 
   const capturedEvents = await page.evaluate(() =>
     window.__capturedEvents.filter(Boolean).map((event) => Object.keys(event.properties || {})),
   );
-  expect(capturedEvents).toEqual([['surface'], ['step'], ['phase'], ['result'], ['result'], ['surface']]);
+  expect(capturedEvents).toEqual([
+    ['surface', 'token', 'distinct_id', '$session_id', '$process_person_profile'],
+    ['step', 'token', 'distinct_id', '$session_id', '$process_person_profile'],
+    ['phase', 'token', 'distinct_id', '$session_id', '$process_person_profile'],
+    ['result', 'token', 'distinct_id', '$session_id', '$process_person_profile'],
+    ['result', 'token', 'distinct_id', '$session_id', '$process_person_profile'],
+    ['surface', 'token', 'distinct_id', '$session_id', '$process_person_profile'],
+  ]);
 
   const invalidOutbound = await page.evaluate(() =>
     window.__posthogInitConfig?.before_send?.({
       event: 'setup_intent',
-      properties: { surface: 'secret-value' },
-      token: 'phc_test',
-      distinct_id: 'anon_session_001',
-      $session_id: 'session_abc1234567890',
+      properties: {
+        surface: 'secret-value',
+        token: 'phc_test',
+        distinct_id: 'anon_session_001',
+        $session_id: 'session_abc1234567890',
+      },
     }),
   );
   expect(invalidOutbound).toBeNull();
@@ -376,10 +402,12 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
   const invalidTransport = await page.evaluate(() =>
     window.__posthogInitConfig?.before_send?.({
       event: 'setup_intent',
-      properties: { surface: 'hero' },
-      token: 'phc_wrong',
-      distinct_id: 'anon_session_001',
-      $session_id: 'session_abc1234567890',
+      properties: {
+        surface: 'hero',
+        token: 'phc_wrong',
+        distinct_id: 'anon_session_001',
+        $session_id: 'session_abc1234567890',
+      },
     }),
   );
   expect(invalidTransport).toBeNull();
@@ -387,10 +415,12 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
   const invalidDistinctId = await page.evaluate(() =>
     window.__posthogInitConfig?.before_send?.({
       event: 'setup_intent',
-      properties: { surface: 'hero' },
-      token: 'phc_test',
-      distinct_id: 'email@example.com',
-      $session_id: 'session_abc1234567890',
+      properties: {
+        surface: 'hero',
+        token: 'phc_test',
+        distinct_id: 'email@example.com',
+        $session_id: 'session_abc1234567890',
+      },
     }),
   );
   expect(invalidDistinctId).toBeNull();
@@ -398,10 +428,12 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
   const invalidSession = await page.evaluate(() =>
     window.__posthogInitConfig?.before_send?.({
       event: 'setup_intent',
-      properties: { surface: 'hero' },
-      token: 'phc_test',
-      distinct_id: 'anon_session_001',
-      $session_id: 'x'.repeat(300),
+      properties: {
+        surface: 'hero',
+        token: 'phc_test',
+        distinct_id: 'anon_session_001',
+        $session_id: 'x'.repeat(300),
+      },
     }),
   );
   expect(invalidSession).toBeNull();
@@ -442,10 +474,13 @@ test('launch-funnel analytics drops events only for automation + explicit test-t
           const [eventName, properties] = args;
           const payload = {
             event: eventName,
-            properties,
-            token: 'phc_test',
-            distinct_id: 'anon_session_001',
-            $session_id: 'session_abc1234567890',
+            properties: {
+              ...properties,
+              token: 'phc_test',
+              distinct_id: 'anon_session_001',
+              $session_id: 'session_abc1234567890',
+              $process_person_profile: false,
+            },
           };
           const filtered = applyBeforeSend(payload);
           if (filtered) window.__capturedEvents.push(filtered);
@@ -514,35 +549,24 @@ test('launch-funnel SVG text stays inside panels and text blocks do not overlap'
 
   const summary = await page.evaluate(() => {
     const svg = document.querySelector('svg');
-    const viewBox = svg?.getAttribute('viewBox') || '';
-    const [, , widthText, heightText] = viewBox.split(' ');
-    const viewportWidth = Number(widthText);
-    const viewportHeight = Number(heightText);
+    const svgRect = svg.getBoundingClientRect();
     const panels = Array.from(svg.querySelectorAll('g[data-panel-width][data-panel-height]'));
     const panelChecks = [];
     const overlap = [];
 
-    const parseTranslate = (value) => {
-      const match = /translate\(([-\d.]+),\s*([-\d.]+)\)/u.exec(value || '');
-      if (!match) return [0, 0];
-      return [Number(match[1]), Number(match[2])];
-    };
-
     for (const panel of panels) {
-      const panelWidth = Number(panel.getAttribute('data-panel-width') || '0');
-      const panelHeight = Number(panel.getAttribute('data-panel-height') || '0');
-      const [panelX, panelY] = parseTranslate(panel.getAttribute('transform') || '');
+      const panelRect = panel.querySelector('rect').getBoundingClientRect();
       const texts = Array.from(panel.querySelectorAll('text'));
       const bounds = [];
       const violations = [];
 
       for (const text of texts) {
-        const b = text.getBBox();
+        const b = text.getBoundingClientRect();
         bounds.push(b);
-        if (b.x < panelX - 0.5 || b.y < panelY - 0.5) {
+        if (b.left < panelRect.left - 0.5 || b.top < panelRect.top - 0.5) {
           violations.push(`underflow-${text.textContent}`);
         }
-        if (b.x + b.width > panelX + panelWidth + 0.5 || b.y + b.height > panelY + panelHeight + 0.5) {
+        if (b.right > panelRect.right + 0.5 || b.bottom > panelRect.bottom + 0.5) {
           violations.push(`overflow-${text.textContent}`);
         }
       }
@@ -551,12 +575,7 @@ test('launch-funnel SVG text stays inside panels and text blocks do not overlap'
         for (let j = i + 1; j < bounds.length; j += 1) {
           const a = bounds[i];
           const b = bounds[j];
-          const intersects = !(
-            a.x + a.width <= b.x ||
-            b.x + b.width <= a.x ||
-            a.y + a.height <= b.y ||
-            b.y + b.height <= a.y
-          );
+          const intersects = !(a.right <= b.left || b.right <= a.left || a.bottom <= b.top || b.bottom <= a.top);
           if (intersects) {
             overlap.push(`panel-${panel.id}-overlap`);
           }
@@ -570,8 +589,13 @@ test('launch-funnel SVG text stays inside panels and text blocks do not overlap'
     }
 
     const overflow = Array.from(document.querySelectorAll('text')).some((text) => {
-      const b = text.getBBox();
-      return b.x < -0.5 || b.y < -0.5 || b.x + b.width > viewportWidth + 0.5 || b.y + b.height > viewportHeight + 0.5;
+      const b = text.getBoundingClientRect();
+      return (
+        b.left < svgRect.left - 0.5 ||
+        b.top < svgRect.top - 0.5 ||
+        b.right > svgRect.right + 0.5 ||
+        b.bottom > svgRect.bottom + 0.5
+      );
     });
 
     return {

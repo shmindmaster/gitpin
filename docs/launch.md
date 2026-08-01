@@ -106,7 +106,7 @@ Try the setup:
 
 ## X draft
 
-GitPin 0.6.0 now ships a required PR gate path-coverage loop for agent-authored changes. If a material file is changed without evidence, merge is blocked. If evidence is complete, we publish `artifact.passCase.coverage.citation` for the required path and durable `artifact.passCase.coverage.handle` for automation; both follow the canonical formats in the cite spec and can be re-checked via `git show`.
+GitPin 0.6.0 now ships a required PR gate path-coverage loop for agent-authored changes. If a material file is changed without evidence, merge is blocked. If evidence is complete, the proof includes the canonical cite `task-2-synthetic-pr-fixture/docs/protocol.md:5 @ 57bce1a312f6153e171b515c41727ff81e77fb3c` and durable handle `gitpin:task-2-synthetic-pr-fixture@57bce1a312f6153e171b515c41727ff81e77fb3c:docs/protocol.md:5`; both can be re-checked via `git show`.
 
 Signals to use this as infrastructure:
 - `uses: shmindmaster/gitpin@v0.6.0`

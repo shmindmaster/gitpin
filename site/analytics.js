@@ -138,31 +138,34 @@ function buildStrictPayload(event) {
   const outboundProperties = sanitizeOutboundProperties(eventName, properties);
   if (!outboundProperties) return null;
 
-  const token = normalizeTransportValue(event.token, MAX_TOKEN_LENGTH);
+  const token = normalizeTransportValue(properties.token, MAX_TOKEN_LENGTH);
   if (!token || token !== projectKey) return null;
 
-  const distinctId = normalizeTransportValue(event.distinct_id, MAX_DISTINCT_ID_LENGTH);
+  const distinctId = normalizeTransportValue(properties.distinct_id, MAX_DISTINCT_ID_LENGTH);
   if (!distinctId || !isLikelyAnonymousDistinctId(distinctId)) return null;
 
-  const nextEvent = {
-    event: eventName,
-    properties: outboundProperties,
+  const nextProperties = {
+    ...outboundProperties,
     token,
     distinct_id: distinctId,
   };
 
-  if (event.$session_id !== undefined) {
-    const sessionId = normalizeTransportValue(event.$session_id, MAX_SESSION_ID_LENGTH);
+  if (properties.$session_id !== undefined) {
+    const sessionId = normalizeTransportValue(properties.$session_id, MAX_SESSION_ID_LENGTH);
     if (!sessionId) return null;
-    nextEvent.$session_id = sessionId;
+    nextProperties.$session_id = sessionId;
   }
 
-  if (event.$process_person !== undefined) {
-    if (typeof event.$process_person !== 'boolean') return null;
-    nextEvent.$process_person = event.$process_person;
+  if (properties.$process_person_profile !== undefined) {
+    if (typeof properties.$process_person_profile !== 'boolean') return null;
+    nextProperties.$process_person_profile = properties.$process_person_profile;
   }
 
-  return nextEvent;
+  return {
+    ...event,
+    event: eventName,
+    properties: nextProperties,
+  };
 }
 
 function buildBeforeSend(event) {
