@@ -1,6 +1,11 @@
 const projectKey = document.querySelector('meta[name="posthog-project-key"]')?.content.trim();
 const apiHost = document.querySelector('meta[name="posthog-api-host"]')?.content.trim();
 
+const MAX_EVENT_NAME_LENGTH = 64;
+const MAX_TOKEN_LENGTH = 64;
+const MAX_DISTINCT_ID_LENGTH = 128;
+const MAX_SESSION_ID_LENGTH = 256;
+
 const launchFunnelEventSchema = {
   cta_clicked: {
     placement: [
@@ -30,6 +35,21 @@ function toSnakeCase(value) {
 function normalizePropertyValue(value) {
   if (typeof value !== 'string') return null;
   return value.trim().slice(0, 40);
+}
+
+function normalizeTransportValue(value, maxLength) {
+  if (typeof value !== 'string') return null;
+  const normalized = value.trim();
+  if (!normalized || normalized.length > maxLength) return null;
+  return normalized;
+}
+
+function isLikelyAnonymousDistinctId(value) {
+  if (!value) return false;
+  if (value.length < 8 || value.length > MAX_DISTINCT_ID_LENGTH) return false;
+  if (value.includes(' ')) return false;
+  if (value.includes('@')) return false;
+  return true;
 }
 
 function sanitizeProperty(eventName, property, value) {
@@ -98,69 +118,55 @@ function isLikelyAutomatedVisitor() {
   return /headless|puppeteer|playwright|selenium|bot|spider|crawl/i.test(userAgent);
 }
 
-function track(eventName, properties = {}) {
-  if (!window.posthog?.capture) return;
-  const normalizedName = String(eventName || '');
-  const sanitized = sanitizeProperties(normalizedName, properties);
-  if (!sanitized) return;
-  window.posthog.capture(normalizedName, sanitized);
+function hasExplicitTestTrafficFlag() {
+  if (window.__gitpinTestTraffic === true || window.__gitpinTestTraffic === 'true') return true;
+  if (typeof window.location?.search !== 'string') return false;
+  const params = new URLSearchParams(window.location.search);
+  const flag = params.get('gitpin_test_traffic');
+  return flag === '1' || /^true$/i.test(flag || '');
 }
 
-function stripSdkMetadata(event) {
-  const properties = event?.properties;
-  if (!properties || typeof properties !== 'object') return null;
+function buildStrictPayload(event) {
+  if (isLikelyAutomatedVisitor() && hasExplicitTestTrafficFlag()) return null;
 
-  const scrubbed = {};
-  for (const [key, value] of Object.entries(properties)) {
-    if (key.startsWith('$')) continue;
-    const lower = key.toLowerCase();
-    if (
-      lower === 'current_url' ||
-      lower === 'page_url' ||
-      lower === 'url' ||
-      lower === 'referrer' ||
-      lower === 'referrer_url' ||
-      lower === 'browser_name' ||
-      lower === 'browser_version' ||
-      lower === 'os_name' ||
-      lower === 'os_version' ||
-      lower === 'screen_width' ||
-      lower === 'screen_height' ||
-      lower === 'screen_dpr' ||
-      lower === 'viewport_width' ||
-      lower === 'viewport_height' ||
-      lower === 'locale' ||
-      lower === 'language' ||
-      lower === 'user_agent' ||
-      lower === 'useragent' ||
-      lower === 'timezone' ||
-      lower === 'ip' ||
-      lower === 'ip_address' ||
-      lower === 'timestamp' ||
-      lower === 'uuid' ||
-      lower === 'event_id' ||
-      lower === 'distinct_id' ||
-      lower === 'uuid_ts' ||
-      lower === 'current_page' ||
-      lower === 'host' ||
-      lower === 'browser' ||
-      lower === 'device' ||
-      lower === 'screen' ||
-      lower === 'os'
-    ) {
-      continue;
-    }
-    scrubbed[key] = value;
+  if (!event || typeof event !== 'object') return null;
+  const eventName = typeof event.event === 'string' ? event.event.trim() : '';
+  if (!eventName || eventName.length > MAX_EVENT_NAME_LENGTH || !launchFunnelEventSchema[eventName]) return null;
+
+  const properties = event.properties;
+  if (!properties || typeof properties !== 'object') return null;
+  const outboundProperties = sanitizeOutboundProperties(eventName, properties);
+  if (!outboundProperties) return null;
+
+  const token = normalizeTransportValue(event.token, MAX_TOKEN_LENGTH);
+  if (!token || token !== projectKey) return null;
+
+  const distinctId = normalizeTransportValue(event.distinct_id, MAX_DISTINCT_ID_LENGTH);
+  if (!distinctId || !isLikelyAnonymousDistinctId(distinctId)) return null;
+
+  const nextEvent = {
+    event: eventName,
+    properties: outboundProperties,
+    token,
+    distinct_id: distinctId,
+  };
+
+  if (event.$session_id !== undefined) {
+    const sessionId = normalizeTransportValue(event.$session_id, MAX_SESSION_ID_LENGTH);
+    if (!sessionId) return null;
+    nextEvent.$session_id = sessionId;
   }
-  const sanitized = sanitizeOutboundProperties(event.event, scrubbed);
-  if (!sanitized) return null;
-  return { ...event, properties: sanitized };
+
+  if (event.$process_person !== undefined) {
+    if (typeof event.$process_person !== 'boolean') return null;
+    nextEvent.$process_person = event.$process_person;
+  }
+
+  return nextEvent;
 }
 
 function buildBeforeSend(event) {
-  if (!event || typeof event !== 'object') return null;
-  if (isLikelyAutomatedVisitor() && !window.__gitpinAllowAutomationTracking) return null;
-  return stripSdkMetadata(event);
+  return buildStrictPayload(event);
 }
 
 function getEventName(element) {
@@ -217,4 +223,12 @@ if (projectKey && apiHost) {
       track(eventName, properties);
     });
   }
+}
+
+function track(eventName, properties = {}) {
+  if (!window.posthog?.capture) return;
+  const normalizedName = String(eventName || '');
+  const sanitized = sanitizeProperties(normalizedName, properties);
+  if (!sanitized) return;
+  window.posthog.capture(eventName, sanitized);
 }

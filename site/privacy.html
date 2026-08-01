@@ -44,9 +44,20 @@
         <h2>Optional website analytics</h2>
         <p>
           The site is built with analytics disabled unless its operator configures a dedicated GitPin PostHog
-          project. When enabled, collection is cookieless and limited to explicit launch-funnel event names and
+          project. When enabled, transport is cookieless and limited to explicit launch-funnel event names and
           validated event properties only. Automatic pageview/pageleave collection is disabled. Autocapture, session
           replay, and person profiles are disabled.
+        </p>
+        <p>
+          The outbound transport includes only the project token, anonymous `distinct_id`, optional `$session_id`, and
+          optional SDK-required `$process_person` process flag.
+        </p>
+        <p>
+          No automatic URL/referrer/host/browser/device/screen fields are sent.
+        </p>
+        <p>
+          Test traffic is excluded only when automated-browser signals are present and a deliberate marker is set
+          (`gitpin_test_traffic=true` in the page URL or `window.__gitpinTestTraffic === true`).
         </p>
 
         <h2>Security and contact</h2>

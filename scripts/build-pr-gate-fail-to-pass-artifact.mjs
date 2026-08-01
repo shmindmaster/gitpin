@@ -542,47 +542,184 @@ ${artifact.passCase.output}
 `;
 }
 
-function generateSvg(artifact) {
-  const passCoverageText = `${artifact.passCase.coverage.path}:${artifact.passCase.coverage.lineStart}-${artifact.passCase.coverage.lineEnd}`;
-  const wrapText = (value, maxChars = 56) => {
-    const words = value.split(/\\s+/u);
-    const lines = [];
-    let current = '';
-    for (const word of words) {
-      if (word.length > maxChars) {
-        if (current) {
-          lines.push(current);
-          current = '';
+function wrapText(value, maxChars = 74) {
+  const normalized = String(value).replace(/\s+/gu, ' ').trim();
+  if (!normalized) return [];
+
+  const lines = [];
+  const words = normalized.split(' ');
+  let currentLine = '';
+
+  for (const rawWord of words) {
+    const word = rawWord.trim();
+    if (!word) continue;
+
+    if (word.length > maxChars) {
+      const fragments = splitLongWord(word, maxChars);
+      if (fragments.length > 1) {
+        if (currentLine) {
+          lines.push(currentLine);
+          currentLine = '';
         }
-        const chunks = word.match(new RegExp(`.{1,${maxChars}}`, 'gu'));
-        if (chunks?.length) {
-          lines.push(...chunks);
+        for (const fragment of fragments) {
+          lines.push(fragment);
         }
         continue;
-      }
-      if (!current) {
-        current = word;
-        continue;
-      }
-      if (current.length + 1 + word.length <= maxChars) {
-        current = `${current} ${word}`;
-      } else {
-        lines.push(current);
-        current = word;
       }
     }
-    if (current) lines.push(current);
-    return lines;
-  };
-  const wrappedTextLines = (value, x, y, className, maxChars = 52) =>
-    wrapText(value, maxChars).map(
-      (line, index) => `    <text x="${x}" y="${y + index * 18}" class="${className}">${line}</text>`,
-    );
-  const failLocatorText = `${artifact.fixture.changedPath}:${artifact.fixture.lineAdded}`;
-  const passLocatorText = `${passCoverageText}@${artifact.fixture.head}`;
-  const output = [
+
+    const candidate = currentLine ? `${currentLine} ${word}` : word;
+    if (candidate.length <= maxChars) {
+      currentLine = candidate;
+      continue;
+    }
+
+    if (currentLine) {
+      lines.push(currentLine);
+      currentLine = '';
+    }
+
+    if (word.length > maxChars) {
+      currentLine = word;
+      continue;
+    }
+
+    currentLine = word;
+  }
+
+  if (currentLine) lines.push(currentLine);
+  return lines;
+}
+
+function splitLongWord(value, maxChars) {
+  const fragments = [];
+  const normalized = String(value).trim();
+  if (!normalized) return fragments;
+
+  if (normalized.length <= maxChars) {
+    fragments.push(normalized);
+    return fragments;
+  }
+
+  const looksLikeHashOrToken = /^[0-9a-f]{8,}$/i.test(normalized);
+  if (looksLikeHashOrToken) {
+    for (let start = 0; start < normalized.length; start += maxChars) {
+      fragments.push(normalized.slice(start, start + maxChars));
+    }
+    return fragments;
+  }
+
+  const splitAt = normalized.lastIndexOf('/', maxChars);
+  if (splitAt > 0 && splitAt < normalized.length - 1) {
+    fragments.push(normalized.slice(0, splitAt + 1));
+    const next = splitLongWord(normalized.slice(splitAt + 1), maxChars);
+    fragments.push(...next);
+    return fragments;
+  }
+
+  fragments.push(normalized);
+  return fragments;
+}
+
+function escapeSvgText(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&apos;');
+}
+
+function emitTextLines(value, x, y, className, maxChars, lineHeight = 18) {
+  const wrapped = wrapText(value, maxChars);
+  const rendered = wrapped.map((line, index) => {
+    return `    <text x="${x}" y="${y + index * lineHeight}" class="${className}">${escapeSvgText(line)}</text>`;
+  });
+  return { rendered, blockHeight: wrapped.length * lineHeight };
+}
+
+function buildPanelBlock(x, y, width, title, rows) {
+  let cursorY = y + 24;
+  const rendered = [];
+  const titleLine = emitTextLines(title, x + 24, cursorY, 'label', Math.floor((width - 50) / 8), 22);
+  rendered.push(...titleLine.rendered);
+  cursorY += titleLine.blockHeight + 14;
+
+  for (const row of rows) {
+    const rowBlock = emitTextLines(row.text, x + 24, cursorY, row.className, Math.floor((width - 50) / 8), 18);
+    rendered.push(...rowBlock.rendered);
+    cursorY += rowBlock.blockHeight + 10;
+  }
+
+  const panelHeight = Math.max(190, cursorY - y + 14);
+  const block = [
+    `  <g id="${title.toLowerCase().replace(/\s+/gu, '-')}" data-panel-width="${width}" data-panel-height="${panelHeight.toFixed(2)}" transform="translate(${x},${y})">`,
+    `    <rect x="0" y="0" width="${width}" height="${panelHeight.toFixed(2)}" rx="10" class="box" />`,
+    ...rendered,
+    '  </g>',
+  ];
+  return { block, height: panelHeight, top: y, left: x, width };
+}
+
+function generateSvg(artifact) {
+  const citationLocator =
+    artifact.passCase?.coverage?.citation ||
+    `${artifact.passCase?.coverage?.path}:${
+      artifact.passCase?.coverage?.lineStart
+    }-${artifact.passCase?.coverage?.lineEnd} @ ${artifact.fixture.head}`;
+
+  const titleLines = emitTextLines(
+    'GitPin 0.6.0: synthetic fail-to-pass PR evidence gate artifact',
+    36,
+    48,
+    'title',
+    36,
+    24,
+  );
+
+  const failPanel = buildPanelBlock(36, 94, 360, 'Phase A (fail)', [
+    { text: `Base: ${artifact.fixture.base}`, className: 'body' },
+    { text: `Head: ${artifact.fixture.failHead}`, className: 'body' },
+    { text: `Fail path: ${artifact.fixture.changedPath}:${artifact.fixture.lineAdded}`, className: 'body' },
+    { text: 'Output: FAIL (uncovered path)', className: 'statusFail' },
+  ]);
+
+  const passPanel = buildPanelBlock(552, 94, 532, 'Phase B (pass)', [
+    { text: `Head: ${artifact.fixture.head}`, className: 'body' },
+    { text: `Locator: ${citationLocator}`, className: 'body' },
+    { text: `contentSha256: ${artifact.passCase.coverage.contentSha256.slice(0, 18)}`, className: 'body' },
+    { text: 'Output: PASS (coverage complete)', className: 'statusPass' },
+  ]);
+
+  const middleY = Math.round((failPanel.top + failPanel.height / 2) * 10) / 10;
+  const panelBottom = Math.max(failPanel.top + failPanel.height, passPanel.top + passPanel.height);
+  const summaryStartY = panelBottom + 72;
+
+  const summary = [
+    `Synthetic SHA locus (full): ${artifact.fixture.base}`,
+    `Synthetic SHA locus (fail): ${artifact.fixture.failHead}`,
+    `Synthetic SHA locus (pass): ${artifact.fixture.head}`,
+    `Repository: ${artifact.fixture.repository}`,
+    'Reduced-motion-safe static artifact: no animation, no moving text.',
+    'Caption: one required path fails, then passes after adding a deterministic line-level locator.',
+  ];
+
+  const summaryLines = [];
+  let summaryCursorY = summaryStartY;
+  for (const [index, row] of summary.entries()) {
+    const isCaption = index >= 4;
+    const className = index === 4 ? 'label' : 'body';
+    const block = emitTextLines(row, 36, summaryCursorY, className, 74, 20);
+    summaryLines.push(...block.rendered);
+    summaryCursorY += block.blockHeight + (isCaption ? 14 : 16);
+  }
+
+  const contentBottom = summaryCursorY;
+  const viewportHeight = Math.max(560, contentBottom + 40);
+
+  return [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    '<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="560" viewBox="0 0 1120 560" role="img" aria-labelledby="title desc">',
+    `<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="${viewportHeight}" viewBox="0 0 1120 ${viewportHeight}" role="img" aria-labelledby="title desc">`,
     '  <title>GitPin PR gate synthetic fail-to-pass flow</title>',
     '  <desc>Synthetic PR evidence gate fail-to-pass flow with full SHA fixtures.</desc>',
     '  <defs>',
@@ -602,45 +739,16 @@ function generateSvg(artifact) {
     '      <polygon points="0 0, 10 3.5, 0 7" fill="#334155" />',
     '    </marker>',
     '  </defs>',
-    '  <rect width="1120" height="560" class="bg"/>',
-    ...wrappedTextLines('GitPin 0.6.0: synthetic fail-to-pass PR evidence gate artifact', 36, 48, 'title', 36),
+    `  <rect width="1120" height="${viewportHeight}" class="bg"/>`,
+    ...titleLines.rendered,
     '',
-    '  <g transform="translate(36,84)">',
-    '    <rect x="0" y="0" width="360" height="190" rx="10" class="box"/>',
-    '    <text x="24" y="36" class="label">Phase A (fail)</text>',
-    `    <text x="24" y="64" class="body">Base: ${artifact.fixture.base}</text>`,
-    `    <text x="24" y="90" class="body">Head: ${artifact.fixture.failHead}</text>`,
-    ...wrappedTextLines(`Fail path: ${failLocatorText}`, 24, 116, 'body', 58),
-    '    <text x="24" y="146" class="statusFail">Output: FAIL (uncovered path)</text>',
-    '  </g>',
+    ...failPanel.block,
     '',
-    '  <path class="arrow" d="M 416 179 L 526 179"/>',
-    '  <polygon points="526 179 511 173 511 185" fill="#334155"/>',
-    '',
-    '  <g transform="translate(552,84)">',
-    '    <rect x="0" y="0" width="532" height="190" rx="10" class="box"/>',
-    '    <text x="24" y="36" class="label">Phase B (pass)</text>',
-    `    <text x="24" y="64" class="body">Head: ${artifact.fixture.head}</text>`,
-    ...wrappedTextLines(`Locator: ${passLocatorText}`, 24, 90, 'body', 58),
-    `    <text x="24" y="144" class="body">contentSha256: ${artifact.passCase.coverage.contentSha256.slice(0, 18)}</text>`,
-    '    <text x="24" y="168" class="statusPass">Output: PASS (coverage complete)</text>',
-    '  </g>',
-    '',
-    '  <line x1="36" y1="310" x2="1084" y2="310" stroke="#cbd5e1" stroke-width="2"/>',
-    ...wrappedTextLines(`Synthetic SHA locus (full): ${artifact.fixture.base}`, 36, 338, 'body', 52),
-    ...wrappedTextLines(`Synthetic SHA locus (fail): ${artifact.fixture.failHead}`, 36, 364, 'body', 52),
-    ...wrappedTextLines(`Synthetic SHA locus (pass): ${artifact.fixture.head}`, 36, 390, 'body', 52),
-    ...wrappedTextLines(`Repository: ${artifact.fixture.repository}`, 36, 416, 'body', 52),
-    '',
-    ...wrappedTextLines('Reduced-motion-safe static artifact: no animation, no moving text.', 36, 468, 'label', 52),
-    ...wrappedTextLines(
-      'Caption: one required path fails, then passes after adding a deterministic line-level locator.',
-      36,
-      494,
-      'body',
-      64,
-    ),
+    ...passPanel.block,
+    `  <path class="arrow" d="M 416 ${middleY} L 552 ${middleY}"/>`,
+    `  <polygon points="552 ${middleY} 538 ${middleY - 6} 538 ${middleY + 6}" fill="#334155" />`,
+    `  <line x1="36" y1="${Math.round(middleY)}" x2="1084" y2="${Math.round(middleY)}" stroke="#cbd5e1" stroke-width="2"/>`,
+    ...summaryLines,
     '</svg>',
-  ];
-  return output.join('\n');
+  ].join('\n');
 }

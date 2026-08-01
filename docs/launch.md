@@ -94,7 +94,10 @@ Relevant links:
 
 ## LinkedIn draft
 
-GitPin 0.6.0 is now the shipped PR evidence gate for agent-authored changes. It enforces material-path coverage and validates locators at exact commit SHAs (`path@full-SHA` + line ranges), with an independent `git show` verification path.
+GitPin 0.6.0 is now the shipped PR evidence gate for agent-authored changes. It enforces material-path coverage and validates locators at exact commit SHAs using canonical handle or cite formats from the mini-spec, for example:
+
+- canonical cite: `task-2-synthetic-pr-fixture/docs/protocol.md:5 @ 57bce1a312f6153e171b515c41727ff81e77fb3c`
+- canonical handle: `gitpin:task-2-synthetic-pr-fixture@57bce1a312f6153e171b515c41727ff81e77fb3c:docs/protocol.md:5`
 
 The focus is narrow: deterministic evidence integrity, not semantic certainty or platform-wide scoring. This is a review gate, not a replacement for testing, source control review, or human judgment.
 
@@ -103,7 +106,7 @@ Try the setup:
 
 ## X draft
 
-GitPin 0.6.0 now ships a required PR gate path-coverage loop for agent-authored changes. If a material file is changed without evidence, merge is blocked. If evidence is complete, `path@full-SHA` claims can be re-checked via `git show`.
+GitPin 0.6.0 now ships a required PR gate path-coverage loop for agent-authored changes. If a material file is changed without evidence, merge is blocked. If evidence is complete, we publish `artifact.passCase.coverage.citation` for the required path and durable `artifact.passCase.coverage.handle` for automation; both follow the canonical formats in the cite spec and can be re-checked via `git show`.
 
 Signals to use this as infrastructure:
 - `uses: shmindmaster/gitpin@v0.6.0`

@@ -44,6 +44,22 @@ Website collection is intentionally narrow:
 
 Autocapture, pageview/pageleave capture, and session replay are disabled, person profiles are never created, and the site uses cookieless mode.
 
+Launch-funnel transport fields are explicit and constrained before `before_send` strips SDK enrichment:
+
+- `token` (must match the configured `posthog-project-key`),
+- anonymous `distinct_id`,
+- optional `$session_id` (if session analysis is active),
+- optional `$process_person` (SDK-required process-person flag only).
+
+The outbound event object is not sent with URL/referrer/host/browser/device/screen context.
+
+Test-traffic suppression is explicitly bounded to:
+
+- automated signal detected (`navigator.webdriver`, headless, Playwright, etc.),
+- plus explicit test marker (`gitpin_test_traffic=true` query flag or `window.__gitpinTestTraffic === true`).
+
+Ordinary QA or unmarked automation traffic is not treated as automatically detectable test traffic.
+
 The launch-funnel schema is strict by design: only enumerated event names and enumerated property values are recorded.
 No repository contents, filesystem paths, prompt text, URLs, tokens, secrets, user identifiers, or free-text answers are sent.
 

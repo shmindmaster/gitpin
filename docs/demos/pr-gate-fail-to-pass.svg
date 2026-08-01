@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="560" viewBox="0 0 1120 560" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="696" viewBox="0 0 1120 696" role="img" aria-labelledby="title desc">
   <title>GitPin PR gate synthetic fail-to-pass flow</title>
   <desc>Synthetic PR evidence gate fail-to-pass flow with full SHA fixtures.</desc>
   <defs>
@@ -19,43 +19,40 @@
       <polygon points="0 0, 10 3.5, 0 7" fill="#334155" />
     </marker>
   </defs>
-  <rect width="1120" height="560" class="bg"/>
+  <rect width="1120" height="696" class="bg"/>
     <text x="36" y="48" class="title">GitPin 0.6.0: synthetic fail-to-pass</text>
-    <text x="36" y="66" class="title"> PR evidence gate artifact</text>
+    <text x="36" y="72" class="title">PR evidence gate artifact</text>
 
-  <g transform="translate(36,84)">
-    <rect x="0" y="0" width="360" height="190" rx="10" class="box"/>
-    <text x="24" y="36" class="label">Phase A (fail)</text>
-    <text x="24" y="64" class="body">Base: 43439f836e8f7ac27e5f41587caba435b758a4cc</text>
-    <text x="24" y="90" class="body">Head: f0137d966ec3283719c095b46215adffb08588ce</text>
-    <text x="24" y="116" class="body">Fail path: docs/protocol.md:5</text>
-    <text x="24" y="146" class="statusFail">Output: FAIL (uncovered path)</text>
+  <g id="phase-a-(fail)" data-panel-width="360" data-panel-height="258.00" transform="translate(36,94)">
+    <rect x="0" y="0" width="360" height="258.00" rx="10" class="box" />
+    <text x="60" y="118" class="label">Phase A (fail)</text>
+    <text x="60" y="154" class="body">Base:</text>
+    <text x="60" y="172" class="body">43439f836e8f7ac27e5f41587caba435b758a4</text>
+    <text x="60" y="190" class="body">cc</text>
+    <text x="60" y="218" class="body">Head:</text>
+    <text x="60" y="236" class="body">f0137d966ec3283719c095b46215adffb08588</text>
+    <text x="60" y="254" class="body">ce</text>
+    <text x="60" y="282" class="body">Fail path: docs/protocol.md:5</text>
+    <text x="60" y="310" class="statusFail">Output: FAIL (uncovered path)</text>
   </g>
 
-  <path class="arrow" d="M 416 179 L 526 179"/>
-  <polygon points="526 179 511 173 511 185" fill="#334155"/>
-
-  <g transform="translate(552,84)">
-    <rect x="0" y="0" width="532" height="190" rx="10" class="box"/>
-    <text x="24" y="36" class="label">Phase B (pass)</text>
-    <text x="24" y="64" class="body">Head: 57bce1a312f6153e171b515c41727ff81e77fb3c</text>
-    <text x="24" y="90" class="body">Locator: docs/protocol.md:5-5@57bce1a312f6153e171b515c4172</text>
-    <text x="24" y="108" class="body">7ff81e77fb3c</text>
-    <text x="24" y="144" class="body">contentSha256: 2ad449fd22a840f9bb</text>
-    <text x="24" y="168" class="statusPass">Output: PASS (coverage complete)</text>
+  <g id="phase-b-(pass)" data-panel-width="532" data-panel-height="204.00" transform="translate(552,94)">
+    <rect x="0" y="0" width="532" height="204.00" rx="10" class="box" />
+    <text x="576" y="118" class="label">Phase B (pass)</text>
+    <text x="576" y="154" class="body">Head: 57bce1a312f6153e171b515c41727ff81e77fb3c</text>
+    <text x="576" y="182" class="body">Locator: task-2-synthetic-pr-fixture/docs/protocol.md:5 @</text>
+    <text x="576" y="200" class="body">57bce1a312f6153e171b515c41727ff81e77fb3c</text>
+    <text x="576" y="228" class="body">contentSha256: 2ad449fd22a840f9bb</text>
+    <text x="576" y="256" class="statusPass">Output: PASS (coverage complete)</text>
   </g>
-
-  <line x1="36" y1="310" x2="1084" y2="310" stroke="#cbd5e1" stroke-width="2"/>
-    <text x="36" y="338" class="body">Synthetic SHA locus (full): 43439f836e8f7ac27e5f4158</text>
-    <text x="36" y="356" class="body">7caba435b758a4cc</text>
-    <text x="36" y="364" class="body">Synthetic SHA locus (fail): f0137d966ec3283719c095b4</text>
-    <text x="36" y="382" class="body">6215adffb08588ce</text>
-    <text x="36" y="390" class="body">Synthetic SHA locus (pass): 57bce1a312f6153e171b515c</text>
-    <text x="36" y="408" class="body">41727ff81e77fb3c</text>
-    <text x="36" y="416" class="body">Repository: task-2-synthetic-pr-fixture</text>
-
-    <text x="36" y="468" class="label">Reduced-motion-safe static artifact: no animation, n</text>
-    <text x="36" y="486" class="label">o moving text.</text>
-    <text x="36" y="494" class="body">Caption: one required path fails, then passes after adding a det</text>
-    <text x="36" y="512" class="body">erministic line-level locator.</text>
+  <path class="arrow" d="M 416 223 L 552 223"/>
+  <polygon points="552 223 538 217 538 229" fill="#334155" />
+  <line x1="36" y1="223" x2="1084" y2="223" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="36" y="424" class="body">Synthetic SHA locus (full): 43439f836e8f7ac27e5f41587caba435b758a4cc</text>
+    <text x="36" y="460" class="body">Synthetic SHA locus (fail): f0137d966ec3283719c095b46215adffb08588ce</text>
+    <text x="36" y="496" class="body">Synthetic SHA locus (pass): 57bce1a312f6153e171b515c41727ff81e77fb3c</text>
+    <text x="36" y="532" class="body">Repository: task-2-synthetic-pr-fixture</text>
+    <text x="36" y="568" class="label">Reduced-motion-safe static artifact: no animation, no moving text.</text>
+    <text x="36" y="602" class="body">Caption: one required path fails, then passes after adding a deterministic</text>
+    <text x="36" y="622" class="body">line-level locator.</text>
 </svg>

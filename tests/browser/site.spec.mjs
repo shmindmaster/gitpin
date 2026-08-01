@@ -1,4 +1,6 @@
 import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 test.beforeEach(async ({ page }) => {
   const errors = [];
@@ -173,7 +175,7 @@ test('keeps the primary content within the viewport', async ({ page }) => {
   await expect(page.getByRole('link', { name: /Add the PR gate/i })).toBeVisible();
 });
 
-test('launch-funnel analytics events only emit strict allowlisted payloads and strip SDK enrichment', async ({
+test('launch-funnel analytics events only emit strict allowlisted payloads and keep only minimal transport fields', async ({
   page,
 }) => {
   await page.route('https://us-assets.i.posthog.com/static/array.js', async (route) => {
@@ -211,7 +213,13 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and s
               os: 'macOS',
               ip: '127.0.0.1',
               screen_resolution: '1920x1080',
+              app_version: '1.2.3',
+              referrer_url: 'https://example.com/previous',
             },
+            token: 'phc_test',
+            distinct_id: 'anon_session_001',
+            $session_id: 'session_abc1234567890',
+            $process_person: true,
           };
           const filtered = applyBeforeSend(payload);
           if (filtered) window.__capturedEvents.push(filtered);
@@ -231,9 +239,6 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and s
           <head>
             <meta name="posthog-project-key" content="phc_test" />
             <meta name="posthog-api-host" content="https://us.i.posthog.com" />
-            <script>
-              window.__gitpinAllowAutomationTracking = true;
-            </script>
           </head>
           <body>
             <a id="setup" data-analytics="setup_hero" data-analytics-event="setup_intent" data-analytics-prop-surface="hero" href="#">Start setup</a>
@@ -271,12 +276,54 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and s
   await expect
     .poll(async () => page.evaluate(() => window.__capturedEvents.filter(Boolean)))
     .toEqual([
-      { event: 'setup_intent', properties: { surface: 'hero' } },
-      { event: 'setup_guide_intent', properties: { step: 'open_setup_guide' } },
-      { event: 'sample_view_intent', properties: { phase: 'sample_view' } },
-      { event: 'gate_result_intent', properties: { result: 'pass_demo' } },
-      { event: 'gate_result_intent', properties: { result: 'fail_demo' } },
-      { event: 'feedback_intent', properties: { surface: 'footer' } },
+      {
+        event: 'setup_intent',
+        properties: { surface: 'hero' },
+        token: 'phc_test',
+        distinct_id: 'anon_session_001',
+        $session_id: 'session_abc1234567890',
+        $process_person: true,
+      },
+      {
+        event: 'setup_guide_intent',
+        properties: { step: 'open_setup_guide' },
+        token: 'phc_test',
+        distinct_id: 'anon_session_001',
+        $session_id: 'session_abc1234567890',
+        $process_person: true,
+      },
+      {
+        event: 'sample_view_intent',
+        properties: { phase: 'sample_view' },
+        token: 'phc_test',
+        distinct_id: 'anon_session_001',
+        $session_id: 'session_abc1234567890',
+        $process_person: true,
+      },
+      {
+        event: 'gate_result_intent',
+        properties: { result: 'pass_demo' },
+        token: 'phc_test',
+        distinct_id: 'anon_session_001',
+        $session_id: 'session_abc1234567890',
+        $process_person: true,
+      },
+      {
+        event: 'gate_result_intent',
+        properties: { result: 'fail_demo' },
+        token: 'phc_test',
+        distinct_id: 'anon_session_001',
+        $session_id: 'session_abc1234567890',
+        $process_person: true,
+      },
+      {
+        event: 'feedback_intent',
+        properties: { surface: 'footer' },
+        token: 'phc_test',
+        distinct_id: 'anon_session_001',
+        $session_id: 'session_abc1234567890',
+        $process_person: true,
+      },
     ]);
 
   await expect
@@ -299,6 +346,8 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and s
           '$current_url',
           '$pageview',
           '$lib',
+          'app_version',
+          'referrer_url',
         ];
         return {
           hasSensitiveKeys: keys.some((key) => sensitiveKeys.includes(key)),
@@ -316,10 +365,46 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and s
   const invalidOutbound = await page.evaluate(() =>
     window.__posthogInitConfig?.before_send?.({
       event: 'setup_intent',
-      properties: { surface: 'secret-value', $current_url: 'https://example.com/private' },
+      properties: { surface: 'secret-value' },
+      token: 'phc_test',
+      distinct_id: 'anon_session_001',
+      $session_id: 'session_abc1234567890',
     }),
   );
   expect(invalidOutbound).toBeNull();
+
+  const invalidTransport = await page.evaluate(() =>
+    window.__posthogInitConfig?.before_send?.({
+      event: 'setup_intent',
+      properties: { surface: 'hero' },
+      token: 'phc_wrong',
+      distinct_id: 'anon_session_001',
+      $session_id: 'session_abc1234567890',
+    }),
+  );
+  expect(invalidTransport).toBeNull();
+
+  const invalidDistinctId = await page.evaluate(() =>
+    window.__posthogInitConfig?.before_send?.({
+      event: 'setup_intent',
+      properties: { surface: 'hero' },
+      token: 'phc_test',
+      distinct_id: 'email@example.com',
+      $session_id: 'session_abc1234567890',
+    }),
+  );
+  expect(invalidDistinctId).toBeNull();
+
+  const invalidSession = await page.evaluate(() =>
+    window.__posthogInitConfig?.before_send?.({
+      event: 'setup_intent',
+      properties: { surface: 'hero' },
+      token: 'phc_test',
+      distinct_id: 'anon_session_001',
+      $session_id: 'x'.repeat(300),
+    }),
+  );
+  expect(invalidSession).toBeNull();
 
   await expect
     .poll(() => page.evaluate(() => window.__posthogInitConfig))
@@ -331,7 +416,7 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and s
     );
 });
 
-test('skips browser or test sessions by default in analytics capture', async ({ page }) => {
+test('launch-funnel analytics drops events only for automation + explicit test-traffic marker', async ({ page }) => {
   await page.addInitScript(() => {
     Object.defineProperty(navigator, 'webdriver', {
       get: () => true,
@@ -346,22 +431,34 @@ test('skips browser or test sessions by default in analytics capture', async ({ 
         if (!Array.isArray(posthog._i)) posthog._i = [];
         window.__posthogInitConfig = posthog._i?.[0]?.[1] || null;
         window.__capturedEvents = [];
+        const getPosthogConfig = () =>
+          window.__posthogInitConfig || window.posthog?._i?.[0]?.[1] || null;
+        const applyBeforeSend = (payload) => {
+          const config = getPosthogConfig();
+          const beforeSend = config?.before_send;
+          return beforeSend ? beforeSend(payload) : payload;
+        };
         posthog.capture = (...args) => {
           const [eventName, properties] = args;
-          const config = window.__posthogInitConfig || window.posthog?._i?.[0]?.[1] || null;
-          const beforeSend = config?.before_send;
-          const filtered = beforeSend ? beforeSend({ event: eventName, properties }) : null;
+          const payload = {
+            event: eventName,
+            properties,
+            token: 'phc_test',
+            distinct_id: 'anon_session_001',
+            $session_id: 'session_abc1234567890',
+          };
+          const filtered = applyBeforeSend(payload);
           if (filtered) window.__capturedEvents.push(filtered);
         };
         posthog.init = (key, config) => {
-          window.__posthogInitConfig = config;
           posthog._i.push([key, config]);
+          window.__posthogInitConfig = config;
         };
       `,
       contentType: 'application/javascript',
     });
   });
-  await page.route('http://127.0.0.1:4173/task-3-analytics-fixture-auto', async (route) => {
+  await page.route('**/task-3-analytics-fixture-auto*', async (route) => {
     await route.fulfill({
       body: `
         <html>
@@ -371,7 +468,6 @@ test('skips browser or test sessions by default in analytics capture', async ({ 
           </head>
           <body>
             <a id="setup" data-analytics="setup_hero" data-analytics-event="setup_intent" data-analytics-prop-surface="hero" href="#">Start setup</a>
-            <a id="progress" data-analytics="setup_guide" data-analytics-event="setup_guide_intent" data-analytics-prop-step="open_setup_guide" href="#">Open setup guide</a>
             <script src="/analytics.js"></script>
           </body>
         </html>
@@ -382,7 +478,121 @@ test('skips browser or test sessions by default in analytics capture', async ({ 
 
   await page.goto('/task-3-analytics-fixture-auto');
   await page.getByRole('link', { name: 'Start setup' }).click();
-  await page.getByRole('link', { name: 'Open setup guide' }).click();
+  await expect.poll(() => page.evaluate(() => window.__capturedEvents.length)).toEqual(1);
 
+  await page.evaluate(() => {
+    window.__capturedEvents = [];
+  });
+  await page.goto('/task-3-analytics-fixture-auto?gitpin_test_traffic=true');
+  await page.getByRole('link', { name: 'Start setup' }).click();
   await expect.poll(() => page.evaluate(() => window.__capturedEvents.length)).toEqual(0);
+
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'webdriver', {
+      get: () => false,
+      configurable: true,
+    });
+  });
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'webdriver', {
+      get: () => false,
+      configurable: true,
+    });
+    window.__capturedEvents = [];
+    delete window.__posthogInitConfig;
+    delete window.posthog._i;
+  });
+  await page.goto('/task-3-analytics-fixture-auto');
+  await page.getByRole('link', { name: 'Start setup' }).click();
+  await expect.poll(() => page.evaluate(() => window.__capturedEvents.length)).toEqual(1);
+});
+
+test('launch-funnel SVG text stays inside panels and text blocks do not overlap', async ({ page }) => {
+  const svg = readFileSync(resolve(process.cwd(), 'docs/demos/pr-gate-fail-to-pass.svg'), 'utf8');
+  await page.setContent(`<html><body>${svg}</body></html>`);
+  await expect(page.locator('svg')).toBeVisible();
+
+  const summary = await page.evaluate(() => {
+    const svg = document.querySelector('svg');
+    const viewBox = svg?.getAttribute('viewBox') || '';
+    const [, , widthText, heightText] = viewBox.split(' ');
+    const viewportWidth = Number(widthText);
+    const viewportHeight = Number(heightText);
+    const panels = Array.from(svg.querySelectorAll('g[data-panel-width][data-panel-height]'));
+    const panelChecks = [];
+    const overlap = [];
+
+    const parseTranslate = (value) => {
+      const match = /translate\(([-\d.]+),\s*([-\d.]+)\)/u.exec(value || '');
+      if (!match) return [0, 0];
+      return [Number(match[1]), Number(match[2])];
+    };
+
+    for (const panel of panels) {
+      const panelWidth = Number(panel.getAttribute('data-panel-width') || '0');
+      const panelHeight = Number(panel.getAttribute('data-panel-height') || '0');
+      const [panelX, panelY] = parseTranslate(panel.getAttribute('transform') || '');
+      const texts = Array.from(panel.querySelectorAll('text'));
+      const bounds = [];
+      const violations = [];
+
+      for (const text of texts) {
+        const b = text.getBBox();
+        bounds.push(b);
+        if (b.x < panelX - 0.5 || b.y < panelY - 0.5) {
+          violations.push(`underflow-${text.textContent}`);
+        }
+        if (b.x + b.width > panelX + panelWidth + 0.5 || b.y + b.height > panelY + panelHeight + 0.5) {
+          violations.push(`overflow-${text.textContent}`);
+        }
+      }
+
+      for (let i = 0; i < bounds.length; i += 1) {
+        for (let j = i + 1; j < bounds.length; j += 1) {
+          const a = bounds[i];
+          const b = bounds[j];
+          const intersects = !(
+            a.x + a.width <= b.x ||
+            b.x + b.width <= a.x ||
+            a.y + a.height <= b.y ||
+            b.y + b.height <= a.y
+          );
+          if (intersects) {
+            overlap.push(`panel-${panel.id}-overlap`);
+          }
+        }
+      }
+
+      panelChecks.push({
+        id: panel.id,
+        violations,
+      });
+    }
+
+    const overflow = Array.from(document.querySelectorAll('text')).some((text) => {
+      const b = text.getBBox();
+      return b.x < -0.5 || b.y < -0.5 || b.x + b.width > viewportWidth + 0.5 || b.y + b.height > viewportHeight + 0.5;
+    });
+
+    return {
+      overflow,
+      panelChecks,
+      overlapCount: overlap.length,
+    };
+  });
+
+  expect(summary?.overflow).toBe(false);
+  expect(summary?.overlapCount).toBe(0);
+  expect(summary?.panelChecks).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        id: 'phase-a-(fail)',
+        violations: [],
+      }),
+      expect.objectContaining({
+        id: 'phase-b-(pass)',
+        violations: [],
+      }),
+    ]),
+  );
 });

@@ -34,7 +34,10 @@ Optional baseline:
 
 ## Launch-funnel metrics and exact numerators/denominators
 
-All funnel calculations use a 7-day sliding window and exclude bot/test sessions.
+All funnel calculations use a 7-day sliding window and exclude test sessions only when both:
+
+- an automated browser signal is present (`navigator.webdriver` or headless/automation user-agent),
+- and an explicit test-traffic marker is set (`gitpin_test_traffic=true` in query or `window.__gitpinTestTraffic === true`).
 
 For each unique visit session:
 
@@ -80,6 +83,15 @@ Median and p95 latency metrics:
 
 All sessions are synthetic-only. No real repository content, prompt text, tokens, secrets, or user identifiers are collected in protocol records.
 Actual participant sessions are still pending and not completed.
+
+Transport fields sent with each launch-funnel event are limited to:
+
+- project token (`token`) validated against the deployed PostHog project key,
+- anonymous `distinct_id`,
+- optional `$session_id` when retained by cookieless session analysis,
+- and optional `$process_person` when required by the SDK.
+
+No other SDK-enrichment fields are retained.
 
 ### Synthetic fixture
 
