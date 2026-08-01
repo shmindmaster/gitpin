@@ -148,7 +148,7 @@
     },
     {
       "id": "V062-RELEASE-TRUTH",
-      "statement": "Current repository, changelog, setup, migration, and troubleshooting copy identifies 0.6.2 as the candidate without rewriting immutable 0.6.1 or 0.6.0 release history.",
+      "statement": "Current repository, changelog, setup, migration, and troubleshooting copy identifies 0.6.2 as the published release without rewriting immutable 0.6.1 or 0.6.0 release history.",
       "covers": [
         "AGENTS.md",
         "README.md",
@@ -172,7 +172,7 @@
           "path": "README.md",
           "lineStart": 39,
           "lineEnd": 39,
-          "contentSha256": "bef8a460add9ef9e2fe1a1a9531143d109e9c4277c26ec0f4e96979c5c1c27cc"
+          "contentSha256": "9d1cce2dd3508acdf25631e8d6776fc349ca5acf3ee9ca7cb21eeb9bd115c861"
         },
         {
           "ref": "head",
@@ -225,7 +225,6 @@
         ".github/workflows/evidence-gate.yml",
         "src/gate-action.test.ts",
         "src/launch-readiness-truth.test.ts",
-        "README.md",
         "docs/pr-evidence-gate.md",
         "docs/launch.md",
         "scripts/build-pr-gate-fail-to-pass-artifact.mjs",
@@ -253,13 +252,6 @@
           "lineStart": 36,
           "lineEnd": 36,
           "contentSha256": "3bd3ea681a82cf36995199217e0c9d92a2dc3253facdab8b716e869df4f9489f"
-        },
-        {
-          "ref": "head",
-          "path": "README.md",
-          "lineStart": 31,
-          "lineEnd": 39,
-          "contentSha256": "ce518099a2206565524352be56457a13bbde97bcb799f37a8866e4fdbd2ebd14"
         },
         {
           "ref": "head",
