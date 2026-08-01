@@ -39,3 +39,13 @@
 ## Concerns
 - No functional concerns after validation. No remaining test or release-gate blockers.
 - `.git` validation emits workspace-wide LF→CRLF notices for touched/unrelated files, but no content changes were made outside Task 2 scope.
+
+## Fix round 1
+- Finding: launch documentation still contained `gitpin@latest` install/bootstrap commands, which conflict with version-correct 0.6.0 launch artifacts.
+- Files changed:
+  - `docs/launch.md`
+  - `src/launch-readiness-truth.test.ts`
+  - `.superpowers/sdd/launch-readiness/task-2-report.md`
+  - `.superpowers/sdd/launch-readiness/progress.md` (included in Task 2 scope)
+- Verification run: `pnpm test -- src/launch-readiness-truth.test.ts` and `pnpm validate`
+- Status: implemented

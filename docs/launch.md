@@ -31,7 +31,7 @@ The trust moment is that a pull request cannot weaken the policy used to judge i
 
 ## Supporting demo: local evidence retrieval
 
-Use `npx -y gitpin@latest init --client codex` when an agent needs local, index-free evidence across repositories. Search results are candidates; `pin.prove` and `pin.verify` produce path, line, line hash, and full-SHA evidence for the PR manifest. This MCP workflow supports the gate but is not required to adopt it.
+Use `npx -y gitpin@0.6.0 init --client codex` when an agent needs local, index-free evidence across repositories. Search results are candidates; `pin.prove` and `pin.verify` produce path, line, line hash, and full-SHA evidence for the PR manifest. This MCP workflow supports the gate but is not required to adopt it.
 
 ## Positioning
 
@@ -68,7 +68,7 @@ Canonical links for this release package:
 - Project site: https://shmindmaster.github.io/gitpin/
 - GitHub Action setup:
   - `uses: shmindmaster/gitpin@v0.6.0` in workflow YAML
-  - CLI bootstrap: `npx -y gitpin@latest init --client codex`
+  - CLI bootstrap: `npx -y gitpin@0.6.0 init --client codex`
 
 ## Show HN draft
 
@@ -81,7 +81,7 @@ For merge requests that include material file changes, GitPin enforces that requ
 Release setup for this version:
 
 ```bash
-npx -y gitpin@latest
+npx -y gitpin@0.6.0
 gitpin gate --base <full-base-sha> --head <full-head-sha>
 uses: shmindmaster/gitpin@v0.6.0
 ```
@@ -115,7 +115,7 @@ Signals to use this as infrastructure:
 GitPin 0.6.0 enforces commit-pinned PR evidence for material diff paths: the gate requires coverage for changed files and checks exact file-line evidence against full SHA sources at merge time. It is intended as a trust-boundary control for review, not as a rollout claim or replacement for human code review.
 
 Quick rollout setup:
-1) Install: `npx -y gitpin@latest`
+1) Install: `npx -y gitpin@0.6.0`
 2) Configure `.gitpin/gate.yml` on the trusted base commit
 3) Add `.gitpin/change-evidence.json` in PR heads
 4) Enable `uses: shmindmaster/gitpin@v0.6.0` on PR checks

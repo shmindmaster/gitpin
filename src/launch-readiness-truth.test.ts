@@ -169,10 +169,15 @@ describe('public launch truth', () => {
       links?: { [key: string]: string };
       version?: string;
     };
+    const launchBootstrapMatches = launchCopy.match(/npx -y gitpin@\d+\.\d+\.\d+(?: init --client codex)?/g) || [];
 
     for (const link of launchCanonicalLinks) {
       expect(launchCopy, `docs/launch.md missing canonical link: ${link}`).toContain(link);
     }
+
+    expect(launchBootstrapMatches).toContain('npx -y gitpin@0.6.0');
+    expect(launchBootstrapMatches).toContain('npx -y gitpin@0.6.0 init --client codex');
+    expect(launchCopy).not.toMatch(/gitpin@latest/g);
 
     for (const link of launchCanonicalLinks) {
       expect(JSON.stringify(releaseArtifact)).toContain(link);
