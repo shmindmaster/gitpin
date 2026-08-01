@@ -1,245 +1,10 @@
 {
   "schemaVersion": 1,
-  "summary": "GitPin 0.6.1 release-candidate evidence covers every changed path from verified main 579564bf73e18413bf6c69c57c3df76680d4a270 through candidate commit 4945ea4968f7a076c7ae5e187dcd0d7130773b42 without claiming publication or production verification.",
+  "summary": "Post-publication control-plane evidence binds GitPin's own required evidence workflow to published v0.6.1 from release merge 555afdd907c4ef4646fffdfe1002a5230010cbb3.",
   "claims": [
     {
-      "id": "RELEASE-VERSION-SURFACES",
-      "statement": "Package, MCP, Action, runtime, onboarding, client-template, and client-documentation version surfaces are aligned to GitPin 0.6.1.",
-      "covers": [
-        "package.json",
-        "server.json",
-        "action.yml",
-        "src/server.ts",
-        "src/onboarding.ts",
-        "src/registry.ts",
-        "templates/client-rules.md",
-        "docs/clients.md"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "package.json",
-          "lineStart": 1,
-          "lineEnd": 4,
-          "contentSha256": "a5206f02bf7526e49d262fbc61a013f7606f227fe9a6533077f01c52f9f53700"
-        },
-        {
-          "ref": "head",
-          "path": "server.json",
-          "lineStart": 10,
-          "lineEnd": 15,
-          "contentSha256": "2d7c1d5ea2939cada9fd643f9307c11c69b196de581b50d1ba1979824e3195d8"
-        },
-        {
-          "ref": "head",
-          "path": "action.yml",
-          "lineStart": 23,
-          "lineEnd": 26,
-          "contentSha256": "00f0446ccc3a137617cf570f113861f321a5f78177bd911240c288d7ff211036"
-        },
-        {
-          "ref": "head",
-          "path": "src/server.ts",
-          "lineStart": 10,
-          "lineEnd": 11,
-          "contentSha256": "96251e35eef99e1de83ffbea11bac5b5658128ea27d8ffb8f63d9722d28e8f3e"
-        },
-        {
-          "ref": "head",
-          "path": "src/onboarding.ts",
-          "lineStart": 214,
-          "lineEnd": 232,
-          "contentSha256": "7aa695a093794d1ba531fa9608fa05d8cad3e22ef65da8ef343e1e7b0f4b1f08"
-        },
-        {
-          "ref": "head",
-          "path": "templates/client-rules.md",
-          "lineStart": 13,
-          "lineEnd": 13,
-          "contentSha256": "0c1c32e63d0f4a97d0a5e8e2262573e9768aad0e783544fcc5b43daa96484be6"
-        },
-        {
-          "ref": "head",
-          "path": "docs/clients.md",
-          "lineStart": 3,
-          "lineEnd": 6,
-          "contentSha256": "c6e02544c9c7ba5e998db744e19891bf8a6cad68d02661a6a969d5581854750a"
-        },
-        {
-          "ref": "head",
-          "path": "docs/clients.md",
-          "lineStart": 85,
-          "lineEnd": 89,
-          "contentSha256": "c881d92ad387c341e7df5fd9e78295bfa7acb38f2e3f427e1b580abe70d4d780"
-        }
-      ]
-    },
-    {
-      "id": "RELEASE-COPY-AND-HISTORY",
-      "statement": "Current documentation and website setup copy identify the 0.6.1 candidate and customer-facing Action/install targets while explicitly leaving publication and production verification pending; the complete 0.6.0 changelog history remains preserved.",
-      "covers": [
-        "AGENTS.md",
-        "CHANGELOG.md",
-        "README.md",
-        "ROADMAP.md",
-        "docs/ci.md",
-        "docs/launch.md",
-        "docs/migration-gitpin.md",
-        "docs/pr-evidence-gate.md",
-        "docs/troubleshooting.md",
-        "docs/website.md",
-        "site/index.html"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "AGENTS.md",
-          "lineStart": 4,
-          "lineEnd": 8,
-          "contentSha256": "8a98caaa14c5d7fd06f4592019dd14d52fcd2716c404fc0451b17f21a0680377"
-        },
-        {
-          "ref": "head",
-          "path": "CHANGELOG.md",
-          "lineStart": 6,
-          "lineEnd": 24,
-          "contentSha256": "946e8c1e7528c35291ae92291ad8dc9a22268cb8f6d9949baff9f63e9e1d6c3f"
-        },
-        {
-          "ref": "head",
-          "path": "README.md",
-          "lineStart": 36,
-          "lineEnd": 47,
-          "contentSha256": "f38b12023b4a7900fb8db74ea4149a21dccda1b3e312f238de8dc0bd34d44c04"
-        },
-        {
-          "ref": "head",
-          "path": "ROADMAP.md",
-          "lineStart": 8,
-          "lineEnd": 20,
-          "contentSha256": "6a2355dc74548b714c0b4aa387f34c465c06a61ebbf383f52cb4e2dbf8b55e1b"
-        },
-        {
-          "ref": "head",
-          "path": "docs/launch.md",
-          "lineStart": 57,
-          "lineEnd": 71,
-          "contentSha256": "b8248649db55c51409623c68543e7d96e1ccb52eaba1a8a590d7fbf8d0b4b968"
-        },
-        {
-          "ref": "head",
-          "path": "docs/website.md",
-          "lineStart": 1,
-          "lineEnd": 7,
-          "contentSha256": "8e7ff0ce733ecdd6f7dd0eef65e249de918c098bbc022f433e098d7614026581"
-        },
-        {
-          "ref": "head",
-          "path": "docs/pr-evidence-gate.md",
-          "lineStart": 40,
-          "lineEnd": 50,
-          "contentSha256": "f2db3269c9b829638e2efd7418fe317a03b5f93915daf997587c1187d9fe56fe"
-        },
-        {
-          "ref": "head",
-          "path": "site/index.html",
-          "lineStart": 236,
-          "lineEnd": 246,
-          "contentSha256": "edcc8c60b3dd75efa0870ee8795f596565bfbdcfb0bc3af8a47f72b71d5d787d"
-        }
-      ]
-    },
-    {
-      "id": "RELEASE-GENERATED-DEMO",
-      "statement": "The canonical deterministic generator and its JSON, Markdown, and SVG outputs agree on GitPin 0.6.1 and the public 0.6.1 release and Action targets.",
-      "covers": [
-        "scripts/build-pr-gate-fail-to-pass-artifact.mjs",
-        "docs/demos/pr-gate-fail-to-pass.artifact.json",
-        "docs/demos/pr-gate-fail-to-pass.md",
-        "docs/demos/pr-gate-fail-to-pass.svg"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "scripts/build-pr-gate-fail-to-pass-artifact.mjs",
-          "lineStart": 163,
-          "lineEnd": 181,
-          "contentSha256": "82e61bba96904b831eea6cce69b9458b166cfb6762291985280f82717141ccb5"
-        },
-        {
-          "ref": "head",
-          "path": "docs/demos/pr-gate-fail-to-pass.artifact.json",
-          "lineStart": 1,
-          "lineEnd": 17,
-          "contentSha256": "00e174d7337a3f3145f4516576a27d5741000d3ee72a9baead5e54e636cabd58"
-        },
-        {
-          "ref": "head",
-          "path": "docs/demos/pr-gate-fail-to-pass.md",
-          "lineStart": 1,
-          "lineEnd": 5,
-          "contentSha256": "5edadbb82d6417a61d2a98bc42fb67970891eaeb013491e303bad2b6a1b244a0"
-        },
-        {
-          "ref": "head",
-          "path": "docs/demos/pr-gate-fail-to-pass.svg",
-          "lineStart": 21,
-          "lineEnd": 24,
-          "contentSha256": "53a766594a1f74fa2410e9d978c1d50dd3fd291e0c8c835d773afb60828fbae1"
-        }
-      ]
-    },
-    {
-      "id": "RELEASE-VALIDATION-CONTRACTS",
-      "statement": "Package, Action, launch-truth, onboarding, and browser validation contracts derive or assert the 0.6.1 candidate surfaces, including the deliberate self-gate bootstrap boundary.",
-      "covers": [
-        "scripts/verify-package.mjs",
-        "src/gate-action.test.ts",
-        "src/launch-readiness-truth.test.ts",
-        "src/onboarding.test.ts",
-        "tests/browser/site.spec.mjs"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "scripts/verify-package.mjs",
-          "lineStart": 8,
-          "lineEnd": 11,
-          "contentSha256": "6af47018467ebc02ec5e157b2835d8ad8e0c9a0a849567384c0ed7f0253c9a89"
-        },
-        {
-          "ref": "head",
-          "path": "src/gate-action.test.ts",
-          "lineStart": 8,
-          "lineEnd": 28,
-          "contentSha256": "048735366ee31257b05ea3ad027a0f6cebb9e45facecf2356f01dad82028e556"
-        },
-        {
-          "ref": "head",
-          "path": "src/launch-readiness-truth.test.ts",
-          "lineStart": 34,
-          "lineEnd": 41,
-          "contentSha256": "4e8182745bac733e9431e22ac5b37e4b46caf2c069a53c20b42addd8efa5faf6"
-        },
-        {
-          "ref": "head",
-          "path": "src/onboarding.test.ts",
-          "lineStart": 193,
-          "lineEnd": 211,
-          "contentSha256": "b1932317d4d00085d4e9016c327b1446d24b6920d84fa2724409ef5530d71c73"
-        },
-        {
-          "ref": "head",
-          "path": "tests/browser/site.spec.mjs",
-          "lineStart": 35,
-          "lineEnd": 69,
-          "contentSha256": "e33d50723199fce115b4ca96917798d95da6c5795e3f3c8157c60b8df8014e24"
-        }
-      ]
-    },
-    {
-      "id": "RELEASE-SELF-GATE-BOOTSTRAP",
-      "statement": "GitPin's own evidence workflow remains pinned to the already-published v0.6.0 Action during the 0.6.1 candidate review and documents the required post-publication follow-up.",
+      "id": "SELF-GATE-V061",
+      "statement": "GitPin's pull-request evidence workflow now runs the published v0.6.1 Action while preserving its read-only base/head SHA contract.",
       "covers": [
         ".github/workflows/evidence-gate.yml"
       ],
@@ -247,9 +12,25 @@
         {
           "ref": "head",
           "path": ".github/workflows/evidence-gate.yml",
-          "lineStart": 21,
-          "lineEnd": 22,
-          "contentSha256": "7e27903cf064575dd5efffa7c95f5724af34c3406ca9965ce614fb165adbfa52"
+          "lineStart": 18,
+          "lineEnd": 25,
+          "contentSha256": "0f70c01341f6170662669368383a1131b0950f3a1b6589e432d0e14888d1a674"
+        }
+      ]
+    },
+    {
+      "id": "SELF-GATE-V061-TEST",
+      "statement": "The focused trust-boundary test requires the v0.6.1 self-gate pin and rejects the retired bootstrap comment and v0.6.0 pin.",
+      "covers": [
+        "src/gate-action.test.ts"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "src/gate-action.test.ts",
+          "lineStart": 22,
+          "lineEnd": 29,
+          "contentSha256": "f1f0a2022afe83e09331df31ea842cd920c9b13daeeb758e3505c2bfa9e85a8c"
         }
       ]
     }
