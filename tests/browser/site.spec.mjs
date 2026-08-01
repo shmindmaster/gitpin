@@ -72,20 +72,28 @@ test('publishes a narrow, accessible privacy statement', async ({ page }) => {
 
 test('switches audience presentation while preserving the evidence set', async ({ page }) => {
   const evidenceSet = await page.locator('.evidence-id code').textContent();
-  await page.getByRole('tab', { name: 'Product' }).click();
-  await expect(page.getByRole('tab', { name: 'Product' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('tab', { name: 'Engineering managers' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('#audience-question')).toHaveText('Did the agent cover every material file it changed?');
+
+  await page.getByRole('tab', { name: 'Release owners' }).click();
+  await expect(page.getByRole('tab', { name: 'Release owners' })).toHaveAttribute('aria-selected', 'true');
   await expect(page.getByRole('tabpanel')).toBeVisible();
-  await expect(page.locator('#audience-question')).toHaveText('What can users trust in an EvidenceBrief?');
+  await expect(page.locator('#audience-question')).toHaveText(
+    'Was this evidence generated for the exact pull-request head?',
+  );
+  await expect(page.locator('#audience-fact')).toHaveText(
+    'Each locator is re-hashed at the full base or head commit SHA.',
+  );
   await expect(page.locator('.evidence-id code')).toHaveText(evidenceSet);
 
-  await page.getByRole('tab', { name: 'Product' }).press('ArrowRight');
-  await expect(page.getByRole('tab', { name: 'Operations' })).toBeFocused();
-  await expect(page.locator('#audience-fact')).toHaveText('HTTP snapshots contain documentation and manifests only.');
+  await page.getByRole('tab', { name: 'Release owners' }).press('ArrowRight');
+  await expect(page.getByRole('tab', { name: 'Governance & review' })).toBeFocused();
+  await expect(page.locator('#audience-fact')).toHaveText('Policy is loaded from the trusted base branch.');
   await expect(page.locator('.evidence-id code')).toHaveText(evidenceSet);
 
-  await page.getByRole('tab', { name: 'Operations' }).press('Home');
-  await expect(page.getByRole('tab', { name: 'Technical' })).toBeFocused();
-  await expect(page.getByRole('tab', { name: 'Technical' })).toHaveAttribute('aria-selected', 'true');
+  await page.getByRole('tab', { name: 'Governance & review' }).press('Home');
+  await expect(page.getByRole('tab', { name: 'Engineering managers' })).toBeFocused();
+  await expect(page.getByRole('tab', { name: 'Engineering managers' })).toHaveAttribute('aria-selected', 'true');
 });
 
 test('supports skip-to-content and mobile navigation state transitions', async ({ page }) => {
@@ -134,10 +142,18 @@ test('delivers custom events after the asynchronous analytics loader replaces it
   await page.goto('/analytics-fixture');
   await expect.poll(() => page.evaluate(() => Array.isArray(window.__capturedEvents))).toBe(true);
 
-  await page.evaluate(() => window.gitpinTrack('audience_changed', { audience: 'product' }));
+  await page.evaluate(() => window.gitpinTrack('audience_changed', { audience: 'release' }));
   await expect
     .poll(() => page.evaluate(() => window.__capturedEvents))
-    .toContainEqual(['audience_changed', { audience: 'product' }]);
+    .toContainEqual(['audience_changed', { audience: 'release' }]);
+});
+
+test('frames the gate for engineering, release, and governance owners', async ({ page }) => {
+  await expect(page.getByRole('tablist', { name: 'PR evidence gate audience' })).toBeVisible();
+  await expect(page.getByText('BASE POLICY · HEAD EVIDENCE')).toBeVisible();
+  await expect(page.locator('.process')).toContainText('merge-base diff');
+  await expect(page.locator('.process')).toContainText('exact base or head commit');
+  await expect(page.locator('.safety')).toContainText('A pull request cannot weaken the policy used to judge itself.');
 });
 
 test('keeps the primary content within the viewport', async ({ page }) => {

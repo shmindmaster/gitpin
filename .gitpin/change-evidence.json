@@ -1,124 +1,44 @@
 {
   "schemaVersion": 1,
-  "summary": "Harden the GitPin launch with a platform-safe social card, measured feedback paths, and current pinned CI dependencies.",
+  "summary": "Align the Tuesday announcement and landing proof with GitPin's base-trusted required PR evidence gate and its engineering, release, and governance audiences.",
   "claims": [
     {
-      "id": "LAUNCH-FEEDBACK",
-      "statement": "The public site serves a 1200x630 PNG social card and routes measured launch feedback through a privacy-safe issue template.",
+      "id": "GATE-FIRST-LAUNCH",
+      "statement": "The launch package and landing page lead with the base-trusted PR evidence gate, explain changed-path coverage and full-SHA line-hash verification, and position the local MCP as supporting infrastructure.",
       "covers": [
-        ".github/ISSUE_TEMPLATE/feature_request.md",
-        ".github/ISSUE_TEMPLATE/launch_feedback.md",
+        "docs/launch.md",
+        "site/app.js",
         "site/index.html",
-        "site/social-card.png",
         "tests/browser/site.spec.mjs"
       ],
       "evidence": [
         {
           "ref": "head",
-          "path": "site/index.html",
-          "lineStart": 22,
-          "lineEnd": 24,
-          "contentSha256": "24d500f265c883056528eef3af983f311345f91b9ec0deb72db2667500f17c9b"
+          "path": "docs/launch.md",
+          "lineStart": 38,
+          "lineEnd": 42,
+          "contentSha256": "dc9a48d23a9a88cecaa1211a8ae11222fec236b66df4d92b5c36a114b738d366"
         },
         {
           "ref": "head",
           "path": "site/index.html",
-          "lineStart": 49,
-          "lineEnd": 49,
-          "contentSha256": "1631997ca295b488a5d0cd184f6799a2c247152e529b2e9da4b9d4662c0c6738"
+          "lineStart": 72,
+          "lineEnd": 88,
+          "contentSha256": "88449ef5aa00db3e5857ba4eb58403e42056b333b62526fb63c3e739d765b354"
         },
         {
           "ref": "head",
-          "path": ".github/ISSUE_TEMPLATE/launch_feedback.md",
-          "lineStart": 7,
-          "lineEnd": 13,
-          "contentSha256": "ac9978627f5489d48b5a37bedbafad6c96f2e2d8766a899a8bb35d612f94dada"
+          "path": "site/app.js",
+          "lineStart": 1,
+          "lineEnd": 22,
+          "contentSha256": "8a26fdb8f2293a780eb7d3837c1ffdf6dd564dc8cc85917f54672f8e94fe489f"
         },
         {
           "ref": "head",
           "path": "tests/browser/site.spec.mjs",
-          "lineStart": 149,
-          "lineEnd": 156,
-          "contentSha256": "507cedce429445075551ab6c481b0292d345d4225748281f8539d6599153e000"
-        }
-      ]
-    },
-    {
-      "id": "CHECKOUT-V7",
-      "statement": "Every GitPin-owned workflow and published setup example uses actions/checkout v7.",
-      "covers": [
-        ".github/workflows/ci.yml",
-        ".github/workflows/evidence-gate.yml",
-        ".github/workflows/pages.yml",
-        ".github/workflows/publish-mcp.yml",
-        ".github/workflows/release.yml",
-        "docs/ci.md"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": ".github/workflows/ci.yml",
-          "lineStart": 23,
-          "lineEnd": 23,
-          "contentSha256": "58f00e46fdbbb68a75f1437f9f5dfcade0928cfd0a7553c1b8ab4520a4c96642"
-        },
-        {
-          "ref": "head",
-          "path": ".github/workflows/evidence-gate.yml",
-          "lineStart": 17,
-          "lineEnd": 17,
-          "contentSha256": "58f00e46fdbbb68a75f1437f9f5dfcade0928cfd0a7553c1b8ab4520a4c96642"
-        },
-        {
-          "ref": "head",
-          "path": ".github/workflows/pages.yml",
-          "lineStart": 22,
-          "lineEnd": 22,
-          "contentSha256": "58f00e46fdbbb68a75f1437f9f5dfcade0928cfd0a7553c1b8ab4520a4c96642"
-        },
-        {
-          "ref": "head",
-          "path": ".github/workflows/publish-mcp.yml",
-          "lineStart": 21,
-          "lineEnd": 21,
-          "contentSha256": "58f00e46fdbbb68a75f1437f9f5dfcade0928cfd0a7553c1b8ab4520a4c96642"
-        },
-        {
-          "ref": "head",
-          "path": ".github/workflows/release.yml",
-          "lineStart": 24,
-          "lineEnd": 24,
-          "contentSha256": "58f00e46fdbbb68a75f1437f9f5dfcade0928cfd0a7553c1b8ab4520a4c96642"
-        },
-        {
-          "ref": "head",
-          "path": "docs/ci.md",
-          "lineStart": 20,
-          "lineEnd": 20,
-          "contentSha256": "58f00e46fdbbb68a75f1437f9f5dfcade0928cfd0a7553c1b8ab4520a4c96642"
-        },
-        {
-          "ref": "head",
-          "path": "site/index.html",
-          "lineStart": 197,
-          "lineEnd": 197,
-          "contentSha256": "58f00e46fdbbb68a75f1437f9f5dfcade0928cfd0a7553c1b8ab4520a4c96642"
-        }
-      ]
-    },
-    {
-      "id": "CREWSCORE-PIN",
-      "statement": "The PR evidence-gate guide pins the released CrewScore v0.6.9 action.",
-      "covers": [
-        "docs/pr-evidence-gate.md"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "docs/pr-evidence-gate.md",
-          "lineStart": 73,
-          "lineEnd": 73,
-          "contentSha256": "73e7593d82db0d28e2740caff42d524016c93ef42068ddebfb67167a46c273fd"
+          "lineStart": 151,
+          "lineEnd": 157,
+          "contentSha256": "1d33bc49a9b708bcdb586801abdae99fb09834e987b805020c96440bb6fb4ee4"
         }
       ]
     }

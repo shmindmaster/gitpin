@@ -69,29 +69,29 @@
             </a>
           </div>
           <p class="proof-line">Read-only. Base-trusted. Full SHAs. No arbitrary command execution.</p>
-          <div class="audience-tabs" role="tablist" aria-label="EvidenceBrief audience">
-            <button id="tab-technical" role="tab" aria-selected="true" aria-controls="evidence-panel" data-audience="technical">
-              Technical
+          <div class="audience-tabs" role="tablist" aria-label="PR evidence gate audience">
+            <button id="tab-engineering" role="tab" aria-selected="true" aria-controls="evidence-panel" data-audience="engineering">
+              Engineering managers
             </button>
-            <button id="tab-product" role="tab" aria-selected="false" aria-controls="evidence-panel" data-audience="product" tabindex="-1">
-              Product
+            <button id="tab-release" role="tab" aria-selected="false" aria-controls="evidence-panel" data-audience="release" tabindex="-1">
+              Release owners
             </button>
-            <button id="tab-operations" role="tab" aria-selected="false" aria-controls="evidence-panel" data-audience="operations" tabindex="-1">
-              Operations
+            <button id="tab-governance" role="tab" aria-selected="false" aria-controls="evidence-panel" data-audience="governance" tabindex="-1">
+              Governance &amp; review
             </button>
           </div>
         </div>
 
-        <div class="evidence-console" id="evidence-panel" role="tabpanel" aria-labelledby="tab-technical">
+        <div class="evidence-console" id="evidence-panel" role="tabpanel" aria-labelledby="tab-engineering">
           <div class="console-bar">
             <span>gitpin</span>
-            <span>READ-ONLY · PIN.* TOOLS</span>
+            <span>BASE POLICY · HEAD EVIDENCE</span>
           </div>
           <div class="console-step">
             <span class="step-number">1</span>
             <div>
-              <strong>Agent question</strong>
-              <p id="audience-question">Where is bearer authentication enforced?</p>
+              <strong>Review question</strong>
+              <p id="audience-question">Did the agent cover every material file it changed?</p>
             </div>
           </div>
           <div class="console-arrow" aria-hidden="true">↓</div>
@@ -99,21 +99,21 @@
             <span class="step-number">2</span>
             <div>
               <strong>GitPin</strong>
-              <p>Reading committed evidence at Git HEAD…</p>
+              <p>Comparing the merge-base diff with committed claims…</p>
             </div>
           </div>
           <div class="console-arrow" aria-hidden="true">↓</div>
           <div class="citation">
             <div class="citation-head">
-              <strong>docs/architecture.md:42</strong>
+              <strong>src/gate-policy.ts:60</strong>
               <span>990c830d58cc68d63901985e5234ed3137819802</span>
             </div>
-            <div class="source-line"><span>42</span><mark id="audience-fact">HTTP requests require bearer authentication.</mark></div>
+            <div class="source-line"><span>60</span><mark id="audience-fact">Every material changed path must map to a named claim.</mark></div>
           </div>
           <dl class="evidence-legend">
-            <div><dt>Known fact</dt><dd id="audience-known">Directly supported by committed source.</dd></div>
-            <div><dt>Inference</dt><dd id="audience-inference">Authentication is part of the remote trust boundary.</dd></div>
-            <div><dt>Gap</dt><dd id="audience-gap">Production endpoint ownership is not registered.</dd></div>
+            <div><dt>Verified</dt><dd id="audience-known">Coverage is checked against the merge-base diff.</dd></div>
+            <div><dt>Review value</dt><dd id="audience-inference">Reviewers can see which claims cover which files.</dd></div>
+            <div><dt>Boundary</dt><dd id="audience-gap">GitPin does not judge whether a claim is semantically true.</dd></div>
           </dl>
           <p class="evidence-id">Evidence set <code>8e44b735…be61</code></p>
         </div>
