@@ -128,7 +128,7 @@
     },
     {
       "id": "narration-guardrail",
-      "text": "The guardrail is just as important. Merchant Web has an uncommitted change, so Repo Context marks it stale and excludes that worktree from pinned evidence.",
+      "text": "The guardrail is just as important. Merchant Web has an uncommitted change, so GitPin marks it stale and excludes that worktree from pinned evidence.",
       "audience": "Engineering and release leads",
       "episode": "release-evidence-brief",
       "scene": "guardrail",
@@ -142,7 +142,7 @@
     },
     {
       "id": "narration-payoff",
-      "text": "Repo Context gives your release review a source-cited starting point. Evidence first. Assumptions last.",
+      "text": "GitPin gives your release review a source-cited starting point. Evidence first. Assumptions last.",
       "audience": "Engineering and release leads",
       "episode": "release-evidence-brief",
       "scene": "payoff",

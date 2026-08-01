@@ -1,0 +1,82 @@
+{
+  "artifactId": "pr-gate-fail-to-pass",
+  "name": "GitPin PR evidence gate fail-to-pass sample",
+  "version": "0.6.0",
+  "scenario": "Deterministic synthetic PR gate fail-to-pass validation.",
+  "reducedMotionSafe": true,
+  "accessibility": {
+    "altText": "A synthetic fail-to-pass PR evidence gate flow: one failed run for an uncovered material path, then one passing run after adding a line-level locator.",
+    "caption": "Fail-to-pass summary: one required path fails at status 1 when material coverage is absent, then passes at status 0 once a full-SHA line locator is added at the exact line.",
+    "staticOnly": true
+  },
+  "links": {
+    "npm": "https://www.npmjs.com/package/gitpin",
+    "github_release": "https://github.com/shmindmaster/gitpin/releases/tag/v0.6.0",
+    "github_action": "https://github.com/shmindmaster/gitpin/actions/workflows/evidence-gate.yml",
+    "github_action_snippet": "uses: shmindmaster/gitpin@v0.6.0",
+    "mcp_registry": "https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.shmindmaster/gitpin&limit=20",
+    "pages": "https://shmindmaster.github.io/gitpin/"
+  },
+  "fixture": {
+    "repository": "task-2-synthetic-pr-fixture",
+    "base": "43439f836e8f7ac27e5f41587caba435b758a4cc",
+    "failHead": "f0137d966ec3283719c095b46215adffb08588ce",
+    "head": "57bce1a312f6153e171b515c41727ff81e77fb3c",
+    "changedPath": "docs/protocol.md",
+    "lineAdded": 5,
+    "claimContentLine": "Launch-gate proof requires this exact, deterministic proof line.",
+    "claimContentSha256": "2ad449fd22a840f9bb138b299ba4ac247379a14a4dce6825eb84ed692d80938a"
+  },
+  "failCase": {
+    "command": "gitpin gate --base 43439f836e8f7ac27e5f41587caba435b758a4cc --head f0137d966ec3283719c095b46215adffb08588ce",
+    "status": 1,
+    "message": "Gate failed with 1 violation(s). Evidence locators verify committed content, not semantic correctness.",
+    "output": "{\n  \"kind\": \"gitpin-gate-report\",\n  \"schemaVersion\": 1,\n  \"status\": \"failed\",\n  \"reportId\": \"70ce3c4dd0bcce83\",\n  \"repository\": \"task-2-synthetic-pr-fixture\",\n  \"baseSha\": \"43439f836e8f7ac27e5f41587caba435b758a4cc\",\n  \"headSha\": \"f0137d966ec3283719c095b46215adffb08588ce\",\n  \"mergeBaseSha\": \"43439f836e8f7ac27e5f41587caba435b758a4cc\",\n  \"policy\": {\n    \"path\": \".gitpin/gate.yml\",\n    \"sha256\": \"672e3e648ae68b3f473fce90147b9f6ba5c1c21fba68b88e199f1d352b21e2ae\"\n  },\n  \"manifest\": {\n    \"path\": \".gitpin/change-evidence.json\",\n    \"sha256\": \"3be3fb67811a2ebbf3a3f0078cc78f2b01b96955b3e456a648d10d745e831b4b\"\n  },\n  \"changedPaths\": {\n    \"all\": [\n      \"docs/protocol.md\"\n    ],\n    \"required\": [\n      \"docs/protocol.md\"\n    ],\n    \"uncovered\": [\n      \"docs/protocol.md\"\n    ]\n  },\n  \"claims\": [],\n  \"violations\": [\n    {\n      \"code\": \"uncovered-change\",\n      \"path\": \"docs/protocol.md\",\n      \"message\": \"Changed path has no material claim: docs/protocol.md.\"\n    }\n  ],\n  \"message\": \"Gate failed with 1 violation(s). Evidence locators verify committed content, not semantic correctness.\"\n}",
+    "outputSha256": "9d6e38861a4dfa9c20f891fa2e959d84ad77a6aab4185323bc9defa936663c48"
+  },
+  "passCase": {
+    "command": "gitpin gate --base 43439f836e8f7ac27e5f41587caba435b758a4cc --head 57bce1a312f6153e171b515c41727ff81e77fb3c",
+    "status": 0,
+    "message": "Checked 1 claim manifest entry and verified their evidence locators for 1 changed path(s) at 57bce1a312f6153e171b515c41727ff81e77fb3c.",
+    "output": "{\n  \"kind\": \"gitpin-gate-report\",\n  \"schemaVersion\": 1,\n  \"status\": \"ok\",\n  \"reportId\": \"0b110adc6f090039\",\n  \"repository\": \"task-2-synthetic-pr-fixture\",\n  \"baseSha\": \"43439f836e8f7ac27e5f41587caba435b758a4cc\",\n  \"headSha\": \"57bce1a312f6153e171b515c41727ff81e77fb3c\",\n  \"mergeBaseSha\": \"43439f836e8f7ac27e5f41587caba435b758a4cc\",\n  \"policy\": {\n    \"path\": \".gitpin/gate.yml\",\n    \"sha256\": \"672e3e648ae68b3f473fce90147b9f6ba5c1c21fba68b88e199f1d352b21e2ae\"\n  },\n  \"manifest\": {\n    \"path\": \".gitpin/change-evidence.json\",\n    \"sha256\": \"225f0498847a42f37b45cc8af2aefd7ca8310ce341c03045c22286c87c52bfa2\"\n  },\n  \"changedPaths\": {\n    \"all\": [\n      \".gitpin/change-evidence.json\",\n      \"docs/protocol.md\"\n    ],\n    \"required\": [\n      \"docs/protocol.md\"\n    ],\n    \"uncovered\": []\n  },\n  \"claims\": [\n    {\n      \"id\": \"TASK-2-PASS\",\n      \"statement\": \"Synthetic PR gate pass fixture locator for deterministic evidence review.\",\n      \"covers\": [\n        \"docs/protocol.md\"\n      ],\n      \"evidence\": [\n        {\n          \"ref\": \"head\",\n          \"path\": \"docs/protocol.md\",\n          \"lineStart\": 5,\n          \"lineEnd\": 5,\n          \"expectedContentSha256\": \"2ad449fd22a840f9bb138b299ba4ac247379a14a4dce6825eb84ed692d80938a\",\n          \"actualContentSha256\": \"2ad449fd22a840f9bb138b299ba4ac247379a14a4dce6825eb84ed692d80938a\",\n          \"status\": \"verified\",\n          \"citation\": \"task-2-synthetic-pr-fixture/docs/protocol.md:5 @ 57bce1a312f6153e171b515c41727ff81e77fb3c\",\n          \"handle\": \"gitpin:task-2-synthetic-pr-fixture@57bce1a312f6153e171b515c41727ff81e77fb3c:docs/protocol.md:5\"\n        }\n      ],\n      \"status\": \"evidence-verified\"\n    }\n  ],\n  \"violations\": [],\n  \"message\": \"Checked 1 claim manifest entry and verified their evidence locators for 1 changed path(s) at 57bce1a312f6153e171b515c41727ff81e77fb3c.\"\n}",
+    "outputSha256": "553d90886f363ff7c6d8ffb66436144a41012d184dd603ad35e2712602e62321",
+    "coverage": {
+      "repository": "task-2-synthetic-pr-fixture",
+      "path": "docs/protocol.md",
+      "lineStart": 5,
+      "lineEnd": 5,
+      "sha": "57bce1a312f6153e171b515c41727ff81e77fb3c",
+      "contentSha256": "2ad449fd22a840f9bb138b299ba4ac247379a14a4dce6825eb84ed692d80938a",
+      "citation": "task-2-synthetic-pr-fixture/docs/protocol.md:5 @ 57bce1a312f6153e171b515c41727ff81e77fb3c",
+      "handle": "gitpin:task-2-synthetic-pr-fixture@57bce1a312f6153e171b515c41727ff81e77fb3c:docs/protocol.md:5"
+    }
+  },
+  "reproducibility": {
+    "artifactGenerator": "scripts/build-pr-gate-fail-to-pass-artifact.mjs",
+    "commandRuns": [
+      {
+        "command": "gitpin gate --base 43439f836e8f7ac27e5f41587caba435b758a4cc --head f0137d966ec3283719c095b46215adffb08588ce",
+        "status": 1,
+        "outputSha256": "9d6e38861a4dfa9c20f891fa2e959d84ad77a6aab4185323bc9defa936663c48"
+      },
+      {
+        "command": "gitpin gate --base 43439f836e8f7ac27e5f41587caba435b758a4cc --head 57bce1a312f6153e171b515c41727ff81e77fb3c",
+        "status": 0,
+        "outputSha256": "553d90886f363ff7c6d8ffb66436144a41012d184dd603ad35e2712602e62321"
+      }
+    ],
+    "checks": {
+      "command": "pnpm build && node scripts/build-pr-gate-fail-to-pass-artifact.mjs --verify",
+      "rawStdoutHash": "5660d16f5ccd1753605a91347719d76fcfb71e319446b25e271b662d0c3c44cb"
+    },
+    "artifactPayload": {
+      "base": "43439f836e8f7ac27e5f41587caba435b758a4cc",
+      "failHead": "f0137d966ec3283719c095b46215adffb08588ce",
+      "passHead": "57bce1a312f6153e171b515c41727ff81e77fb3c",
+      "claimPath": "docs/protocol.md",
+      "claimLine": 5,
+      "claimContentSha256": "2ad449fd22a840f9bb138b299ba4ac247379a14a4dce6825eb84ed692d80938a"
+    },
+    "artifactSha256": "3e0947288f8c1264292c8f797393d5a980664cc1a596a9c243c8c801fdef5641"
+  }
+}

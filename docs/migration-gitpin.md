@@ -80,6 +80,16 @@ Per the table above, these are back-compat surfaces and are **not** bugs:
 - `~/.repocontext` config discovery
 - CHANGELOG entries describing 0.3.x, which are a historical record
 
-Note that several `REPOCONTEXT_*` names in `scripts/` and the Dockerfiles are
-current tooling rather than compat shims, so they are inconsistent with the
-`GITPIN_*` policy above. Renaming those is a separate, deliberate change.
+The compatibility aliases above are intentionally limited to backwards-compatible entry points.
+Verified demo/tooling `REPOCONTEXT_*` compatibility usage is limited to the following explicit entries:
+
+- `scripts/demo-fixture.mjs`: `REPOCONTEXT_DEMO_ROOT` (legacy demo fixture root path override).
+- `scripts/demo-terminal.ps1`: `REPOCONTEXT_DEMO_PACE_MS` (legacy pacing shim for demo terminal runs).
+- `scripts/demo-workflow.mjs`: fallback reads `REPOCONTEXT_DEMO_PACE_MS` when `GITPIN_DEMO_PACE_MS` is absent.
+- `scripts/record-demo.mjs`: `REPOCONTEXT_DEMO_VIDEO_DIR`, `REPOCONTEXT_DEMO_NARRATION_PROVIDER` (legacy video/narration overrides).
+- `scripts/record-demo-qwen.ps1`: `REPOCONTEXT_DEMO_NARRATION_PROVIDER`, `REPOCONTEXT_QWEN_TTS_PYTHON`, `REPOCONTEXT_QWEN_TTS_CLI`.
+- `scripts/verify-container.mjs`: `REPOCONTEXT_CONTAINER_PORT` (legacy fallback when `GITPIN_CONTAINER_PORT` is absent).
+- `scripts/verify-package.mjs`: `REPOCONTEXT_PACKED_FIRST_ANSWER` marker and `REPOCONTEXT_PACKAGE_TARBALL`.
+- `scripts/verify-citations.mjs`: `REPOCONTEXT_REGISTRY` (migration reference in compatibility help text).
+
+Other `REPOCONTEXT_*` uses outside this list are not authorized as customer-facing compatibility features and should be treated as migration or internal implementation context only.

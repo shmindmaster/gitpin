@@ -38,14 +38,27 @@
         <p>The CLI and MCP transports do not send telemetry.</p>
         <p>
           GitPin never sends repository contents, filesystem paths, Git history, questions, MCP requests,
-          answers, citations, registry configuration, or tokens to the website analytics service.
+          answers, citations, registry configuration, secret tokens, or credentials to the website analytics service.
         </p>
 
         <h2>Optional website analytics</h2>
         <p>
           The site is built with analytics disabled unless its operator configures a dedicated GitPin PostHog
-          project. When enabled, collection is cookieless and limited to page views, a small set of link clicks, and
-          the audience-selector choice. Autocapture, session replay, and person profiles are disabled.
+          project. When enabled, transport is cookieless and limited to explicit launch-funnel event names and
+          validated event properties only. Automatic pageview/pageleave collection is disabled. Autocapture, session
+          replay, and person profiles are disabled.
+        </p>
+        <p>
+          The outbound transport includes the allowlisted event name and property, the public PostHog project key
+          (not a secret), cookieless anonymous `distinct_id`, optional anonymous `$session_id`, optional SDK-required
+          `$process_person_profile` flag, event timestamp, and SDK-generated event UUID used for deduplication.
+        </p>
+        <p>
+          No automatic URL/referrer/host/browser/device/screen fields are sent.
+        </p>
+        <p>
+          Test traffic is excluded only when automated-browser signals are present and a deliberate marker is set
+          (`gitpin_test_traffic=true` in the page URL or `window.__gitpinTestTraffic === true`).
         </p>
 
         <h2>Security and contact</h2>

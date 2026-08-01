@@ -36,7 +36,7 @@ gitpin gate --base <full-base-sha> --head <full-head-sha>
 
 The gate reads policy only from the trusted base commit, reads the submitted manifest only from the head commit, compares the merge-base diff, and verifies exact line-slice hashes. It never executes PR code and never labels a locator match as proof of semantic correctness. Use the [GitHub Action and CrewScore named-control setup](docs/pr-evidence-gate.md) as a required check.
 
-> **Release:** publish a version-matched GitPin release across npm, the MCP Registry, GitHub, and Pages before announcing. Install: `npx -y gitpin@latest`. Node 20+.
+> **Release:** GitPin 0.6.0 is published across npm, MCP Registry, GitHub Release, and Pages with trusted OIDC publishing. Install: `npx -y gitpin@latest`. Node 20+.
 
 GitPin is maintained by **Sarosh Hussain**, who leads the project's technical direction. **Pendoah** is his company and operating context; GitPin remains the product and repository.
 
@@ -98,11 +98,11 @@ Cite formats: [docs/cite-spec.md](docs/cite-spec.md). Agent skill template: [tem
 
 | Variable | Purpose |
 | --- | --- |
-| `GITPIN_REGISTRY` | Registry YAML path (alias: `REPOCONTEXT_REGISTRY`) |
-| `GITPIN_MCP_TOKEN` | HTTP bearer token (alias: `REPOCONTEXT_MCP_TOKEN`) |
-| `GITPIN_ALLOWED_HOSTS` | HTTP host allowlist (alias: `REPOCONTEXT_ALLOWED_HOSTS`) |
+| `GITPIN_REGISTRY` | Registry YAML path (legacy compatibility alias: `REPOCONTEXT_REGISTRY`) |
+| `GITPIN_MCP_TOKEN` | HTTP bearer token (legacy compatibility alias: `REPOCONTEXT_MCP_TOKEN`) |
+| `GITPIN_ALLOWED_HOSTS` | HTTP host allowlist (legacy compatibility alias: `REPOCONTEXT_ALLOWED_HOSTS`) |
 
-Default registry: `~/.gitpin/repositories.yaml` (falls back to `~/.repocontext/...` if present).
+Default registry: `~/.gitpin/repositories.yaml` (legacy compatibility fallback: `~/.repocontext/...` if present).
 
 ## Docs
 

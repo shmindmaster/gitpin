@@ -46,7 +46,14 @@
         <a href="#how-it-works">PR gate</a>
         <a href="#safety">Safety</a>
         <a href="#install">Install</a>
-        <a data-analytics="feedback_nav" href="https://github.com/shmindmaster/gitpin/issues/new?template=launch_feedback.md">Feedback</a>
+        <a
+          data-analytics="feedback_nav"
+          data-analytics-event="feedback_intent"
+          data-analytics-prop-surface="navigation"
+          href="https://github.com/shmindmaster/gitpin/issues/new?template=launch_feedback.md"
+        >
+          Feedback
+        </a>
         <a data-analytics="github_nav" href="https://github.com/shmindmaster/gitpin">GitHub</a>
       </nav>
     </header>
@@ -61,7 +68,13 @@
             comes from the pull-request head.
           </p>
           <div class="actions">
-            <a class="button primary" data-analytics="setup_hero" href="#install">
+            <a
+              class="button primary"
+              data-analytics="setup_hero"
+              data-analytics-event="setup_intent"
+              data-analytics-prop-surface="hero"
+              href="#install"
+            >
               Add the PR gate <span aria-hidden="true">→</span>
             </a>
             <a class="button secondary" data-analytics="github_hero" href="https://github.com/shmindmaster/gitpin">
@@ -176,10 +189,44 @@ policyChanges: block</code></pre>
             read-only permissions and make its <code>evidence</code> job a required check.
           </p>
           <p>
-            <a href="https://github.com/shmindmaster/gitpin/blob/main/docs/pr-evidence-gate.md">
+            <a
+              href="https://github.com/shmindmaster/gitpin/blob/main/docs/pr-evidence-gate.md"
+              data-analytics="setup_guide"
+              data-analytics-event="setup_guide_intent"
+              data-analytics-prop-step="open_setup_guide"
+            >
               Open the complete setup guide <span aria-hidden="true">→</span>
             </a>
           </p>
+          <div class="actions">
+            <a
+              class="button secondary"
+              data-analytics="first_pass"
+              data-analytics-event="sample_view_intent"
+              data-analytics-prop-phase="sample_view"
+              href="https://github.com/shmindmaster/gitpin/blob/main/docs/demos/pr-gate-fail-to-pass.md#phase-b-pass"
+            >
+              View the synthetic sample <span aria-hidden="true">→</span>
+            </a>
+            <a
+              class="button secondary"
+              data-analytics="result_pass"
+              data-analytics-event="gate_result_intent"
+              data-analytics-prop-result="pass_demo"
+              href="https://github.com/shmindmaster/gitpin/blob/main/docs/demos/pr-gate-fail-to-pass.md#phase-b-pass"
+            >
+              View PASS result intent <span aria-hidden="true">→</span>
+            </a>
+            <a
+              class="button secondary"
+              data-analytics="result_fail"
+              data-analytics-event="gate_result_intent"
+              data-analytics-prop-result="fail_demo"
+              href="https://github.com/shmindmaster/gitpin/blob/main/docs/demos/pr-gate-fail-to-pass.md#phase-a-fail"
+            >
+              View FAIL result intent <span aria-hidden="true">→</span>
+            </a>
+          </div>
         </header>
         <div class="install-layout">
           <div>
@@ -216,7 +263,15 @@ jobs:
         <p>MIT licensed. Built in public.<br />Contributions backed by repeatable validation.</p>
         <div class="actions">
           <a class="button primary" data-analytics="github_footer" href="https://github.com/shmindmaster/gitpin">View on GitHub →</a>
-          <a class="button secondary" data-analytics="feedback_footer" href="https://github.com/shmindmaster/gitpin/issues/new?template=launch_feedback.md">Report setup friction →</a>
+          <a
+            class="button secondary"
+            data-analytics="feedback_footer"
+            data-analytics-event="feedback_intent"
+            data-analytics-prop-surface="footer"
+            href="https://github.com/shmindmaster/gitpin/issues/new?template=launch_feedback.md"
+          >
+            Report setup friction →
+          </a>
         </div>
       </section>
     </main>
@@ -230,7 +285,14 @@ jobs:
         <a href="./privacy.html">Privacy</a>
         <a href="https://github.com/shmindmaster/gitpin/blob/main/ROADMAP.md">Roadmap</a>
         <a href="https://github.com/shmindmaster/gitpin/blob/main/CHANGELOG.md">Changelog</a>
-        <a data-analytics="feedback_footer_nav" href="https://github.com/shmindmaster/gitpin/issues/new?template=launch_feedback.md">Feedback</a>
+        <a
+          data-analytics="feedback_footer_nav"
+          data-analytics-event="feedback_intent"
+          data-analytics-prop-surface="footer_nav"
+          href="https://github.com/shmindmaster/gitpin/issues/new?template=launch_feedback.md"
+        >
+          Feedback
+        </a>
       </nav>
     </footer>
   </body>

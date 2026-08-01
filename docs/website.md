@@ -34,10 +34,49 @@ Website collection is intentionally narrow:
 
 | Event | Properties |
 | --- | --- |
-| `$pageview` | PostHog's cookieless page context |
-| `cta_clicked` | `placement` only |
+| `cta_clicked` | `placement` only (`feedback_footer`, `feedback_footer_nav`, `feedback_nav`, `github_footer`, `github_hero`, `github_nav`, `setup_hero`) |
+| `setup_intent` | `surface` only (`hero`, `navigation`) |
+| `setup_guide_intent` | `step` only (`open_setup_guide`) |
+| `gate_result_intent` | `result` only (`fail_demo`, `pass_demo`) |
+| `sample_view_intent` | `phase` only (`sample_view`) |
 | `audience_changed` | `audience` only |
+| `feedback_intent` | `surface` only (`footer`, `footer_nav`, `feedback_nav`, `feedback_footer`, `feedback_footer_nav`, `navigation`) |
 
-Autocapture and session replay are disabled, person profiles are never created, and the site uses cookieless mode. Do not add repository names, filesystem paths, questions, citations, MCP payloads, tokens, or client configuration to analytics.
+Autocapture, pageview/pageleave capture, and session replay are disabled, person profiles are never created, and the site uses cookieless mode.
+
+Launch-funnel transport fields are explicit and constrained before `before_send` strips SDK enrichment:
+
+- allowlisted event name and its single allowlisted launch-funnel property,
+- public PostHog project key in `token` (must match the configured `posthog-project-key`; this is not a secret),
+- anonymous `distinct_id`,
+- optional `$session_id` (if session analysis is active),
+- optional `$process_person_profile` (SDK-required process-person flag only),
+- optional `traffic_class`, constrained to `production` or `synthetic_qa`,
+- event timestamp,
+- SDK-generated event UUID used for deduplication.
+
+The outbound event object is not sent with URL/referrer/host/browser/device/screen context.
+
+Test-traffic suppression is explicitly bounded to:
+
+- automated signal detected (`navigator.webdriver`, headless, Playwright, etc.),
+- plus explicit test marker (`gitpin_test_traffic=true` query flag or `window.__gitpinTestTraffic === true`).
+
+Every browser capture defaults to `traffic_class: production`. An explicit `gitpin_test_traffic=true` marker labels a human QA capture as `traffic_class: synthetic_qa`; if that same marker is present for an automated visitor, the event remains suppressed. Ordinary QA or unmarked automation traffic is not treated as automatically detectable test traffic.
+
+The launch-funnel schema is strict by design: only enumerated event names and enumerated property values are recorded.
+No repository contents, filesystem paths, prompt text, URLs, secret tokens, account identifiers, or free-text answers are sent. The only identifiers retained are the cookieless anonymous `distinct_id`, optional anonymous `$session_id`, and per-event deduplication UUID described above.
+
+Only intent surfaces are observed here:
+- site `feedback_*` clicks indicate intent to report friction,
+- `setup_guide_intent` and `sample_view_intent` clicks indicate setup-guide navigation and sample-view intent,
+- `gate_result_intent` clicks indicate a result check was consulted.
+Clicks do not prove GitHub Action installation or pass/fail status; they are not equivalent to completed setup.
+
+For launch inference, the product boundary remains:
+- instrumentation: only what is in this event schema (no automatic pageview/page context)
+- observed behavior: sessioned counts of event progression and latency windows
+- inferred adoption: inferred from post-session interpretation, with confidence tags
+- PMF: deferred until approved synthetic and real sessions are completed
 
 The CLI, stdio MCP server, HTTP MCP server, package verifier, and container send no telemetry.
