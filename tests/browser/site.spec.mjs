@@ -5,6 +5,7 @@ import { resolve } from 'node:path';
 const heroArtifact = JSON.parse(
   readFileSync(resolve(process.cwd(), 'docs/demos/pr-gate-fail-to-pass.artifact.json'), 'utf8'),
 );
+const siteIndex = readFileSync(resolve(process.cwd(), 'site/index.html'), 'utf8');
 
 test.beforeEach(async ({ page }) => {
   const errors = [];
@@ -95,9 +96,7 @@ test('renders a finite, artifact-derived fail-to-pass hero with keyboard control
   await expect(pause).toBeDisabled();
 });
 
-test('pauses the hero walkthrough when hidden or outside the viewport without shifting page layout', async ({
-  page,
-}) => {
+test('pauses the hero walkthrough outside the viewport without shifting page layout', async ({ page }) => {
   const demo = page.locator('[data-hero-demo]');
   const replay = page.getByRole('button', { name: 'Replay gate walkthrough', exact: true });
   const play = page.getByRole('button', { name: 'Play gate walkthrough', exact: true });
@@ -108,11 +107,7 @@ test('pauses the hero walkthrough when hidden or outside the viewport without sh
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await expect(demo).toHaveAttribute('data-hero-paused', 'true');
   await page.evaluate(() => window.scrollTo(0, 0));
-  await page.evaluate(() => {
-    Object.defineProperty(document, 'hidden', { configurable: true, value: true });
-    document.dispatchEvent(new Event('visibilitychange'));
-  });
-  await expect(demo).toHaveAttribute('data-hero-paused', 'true');
+
   const after = await demo.boundingBox();
 
   expect(after?.width).toBe(before?.width);
@@ -123,29 +118,56 @@ test('pauses the hero walkthrough when hidden or outside the viewport without sh
   expect(overflow).toBeLessThanOrEqual(1);
 });
 
-test('uses a complete static before-and-after hero under reduced motion and never tracks autoplay', async ({
-  browser,
-}) => {
-  const autoplayContext = await browser.newContext({
-    reducedMotion: 'no-preference',
-    viewport: { width: 1280, height: 900 },
-  });
-  const autoplayPage = await autoplayContext.newPage();
-  await autoplayPage.addInitScript(() => {
-    window.__heroEvents = [];
-    window.gitpinTrack = (...args) => window.__heroEvents.push(args);
-  });
-  await autoplayPage.goto('/');
-  await expect(autoplayPage.locator('[data-hero-demo]')).toHaveAttribute('data-hero-phase', 'pass', { timeout: 5_000 });
-  expect(await autoplayPage.evaluate(() => window.__heroEvents)).toEqual([]);
-  await autoplayContext.close();
+test('pauses the hero walkthrough when the visible document becomes hidden', async ({ page }) => {
+  const demo = page.locator('[data-hero-demo]');
+  const replay = page.getByRole('button', { name: 'Replay gate walkthrough', exact: true });
+  const play = page.getByRole('button', { name: 'Play gate walkthrough', exact: true });
 
+  await expect(demo).toBeInViewport();
+  await replay.click();
+  await play.click();
+  await expect(demo).toHaveAttribute('data-hero-phase', 'uncovered');
+  await page.evaluate(() => {
+    Object.defineProperty(document, 'hidden', { configurable: true, value: true });
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+  await expect(demo).toHaveAttribute('data-hero-paused', 'true');
+  await page.waitForTimeout(1_000);
+  await expect(demo).toHaveAttribute('data-hero-phase', 'uncovered');
+});
+
+test('uses the real configured analytics transport and emits no autoplay analytics', async ({ browser }) => {
+  const context = await browser.newContext({ reducedMotion: 'no-preference', viewport: { width: 1280, height: 900 } });
+  const page = await context.newPage();
+  await page.route('https://us-assets.i.posthog.com/static/array.js', async (route) => {
+    await route.fulfill({
+      body: `
+        window.__capturedAnalytics = [];
+        window.posthog.capture = (...args) => window.__capturedAnalytics.push(args);
+      `,
+      contentType: 'application/javascript',
+    });
+  });
+  await page.route('**/analytics-hero-fixture', async (route) => {
+    await route.fulfill({
+      body: siteIndex.replace(
+        '<meta name="posthog-project-key" content="" />',
+        '<meta name="posthog-project-key" content="phc_test" />',
+      ),
+      contentType: 'text/html',
+    });
+  });
+  await page.goto('/analytics-hero-fixture');
+  await expect.poll(() => page.evaluate(() => typeof window.gitpinTrack)).toBe('function');
+  await expect.poll(() => page.evaluate(() => Array.isArray(window.__capturedAnalytics))).toBe(true);
+  await expect(page.locator('[data-hero-demo]')).toHaveAttribute('data-hero-phase', 'pass', { timeout: 5_000 });
+  expect(await page.evaluate(() => window.__capturedAnalytics)).toEqual([]);
+  await context.close();
+});
+
+test('uses a complete static before-and-after hero under reduced motion', async ({ browser }) => {
   const context = await browser.newContext({ reducedMotion: 'reduce', viewport: { width: 1280, height: 900 } });
   const page = await context.newPage();
-  await page.addInitScript(() => {
-    window.__heroEvents = [];
-    window.gitpinTrack = (...args) => window.__heroEvents.push(args);
-  });
   await page.goto('/');
 
   const demo = page.locator('[data-hero-demo]');
@@ -153,7 +175,6 @@ test('uses a complete static before-and-after hero under reduced motion and neve
   await expect(demo).toHaveAttribute('data-hero-phase', 'pass');
   await expect(demo).toContainText(heroArtifact.failCase.message);
   await expect(demo).toContainText(heroArtifact.passCase.message);
-  expect(await page.evaluate(() => window.__heroEvents)).toEqual([]);
   await context.close();
 });
 
@@ -165,7 +186,13 @@ test('keeps the product walkthrough visible on wide, tablet, and mobile viewport
   ]) {
     await page.setViewportSize(viewport);
     await page.goto('/');
-    await expect(page.locator('[data-hero-demo]')).toBeVisible();
+    const consoleBox = await page.locator('[data-hero-demo]').boundingBox();
+    expect(consoleBox).not.toBeNull();
+    expect(consoleBox?.y).toBeGreaterThanOrEqual(0);
+    expect(consoleBox?.y).toBeLessThan(viewport.height);
+    expect((consoleBox?.y ?? viewport.height) + Math.min(consoleBox?.height ?? 0, 160)).toBeLessThanOrEqual(
+      viewport.height,
+    );
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     );
@@ -182,7 +209,8 @@ test('publishes a narrow, accessible privacy statement', async ({ page }) => {
 });
 
 test('switches audience presentation while preserving the evidence set', async ({ page }) => {
-  const evidenceSet = await page.locator('.evidence-id code').textContent();
+  const evidenceSet = page.locator('.evidence-id code');
+  await expect(evidenceSet).toHaveText('8e44b735…be61');
   await expect(page.getByRole('tab', { name: 'Engineering managers' })).toHaveAttribute('aria-selected', 'true');
   await expect(page.locator('#audience-question')).toHaveText('Did the agent cover every material file it changed?');
 
@@ -195,12 +223,12 @@ test('switches audience presentation while preserving the evidence set', async (
   await expect(page.locator('#audience-fact')).toHaveText(
     'Each locator is re-hashed at the full base or head commit SHA.',
   );
-  await expect(page.locator('.evidence-id code')).toHaveText(evidenceSet);
+  await expect(evidenceSet).toHaveText('8e44b735…be61');
 
   await page.getByRole('tab', { name: 'Release owners' }).press('ArrowRight');
   await expect(page.getByRole('tab', { name: 'Governance & review' })).toBeFocused();
   await expect(page.locator('#audience-fact')).toHaveText('Policy is loaded from the trusted base branch.');
-  await expect(page.locator('.evidence-id code')).toHaveText(evidenceSet);
+  await expect(evidenceSet).toHaveText('8e44b735…be61');
 
   await page.getByRole('tab', { name: 'Governance & review' }).press('Home');
   await expect(page.getByRole('tab', { name: 'Engineering managers' })).toBeFocused();

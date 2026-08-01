@@ -135,7 +135,9 @@ footer nav { font-size: .82rem; }
   .site-header nav[data-open="true"] { display: flex; }
   .site-header nav a { padding: 18px 20px; border-bottom: 1px solid var(--line); }
   .site-header nav a:last-child { border-bottom: 0; }
-  .hero { grid-template-columns: 1fr; min-height: auto; }
+  .hero { grid-template-areas: "demo" "copy"; grid-template-columns: 1fr; min-height: auto; }
+  .hero-copy { grid-area: copy; }
+  .hero-demo { grid-area: demo; }
   .process-rail, .install-layout, .safety { grid-template-columns: 1fr; }
   .safety-points { grid-template-columns: repeat(2, 1fr); }
   .section-cue { display: none; }
