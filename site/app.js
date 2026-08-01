@@ -78,3 +78,150 @@ primaryNavigation.addEventListener('click', (event) => {
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') setMenuOpen(false);
 });
+
+const heroDemo = document.querySelector('[data-hero-demo]');
+
+if (heroDemo) {
+  const heroFields = {
+    path: heroDemo.querySelector('[data-hero-path]'),
+    fail: heroDemo.querySelector('[data-hero-fail]'),
+    locator: heroDemo.querySelector('[data-hero-locator]'),
+    hash: heroDemo.querySelector('[data-hero-hash]'),
+    pass: heroDemo.querySelector('[data-hero-pass]'),
+    result: heroDemo.querySelector('[data-hero-result]'),
+    summary: heroDemo.querySelector('[data-hero-summary]'),
+    play: heroDemo.querySelector('[data-hero-play]'),
+    pause: heroDemo.querySelector('[data-hero-pause]'),
+    replay: heroDemo.querySelector('[data-hero-replay]'),
+  };
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const phases = ['material', 'uncovered', 'evidence', 'pass'];
+  let artifact;
+  let phase = 'loading';
+  let paused = false;
+  let complete = false;
+  let timer;
+  let inViewport = true;
+
+  const clearTimer = () => {
+    if (timer) window.clearTimeout(timer);
+    timer = undefined;
+  };
+
+  const setControls = () => {
+    const available = Boolean(artifact) && !reducedMotion;
+    heroFields.play.disabled = !available || complete;
+    heroFields.pause.disabled = !available || paused || complete;
+    heroFields.replay.disabled = !artifact || reducedMotion;
+  };
+
+  const render = () => {
+    heroDemo.dataset.heroPhase = phase;
+    heroDemo.dataset.heroPaused = String(paused);
+    heroDemo.dataset.heroComplete = String(complete);
+    heroDemo.dataset.heroReducedMotion = String(reducedMotion);
+    const message =
+      phase === 'material'
+        ? `Material diff includes ${artifact.fixture.changedPath}.`
+        : phase === 'uncovered'
+          ? artifact.failCase.message
+          : phase === 'evidence'
+            ? `Exact locator added: ${artifact.passCase.coverage.citation}.`
+            : artifact.passCase.message;
+    heroFields.result.textContent = message;
+    setControls();
+  };
+
+  const advance = () => {
+    clearTimer();
+    const nextIndex = phases.indexOf(phase) + 1;
+    if (nextIndex >= phases.length) {
+      phase = 'pass';
+      complete = true;
+      paused = false;
+      render();
+      return;
+    }
+    phase = phases[nextIndex];
+    paused = false;
+    complete = phase === 'pass';
+    render();
+    if (!complete && inViewport && !document.hidden) timer = window.setTimeout(advance, 900);
+  };
+
+  const pause = () => {
+    if (!artifact || complete) return;
+    clearTimer();
+    paused = true;
+    render();
+  };
+
+  const replay = () => {
+    if (!artifact || reducedMotion) return;
+    clearTimer();
+    phase = 'material';
+    paused = true;
+    complete = false;
+    render();
+  };
+
+  const play = () => {
+    if (!artifact || reducedMotion || complete || !inViewport || document.hidden) return;
+    advance();
+  };
+
+  heroFields.play.addEventListener('click', play);
+  heroFields.pause.addEventListener('click', pause);
+  heroFields.replay.addEventListener('click', replay);
+  heroFields.play.setAttribute('aria-label', 'Play gate walkthrough');
+  heroFields.pause.setAttribute('aria-label', 'Pause gate walkthrough');
+  heroFields.replay.setAttribute('aria-label', 'Replay gate walkthrough');
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) pause();
+  });
+  new IntersectionObserver(
+    ([entry]) => {
+      inViewport = entry.isIntersecting;
+      if (!inViewport) pause();
+    },
+    { threshold: 0.15 },
+  ).observe(heroDemo);
+
+  fetch('/_gitpin-artifacts/pr-gate-fail-to-pass.artifact.json')
+    .then((response) => {
+      if (!response.ok) throw new Error(`Artifact request failed (${response.status})`);
+      return response.json();
+    })
+    .then((loadedArtifact) => {
+      artifact = loadedArtifact;
+      const coverage = artifact.passCase.coverage;
+      heroFields.path.textContent = artifact.fixture.changedPath;
+      heroFields.fail.textContent = artifact.failCase.message;
+      heroFields.locator.textContent = `${coverage.path}:${coverage.lineStart} @ ${coverage.sha}`;
+      heroFields.hash.textContent = coverage.contentSha256;
+      heroFields.pass.textContent = artifact.passCase.message;
+      heroFields.summary.textContent = artifact.accessibility.caption;
+      heroDemo.setAttribute('aria-label', artifact.accessibility.altText);
+      heroDemo.setAttribute('aria-busy', 'false');
+
+      if (reducedMotion) {
+        phase = 'pass';
+        complete = true;
+        paused = false;
+        render();
+        return;
+      }
+
+      phase = 'material';
+      paused = false;
+      complete = false;
+      render();
+      if (inViewport && !document.hidden) timer = window.setTimeout(advance, 900);
+    })
+    .catch(() => {
+      heroDemo.setAttribute('aria-busy', 'false');
+      heroFields.result.textContent = 'The deterministic walkthrough artifact is unavailable.';
+      heroFields.summary.textContent = 'Static evidence walkthrough unavailable.';
+    });
+}

@@ -2,6 +2,10 @@ import { expect, test } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
+const heroArtifact = JSON.parse(
+  readFileSync(resolve(process.cwd(), 'docs/demos/pr-gate-fail-to-pass.artifact.json'), 'utf8'),
+);
+
 test.beforeEach(async ({ page }) => {
   const errors = [];
   const failedRequests = [];
@@ -62,6 +66,111 @@ test('makes the pull-request gate the primary activation path', async ({ page })
     'https://github.com/shmindmaster/gitpin/blob/main/docs/pr-evidence-gate.md',
   );
   await expect(page.getByText(/Keep retrieval local with the optional MCP server/)).toBeVisible();
+});
+
+test('renders a finite, artifact-derived fail-to-pass hero with keyboard controls', async ({ page }) => {
+  const coverage = heroArtifact.passCase.coverage;
+  const demo = page.locator('[data-hero-demo]');
+  const replay = page.getByRole('button', { name: 'Replay gate walkthrough', exact: true });
+  const play = page.getByRole('button', { name: 'Play gate walkthrough', exact: true });
+  const pause = page.getByRole('button', { name: 'Pause gate walkthrough', exact: true });
+
+  await expect(demo).toBeVisible();
+  await expect(demo).toContainText(coverage.path);
+  await expect(demo).toContainText(String(coverage.lineStart));
+  await expect(demo).toContainText(coverage.sha);
+  await expect(demo).toContainText(coverage.contentSha256);
+  await expect(page.locator('[data-hero-summary]')).toContainText(heroArtifact.accessibility.caption);
+
+  await replay.click();
+  await expect(demo).toHaveAttribute('data-hero-phase', 'material');
+  await play.press('Enter');
+  await expect(demo).toHaveAttribute('data-hero-phase', 'uncovered');
+  await pause.press('Space');
+  await expect(demo).toHaveAttribute('data-hero-paused', 'true');
+  await play.click();
+  await expect(demo).toHaveAttribute('data-hero-phase', 'evidence');
+  await expect(demo).toHaveAttribute('data-hero-phase', 'pass', { timeout: 5_000 });
+  await expect(demo).toHaveAttribute('data-hero-complete', 'true');
+  await expect(pause).toBeDisabled();
+});
+
+test('pauses the hero walkthrough when hidden or outside the viewport without shifting page layout', async ({
+  page,
+}) => {
+  const demo = page.locator('[data-hero-demo]');
+  const replay = page.getByRole('button', { name: 'Replay gate walkthrough', exact: true });
+  const play = page.getByRole('button', { name: 'Play gate walkthrough', exact: true });
+  const before = await demo.boundingBox();
+
+  await replay.click();
+  await play.click();
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await expect(demo).toHaveAttribute('data-hero-paused', 'true');
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.evaluate(() => {
+    Object.defineProperty(document, 'hidden', { configurable: true, value: true });
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+  await expect(demo).toHaveAttribute('data-hero-paused', 'true');
+  const after = await demo.boundingBox();
+
+  expect(after?.width).toBe(before?.width);
+  expect(after?.height).toBeCloseTo(before?.height ?? 0, 3);
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  );
+  expect(overflow).toBeLessThanOrEqual(1);
+});
+
+test('uses a complete static before-and-after hero under reduced motion and never tracks autoplay', async ({
+  browser,
+}) => {
+  const autoplayContext = await browser.newContext({
+    reducedMotion: 'no-preference',
+    viewport: { width: 1280, height: 900 },
+  });
+  const autoplayPage = await autoplayContext.newPage();
+  await autoplayPage.addInitScript(() => {
+    window.__heroEvents = [];
+    window.gitpinTrack = (...args) => window.__heroEvents.push(args);
+  });
+  await autoplayPage.goto('/');
+  await expect(autoplayPage.locator('[data-hero-demo]')).toHaveAttribute('data-hero-phase', 'pass', { timeout: 5_000 });
+  expect(await autoplayPage.evaluate(() => window.__heroEvents)).toEqual([]);
+  await autoplayContext.close();
+
+  const context = await browser.newContext({ reducedMotion: 'reduce', viewport: { width: 1280, height: 900 } });
+  const page = await context.newPage();
+  await page.addInitScript(() => {
+    window.__heroEvents = [];
+    window.gitpinTrack = (...args) => window.__heroEvents.push(args);
+  });
+  await page.goto('/');
+
+  const demo = page.locator('[data-hero-demo]');
+  await expect(demo).toHaveAttribute('data-hero-reduced-motion', 'true');
+  await expect(demo).toHaveAttribute('data-hero-phase', 'pass');
+  await expect(demo).toContainText(heroArtifact.failCase.message);
+  await expect(demo).toContainText(heroArtifact.passCase.message);
+  expect(await page.evaluate(() => window.__heroEvents)).toEqual([]);
+  await context.close();
+});
+
+test('keeps the product walkthrough visible on wide, tablet, and mobile viewports', async ({ page }) => {
+  for (const viewport of [
+    { width: 1440, height: 900 },
+    { width: 820, height: 900 },
+    { width: 390, height: 844 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto('/');
+    await expect(page.locator('[data-hero-demo]')).toBeVisible();
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(1);
+  }
 });
 
 test('publishes a narrow, accessible privacy statement', async ({ page }) => {

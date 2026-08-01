@@ -13,6 +13,17 @@ const types = {
 
 createServer((request, response) => {
   const pathname = decodeURIComponent(new URL(request.url ?? '/', 'http://localhost').pathname);
+  if (pathname === '/_gitpin-artifacts/pr-gate-fail-to-pass.artifact.json') {
+    const artifact = resolve(root, '..', 'docs', 'demos', 'pr-gate-fail-to-pass.artifact.json');
+    if (!existsSync(artifact)) {
+      response.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' });
+      response.end('Not found');
+      return;
+    }
+    response.writeHead(200, { 'cache-control': 'no-store', 'content-type': 'application/json; charset=utf-8' });
+    createReadStream(artifact).pipe(response);
+    return;
+  }
   const requestPath = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '');
   const path = resolve(root, requestPath);
   const pathFromRoot = relative(root, path);
