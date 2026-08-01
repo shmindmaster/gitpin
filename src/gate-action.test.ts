@@ -20,7 +20,7 @@ describe('GitHub Action trust boundary', () => {
     expect(docs).not.toContain('permissions:\n  contents: write');
   });
 
-  it('runs the repository self-gate on the published current Action version', () => {
+  it('runs the repository self-gate on the published v0.6.1 Action', () => {
     const workflow = readFileSync(resolve('.github/workflows/evidence-gate.yml'), 'utf8');
     expect(workflow).toContain('uses: shmindmaster/gitpin@v0.6.1');
     expect(workflow).not.toContain('Bootstrap boundary');
