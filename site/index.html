@@ -95,7 +95,7 @@
           </div>
         </div>
 
-        <div class="evidence-console hero-demo" id="evidence-panel" role="tabpanel" aria-labelledby="tab-engineering" data-hero-demo data-hero-phase="loading" aria-busy="true">
+        <div class="evidence-console hero-demo" id="evidence-panel" role="tabpanel" aria-labelledby="tab-engineering" aria-describedby="hero-walkthrough-summary" data-hero-demo data-hero-phase="loading" aria-busy="true">
           <div class="console-bar">
             <span>gitpin</span>
             <span>BASE POLICY · HEAD EVIDENCE</span>
@@ -108,12 +108,12 @@
             <li data-hero-step="pass"><span>4</span><div><strong>Rerun with complete coverage</strong><p><b>PASS</b> <span data-hero-pass>Loading artifact…</span></p></div></li>
           </ol>
           <div class="hero-result" role="status" aria-live="polite" data-hero-result>Loading deterministic walkthrough…</div>
-          <div class="hero-controls" aria-label="Gate walkthrough controls">
+          <div class="hero-controls" role="group" aria-label="Gate walkthrough controls">
             <button type="button" data-hero-play disabled>Play</button>
             <button type="button" data-hero-pause disabled>Pause</button>
             <button type="button" data-hero-replay disabled>Replay</button>
           </div>
-          <p class="hero-summary" data-hero-summary>Loading static walkthrough summary…</p>
+          <p class="hero-summary" id="hero-walkthrough-summary" data-hero-summary>Loading static walkthrough summary…</p>
           <div class="hero-audience">
             <strong>Review question</strong>
             <p id="audience-question">Did the agent cover every material file it changed?</p>

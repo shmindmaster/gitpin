@@ -81,7 +81,7 @@ document.addEventListener('keydown', (event) => {
 
 const heroDemo = document.querySelector('[data-hero-demo]');
 
-if (heroDemo) {
+function initializeHeroDemo(heroDemo) {
   const heroFields = {
     path: heroDemo.querySelector('[data-hero-path]'),
     fail: heroDemo.querySelector('[data-hero-fail]'),
@@ -94,6 +94,11 @@ if (heroDemo) {
     pause: heroDemo.querySelector('[data-hero-pause]'),
     replay: heroDemo.querySelector('[data-hero-replay]'),
   };
+  if (Object.values(heroFields).some((field) => !field)) {
+    heroDemo.setAttribute('aria-busy', 'false');
+    heroDemo.dataset.heroUnavailable = 'true';
+    return;
+  }
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const phases = ['material', 'uncovered', 'evidence', 'pass'];
   let artifact;
@@ -180,15 +185,17 @@ if (heroDemo) {
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) pause();
   });
-  new IntersectionObserver(
-    ([entry]) => {
-      inViewport = entry.isIntersecting;
-      if (!inViewport) pause();
-    },
-    { threshold: 0.15 },
-  ).observe(heroDemo);
+  if (typeof window.IntersectionObserver === 'function') {
+    new IntersectionObserver(
+      ([entry]) => {
+        inViewport = entry.isIntersecting;
+        if (!inViewport) pause();
+      },
+      { threshold: 0.15 },
+    ).observe(heroDemo);
+  }
 
-  fetch('/_gitpin-artifacts/pr-gate-fail-to-pass.artifact.json')
+  fetch('./_gitpin-artifacts/pr-gate-fail-to-pass.artifact.json')
     .then((response) => {
       if (!response.ok) throw new Error(`Artifact request failed (${response.status})`);
       return response.json();
@@ -202,7 +209,6 @@ if (heroDemo) {
       heroFields.hash.textContent = coverage.contentSha256;
       heroFields.pass.textContent = artifact.passCase.message;
       heroFields.summary.textContent = artifact.accessibility.caption;
-      heroDemo.setAttribute('aria-label', artifact.accessibility.altText);
       heroDemo.setAttribute('aria-busy', 'false');
 
       if (reducedMotion) {
@@ -225,3 +231,5 @@ if (heroDemo) {
       heroFields.summary.textContent = 'Static evidence walkthrough unavailable.';
     });
 }
+
+if (heroDemo) initializeHeroDemo(heroDemo);

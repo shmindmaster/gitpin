@@ -6,6 +6,9 @@ const heroArtifact = JSON.parse(
   readFileSync(resolve(process.cwd(), 'docs/demos/pr-gate-fail-to-pass.artifact.json'), 'utf8'),
 );
 const siteIndex = readFileSync(resolve(process.cwd(), 'site/index.html'), 'utf8');
+const siteApp = readFileSync(resolve(process.cwd(), 'site/app.js'), 'utf8');
+const siteAnalytics = readFileSync(resolve(process.cwd(), 'site/analytics.js'), 'utf8');
+const siteStyles = readFileSync(resolve(process.cwd(), 'site/styles.css'), 'utf8');
 
 test.beforeEach(async ({ page }) => {
   const errors = [];
@@ -94,6 +97,82 @@ test('renders a finite, artifact-derived fail-to-pass hero with keyboard control
   await expect(demo).toHaveAttribute('data-hero-phase', 'pass', { timeout: 5_000 });
   await expect(demo).toHaveAttribute('data-hero-complete', 'true');
   await expect(pause).toBeDisabled();
+});
+
+test('loads the hero artifact from the GitHub Pages project subpath', async ({ page }) => {
+  const artifactRequests = [];
+  await page.route('**/gitpin/', async (route) => {
+    await route.fulfill({ body: siteIndex, contentType: 'text/html' });
+  });
+  await page.route('**/gitpin/app.js', async (route) => {
+    await route.fulfill({ body: siteApp, contentType: 'text/javascript' });
+  });
+  await page.route('**/gitpin/analytics.js', async (route) => {
+    await route.fulfill({ body: siteAnalytics, contentType: 'text/javascript' });
+  });
+  await page.route('**/gitpin/styles.css', async (route) => {
+    await route.fulfill({ body: siteStyles, contentType: 'text/css' });
+  });
+  await page.route('**/gitpin/_gitpin-artifacts/pr-gate-fail-to-pass.artifact.json', async (route) => {
+    artifactRequests.push(route.request().url());
+    await route.fulfill({ body: JSON.stringify(heroArtifact), contentType: 'application/json' });
+  });
+
+  await page.goto('/gitpin/');
+  await expect(page.locator('[data-hero-demo]')).toContainText(heroArtifact.fixture.changedPath);
+  expect(artifactRequests).toEqual([
+    'http://127.0.0.1:4173/gitpin/_gitpin-artifacts/pr-gate-fail-to-pass.artifact.json',
+  ]);
+});
+
+test('keeps the active tab as the tabpanel name and the artifact summary as its description', async ({ page }) => {
+  const panel = page.getByRole('tabpanel');
+  const summary = page.locator('#hero-walkthrough-summary');
+
+  await expect(panel).toHaveAttribute('aria-labelledby', 'tab-engineering');
+  await expect(panel).not.toHaveAttribute('aria-label');
+  await expect(panel).toHaveAttribute('aria-describedby', 'hero-walkthrough-summary');
+  await expect(summary).toHaveText(heroArtifact.accessibility.caption);
+  await page.getByRole('tab', { name: 'Release owners' }).click();
+  await expect(panel).toHaveAttribute('aria-labelledby', 'tab-release');
+  await expect(panel).not.toHaveAttribute('aria-label');
+});
+
+test('bails out cleanly and clears busy state when a required hero node is missing', async ({ page }) => {
+  const pageErrors = [];
+  page.on('pageerror', (error) => pageErrors.push(error.message));
+  await page.route('**/hero-missing-node-fixture', async (route) => {
+    await route.fulfill({
+      body: siteIndex.replace(' data-hero-play', ''),
+      contentType: 'text/html',
+    });
+  });
+
+  await page.goto('/hero-missing-node-fixture');
+  await expect(page.locator('[data-hero-demo]')).toHaveAttribute('aria-busy', 'false');
+  await expect(page.locator('[data-hero-demo]')).toHaveAttribute('data-hero-unavailable', 'true');
+  expect(pageErrors).toEqual([]);
+});
+
+test('loads and remains operable without IntersectionObserver', async ({ page }) => {
+  await page.addInitScript(() => {
+    delete window.IntersectionObserver;
+  });
+  await page.reload();
+
+  const demo = page.locator('[data-hero-demo]');
+  const replay = page.getByRole('button', { name: 'Replay gate walkthrough', exact: true });
+  const play = page.getByRole('button', { name: 'Play gate walkthrough', exact: true });
+  await expect(demo).toContainText(heroArtifact.fixture.changedPath);
+  await replay.click();
+  await play.click();
+  await expect(demo).toHaveAttribute('data-hero-phase', 'uncovered');
+});
+
+test('exposes the walkthrough controls as a named group', async ({ page }) => {
+  const controls = page.getByRole('group', { name: 'Gate walkthrough controls' });
+  await expect(controls).toBeVisible();
+  await expect(controls.getByRole('button')).toHaveCount(3);
 });
 
 test('pauses the hero walkthrough outside the viewport without shifting page layout', async ({ page }) => {
