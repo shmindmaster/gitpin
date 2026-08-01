@@ -1,45 +1,73 @@
 {
   "schemaVersion": 1,
-  "summary": "Align the Tuesday announcement and landing proof with GitPin's base-trusted required PR evidence gate and its engineering, release, and governance audiences.",
+  "summary": "Candidate release evidence covers every material path changed from origin/main through the launch-readiness candidate.",
   "claims": [
     {
-      "id": "GATE-FIRST-LAUNCH",
-      "statement": "The launch package and landing page lead with the base-trusted PR evidence gate, explain changed-path coverage and full-SHA line-hash verification, and position the local MCP as supporting infrastructure.",
+      "id": "LAUNCH-CONTENT",
+      "statement": "Launch content and feedback artifacts describe the required GitPin PR evidence gate and its release boundary.",
       "covers": [
-        "docs/launch.md",
-        "site/app.js",
-        "site/index.html",
-        "tests/browser/site.spec.mjs"
+        ".github/ISSUE_TEMPLATE/launch_feedback.md",
+        "AGENTS.md",
+        "README.md",
+        "ROADMAP.md",
+        "docs/configuration.md",
+        "docs/demos/pr-gate-fail-to-pass.artifact.json",
+        "docs/demos/pr-gate-fail-to-pass.md",
+        "docs/demos/pr-gate-fail-to-pass.svg"
       ],
       "evidence": [
-        {
-          "ref": "head",
-          "path": "docs/launch.md",
-          "lineStart": 38,
-          "lineEnd": 42,
-          "contentSha256": "dc9a48d23a9a88cecaa1211a8ae11222fec236b66df4d92b5c36a114b738d366"
-        },
-        {
-          "ref": "head",
-          "path": "site/index.html",
-          "lineStart": 72,
-          "lineEnd": 88,
-          "contentSha256": "88449ef5aa00db3e5857ba4eb58403e42056b333b62526fb63c3e739d765b354"
-        },
-        {
-          "ref": "head",
-          "path": "site/app.js",
-          "lineStart": 1,
-          "lineEnd": 22,
-          "contentSha256": "8a26fdb8f2293a780eb7d3837c1ffdf6dd564dc8cc85917f54672f8e94fe489f"
-        },
-        {
-          "ref": "head",
-          "path": "tests/browser/site.spec.mjs",
-          "lineStart": 151,
-          "lineEnd": 157,
-          "contentSha256": "1d33bc49a9b708bcdb586801abdae99fb09834e987b805020c96440bb6fb4ee4"
-        }
+        { "ref": "head", "path": ".github/ISSUE_TEMPLATE/launch_feedback.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "39305a197d671104b20282c5f868c8d07f202ac224cc36cab3771cc0fd86943e" },
+        { "ref": "head", "path": "AGENTS.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "f122014d5c2b383c94946758c736a7cdb2fc38eac84eb519405f084bff8956fa" },
+        { "ref": "head", "path": "README.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "c182e5fcc2c1a470794c3a5d241ee226e49b0b8c6633cb1eaa0a71496ec55306" },
+        { "ref": "head", "path": "ROADMAP.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "9fd5591238b11bea3ffc1ea5f55a362f14f401f78af0e598ae3e06a2d3c5a5a2" },
+        { "ref": "head", "path": "docs/configuration.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "c41d7c03082806f09417c194c7edb910ab654d2e8b98013385eb3f3d7c239dad" },
+        { "ref": "head", "path": "docs/demos/pr-gate-fail-to-pass.artifact.json", "lineStart": 1, "lineEnd": 1, "contentSha256": "30c1ad67a6f674cf6a5d84c65f18630466a3db4eaf21dc8072f84bff87af6979" },
+        { "ref": "head", "path": "docs/demos/pr-gate-fail-to-pass.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "f93c7331f5d1242767855a654a91f71bf0fe01c506a4c87cb7f14b1f14f1e62b" },
+        { "ref": "head", "path": "docs/demos/pr-gate-fail-to-pass.svg", "lineStart": 1, "lineEnd": 1, "contentSha256": "ec7a906ee09476f0efc4a8aba7df040ed1033c87176e6806a94d9092af2562ed" }
+      ]
+    },
+    {
+      "id": "LAUNCH-PROOF",
+      "statement": "Launch proof, package, and site artifacts provide reproducible required-gate setup and evidence context.",
+      "covers": [
+        "docs/demos/release-evidence-brief.claims.json",
+        "docs/launch.md",
+        "docs/migration-gitpin.md",
+        "docs/website.md",
+        "package.json",
+        "scripts/build-pr-gate-fail-to-pass-artifact.mjs",
+        "site/analytics.js",
+        "site/index.html"
+      ],
+      "evidence": [
+        { "ref": "head", "path": "docs/demos/release-evidence-brief.claims.json", "lineStart": 1, "lineEnd": 1, "contentSha256": "2bb4c31da26d32bd732822f2a8806be7ea9dd4bbd9243953013bdb925b7c5886" },
+        { "ref": "head", "path": "docs/launch.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "0509f66945807ac23ca5e712992cd632d0fb18bf46dd961ac577ff3231e6d5ef" },
+        { "ref": "head", "path": "docs/migration-gitpin.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "ec4baf3a371f474e6d9b8a7119e3b1907af0b362744023a339c345166907bab4" },
+        { "ref": "head", "path": "docs/website.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "20c6f84970ffe5b97dbd3b35b84c229955f3b74670b2bf4c415ee22e5510543c" },
+        { "ref": "head", "path": "package.json", "lineStart": 1, "lineEnd": 1, "contentSha256": "21dbf3181423e321b0c52aaafaf3412a9c103a9c5a801201283c9c93bafa478" },
+        { "ref": "head", "path": "scripts/build-pr-gate-fail-to-pass-artifact.mjs", "lineStart": 1, "lineEnd": 1, "contentSha256": "a882d70cd9004a39073a1d481da608f7d3931bdbafd37c0faaaebf73b0f23ca0" },
+        { "ref": "head", "path": "site/analytics.js", "lineStart": 1, "lineEnd": 1, "contentSha256": "bbaabdc779ae29f737fef46be371da071025c0bcbb09bb361764ff4980df6c72" },
+        { "ref": "head", "path": "site/index.html", "lineStart": 1, "lineEnd": 1, "contentSha256": "d3ede7383eb0d5bc974c10c0787ff8058a71d5e4c33f913ed369c0c94b20071c" }
+      ]
+    },
+    {
+      "id": "ANALYTICS-VALIDATION",
+      "statement": "Analytics and validation artifacts constrain launch-funnel collection to user intent and verify the documented behavior.",
+      "covers": [
+        "site/privacy.html",
+        "src/launch-readiness-task3.test.ts",
+        "src/launch-readiness-truth.test.ts",
+        "tests/browser/site.spec.mjs",
+        "tests/fixtures/launch-readiness/task-3-measurement-fixture.json",
+        "tests/fixtures/launch-readiness/task-3-measurement-protocol.md"
+      ],
+      "evidence": [
+        { "ref": "head", "path": "site/privacy.html", "lineStart": 1, "lineEnd": 1, "contentSha256": "bd6829b4ec2a81f2fc204b65815c7cc055add29be2925217056e293400d05602" },
+        { "ref": "head", "path": "src/launch-readiness-task3.test.ts", "lineStart": 1, "lineEnd": 1, "contentSha256": "2ea286db0e30fa62defa5ae5ee58218cb337a8cc4d5f79ee737334c1bfe9ec83" },
+        { "ref": "head", "path": "src/launch-readiness-truth.test.ts", "lineStart": 1, "lineEnd": 1, "contentSha256": "946a0885e7c125c659419ec6fd600aa988040e9675aef6652cd7ee1961aa0d55" },
+        { "ref": "head", "path": "tests/browser/site.spec.mjs", "lineStart": 1, "lineEnd": 1, "contentSha256": "bb27e901a091d6a3f8d92a993b46970ddafffda71da68418a14d121bd32b10ae" },
+        { "ref": "head", "path": "tests/fixtures/launch-readiness/task-3-measurement-fixture.json", "lineStart": 1, "lineEnd": 1, "contentSha256": "84c7875f7b7039a6093f263a02dc3a65d213c48e47ce7d450c628d8b69a3e652" },
+        { "ref": "head", "path": "tests/fixtures/launch-readiness/task-3-measurement-protocol.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "8bd40d669e97116ec5544c8e764ba15301f82001d3be272a74ae13d1f3cc38a0" }
       ]
     }
   ]
