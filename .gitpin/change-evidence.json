@@ -4,7 +4,7 @@
   "claims": [
     {
       "id": "V062-ANALYTICS-PRIVACY",
-      "statement": "The static website exposes a keyboard-operable analytics opt-out that persists until site data is cleared, prevents SDK load after stored opt-out or any storage read/write/remove failure, preserves an existing opt-out key, stops runtime capture even when its persistence write fails, sends geo-IP suppression, disables feature-flag requests, and proves the strict request boundary across browsers.",
+      "statement": "The static website exposes a keyboard-operable analytics opt-out that persists until site data is cleared, prevents SDK load after stored opt-out or any storage read/write/remove failure, preserves an existing opt-out key, stops runtime capture even when its persistence write fails, sends geo-IP suppression, disables feature-flag requests, proves the strict request boundary across browsers, and reports the independently verified dedicated-project raw-IP discard state consistently.",
       "covers": [
         "site/analytics.js",
         "site/index.html",
@@ -33,9 +33,9 @@
         {
           "ref": "head",
           "path": "site/privacy.html",
-          "lineStart": 79,
+          "lineStart": 73,
           "lineEnd": 82,
-          "contentSha256": "d9b17be82f9d242fb0b91e69640079f5cd682143459714b781bc87a125b329c5"
+          "contentSha256": "666a2a1f79d069f8b85e64303e0529774d1206caa14b6c67c880c670816232bd"
         },
         {
           "ref": "head",

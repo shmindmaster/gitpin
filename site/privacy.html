@@ -71,9 +71,9 @@
           No automatic URL/referrer/host/browser/device/screen fields are sent.
         </p>
         <p>
-          The browser asks PostHog not to perform GeoIP enrichment on every permitted event. The separate
-          project-level setting that discards raw IP addresses has not yet been independently verified, so this page
-          does not claim that server-side discard is active.
+          The browser asks PostHog not to perform GeoIP enrichment on every permitted event. The dedicated GitPin
+          PostHog project is also configured to discard raw IP addresses; the bounded production verification query
+          contained no raw-IP or GeoIP-derived fields.
         </p>
         <p>
           Use the website analytics control above to store an opt-out in this browser until site data is cleared. A

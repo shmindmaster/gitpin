@@ -26,7 +26,7 @@ The website must:
 - prevent feature-flag and remote-configuration requests outside the explicit event transport;
 - preserve the strict event/property/transport allowlist, `traffic_class`, autoplay silence, and removal of
   URL/referrer/browser/device and canary-shaped enrichment;
-- distinguish the active browser controls from the still-unverified PostHog project-level raw-IP discard setting.
+- distinguish the active browser controls from the independently verified PostHog project-level raw-IP discard setting.
 
 ## TDD evidence
 
@@ -160,8 +160,8 @@ The staged release sequence is:
 4. Dispatch `Publish to MCP Registry` with `release_ref=v0.6.2` only after npm exposes the exact tag commit.
 5. Dispatch `Deploy website`; independently verify the deployed SHA/content, opt-out behavior, capture payload, and
    PostHog project destination.
-6. Independently inspect the PostHog project-level raw-IP discard setting. Until that is verified, public copy must
-   not claim server-side raw-IP discard.
+6. Independently inspect the PostHog project-level raw-IP discard setting. This production gate completed: the setting
+   was enabled and the bounded verification query contained no raw-IP or GeoIP-derived fields.
 7. Advance `.github/workflows/evidence-gate.yml` to `shmindmaster/gitpin@v0.6.2` in a separate post-publication PR,
    then validate its exact head against the released Action.
 
