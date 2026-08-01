@@ -16,14 +16,62 @@
         "docs/demos/pr-gate-fail-to-pass.svg"
       ],
       "evidence": [
-        { "ref": "head", "path": ".github/ISSUE_TEMPLATE/launch_feedback.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "39305a197d671104b20282c5f868c8d07f202ac224cc36cab3771cc0fd86943e" },
-        { "ref": "head", "path": "AGENTS.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "f122014d5c2b383c94946758c736a7cdb2fc38eac84eb519405f084bff8956fa" },
-        { "ref": "head", "path": "README.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "c182e5fcc2c1a470794c3a5d241ee226e49b0b8c6633cb1eaa0a71496ec55306" },
-        { "ref": "head", "path": "ROADMAP.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "9fd5591238b11bea3ffc1ea5f55a362f14f401f78af0e598ae3e06a2d3c5a5a2" },
-        { "ref": "head", "path": "docs/configuration.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "c41d7c03082806f09417c194c7edb910ab654d2e8b98013385eb3f3d7c239dad" },
-        { "ref": "head", "path": "docs/demos/pr-gate-fail-to-pass.artifact.json", "lineStart": 1, "lineEnd": 1, "contentSha256": "30c1ad67a6f674cf6a5d84c65f18630466a3db4eaf21dc8072f84bff87af6979" },
-        { "ref": "head", "path": "docs/demos/pr-gate-fail-to-pass.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "f93c7331f5d1242767855a654a91f71bf0fe01c506a4c87cb7f14b1f14f1e62b" },
-        { "ref": "head", "path": "docs/demos/pr-gate-fail-to-pass.svg", "lineStart": 1, "lineEnd": 1, "contentSha256": "ec7a906ee09476f0efc4a8aba7df040ed1033c87176e6806a94d9092af2562ed" }
+        {
+          "ref": "head",
+          "path": ".github/ISSUE_TEMPLATE/launch_feedback.md",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "cb3f91d54eee30e53e35b2b99905f70f169ed549fd78909d3dac2defc9ed8d3b"
+        },
+        {
+          "ref": "head",
+          "path": "AGENTS.md",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "687d8b55747e256bcfb2c79c16559103ec9120fc8fa862cd1bc5540ded05944d"
+        },
+        {
+          "ref": "head",
+          "path": "README.md",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "b5da833420e376fd31b2245dc02ef1124c6a4249bec7b556f346e73b83487d50"
+        },
+        {
+          "ref": "head",
+          "path": "ROADMAP.md",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "565f11e9c179df6219ac059610f79652f6cf4128892b6a8d8759934c48bbdd44"
+        },
+        {
+          "ref": "head",
+          "path": "docs/configuration.md",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "2161b63730b0bebc097c747fcb2b4018682d66ce6b34c43dd9db4585ddb5d1c5"
+        },
+        {
+          "ref": "head",
+          "path": "docs/demos/pr-gate-fail-to-pass.artifact.json",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "021fb596db81e6d02bf3d2586ee3981fe519f275c0ac9ca76bbcf2ebb4097d96"
+        },
+        {
+          "ref": "head",
+          "path": "docs/demos/pr-gate-fail-to-pass.md",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "171112270f5c82c9655a9fa6a156054e73f89d50f6709d47b5d0a2dc3d462318"
+        },
+        {
+          "ref": "head",
+          "path": "docs/demos/pr-gate-fail-to-pass.svg",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "12c29731e40adc0c969c3ed5c62403898314a22e6d43c3afd86e8f858b2cc038"
+        }
       ]
     },
     {
@@ -40,14 +88,62 @@
         "site/index.html"
       ],
       "evidence": [
-        { "ref": "head", "path": "docs/demos/release-evidence-brief.claims.json", "lineStart": 1, "lineEnd": 1, "contentSha256": "2bb4c31da26d32bd732822f2a8806be7ea9dd4bbd9243953013bdb925b7c5886" },
-        { "ref": "head", "path": "docs/launch.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "0509f66945807ac23ca5e712992cd632d0fb18bf46dd961ac577ff3231e6d5ef" },
-        { "ref": "head", "path": "docs/migration-gitpin.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "ec4baf3a371f474e6d9b8a7119e3b1907af0b362744023a339c345166907bab4" },
-        { "ref": "head", "path": "docs/website.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "20c6f84970ffe5b97dbd3b35b84c229955f3b74670b2bf4c415ee22e5510543c" },
-        { "ref": "head", "path": "package.json", "lineStart": 1, "lineEnd": 1, "contentSha256": "21dbf3181423e3213b0c52aaafaf3412a9c103a9c5a801201283c9c93bafa478" },
-        { "ref": "head", "path": "scripts/build-pr-gate-fail-to-pass-artifact.mjs", "lineStart": 1, "lineEnd": 1, "contentSha256": "a882d70cd9004a39073a1d481da608f7d3931bdbafd37c0faaaebf73b0f23ca0" },
-        { "ref": "head", "path": "site/analytics.js", "lineStart": 1, "lineEnd": 1, "contentSha256": "bbaabdc779ae29f737fef46be371da071025c0bcbb09bb361764ff4980df6c72" },
-        { "ref": "head", "path": "site/index.html", "lineStart": 1, "lineEnd": 1, "contentSha256": "d3ede7383eb0d5bc974c10c0787ff8058a71d5e4c33f913ed369c0c94b20071c" }
+        {
+          "ref": "head",
+          "path": "docs/demos/release-evidence-brief.claims.json",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "021fb596db81e6d02bf3d2586ee3981fe519f275c0ac9ca76bbcf2ebb4097d96"
+        },
+        {
+          "ref": "head",
+          "path": "docs/launch.md",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "8b241ca72daeaa6e6c6abd8da2e4a753d7bf0578c93cfda36e44bdd9d7288a6c"
+        },
+        {
+          "ref": "head",
+          "path": "docs/migration-gitpin.md",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "a46ff2bdcced427a1410865805b6f5606282af4a3de0b97441b786db9671e2b7"
+        },
+        {
+          "ref": "head",
+          "path": "docs/website.md",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "42a54e87e77f52fd1fd00284f40bf4d69b9d038f21d74f05bbbf75bafbc92a6e"
+        },
+        {
+          "ref": "head",
+          "path": "package.json",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "021fb596db81e6d02bf3d2586ee3981fe519f275c0ac9ca76bbcf2ebb4097d96"
+        },
+        {
+          "ref": "head",
+          "path": "scripts/build-pr-gate-fail-to-pass-artifact.mjs",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "9d196a1875159c508cfac6bfb2060ff64a56d5d38cb28623767e3b75870fba67"
+        },
+        {
+          "ref": "head",
+          "path": "site/analytics.js",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "caa1205884c5bba4486480480f62c48f5adfe0d9282c395968f1fb6c23aa0c0e"
+        },
+        {
+          "ref": "head",
+          "path": "site/index.html",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "fe26c59e91ac8de694b2531dc3bdc1b7faf471d3d7e4e00870af60f5f22897cb"
+        }
       ]
     },
     {
@@ -62,12 +158,48 @@
         "tests/fixtures/launch-readiness/task-3-measurement-protocol.md"
       ],
       "evidence": [
-        { "ref": "head", "path": "site/privacy.html", "lineStart": 1, "lineEnd": 1, "contentSha256": "bd6829b4ec2a81f2fc204b65815c7cc055add29be2925217056e293400d05602" },
-        { "ref": "head", "path": "src/launch-readiness-task3.test.ts", "lineStart": 1, "lineEnd": 1, "contentSha256": "2ea286db0e30fa62defa5ae5ee58218cb337a8cc4d5f79ee737334c1bfe9ec83" },
-        { "ref": "head", "path": "src/launch-readiness-truth.test.ts", "lineStart": 1, "lineEnd": 1, "contentSha256": "946a0885e7c125c659419ec6fd600aa988040e9675aef6652cd7ee1961aa0d55" },
-        { "ref": "head", "path": "tests/browser/site.spec.mjs", "lineStart": 1, "lineEnd": 1, "contentSha256": "bb27e901a091d6a3f8d92a993b46970ddafffda71da68418a14d121bd32b10ae" },
-        { "ref": "head", "path": "tests/fixtures/launch-readiness/task-3-measurement-fixture.json", "lineStart": 1, "lineEnd": 1, "contentSha256": "84c7875f7b7039a6093f263a02dc3a65d213c48e47ce7d450c628d8b69a3e652" },
-        { "ref": "head", "path": "tests/fixtures/launch-readiness/task-3-measurement-protocol.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "8bd40d669e97116ec5544c8e764ba15301f82001d3be272a74ae13d1f3cc38a0" }
+        {
+          "ref": "head",
+          "path": "site/privacy.html",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "fe26c59e91ac8de694b2531dc3bdc1b7faf471d3d7e4e00870af60f5f22897cb"
+        },
+        {
+          "ref": "head",
+          "path": "src/launch-readiness-task3.test.ts",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "acdb187297667b502b21af95a1d232ab0b1e8950445003ecaa44631d7d1588b6"
+        },
+        {
+          "ref": "head",
+          "path": "src/launch-readiness-truth.test.ts",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "acdb187297667b502b21af95a1d232ab0b1e8950445003ecaa44631d7d1588b6"
+        },
+        {
+          "ref": "head",
+          "path": "tests/browser/site.spec.mjs",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "c1391d6ee15281f422083fc396009afa1eb48b407341c8b23816108c35e48d22"
+        },
+        {
+          "ref": "head",
+          "path": "tests/fixtures/launch-readiness/task-3-measurement-fixture.json",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "021fb596db81e6d02bf3d2586ee3981fe519f275c0ac9ca76bbcf2ebb4097d96"
+        },
+        {
+          "ref": "head",
+          "path": "tests/fixtures/launch-readiness/task-3-measurement-protocol.md",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "b6e079f9d37b5ef9f8f1681240cf81d5a3e87af333b5fb5e22570206f6f6cff5"
+        }
       ]
     }
   ]
