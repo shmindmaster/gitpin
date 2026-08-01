@@ -179,6 +179,51 @@ test('stops capture immediately after runtime opt-out', async ({ page }) => {
   await expect(page.getByRole('status')).toHaveText('Website analytics are off on this browser.');
 });
 
+test('fails closed after storage becomes unwritable during runtime opt-out', async ({ page }) => {
+  const requests = await installInspectableAnalytics(page);
+  await page.goto('/analytics-privacy-fixture');
+  await expect.poll(() => requests.sdkRequests.length).toBe(1);
+
+  await page.getByRole('link', { name: 'Start setup' }).click();
+  await expect.poll(() => requests.captureRequests.length).toBe(1);
+
+  await page.evaluate(() => {
+    Storage.prototype.setItem = () => {
+      throw new DOMException('blocked', 'QuotaExceededError');
+    };
+  });
+  await page.addInitScript(() => {
+    Storage.prototype.setItem = () => {
+      throw new DOMException('blocked', 'QuotaExceededError');
+    };
+  });
+
+  const optOutControl = page.getByRole('button', { name: 'Turn off website analytics' });
+  await optOutControl.click();
+  await expect(page.getByRole('status')).toHaveText(
+    'Website analytics are off because this browser cannot store the preference.',
+  );
+  await expect(optOutControl).toBeDisabled();
+  expect(await page.evaluate((key) => localStorage.getItem(key), optOutStorageKey)).toBeNull();
+
+  await page.getByRole('link', { name: 'Start setup' }).click();
+  await page.evaluate(() => window.gitpinTrack?.('setup_intent', { surface: 'hero' }));
+  await page.waitForTimeout(100);
+  expect(requests.captureRequests).toHaveLength(1);
+
+  await page.reload();
+  await page.getByRole('link', { name: 'Start setup' }).click();
+  await page.goto('/analytics-privacy-fixture');
+  await page.evaluate(() => window.gitpinTrack?.('setup_intent', { surface: 'hero' }));
+  await page.waitForTimeout(100);
+
+  expect(requests.sdkRequests).toHaveLength(1);
+  expect(requests.captureRequests).toHaveLength(1);
+  await expect(page.getByRole('status')).toHaveText(
+    'Website analytics are off because this browser cannot store the preference.',
+  );
+});
+
 test('sends only the allowlisted payload with geo-IP enrichment disabled and no canary', async ({ page }) => {
   const requests = await installInspectableAnalytics(page);
   await page.goto('/analytics-privacy-fixture');

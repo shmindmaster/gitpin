@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "summary": "GitPin 0.6.2 adds a fail-closed persistent website analytics opt-out, verifies storage writability before SDK load, configures every analytics-enabled built page consistently, disables GeoIP enrichment and feature-flag requests, preserves strict telemetry boundaries, and aligns the complete release candidate surface while retaining the published v0.6.1 self-gate bootstrap.",
+  "summary": "GitPin 0.6.2 adds a fail-closed browser-stored website analytics opt-out bounded by site-data clearing, verifies storage writability before SDK load and during runtime activation, configures every analytics-enabled built page consistently, disables GeoIP enrichment and feature-flag requests, preserves strict telemetry boundaries, and aligns the complete release candidate surface while retaining the published v0.6.1 self-gate bootstrap.",
   "claims": [
     {
       "id": "V062-ANALYTICS-PRIVACY",
-      "statement": "The static website exposes a persistent keyboard-operable analytics opt-out, prevents SDK load after stored opt-out or any storage read/write/remove failure, preserves an existing opt-out key, stops runtime capture, sends geo-IP suppression, disables feature-flag requests, and proves the strict request boundary across browsers.",
+      "statement": "The static website exposes a keyboard-operable analytics opt-out that persists until site data is cleared, prevents SDK load after stored opt-out or any storage read/write/remove failure, preserves an existing opt-out key, stops runtime capture even when its persistence write fails, sends geo-IP suppression, disables feature-flag requests, and proves the strict request boundary across browsers.",
       "covers": [
         "site/analytics.js",
         "site/index.html",
@@ -26,16 +26,16 @@
         {
           "ref": "head",
           "path": "site/index.html",
-          "lineStart": 12,
-          "lineEnd": 13,
-          "contentSha256": "9474dbaff75b24c66dd21412fa25d34054c2e4d3ef7eccd9e7c004f38f43b08d"
+          "lineStart": 63,
+          "lineEnd": 68,
+          "contentSha256": "8843b50cfbe6b1d4287e110278f277ecd951aa07a7d53ac5617a6ba1d5d189db"
         },
         {
           "ref": "head",
           "path": "site/privacy.html",
-          "lineStart": 12,
-          "lineEnd": 13,
-          "contentSha256": "9474dbaff75b24c66dd21412fa25d34054c2e4d3ef7eccd9e7c004f38f43b08d"
+          "lineStart": 79,
+          "lineEnd": 82,
+          "contentSha256": "d9b17be82f9d242fb0b91e69640079f5cd682143459714b781bc87a125b329c5"
         },
         {
           "ref": "head",
@@ -47,23 +47,23 @@
         {
           "ref": "head",
           "path": "tests/browser/analytics-privacy.spec.mjs",
-          "lineStart": 248,
-          "lineEnd": 292,
-          "contentSha256": "4e91751dfc3a183da1651a7787e7653b26446988399cd48515c8b13c737cc1dc"
+          "lineStart": 182,
+          "lineEnd": 225,
+          "contentSha256": "2a0248facd403540b85df477c104350a22b162c9402d37c2709637775c0701d2"
         },
         {
           "ref": "head",
           "path": "tests/browser/site.spec.mjs",
-          "lineStart": 230,
-          "lineEnd": 242,
-          "contentSha256": "97c7d920d5d2e767fe684d8c3148c3c6ecd0477712745b9219a0d6a6a5acce7c"
+          "lineStart": 49,
+          "lineEnd": 54,
+          "contentSha256": "182bdb25c6da319f127ce3d3e2381210b96712b7867e21b70ba8a670bc857e94"
         },
         {
           "ref": "head",
           "path": "docs/website.md",
           "lineStart": 73,
-          "lineEnd": 78,
-          "contentSha256": "bf5edcf8d0255296899158e79d65db3f49ae06f6d6b25441e8bc169d25abab69"
+          "lineEnd": 82,
+          "contentSha256": "e0afc51a2bdc9e0ecc8851973a5bbf250f22c23d01cfb3848ecae1ab485adb62"
         },
         {
           "ref": "head",
@@ -184,9 +184,9 @@
         {
           "ref": "head",
           "path": "CHANGELOG.md",
-          "lineStart": 7,
-          "lineEnd": 7,
-          "contentSha256": "38ffe97d69afaccea198f2e01778949f2f2d8121b87ed69ecc83a1800096bee1"
+          "lineStart": 16,
+          "lineEnd": 16,
+          "contentSha256": "766b2d8573ddc6913e8635c331acf6056f40a305fdadfded7d12dc918135d0ad"
         },
         {
           "ref": "head",
@@ -263,9 +263,9 @@
         {
           "ref": "head",
           "path": "docs/launch.md",
-          "lineStart": 34,
-          "lineEnd": 34,
-          "contentSha256": "18f5f7ac8a2a69bad859588c996a9c12b0904361e233f606d27a4b0027341049"
+          "lineStart": 97,
+          "lineEnd": 97,
+          "contentSha256": "f83c9e5a804a4b6b60e1644c70f6a66b4e1d24b290ebdd4f0dc0e59f40704fb6"
         },
         {
           "ref": "head",
@@ -332,9 +332,9 @@
         {
           "ref": "head",
           "path": "docs/release-v0.6.2-sdd-report.md",
-          "lineStart": 63,
-          "lineEnd": 86,
-          "contentSha256": "09709cab541031610863fb3296e59a8dfe0dbf423e58cffa6ae8a8628a14c3dd"
+          "lineStart": 88,
+          "lineEnd": 95,
+          "contentSha256": "0d1d6828e57d100cab0224932b6226e12970b4fff955b78e4af571677d53deec"
         }
       ]
     }

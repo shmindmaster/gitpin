@@ -13,7 +13,7 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 
 ### Fixed
 
-- Add a persistent, keyboard-operable website analytics opt-out to the homepage and privacy page; a stored opt-out prevents SDK loading, runtime activation stops subsequent capture, and unavailable browser storage fails closed.
+- Add a keyboard-operable website analytics opt-out to the homepage and privacy page that persists until site data is cleared; a stored opt-out prevents SDK loading, runtime activation stops subsequent capture, and unavailable browser storage fails closed.
 - Clarify that browser GeoIP suppression is active while independent verification of PostHog's project-level raw-IP discard setting remains pending.
 
 ## [0.6.1] - 2026-08-01

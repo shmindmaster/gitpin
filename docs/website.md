@@ -71,14 +71,15 @@ claim server-side raw-IP discard yet.
 ## Browser opt-out
 
 The homepage and privacy page expose a native, keyboard-operable **Turn off website analytics** control. Its
-preference is stored in the browser. A stored opt-out prevents the PostHog SDK from loading on later visits;
-activating the control also stops subsequent capture immediately in the current page. If browser preference storage
-cannot be read, written, or cleaned up, the site fails closed and does not load analytics. The startup check uses a
-fixed, non-identifying probe key and never changes the stored opt-out value. If storage later becomes unavailable during
-the button action, capture still stops for the current page and the status reports that persistence was unavailable.
+preference is stored in the browser until site data is cleared. A stored opt-out prevents the PostHog SDK from loading
+on later visits; activating the control also stops subsequent capture immediately in the current page. If browser
+preference storage cannot be read, written, or cleaned up, the site fails closed and does not load analytics. The
+startup check uses a fixed, non-identifying probe key and never changes the stored opt-out value. If storage later becomes
+unavailable during the button action, capture still stops for the current page and the status reports that persistence
+was unavailable.
 
-This browser control does not alter the PostHog project configuration. Clearing site storage clears the persisted
-browser choice.
+This browser control does not alter the PostHog project configuration. Clearing site storage clears the browser
+choice, so the control does not promise a permanent opt-out.
 
 Test-traffic suppression is explicitly bounded to:
 

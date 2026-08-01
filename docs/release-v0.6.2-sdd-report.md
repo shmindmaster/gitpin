@@ -60,8 +60,8 @@ Independent review then identified that PostHog could make an initialization-tim
 that unexpected request. Adding `advanced_disable_flags: true` closed the bypass; the strengthened test and complete
 suite were rerun before the remediation commit.
 
-Hosted review subsequently raised six findings. The one-way opt-out control incorrectly exposed toggle-style
-`aria-pressed` state even though activation permanently disables the control; the attribute was removed and the
+Hosted review initially raised six findings. The one-way opt-out control incorrectly exposed toggle-style
+`aria-pressed` state even though activation leaves the one-way control disabled; the attribute was removed and the
 keyboard, disabled-state, persistence, and status coverage now explicitly assert the resulting button semantics. The
 three findings proposing replacement of `advanced_disable_flags` with `advanced_disable_decide` were rejected
 against the current official PostHog type contract at commit
@@ -85,6 +85,15 @@ build output remain empty.
 After both later remediations, the combined focused privacy/site command passed 13/13 and the configured-site build
 regression passed 2/2.
 
+A later independent review raised two more findings. The homepage's claim that analytics could be turned off
+“permanently” overstated browser storage durability; a regression failed on that wording, and the homepage, privacy,
+website, changelog, and launch surfaces now state that the browser-stored choice lasts until site data is cleared. The
+second finding requested runtime-only storage-failure coverage. The new characterization test passed before any runtime
+logic changed: after the SDK had loaded, a failed opt-out write stopped current-page capture immediately, reported that
+persistence was unavailable, and caused both reload and navigation to fail closed without another SDK or capture
+request while writes remained blocked. No product-code change was required for that already-correct behavior. The
+complete Chromium privacy/site boundary passed 31/31 after the copy correction and added regression.
+
 ## Full validation evidence
 
 - `pnpm validate` — passed after the remediations: 16 Vitest files, 90 tests, lint, format check, typecheck, client/CI/env/MCP/tag
@@ -92,7 +101,7 @@ regression passed 2/2.
 - `pnpm build` — passed.
 - `pnpm verify:package` — passed for `gitpin-0.6.2.tgz`; clean install, initialization, doctor, context brief,
   first answer, PR evidence gate, and public docs were verified.
-- `pnpm site:test` — passed 120/120 across Chromium, Firefox, WebKit, and mobile Chromium.
+- `pnpm site:test` — passed 124/124 across Chromium, Firefox, WebKit, and mobile Chromium.
 - Focused release truth — 34/34 tests passed across `launch-readiness-task3`, `launch-readiness-truth`,
   `gate-action`, and `onboarding`.
 - `pnpm verify:release-tag` — matched `v0.6.2`, package `0.6.2`, MCP runtime `0.6.2`, release date `2026-08-01`.

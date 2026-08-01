@@ -94,7 +94,7 @@ Relevant links:
 
 ## LinkedIn draft
 
-After the release gate is complete, this draft may state: GitPin 0.6.2 is the shipped PR evidence gate for agent-authored changes with a persistent website analytics opt-out. It enforces material-path coverage and validates locators at exact commit SHAs using canonical handle or cite formats from the mini-spec, for example:
+After the release gate is complete, this draft may state: GitPin 0.6.2 is the shipped PR evidence gate for agent-authored changes with a browser-stored website analytics opt-out that lasts until site data is cleared. It enforces material-path coverage and validates locators at exact commit SHAs using canonical handle or cite formats from the mini-spec, for example:
 
 - canonical cite: `task-2-synthetic-pr-fixture/docs/protocol.md:5 @ 57bce1a312f6153e171b515c41727ff81e77fb3c`
 - canonical handle: `gitpin:task-2-synthetic-pr-fixture@57bce1a312f6153e171b515c41727ff81e77fb3c:docs/protocol.md:5`
@@ -115,7 +115,7 @@ Signals to use this as infrastructure:
 
 ## Adaptable community post draft
 
-After the release gate is complete, this draft may state: GitPin 0.6.2 enforces commit-pinned PR evidence for material diff paths and adds a persistent website analytics opt-out. The gate requires coverage for changed files and checks exact file-line evidence against full SHA sources at merge time. It is intended as a trust-boundary control for review, not as a rollout claim or replacement for human code review.
+After the release gate is complete, this draft may state: GitPin 0.6.2 enforces commit-pinned PR evidence for material diff paths and adds a browser-stored website analytics opt-out that lasts until site data is cleared. The gate requires coverage for changed files and checks exact file-line evidence against full SHA sources at merge time. It is intended as a trust-boundary control for review, not as a rollout claim or replacement for human code review.
 
 Quick rollout setup:
 1) Install: `npx -y gitpin@0.6.2 init --client codex`

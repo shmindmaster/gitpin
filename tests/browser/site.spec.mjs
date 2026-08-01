@@ -48,6 +48,10 @@ test('presents the release path and safety boundary without analytics by default
   await page.getByRole('link', { name: 'Install', exact: true }).click();
   await expect(page.locator('.terminal')).toContainText('shmindmaster/gitpin@v0.6.2');
   await expect(page.locator('body')).not.toContainText(/release candidate/i);
+  await expect(page.locator('body')).toContainText(
+    'Optional, cookieless website analytics can be turned off until site data is cleared in this browser.',
+  );
+  await expect(page.locator('body')).not.toContainText('turned off permanently in this browser');
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://shmindmaster.github.io/gitpin/');
   await expect(page.getByRole('link', { name: 'Privacy', exact: true })).toHaveAttribute('href', './privacy.html');
   await expect(
