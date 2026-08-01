@@ -1,0 +1,135 @@
+{
+  "protocol": "task-3-launch-funnel-v1",
+  "fixtures": {
+    "id": "task-3-synthetic-01",
+    "repo_name": "task-3-launch-fixture",
+    "base_sha": "982608f3b7521706cabbc39cd0ccf4b4036898fa",
+    "head_sha": "bab63b08df51151b6b375f2b6376fb441bcf3a8e",
+    "expected_fail_snippet": "docs/protocol.md:5-5"
+  },
+  "events": {
+    "allowedEventNames": [
+      "cta_clicked",
+      "audience_changed",
+      "setup_intent",
+      "setup_progress",
+      "first_pass_intent",
+      "gate_result_intent",
+      "feedback_intent"
+    ],
+    "schema": {
+      "cta_clicked": ["placement"],
+      "audience_changed": ["audience"],
+      "setup_intent": ["surface"],
+      "setup_progress": ["step"],
+      "first_pass_intent": ["phase"],
+      "gate_result_intent": ["result"],
+      "feedback_intent": ["surface"]
+    },
+    "requiredFields": {
+      "cta_clicked": ["placement"],
+      "audience_changed": ["audience"],
+      "setup_intent": ["surface"],
+      "setup_progress": ["step"],
+      "first_pass_intent": ["phase"],
+      "gate_result_intent": ["result"],
+      "feedback_intent": ["surface"]
+    }
+  },
+  "analysis": {
+    "analysisWindowDays": 7,
+    "sessionOrderWindowHours": 24,
+    "captureWindowMinimumMinutes": 30,
+    "timeToInstallLimitSeconds": 1800
+  },
+  "numerators": {
+    "setup_progress_sessions": {
+      "numeratorFilter": ["setup_intent", "setup_progress"],
+      "denominator": "setup_intent_sessions"
+    },
+    "first_pass_sessions": {
+      "numeratorFilter": ["setup_progress", "first_pass_intent"],
+      "denominator": "setup_progress_sessions"
+    },
+    "result_observed_sessions": {
+      "numeratorFilter": ["setup_progress", "gate_result_intent"],
+      "denominator": "setup_progress_sessions"
+    },
+    "feedback_sessions": {
+      "numeratorFilter": ["feedback_intent"],
+      "denominator": "setup_intent_sessions"
+    }
+  },
+  "scoring": {
+    "attributionCorrectness": {
+      "formula": "sessions with ordered setup_intent → setup_progress → (first_pass_intent OR gate_result_intent) / sessions with result_observed"
+    },
+    "unsafeAssumptionRate": {
+      "formula": "sum(unsafe_assumptions_count) / sessions_with_feedback"
+    },
+    "frictionRate": {
+      "formula": "total(friction_points) / sessions_with_feedback"
+    }
+  },
+  "captureFields": [
+    "session_id",
+    "session_type",
+    "participant_role",
+    "fixture_id",
+    "start_ts_utc",
+    "event_trace",
+    "time_to_install_seconds",
+    "time_to_first_pass_seconds",
+    "unsafe_assumptions_count",
+    "attribution_observed",
+    "friction_points",
+    "evidence"
+  ],
+  "sessions": [
+    {
+      "session_id": "T-01",
+      "session_type": "technical",
+      "participant_role": "technical_reviewer",
+      "fixture_id": "task-3-synthetic-01",
+      "required_fields": [
+        "session_id",
+        "session_type",
+        "participant_role",
+        "fixture_id",
+        "start_ts_utc",
+        "event_trace",
+        "time_to_install_seconds",
+        "time_to_first_pass_seconds",
+        "unsafe_assumptions_count",
+        "attribution_observed",
+        "friction_points",
+        "evidence"
+      ],
+      "ordered_stages": ["setup_intent", "setup_progress", "first_pass_intent", "gate_result_intent"]
+    },
+    {
+      "session_id": "CF-01",
+      "session_type": "cross-functional",
+      "participant_role": "product_or_release_owner",
+      "fixture_id": "task-3-synthetic-01",
+      "required_fields": [
+        "session_id",
+        "session_type",
+        "participant_role",
+        "fixture_id",
+        "start_ts_utc",
+        "event_trace",
+        "time_to_install_seconds",
+        "unsafe_assumptions_count",
+        "attribution_observed",
+        "friction_points",
+        "evidence"
+      ],
+      "ordered_stages": ["setup_intent", "setup_progress", "feedback_intent", "gate_result_intent"]
+    }
+  ],
+  "protocolStatus": {
+    "actualSessionsCompleted": false,
+    "actualSessionsPending": 2
+  }
+}

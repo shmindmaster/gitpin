@@ -172,3 +172,68 @@ test('keeps the primary content within the viewport', async ({ page }) => {
   );
   await expect(page.getByRole('link', { name: /Add the PR gate/i })).toBeVisible();
 });
+
+test('launch-funnel analytics events only emit strict allowlisted payloads', async ({ page }) => {
+  await page.route('https://us-assets.i.posthog.com/static/array.js', async (route) => {
+    await route.fulfill({
+      body: `
+        window.__capturedEvents = [];
+        window.posthog = {
+          capture: (...args) => window.__capturedEvents.push(args),
+        };
+      `,
+      contentType: 'application/javascript',
+    });
+  });
+  await page.route('http://127.0.0.1:4173/task-3-analytics-fixture', async (route) => {
+    await route.fulfill({
+      body: `
+        <html>
+          <head>
+            <meta name="posthog-project-key" content="phc_test" />
+            <meta name="posthog-api-host" content="https://us.i.posthog.com" />
+          </head>
+          <body>
+            <a id="setup" data-analytics="setup_hero" data-analytics-event="setup_intent" data-analytics-prop-surface="hero" href="#">Start setup</a>
+            <a id="progress" data-analytics="setup_guide" data-analytics-event="setup_progress" data-analytics-prop-step="open_setup_guide" href="#">Open setup guide</a>
+            <a id="first-pass" data-analytics="first_pass" data-analytics-event="first_pass_intent" data-analytics-prop-phase="first_pass" href="#">Run first pass</a>
+            <a id="pass-result" data-analytics="result_pass" data-analytics-event="gate_result_intent" data-analytics-prop-result="pass_demo" href="#">PASS result</a>
+            <a id="fail-result" data-analytics="result_fail" data-analytics-event="gate_result_intent" data-analytics-prop-result="fail_demo" href="#">FAIL result</a>
+            <a id="feedback" data-analytics="feedback_footer" data-analytics-event="feedback_intent" data-analytics-prop-surface="footer" href="#">Feedback</a>
+            <a id="missing" data-analytics="setup_hero" data-analytics-event="setup_intent" href="#">Missing required surface</a>
+            <a id="extra" data-analytics="setup_hero" data-analytics-event="setup_intent" data-analytics-prop-surface="hero" data-analytics-prop-extra="value" href="#">Extra property</a>
+            <a id="invalid" data-analytics="invalid_event" data-analytics-event="forbidden_event" data-analytics-prop-surface="hero" href="#">Invalid</a>
+            <a id="invalid-cta-extra-prop" data-analytics="feedback_footer" data-analytics-prop-surface="footer" href="#">CTA extra prop invalid</a>
+            <script src="/analytics.js"></script>
+          </body>
+        </html>
+      `,
+      contentType: 'text/html',
+    });
+  });
+
+  await page.goto('/task-3-analytics-fixture');
+  await expect.poll(() => page.evaluate(() => Array.isArray(window.__capturedEvents))).toBe(true);
+
+  await page.getByRole('link', { name: 'Start setup' }).click();
+  await page.getByRole('link', { name: 'Open setup guide' }).click();
+  await page.getByRole('link', { name: 'Run first pass' }).click();
+  await page.getByRole('link', { name: 'PASS result' }).click();
+  await page.getByRole('link', { name: 'FAIL result' }).click();
+  await page.getByRole('link', { name: 'Feedback' }).click();
+  await page.locator('#missing').click();
+  await page.locator('#extra').click();
+  await page.locator('#invalid').click();
+  await page.locator('#invalid-cta-extra-prop').click();
+
+  await expect
+    .poll(() => page.evaluate(() => window.__capturedEvents))
+    .toEqual([
+      ['setup_intent', { surface: 'hero' }],
+      ['setup_progress', { step: 'open_setup_guide' }],
+      ['first_pass_intent', { phase: 'first_pass' }],
+      ['gate_result_intent', { result: 'pass_demo' }],
+      ['gate_result_intent', { result: 'fail_demo' }],
+      ['feedback_intent', { surface: 'footer' }],
+    ]);
+});
