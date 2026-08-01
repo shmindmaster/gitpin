@@ -35,10 +35,10 @@ Website collection is intentionally narrow:
 | Event | Properties |
 | --- | --- |
 | `cta_clicked` | `placement` only (`feedback_footer`, `feedback_footer_nav`, `feedback_nav`, `github_footer`, `github_hero`, `github_nav`, `setup_hero`) |
-| `setup_intent` | `surface` only (`hero`, `install`, `navigation`) |
-| `setup_progress` | `step` only (`open_setup_guide`, `open_install_section`) |
+| `setup_intent` | `surface` only (`hero`, `navigation`) |
+| `setup_guide_intent` | `step` only (`open_setup_guide`) |
 | `gate_result_intent` | `result` only (`fail_demo`, `pass_demo`) |
-| `first_pass_intent` | `phase` only (`first_pass`) |
+| `sample_view_intent` | `phase` only (`sample_view`) |
 | `audience_changed` | `audience` only |
 | `feedback_intent` | `surface` only (`footer`, `footer_nav`, `feedback_nav`, `feedback_footer`, `feedback_footer_nav`, `navigation`) |
 
@@ -49,7 +49,7 @@ No repository contents, filesystem paths, prompt text, URLs, tokens, secrets, us
 
 Only intent surfaces are observed here:
 - site `feedback_*` clicks indicate intent to report friction,
-- `setup_*` and `first_pass_*` clicks indicate navigation and first-pass intent,
+- `setup_guide_intent` and `sample_view_intent` clicks indicate setup-guide navigation and sample-view intent,
 - `gate_result_intent` clicks indicate a result check was consulted.
 Clicks do not prove GitHub Action installation or pass/fail status; they are not equivalent to completed setup.
 

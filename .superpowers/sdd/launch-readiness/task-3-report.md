@@ -99,3 +99,12 @@
 ### Concerns
 - Cross-functional synthetic fixture still marks `time_to_first_pass_seconds` as `null` when `first_pass_intent` is not observed.
 - Real participant sessions remain pending and unchanged.
+
+## Terminal review correction (2026-08-01)
+
+- Navigation clicks are now modeled only as `setup_guide_intent` and `sample_view_intent`; the protocol no longer calls them installation or first-pass outcomes.
+- Durable measurement inputs moved from ignored `.superpowers` paths to `tests/fixtures/launch-readiness/`; CI no longer depends on ignored agent scratch files.
+- The PostHog `before_send` boundary now rebuilds outbound custom-event payloads from the strict allowlist and strips SDK-enriched URL, referrer, host, browser, device, screen, and arbitrary properties.
+- Browser/test sessions are excluded by an executable rule, and the browser suite exercises an SDK-enriched outbound event rather than a capture-only mock.
+- Verification: `pnpm validate` passed (`15` files / `84` tests), `pnpm site:test` passed (`40` tests across Chromium, Firefox, WebKit, and mobile Chromium), and the working-tree whitespace check passed.
+- Real participant sessions remain the only pending product-validation gate; telemetry does not prove installation, first pass, adoption, or product-market fit.

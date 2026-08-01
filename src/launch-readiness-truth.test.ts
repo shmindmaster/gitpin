@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
@@ -27,11 +28,6 @@ const announcementArtifacts = [
   'docs/demos/pr-gate-fail-to-pass.md',
   'docs/demos/pr-gate-fail-to-pass.artifact.json',
 ];
-
-const syntheticFailPassArtifacts = {
-  base: '982608f3b7521706cabbc39cd0ccf4b4036898fa',
-  head: 'bab63b08df51151b6b375f2b6376fb441bcf3a8e',
-};
 
 const launchCanonicalLinks = [
   'https://www.npmjs.com/package/gitpin',
@@ -175,7 +171,7 @@ describe('public launch truth', () => {
       expect(launchCopy, `docs/launch.md missing canonical link: ${link}`).toContain(link);
     }
 
-    expect(launchBootstrapMatches).toContain('npx -y gitpin@0.6.0');
+    expect(launchBootstrapMatches).not.toContain('npx -y gitpin@0.6.0');
     expect(launchBootstrapMatches).toContain('npx -y gitpin@0.6.0 init --client codex');
     expect(launchCopy).not.toMatch(/gitpin@latest/g);
 
@@ -219,25 +215,103 @@ describe('public launch truth', () => {
 
   it('contains deterministic fail-to-pass evidence locus with exact full-SHA path and line data', () => {
     const artifact = readArtifactJson('docs/demos/pr-gate-fail-to-pass.artifact.json') as {
-      fixture: { base: string; head: string; changedPath: string };
+      fixture: { base: string; failHead: string; head: string; changedPath: string; lineAdded: number };
+      failCase: { command: string; status: number; output: string; outputSha256: string };
       passCase: {
-        coverage: { path: string; lineStart: number; lineEnd: number; sha: string; contentSha256: string };
+        command: string;
+        status: number;
+        output: string;
+        outputSha256: string;
+        coverage: {
+          path: string;
+          lineStart: number;
+          lineEnd: number;
+          sha: string;
+          contentSha256: string;
+          citation: string;
+          handle: string;
+        };
+      };
+      reproducibility: {
+        checks: { rawStdoutHash: string };
+        artifactSha256: string;
+        commandRuns: Array<{ command: string; status: number; outputSha256: string }>;
       };
     };
 
     expect(typeof artifact.fixture.base).toBe('string');
     expect(typeof artifact.fixture.head).toBe('string');
+    expect(typeof artifact.fixture.failHead).toBe('string');
     expect(artifact.fixture.base).toMatch(/^[0-9a-f]{40}$/);
     expect(artifact.fixture.head).toMatch(/^[0-9a-f]{40}$/);
-    expect(artifact.fixture.base).toBe(syntheticFailPassArtifacts.base);
-    expect(artifact.fixture.head).toBe(syntheticFailPassArtifacts.head);
+    expect(artifact.fixture.failHead).toMatch(/^[0-9a-f]{40}$/);
     expect(artifact.fixture.changedPath).toBe('docs/protocol.md');
     expect(artifact.passCase.coverage.path).toBe(artifact.fixture.changedPath);
-    expect(artifact.passCase.coverage.lineStart).toBe(5);
-    expect(artifact.passCase.coverage.lineEnd).toBe(5);
+    expect(artifact.passCase.coverage.lineStart).toBe(artifact.fixture.lineAdded);
+    expect(artifact.passCase.coverage.lineEnd).toBe(artifact.fixture.lineAdded);
     expect(artifact.passCase.coverage.sha).toBe(artifact.fixture.head);
     expect(artifact.passCase.coverage.contentSha256).toMatch(/^[0-9a-f]{64}$/);
     expect(artifact.passCase.coverage.path).toMatch(/^docs\/protocol\.md$/);
+    expect(artifact.fixture.base).not.toEqual(artifact.fixture.failHead);
+    expect(artifact.fixture.failHead).not.toEqual(artifact.fixture.head);
+    expect(artifact.failCase.command).toBe(
+      `gitpin gate --base ${artifact.fixture.base} --head ${artifact.fixture.failHead}`,
+    );
+    expect(artifact.passCase.command).toBe(
+      `gitpin gate --base ${artifact.fixture.base} --head ${artifact.fixture.head}`,
+    );
+    expect(artifact.failCase.status).toBe(1);
+    expect(artifact.passCase.status).toBe(0);
+    expect(artifact.failCase.output).toContain('Gate failed with');
+    expect(artifact.passCase.output).toContain('PASS');
+    expect(artifact.failCase.output).toMatch(/FAIL:|Gate failed with/);
+    expect(artifact.passCase.output).toMatch(/PASS|checked 1 claim/);
+    expect(createHash('sha256').update(artifact.failCase.output, 'utf8').digest('hex')).toBe(
+      artifact.failCase.outputSha256,
+    );
+    expect(createHash('sha256').update(artifact.passCase.output, 'utf8').digest('hex')).toBe(
+      artifact.passCase.outputSha256,
+    );
+    expect(artifact.reproducibility.commandRuns).toEqual([
+      expect.objectContaining({
+        command: artifact.failCase.command,
+        status: artifact.failCase.status,
+        outputSha256: artifact.failCase.outputSha256,
+      }),
+      expect.objectContaining({
+        command: artifact.passCase.command,
+        status: artifact.passCase.status,
+        outputSha256: artifact.passCase.outputSha256,
+      }),
+    ]);
+    expect(
+      createHash('sha256').update(`${artifact.failCase.output}\n${artifact.passCase.output}`, 'utf8').digest('hex'),
+    ).toBe(artifact.reproducibility.checks.rawStdoutHash);
+
+    const payloadWithoutChecksum = {
+      ...artifact,
+      reproducibility: {
+        ...artifact.reproducibility,
+        artifactSha256: undefined,
+      },
+    };
+    const expectedDigest = createHash('sha256')
+      .update(JSON.stringify(payloadWithoutChecksum, null, 2), 'utf8')
+      .digest('hex');
+    expect(artifact.reproducibility.artifactSha256).toBe(expectedDigest);
+
+    expect(artifact.passCase.coverage.citation).toMatch(
+      /^task-2-synthetic-pr-fixture\/docs\/protocol\.md:5 @ [0-9a-f]{40}$/,
+    );
+    expect(artifact.passCase.coverage.handle).toMatch(
+      /^gitpin:task-2-synthetic-pr-fixture@[0-9a-f]{40}:docs\/protocol\.md:5$/,
+    );
+
+    const markdown = readArtifact('docs/demos/pr-gate-fail-to-pass.md');
+    expect(markdown).toContain(artifact.fixture.base);
+    expect(markdown).toContain(artifact.fixture.failHead);
+    expect(markdown).toContain(artifact.fixture.head);
+    expect(markdown).toContain(artifact.passCase.coverage.citation);
   });
 
   it('keeps public release/version assertions on the current package version', () => {

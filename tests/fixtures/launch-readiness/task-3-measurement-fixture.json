@@ -12,8 +12,8 @@
       "cta_clicked",
       "audience_changed",
       "setup_intent",
-      "setup_progress",
-      "first_pass_intent",
+      "setup_guide_intent",
+      "sample_view_intent",
       "gate_result_intent",
       "feedback_intent"
     ],
@@ -21,8 +21,8 @@
       "cta_clicked": ["placement"],
       "audience_changed": ["audience"],
       "setup_intent": ["surface"],
-      "setup_progress": ["step"],
-      "first_pass_intent": ["phase"],
+      "setup_guide_intent": ["step"],
+      "sample_view_intent": ["phase"],
       "gate_result_intent": ["result"],
       "feedback_intent": ["surface"]
     },
@@ -30,8 +30,8 @@
       "cta_clicked": ["placement"],
       "audience_changed": ["audience"],
       "setup_intent": ["surface"],
-      "setup_progress": ["step"],
-      "first_pass_intent": ["phase"],
+      "setup_guide_intent": ["step"],
+      "sample_view_intent": ["phase"],
       "gate_result_intent": ["result"],
       "feedback_intent": ["surface"]
     }
@@ -40,20 +40,20 @@
     "analysisWindowDays": 7,
     "sessionOrderWindowHours": 24,
     "captureWindowMinimumMinutes": 30,
-    "timeToInstallLimitSeconds": 1800
+    "timeToSetupGuideLimitSeconds": 1800
   },
   "numerators": {
-    "setup_progress_sessions": {
-      "numeratorFilter": ["setup_intent", "setup_progress"],
+    "setup_guide_sessions": {
+      "numeratorFilter": ["setup_intent", "setup_guide_intent"],
       "denominator": "setup_intent_sessions"
     },
-    "first_pass_sessions": {
-      "numeratorFilter": ["setup_progress", "first_pass_intent"],
-      "denominator": "setup_progress_sessions"
+    "sample_view_sessions": {
+      "numeratorFilter": ["setup_guide_intent", "sample_view_intent"],
+      "denominator": "setup_guide_sessions"
     },
     "result_observed_sessions": {
-      "numeratorFilter": ["setup_progress", "gate_result_intent"],
-      "denominator": "setup_progress_sessions"
+      "numeratorFilter": ["setup_guide_intent", "gate_result_intent"],
+      "denominator": "setup_guide_sessions"
     },
     "feedback_sessions": {
       "numeratorFilter": ["feedback_intent"],
@@ -62,7 +62,7 @@
   },
   "scoring": {
     "attributionCorrectness": {
-      "formula": "sessions with ordered setup_intent → setup_progress → (first_pass_intent OR gate_result_intent) / sessions with result_observed"
+      "formula": "sessions with ordered setup_intent → setup_guide_intent → (sample_view_intent OR gate_result_intent) / sessions with result_observed"
     },
     "unsafeAssumptionRate": {
       "formula": "sum(unsafe_assumptions_count) / sessions_with_feedback"
@@ -78,8 +78,8 @@
     "fixture_id",
     "start_ts_utc",
     "event_trace",
-    "time_to_install_seconds",
-    "time_to_first_pass_seconds",
+    "time_to_setup_guide_seconds",
+    "time_to_sample_view_seconds",
     "unsafe_assumptions_count",
     "attribution_observed",
     "friction_points",
@@ -98,14 +98,14 @@
         "fixture_id",
         "start_ts_utc",
         "event_trace",
-        "time_to_install_seconds",
-        "time_to_first_pass_seconds",
+        "time_to_setup_guide_seconds",
+        "time_to_sample_view_seconds",
         "unsafe_assumptions_count",
         "attribution_observed",
         "friction_points",
         "evidence"
       ],
-      "ordered_stages": ["setup_intent", "setup_progress", "first_pass_intent", "gate_result_intent"]
+      "ordered_stages": ["setup_intent", "setup_guide_intent", "sample_view_intent", "gate_result_intent"]
     },
     {
       "session_id": "CF-01",
@@ -119,14 +119,14 @@
         "fixture_id",
         "start_ts_utc",
         "event_trace",
-        "time_to_install_seconds",
-        "time_to_first_pass_seconds",
+        "time_to_setup_guide_seconds",
+        "time_to_sample_view_seconds",
         "unsafe_assumptions_count",
         "attribution_observed",
         "friction_points",
         "evidence"
       ],
-      "ordered_stages": ["setup_intent", "setup_progress", "feedback_intent", "gate_result_intent"]
+      "ordered_stages": ["setup_intent", "setup_guide_intent", "feedback_intent", "gate_result_intent"]
     }
   ],
   "protocolStatus": {

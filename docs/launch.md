@@ -81,7 +81,7 @@ For merge requests that include material file changes, GitPin enforces that requ
 Release setup for this version:
 
 ```bash
-npx -y gitpin@0.6.0
+npx -y gitpin@0.6.0 init --client codex
 gitpin gate --base <full-base-sha> --head <full-head-sha>
 uses: shmindmaster/gitpin@v0.6.0
 ```
@@ -115,7 +115,7 @@ Signals to use this as infrastructure:
 GitPin 0.6.0 enforces commit-pinned PR evidence for material diff paths: the gate requires coverage for changed files and checks exact file-line evidence against full SHA sources at merge time. It is intended as a trust-boundary control for review, not as a rollout claim or replacement for human code review.
 
 Quick rollout setup:
-1) Install: `npx -y gitpin@0.6.0`
+1) Install: `npx -y gitpin@0.6.0 init --client codex`
 2) Configure `.gitpin/gate.yml` on the trusted base commit
 3) Add `.gitpin/change-evidence.json` in PR heads
 4) Enable `uses: shmindmaster/gitpin@v0.6.0` on PR checks

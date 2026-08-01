@@ -4,7 +4,8 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 const rootDirectory = join(dirname(fileURLToPath(import.meta.url)), '..');
-const measurementFixturePath = '.superpowers/sdd/launch-readiness/task-3-measurement-fixture.json';
+const measurementFixturePath = 'tests/fixtures/launch-readiness/task-3-measurement-fixture.json';
+const measurementProtocolPath = 'tests/fixtures/launch-readiness/task-3-measurement-protocol.md';
 
 function readArtifact(relativePath: string): string {
   return readFileSync(join(rootDirectory, relativePath), 'utf8');
@@ -22,28 +23,19 @@ function extractDataAnalyticsTags(html: string): string[] {
 
 const launchEventSchema = {
   setup_intent: ['surface'],
-  setup_progress: ['step'],
+  setup_guide_intent: ['step'],
   gate_result_intent: ['result'],
-  first_pass_intent: ['phase'],
+  sample_view_intent: ['phase'],
   feedback_intent: ['surface'],
   audience_changed: ['audience'],
   cta_clicked: ['placement'],
 };
 
 const launchEventPropertyAllowlist: Record<string, string[]> = {
-  surface: [
-    'hero',
-    'install',
-    'navigation',
-    'footer',
-    'feedback_nav',
-    'feedback_footer',
-    'feedback_footer_nav',
-    'footer_nav',
-  ],
-  step: ['open_setup_guide', 'open_install_section'],
+  surface: ['hero', 'navigation', 'footer', 'feedback_nav', 'feedback_footer', 'feedback_footer_nav', 'footer_nav'],
+  step: ['open_setup_guide'],
   result: ['fail_demo', 'pass_demo'],
-  phase: ['first_pass'],
+  phase: ['sample_view'],
   audience: ['engineering', 'release', 'governance'],
   placement: [
     'feedback_footer',
@@ -123,12 +115,12 @@ describe('launch readiness Task 3 instrumentation invariants', () => {
           expect(surface).not.toBeNull();
           expect(launchEventPropertyAllowlist.surface).toContain(surface);
         }
-        if (eventName === 'setup_progress') {
+        if (eventName === 'setup_guide_intent') {
           const step = extractPropertyMatch(tag, 'step');
           expect(step).not.toBeNull();
           expect(launchEventPropertyAllowlist.step).toContain(step);
         }
-        if (eventName === 'first_pass_intent') {
+        if (eventName === 'sample_view_intent') {
           const phase = extractPropertyMatch(tag, 'phase');
           expect(phase).not.toBeNull();
           expect(launchEventPropertyAllowlist.phase).toContain(phase);
@@ -163,8 +155,8 @@ describe('launch readiness Task 3 instrumentation invariants', () => {
     }
 
     expect(discoveredEventNames.has('setup_intent')).toBe(true);
-    expect(discoveredEventNames.has('setup_progress')).toBe(true);
-    expect(discoveredEventNames.has('first_pass_intent')).toBe(true);
+    expect(discoveredEventNames.has('setup_guide_intent')).toBe(true);
+    expect(discoveredEventNames.has('sample_view_intent')).toBe(true);
     expect(discoveredEventNames.has('gate_result_intent')).toBe(true);
     expect(discoveredEventNames.has('feedback_intent')).toBe(true);
     expect(discoveredClickPlacements.has('github_nav')).toBe(true);
@@ -173,7 +165,7 @@ describe('launch readiness Task 3 instrumentation invariants', () => {
   });
 
   it('documents synthetic protocol invariants with explicit fields and no completion status', () => {
-    const protocol = readArtifact('.superpowers/sdd/launch-readiness/task-3-measurement-protocol.md');
+    const protocol = readArtifact(measurementProtocolPath);
     const fixture = readJsonArtifact<{
       captureFields: string[];
       sessions: Array<{
@@ -183,14 +175,14 @@ describe('launch readiness Task 3 instrumentation invariants', () => {
         ordered_stages: string[];
       }>;
       events: { allowedEventNames: string[]; schema: Record<string, string[]> };
-      analysis: { analysisWindowDays: number; sessionOrderWindowHours: number; timeToInstallLimitSeconds: number };
+      analysis: { analysisWindowDays: number; sessionOrderWindowHours: number; timeToSetupGuideLimitSeconds: number };
       scoring: {
         attributionCorrectness: { formula: string };
         unsafeAssumptionRate: { formula: string };
         frictionRate: { formula: string };
       };
       protocolStatus: { actualSessionsCompleted: boolean; actualSessionsPending: number };
-    }>('.superpowers/sdd/launch-readiness/task-3-measurement-fixture.json');
+    }>(measurementFixturePath);
 
     for (const section of expectedProtocolSections) {
       expect(protocol).toContain(section);
@@ -212,8 +204,8 @@ describe('launch readiness Task 3 instrumentation invariants', () => {
         'fixture_id',
         'start_ts_utc',
         'event_trace',
-        'time_to_install_seconds',
-        'time_to_first_pass_seconds',
+        'time_to_setup_guide_seconds',
+        'time_to_sample_view_seconds',
         'unsafe_assumptions_count',
         'attribution_observed',
         'friction_points',
@@ -226,13 +218,13 @@ describe('launch readiness Task 3 instrumentation invariants', () => {
     expect(fixture.scoring.frictionRate.formula).toContain('friction_points');
     expect(fixture.analysis.analysisWindowDays).toBeGreaterThan(0);
     expect(fixture.analysis.sessionOrderWindowHours).toBeGreaterThan(0);
-    expect(fixture.analysis.timeToInstallLimitSeconds).toBeGreaterThan(0);
+    expect(fixture.analysis.timeToSetupGuideLimitSeconds).toBeGreaterThan(0);
 
     expect(fixture.sessions.map((session) => session.session_type)).toContain('technical');
     expect(fixture.sessions.map((session) => session.session_type)).toContain('cross-functional');
     expect(
       fixture.sessions.filter((session) => session.session_type === 'cross-functional')[0]?.required_fields,
-    ).toContain('time_to_first_pass_seconds');
+    ).toContain('time_to_sample_view_seconds');
     expect(fixture.sessions.length).toBe(2);
   });
 

@@ -14,10 +14,10 @@ const launchFunnelEventSchema = {
     ],
   },
   audience_changed: { audience: ['engineering', 'release', 'governance'] },
-  setup_intent: { surface: ['hero', 'install', 'navigation'] },
-  setup_progress: { step: ['open_setup_guide', 'open_install_section'] },
+  setup_intent: { surface: ['hero', 'navigation'] },
+  setup_guide_intent: { step: ['open_setup_guide'] },
+  sample_view_intent: { phase: ['sample_view'] },
   gate_result_intent: { result: ['fail_demo', 'pass_demo'] },
-  first_pass_intent: { phase: ['first_pass'] },
   feedback_intent: {
     surface: ['footer', 'footer_nav', 'feedback_nav', 'feedback_footer', 'feedback_footer_nav', 'navigation'],
   },
@@ -61,6 +61,19 @@ function sanitizeProperties(eventName, properties) {
   return sanitized;
 }
 
+function sanitizeOutboundProperties(eventName, properties) {
+  const schema = launchFunnelEventSchema[eventName];
+  if (!schema || typeof properties !== 'object' || properties === null) return null;
+
+  const scrubbed = {};
+  for (const [property, allowed] of Object.entries(schema)) {
+    const value = sanitizeProperty(eventName, property, properties[property]);
+    if (!value || !allowed.includes(value)) return null;
+    scrubbed[property] = value;
+  }
+  return scrubbed;
+}
+
 function parseEventProperties(element, eventName) {
   const properties = {};
 
@@ -79,11 +92,73 @@ function parseCtaProperties(element) {
   return sanitizeProperties('cta_clicked', { placement: element.dataset.analytics });
 }
 
+function isLikelyAutomatedVisitor() {
+  const userAgent = (navigator.userAgent || '').toLowerCase();
+  if (typeof navigator.webdriver === 'boolean' && navigator.webdriver) return true;
+  return /headless|puppeteer|playwright|selenium|bot|spider|crawl/i.test(userAgent);
+}
+
 function track(eventName, properties = {}) {
   if (!window.posthog?.capture) return;
-  const sanitized = sanitizeProperties(eventName, properties);
+  const normalizedName = String(eventName || '');
+  const sanitized = sanitizeProperties(normalizedName, properties);
   if (!sanitized) return;
-  window.posthog.capture(eventName, sanitized);
+  window.posthog.capture(normalizedName, sanitized);
+}
+
+function stripSdkMetadata(event) {
+  const properties = event?.properties;
+  if (!properties || typeof properties !== 'object') return event;
+
+  const scrubbed = {};
+  for (const [key, value] of Object.entries(properties)) {
+    if (key.startsWith('$')) continue;
+    const lower = key.toLowerCase();
+    if (
+      lower === 'current_url' ||
+      lower === 'page_url' ||
+      lower === 'url' ||
+      lower === 'referrer' ||
+      lower === 'referrer_url' ||
+      lower === 'browser_name' ||
+      lower === 'browser_version' ||
+      lower === 'os_name' ||
+      lower === 'os_version' ||
+      lower === 'screen_width' ||
+      lower === 'screen_height' ||
+      lower === 'screen_dpr' ||
+      lower === 'viewport_width' ||
+      lower === 'viewport_height' ||
+      lower === 'locale' ||
+      lower === 'language' ||
+      lower === 'user_agent' ||
+      lower === 'useragent' ||
+      lower === 'timezone' ||
+      lower === 'ip' ||
+      lower === 'ip_address' ||
+      lower === 'timestamp' ||
+      lower === 'uuid' ||
+      lower === 'event_id' ||
+      lower === 'distinct_id' ||
+      lower === 'uuid_ts' ||
+      lower === 'current_page' ||
+      lower === 'host' ||
+      lower === 'browser' ||
+      lower === 'device' ||
+      lower === 'screen' ||
+      lower === 'os'
+    ) {
+      continue;
+    }
+    scrubbed[key] = value;
+  }
+  return { ...event, properties: sanitizeOutboundProperties(event.event, scrubbed) };
+}
+
+function buildBeforeSend(event) {
+  if (!event || typeof event !== 'object') return null;
+  if (isLikelyAutomatedVisitor() && !window.__gitpinAllowAutomationTracking) return null;
+  return stripSdkMetadata(event);
 }
 
 function getEventName(element) {
@@ -101,18 +176,23 @@ function getEventProperties(element, eventName) {
 }
 
 if (projectKey && apiHost) {
-  const posthog = [];
-  posthog._i = [];
-  posthog.__SV = 1;
-  posthog.capture = (...args) => posthog.push(['capture', ...args]);
-  posthog.init = (key, config) => {
-    posthog._i.push([key, config]);
-    const script = document.createElement('script');
-    script.async = true;
-    script.crossOrigin = 'anonymous';
-    script.src = `${apiHost.replace('.i.posthog.com', '-assets.i.posthog.com')}/static/array.js`;
-    document.head.append(script);
-  };
+  const posthog = window.posthog || [];
+  window.posthog = posthog;
+  posthog.__SV = posthog.__SV || 1;
+  if (!Array.isArray(posthog._i)) posthog._i = [];
+  if (typeof posthog.capture !== 'function') {
+    posthog.capture = (...args) => posthog.push(['capture', ...args]);
+  }
+  if (typeof posthog.init !== 'function') {
+    posthog.init = (key, config) => {
+      posthog._i.push([key, config]);
+      const script = document.createElement('script');
+      script.async = true;
+      script.crossOrigin = 'anonymous';
+      script.src = `${apiHost.replace('.i.posthog.com', '-assets.i.posthog.com')}/static/array.js`;
+      document.head.append(script);
+    };
+  }
   window.posthog = posthog;
   window.gitpinTrack = (event, properties = {}) => track(event, properties);
   posthog.init(projectKey, {
@@ -123,6 +203,7 @@ if (projectKey && apiHost) {
     cookieless_mode: 'always',
     disable_session_recording: true,
     person_profiles: 'never',
+    before_send: buildBeforeSend,
   });
 
   for (const link of document.querySelectorAll('[data-analytics], [data-analytics-event]')) {

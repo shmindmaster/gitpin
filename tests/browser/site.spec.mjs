@@ -173,14 +173,52 @@ test('keeps the primary content within the viewport', async ({ page }) => {
   await expect(page.getByRole('link', { name: /Add the PR gate/i })).toBeVisible();
 });
 
-test('launch-funnel analytics events only emit strict allowlisted payloads', async ({ page }) => {
+test('launch-funnel analytics events only emit strict allowlisted payloads and strip SDK enrichment', async ({
+  page,
+}) => {
   await page.route('https://us-assets.i.posthog.com/static/array.js', async (route) => {
     await route.fulfill({
       body: `
-        window.__posthogInitConfig = window.posthog?._i?.[0]?.[1] || null;
+        const posthog = window.posthog || [];
+        window.posthog = posthog;
+        if (!Array.isArray(posthog._i)) posthog._i = [];
+        window.__posthogInitConfig = posthog._i?.[0]?.[1] || null;
         window.__capturedEvents = [];
-        window.posthog = {
-          capture: (...args) => window.__capturedEvents.push(args),
+        const getPosthogConfig = () =>
+          window.__posthogInitConfig || window.posthog?._i?.[0]?.[1] || null;
+        const applyBeforeSend = (payload) => {
+          const config = getPosthogConfig();
+          const beforeSend = config?.before_send;
+          return beforeSend ? beforeSend(payload) : payload;
+        };
+        posthog.capture = (...args) => {
+          const [eventName, properties] = args;
+          const payload = {
+            event: eventName,
+            properties: {
+              ...properties,
+              $current_url: 'https://example.com/page',
+              $pageview: false,
+              $lib: 'js',
+              current_url: 'https://example.com/page',
+              page_url: 'https://example.com/page',
+              url: 'https://example.com/page?sample=1',
+              referrer: 'https://example.com/entry',
+              host: 'example.com',
+              browser: 'chromium',
+              device: 'desktop',
+              screen: '1920x1080',
+              os: 'macOS',
+              ip: '127.0.0.1',
+              screen_resolution: '1920x1080',
+            },
+          };
+          const filtered = applyBeforeSend(payload);
+          if (filtered) window.__capturedEvents.push(filtered);
+        };
+        posthog.init = (key, config) => {
+          posthog._i.push([key, config]);
+          window.__posthogInitConfig = config;
         };
       `,
       contentType: 'application/javascript',
@@ -193,11 +231,14 @@ test('launch-funnel analytics events only emit strict allowlisted payloads', asy
           <head>
             <meta name="posthog-project-key" content="phc_test" />
             <meta name="posthog-api-host" content="https://us.i.posthog.com" />
+            <script>
+              window.__gitpinAllowAutomationTracking = true;
+            </script>
           </head>
           <body>
             <a id="setup" data-analytics="setup_hero" data-analytics-event="setup_intent" data-analytics-prop-surface="hero" href="#">Start setup</a>
-            <a id="progress" data-analytics="setup_guide" data-analytics-event="setup_progress" data-analytics-prop-step="open_setup_guide" href="#">Open setup guide</a>
-            <a id="first-pass" data-analytics="first_pass" data-analytics-event="first_pass_intent" data-analytics-prop-phase="first_pass" href="#">Run first pass</a>
+            <a id="progress" data-analytics="setup_guide" data-analytics-event="setup_guide_intent" data-analytics-prop-step="open_setup_guide" href="#">Open setup guide</a>
+            <a id="sample-view" data-analytics="first_pass" data-analytics-event="sample_view_intent" data-analytics-prop-phase="sample_view" href="#">View sample</a>
             <a id="pass-result" data-analytics="result_pass" data-analytics-event="gate_result_intent" data-analytics-prop-result="pass_demo" href="#">PASS result</a>
             <a id="fail-result" data-analytics="result_fail" data-analytics-event="gate_result_intent" data-analytics-prop-result="fail_demo" href="#">FAIL result</a>
             <a id="feedback" data-analytics="feedback_footer" data-analytics-event="feedback_intent" data-analytics-prop-surface="footer" href="#">Feedback</a>
@@ -218,7 +259,7 @@ test('launch-funnel analytics events only emit strict allowlisted payloads', asy
 
   await page.getByRole('link', { name: 'Start setup' }).click();
   await page.getByRole('link', { name: 'Open setup guide' }).click();
-  await page.getByRole('link', { name: 'Run first pass' }).click();
+  await page.getByRole('link', { name: 'View sample' }).click();
   await page.getByRole('link', { name: 'PASS result' }).click();
   await page.getByRole('link', { name: 'FAIL result' }).click();
   await page.getByRole('link', { name: 'Feedback' }).click();
@@ -228,15 +269,49 @@ test('launch-funnel analytics events only emit strict allowlisted payloads', asy
   await page.locator('#invalid-cta-extra-prop').click();
 
   await expect
-    .poll(() => page.evaluate(() => window.__capturedEvents))
+    .poll(async () => page.evaluate(() => window.__capturedEvents.filter(Boolean)))
     .toEqual([
-      ['setup_intent', { surface: 'hero' }],
-      ['setup_progress', { step: 'open_setup_guide' }],
-      ['first_pass_intent', { phase: 'first_pass' }],
-      ['gate_result_intent', { result: 'pass_demo' }],
-      ['gate_result_intent', { result: 'fail_demo' }],
-      ['feedback_intent', { surface: 'footer' }],
+      { event: 'setup_intent', properties: { surface: 'hero' } },
+      { event: 'setup_guide_intent', properties: { step: 'open_setup_guide' } },
+      { event: 'sample_view_intent', properties: { phase: 'sample_view' } },
+      { event: 'gate_result_intent', properties: { result: 'pass_demo' } },
+      { event: 'gate_result_intent', properties: { result: 'fail_demo' } },
+      { event: 'feedback_intent', properties: { surface: 'footer' } },
     ]);
+
+  await expect
+    .poll(async () =>
+      page.evaluate(() => {
+        const keys = Object.keys(window.__capturedEvents?.[0]?.properties || {});
+        const sensitiveKeys = [
+          'url',
+          'referrer',
+          'host',
+          'browser',
+          'device',
+          'screen',
+          'screen_resolution',
+          'ip',
+          'current_url',
+          'page_url',
+          'url',
+          'referrer',
+          '$current_url',
+          '$pageview',
+          '$lib',
+        ];
+        return {
+          hasSensitiveKeys: keys.some((key) => sensitiveKeys.includes(key)),
+          keys,
+        };
+      }),
+    )
+    .toEqual({ hasSensitiveKeys: false, keys: ['surface'] });
+
+  const capturedEvents = await page.evaluate(() =>
+    window.__capturedEvents.filter(Boolean).map((event) => Object.keys(event.properties || {})),
+  );
+  expect(capturedEvents).toEqual([['surface'], ['step'], ['phase'], ['result'], ['result'], ['surface']]);
 
   await expect
     .poll(() => page.evaluate(() => window.__posthogInitConfig))
@@ -246,4 +321,60 @@ test('launch-funnel analytics events only emit strict allowlisted payloads', asy
         capture_pageleave: false,
       }),
     );
+});
+
+test('skips browser or test sessions by default in analytics capture', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'webdriver', {
+      get: () => true,
+      configurable: true,
+    });
+  });
+  await page.route('https://us-assets.i.posthog.com/static/array.js', async (route) => {
+    await route.fulfill({
+      body: `
+        const posthog = window.posthog || [];
+        window.posthog = posthog;
+        if (!Array.isArray(posthog._i)) posthog._i = [];
+        window.__posthogInitConfig = posthog._i?.[0]?.[1] || null;
+        window.__capturedEvents = [];
+        posthog.capture = (...args) => {
+          const [eventName, properties] = args;
+          const config = window.__posthogInitConfig || window.posthog?._i?.[0]?.[1] || null;
+          const beforeSend = config?.before_send;
+          const filtered = beforeSend ? beforeSend({ event: eventName, properties }) : null;
+          if (filtered) window.__capturedEvents.push(filtered);
+        };
+        posthog.init = (key, config) => {
+          window.__posthogInitConfig = config;
+          posthog._i.push([key, config]);
+        };
+      `,
+      contentType: 'application/javascript',
+    });
+  });
+  await page.route('http://127.0.0.1:4173/task-3-analytics-fixture-auto', async (route) => {
+    await route.fulfill({
+      body: `
+        <html>
+          <head>
+            <meta name="posthog-project-key" content="phc_test" />
+            <meta name="posthog-api-host" content="https://us.i.posthog.com" />
+          </head>
+          <body>
+            <a id="setup" data-analytics="setup_hero" data-analytics-event="setup_intent" data-analytics-prop-surface="hero" href="#">Start setup</a>
+            <a id="progress" data-analytics="setup_guide" data-analytics-event="setup_guide_intent" data-analytics-prop-step="open_setup_guide" href="#">Open setup guide</a>
+            <script src="/analytics.js"></script>
+          </body>
+        </html>
+      `,
+      contentType: 'text/html',
+    });
+  });
+
+  await page.goto('/task-3-analytics-fixture-auto');
+  await page.getByRole('link', { name: 'Start setup' }).click();
+  await page.getByRole('link', { name: 'Open setup guide' }).click();
+
+  await expect.poll(() => page.evaluate(() => window.__capturedEvents.length)).toEqual(0);
 });
