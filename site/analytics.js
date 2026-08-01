@@ -33,7 +33,6 @@ function getAnalyticsStatus() {
 function renderAnalyticsControls() {
   for (const control of document.querySelectorAll('[data-analytics-opt-out]')) {
     control.disabled = analyticsOptedOut;
-    control.setAttribute('aria-pressed', String(analyticsOptedOut));
   }
   for (const status of document.querySelectorAll('[data-analytics-opt-out-status]')) {
     status.textContent = getAnalyticsStatus();

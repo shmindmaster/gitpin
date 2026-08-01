@@ -58,6 +58,15 @@ Independent review then identified that PostHog could make an initialization-tim
 that unexpected request. Adding `advanced_disable_flags: true` closed the bypass; the strengthened test and complete
 suite were rerun before the remediation commit.
 
+Hosted review subsequently raised four findings. The one-way opt-out control incorrectly exposed toggle-style
+`aria-pressed` state even though activation permanently disables the control; the attribute was removed and the
+keyboard, disabled-state, persistence, and status coverage now explicitly assert the resulting button semantics. The
+other three findings proposed replacing `advanced_disable_flags` with `advanced_disable_decide`. They were rejected
+against the current official PostHog type contract at commit
+`57f371e540968afaa8a0fe9aec8a53ef1db6b654`: `advanced_disable_flags` is the current option, while
+`advanced_disable_decide` is explicitly deprecated in favor of it. The production option, request harness, and earlier
+report statement therefore remain unchanged.
+
 ## Full validation evidence
 
 - `pnpm validate` — passed on rerun: 15 Vitest files, 88 tests, lint, format check, typecheck, client/CI/env/MCP/tag

@@ -128,17 +128,20 @@ test('exposes a keyboard-operable persistent analytics opt-out on the homepage a
   await page.goto('/');
   const homepageControl = page.getByRole('button', { name: 'Turn off website analytics' });
   await expect(homepageControl).toBeVisible();
+  expect(await homepageControl.getAttribute('aria-pressed')).toBeNull();
   await homepageControl.focus();
   await page.keyboard.press('Enter');
   await expect(page.locator('[data-analytics-opt-out-status]')).toHaveText(
     'Website analytics are off on this browser.',
   );
   await expect(homepageControl).toBeDisabled();
+  expect(await homepageControl.getAttribute('aria-pressed')).toBeNull();
 
   await page.goto('/privacy.html');
   const privacyControl = page.getByRole('button', { name: 'Turn off website analytics' });
   await expect(privacyControl).toBeVisible();
   await expect(privacyControl).toBeDisabled();
+  expect(await privacyControl.getAttribute('aria-pressed')).toBeNull();
   await expect(page.locator('[data-analytics-opt-out-status]')).toHaveText(
     'Website analytics are off on this browser.',
   );
