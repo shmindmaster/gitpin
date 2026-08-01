@@ -1,6 +1,8 @@
-import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { dirname, join } from 'node:path';
+import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
@@ -75,6 +77,24 @@ function readArtifact(relativePath: string): string {
 
 function readArtifactJson(relativePath: string): unknown {
   return JSON.parse(readArtifact(relativePath));
+}
+
+function verifyArtifactFromCleanCheckout(artifactPath: string, workspaceDirectory: string): string {
+  try {
+    execFileSync(
+      process.execPath,
+      [join(rootDirectory, 'scripts/build-pr-gate-fail-to-pass-artifact.mjs'), '--verify', '--artifact', artifactPath],
+      { cwd: workspaceDirectory, encoding: 'utf8', stdio: 'pipe', windowsHide: true },
+    );
+    return '';
+  } catch (error) {
+    if (typeof error !== 'object' || error === null) return '';
+    const processError = error as { stdout?: string | Buffer; stderr?: string | Buffer; message?: string };
+    return [processError.stdout, processError.stderr, processError.message]
+      .filter((value): value is string | Buffer => value !== undefined)
+      .map((value) => value.toString())
+      .join('\n');
+  }
 }
 
 function detectUnmarkedLegacyBranding(relativePath: string, fileContent: string): string[] {
@@ -313,6 +333,49 @@ describe('public launch truth', () => {
     expect(markdown).toContain(artifact.fixture.head);
     expect(markdown).toContain(artifact.passCase.coverage.citation);
   });
+
+  it('rejects a tampered advertised artifact checksum during deterministic artifact verification', () => {
+    const temporaryDirectory = mkdtempSync(join(tmpdir(), 'gitpin-artifact-checksum-'));
+    const artifactPath = join(temporaryDirectory, 'pr-gate-fail-to-pass.artifact.json');
+
+    try {
+      const artifact = readArtifactJson('docs/demos/pr-gate-fail-to-pass.artifact.json') as {
+        reproducibility: { artifactSha256: string };
+      };
+      artifact.reproducibility.artifactSha256 = '0'.repeat(64);
+      writeFileSync(artifactPath, `${JSON.stringify(artifact, null, 2)}\n`, 'utf8');
+
+      const verificationFailure = verifyArtifactFromCleanCheckout(artifactPath, temporaryDirectory);
+
+      expect(verificationFailure).toContain('advertised reproducibility.artifactSha256 does not match');
+    } finally {
+      rmSync(temporaryDirectory, { recursive: true, force: true });
+    }
+  }, 15_000);
+
+  it('reports malformed artifact shapes deterministically before built-CLI preflight', () => {
+    const temporaryDirectory = mkdtempSync(join(tmpdir(), 'gitpin-artifact-shape-'));
+    const artifactPath = join(temporaryDirectory, 'pr-gate-fail-to-pass.artifact.json');
+
+    try {
+      for (const [artifactJson, expectedMessage] of [
+        ['{}\n', 'expected reproducibility to be a JSON object.'],
+        [
+          '{"reproducibility": {}}\n',
+          'expected reproducibility.artifactSha256 to be a 64-character lowercase hexadecimal string.',
+        ],
+      ]) {
+        writeFileSync(artifactPath, artifactJson, 'utf8');
+
+        const verificationFailure = verifyArtifactFromCleanCheckout(artifactPath, temporaryDirectory);
+
+        expect(verificationFailure).toContain(expectedMessage);
+        expect(verificationFailure).not.toContain('Expected built GitPin CLI');
+      }
+    } finally {
+      rmSync(temporaryDirectory, { recursive: true, force: true });
+    }
+  }, 15_000);
 
   it('keeps public release/version assertions on the current package version', () => {
     for (const artifact of publicArtifacts) {
