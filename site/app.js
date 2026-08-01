@@ -1,24 +1,24 @@
 const audienceContent = {
-  technical: {
-    question: 'Where is bearer authentication enforced?',
-    fact: 'HTTP requests require bearer authentication.',
-    known: 'Directly supported by committed source.',
-    inference: 'Authentication is part of the remote trust boundary.',
-    gap: 'Production endpoint ownership is not registered.',
+  engineering: {
+    question: 'Did the agent cover every material file it changed?',
+    fact: 'Every material changed path must map to a named claim.',
+    known: 'Coverage is checked against the merge-base diff.',
+    inference: 'Reviewers can see which claims cover which files.',
+    gap: 'GitPin does not judge whether a claim is semantically true.',
   },
-  product: {
-    question: 'What can users trust in an EvidenceBrief?',
-    fact: 'Every known fact includes a path, line, and commit SHA.',
-    known: 'Evidence selection remains stable across audiences.',
-    inference: 'Cross-functional reviews can share one evidence set.',
-    gap: 'User-validation evidence is not registered.',
+  release: {
+    question: 'Was this evidence generated for the exact pull-request head?',
+    fact: 'Each locator is re-hashed at the full base or head commit SHA.',
+    known: 'Dirty work and stale indexes are excluded.',
+    inference: 'A passing required check can gate merge on exact committed evidence.',
+    gap: 'Tests and release approval remain separate controls.',
   },
-  operations: {
-    question: 'What is exposed by the remote transport?',
-    fact: 'HTTP snapshots contain documentation and manifests only.',
-    known: 'Source code and dirty work are excluded from the image.',
-    inference: 'Snapshot freshness belongs in the deployment runbook.',
-    gap: 'A production endpoint has not been deployed.',
+  governance: {
+    question: 'Can a pull request weaken its own evidence policy?',
+    fact: 'Policy is loaded from the trusted base branch.',
+    known: 'The submitted manifest is read from the pull-request head.',
+    inference: 'Policy and evidence have separate trust origins.',
+    gap: 'GitPin verifies evidence integrity, not business truth.',
   },
 };
 
