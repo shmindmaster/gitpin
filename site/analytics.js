@@ -284,6 +284,7 @@ if (!analyticsOptedOut && projectKey && apiHost) {
   window.gitpinTrack = (event, properties = {}) => track(event, properties);
   posthog.init(projectKey, {
     api_host: apiHost,
+    advanced_disable_flags: true,
     autocapture: false,
     capture_pageview: false,
     capture_pageleave: false,

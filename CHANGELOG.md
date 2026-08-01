@@ -9,7 +9,7 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 ### Changed
 
 - Align package, MCP, Action, documentation, website, and generated demo release surfaces on the 0.6.2 candidate.
-- Send `$geoip_disable: true` on every permitted website analytics event while preserving the strict event and property allowlist.
+- Send `$geoip_disable: true` on every permitted website analytics event, disable feature-flag and remote-configuration requests, and preserve the strict event and property allowlist.
 
 ### Fixed
 

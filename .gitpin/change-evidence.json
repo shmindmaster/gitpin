@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "summary": "GitPin 0.6.2 adds a fail-closed persistent website analytics opt-out, disables GeoIP enrichment on permitted events, preserves strict telemetry boundaries, and aligns the complete release candidate surface while retaining the published v0.6.1 self-gate bootstrap.",
+  "summary": "GitPin 0.6.2 adds a fail-closed persistent website analytics opt-out, disables GeoIP enrichment and feature-flag requests, preserves strict telemetry boundaries, and aligns the complete release candidate surface while retaining the published v0.6.1 self-gate bootstrap.",
   "claims": [
     {
       "id": "V062-ANALYTICS-PRIVACY",
-      "statement": "The static website exposes a persistent keyboard-operable analytics opt-out, prevents SDK load after stored opt-out or storage failure, stops runtime capture, sends geo-IP suppression, and proves the strict request boundary across browsers.",
+      "statement": "The static website exposes a persistent keyboard-operable analytics opt-out, prevents SDK load after stored opt-out or storage failure, stops runtime capture, sends geo-IP suppression, disables feature-flag requests, and proves the strict request boundary across browsers.",
       "covers": [
         "site/analytics.js",
         "site/index.html",

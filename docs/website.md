@@ -44,7 +44,9 @@ Website collection is intentionally narrow:
 | `audience_changed` | `audience` only |
 | `feedback_intent` | `surface` only (`footer`, `footer_nav`, `feedback_nav`, `feedback_footer`, `feedback_footer_nav`, `navigation`) |
 
-Autocapture, pageview/pageleave capture, and session replay are disabled, person profiles are never created, and the site uses cookieless mode.
+Autocapture, pageview/pageleave capture, feature flags and remote configuration, and session replay are disabled,
+person profiles are never created, and the site uses cookieless mode. Disabling feature flags prevents the SDK from
+making an initialization-time `/flags` request outside the explicit launch-funnel event transport.
 
 Launch-funnel transport fields are explicit and constrained before `before_send` strips SDK enrichment:
 

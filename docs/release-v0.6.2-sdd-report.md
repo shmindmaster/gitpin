@@ -21,6 +21,7 @@ The website must:
 - stop subsequent capture immediately when opt-out is activated at runtime;
 - fail closed without loading analytics when preference storage cannot be read;
 - add `$geoip_disable: true` to every permitted outbound event;
+- prevent feature-flag and remote-configuration requests outside the explicit event transport;
 - preserve the strict event/property/transport allowlist, `traffic_class`, autoplay silence, and removal of
   URL/referrer/browser/device and canary-shaped enrichment;
 - distinguish the active browser controls from the still-unverified PostHog project-level raw-IP discard setting.
@@ -49,8 +50,13 @@ pnpm exec playwright test tests/browser/site.spec.mjs tests/browser/analytics-pr
 ```
 
 The request-level harness executes the real `site/analytics.js`, substitutes only the external PostHog SDK, and
-inspects browser requests to the capture endpoint. It proves the SDK-load boundary, exact outbound JSON, runtime stop,
-autoplay silence, canary absence, and storage failure behavior.
+inspects browser requests to the capture and feature-flag endpoints. It proves the SDK-load boundary, exact outbound
+JSON, runtime stop, autoplay silence, canary absence, storage failure behavior, and absence of feature-flag requests.
+
+Independent review then identified that PostHog could make an initialization-time `/flags` request outside
+`before_send`. The strengthened request harness reproduced the issue: the focused geo-IP test failed with a canary in
+that unexpected request. Adding `advanced_disable_flags: true` closed the bypass; the strengthened test and complete
+suite were rerun before the remediation commit.
 
 ## Full validation evidence
 

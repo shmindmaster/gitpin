@@ -6,6 +6,7 @@ const siteIndex = readFileSync(resolve(process.cwd(), 'site/index.html'), 'utf8'
 const optOutStorageKey = 'gitpin.analytics.opt_out';
 const sdkUrl = 'https://us-assets.i.posthog.com/static/array.js';
 const captureUrl = 'https://us.i.posthog.com/e/';
+const flagsUrl = 'https://us.i.posthog.com/flags/?v=2';
 const canary = 'gitpin-private-canary-never-send';
 
 const analyticsFixture = `
@@ -44,6 +45,7 @@ function configuredIndex() {
 async function installInspectableAnalytics(page, fixtureHtml = analyticsFixture) {
   const sdkRequests = [];
   const captureRequests = [];
+  const unexpectedPosthogRequests = [];
 
   page.on('request', (request) => {
     if (request.url() === sdkUrl) sdkRequests.push(request.url());
@@ -53,6 +55,9 @@ async function installInspectableAnalytics(page, fixtureHtml = analyticsFixture)
         method: request.method(),
       });
     }
+    if (request.url().startsWith('https://us.i.posthog.com/') && request.url() !== captureUrl) {
+      unexpectedPosthogRequests.push({ body: request.postData() || '', url: request.url() });
+    }
   });
 
   await page.route(sdkUrl, async (route) => {
@@ -61,6 +66,13 @@ async function installInspectableAnalytics(page, fixtureHtml = analyticsFixture)
         const queuedPosthog = window.posthog || [];
         const config = queuedPosthog._i?.[0]?.[1] || null;
         let optedOut = false;
+        if (!config?.advanced_disable_flags) {
+          fetch('${flagsUrl}', {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({ token: 'phc_test', canary: '${canary}' }),
+          });
+        }
         window.posthog = {
           capture(eventName, properties) {
             if (optedOut) return;
@@ -102,11 +114,14 @@ async function installInspectableAnalytics(page, fixtureHtml = analyticsFixture)
   await page.route(captureUrl, async (route) => {
     await route.fulfill({ status: 200, body: 'ok', headers: { 'access-control-allow-origin': '*' } });
   });
+  await page.route('https://us.i.posthog.com/flags/**', async (route) => {
+    await route.fulfill({ status: 200, body: '{}', headers: { 'access-control-allow-origin': '*' } });
+  });
   await page.route('http://127.0.0.1:4173/analytics-privacy-fixture', async (route) => {
     await route.fulfill({ body: fixtureHtml, contentType: 'text/html' });
   });
 
-  return { captureRequests, sdkRequests };
+  return { captureRequests, sdkRequests, unexpectedPosthogRequests };
 }
 
 test('exposes a keyboard-operable persistent analytics opt-out on the homepage and privacy page', async ({ page }) => {
@@ -189,6 +204,7 @@ test('sends only the allowlisted payload with geo-IP enrichment disabled and no 
   expect(request.body).not.toContain('referrer');
   expect(request.body).not.toContain('browser');
   expect(request.body).not.toContain('device');
+  expect(requests.unexpectedPosthogRequests).toEqual([]);
 });
 
 test('emits no capture request during the automatic hero playback', async ({ page }) => {
