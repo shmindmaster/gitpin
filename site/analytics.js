@@ -108,7 +108,7 @@ function track(eventName, properties = {}) {
 
 function stripSdkMetadata(event) {
   const properties = event?.properties;
-  if (!properties || typeof properties !== 'object') return event;
+  if (!properties || typeof properties !== 'object') return null;
 
   const scrubbed = {};
   for (const [key, value] of Object.entries(properties)) {
@@ -152,7 +152,9 @@ function stripSdkMetadata(event) {
     }
     scrubbed[key] = value;
   }
-  return { ...event, properties: sanitizeOutboundProperties(event.event, scrubbed) };
+  const sanitized = sanitizeOutboundProperties(event.event, scrubbed);
+  if (!sanitized) return null;
+  return { ...event, properties: sanitized };
 }
 
 function buildBeforeSend(event) {

@@ -313,6 +313,14 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and s
   );
   expect(capturedEvents).toEqual([['surface'], ['step'], ['phase'], ['result'], ['result'], ['surface']]);
 
+  const invalidOutbound = await page.evaluate(() =>
+    window.__posthogInitConfig?.before_send?.({
+      event: 'setup_intent',
+      properties: { surface: 'secret-value', $current_url: 'https://example.com/private' },
+    }),
+  );
+  expect(invalidOutbound).toBeNull();
+
   await expect
     .poll(() => page.evaluate(() => window.__posthogInitConfig))
     .toEqual(
