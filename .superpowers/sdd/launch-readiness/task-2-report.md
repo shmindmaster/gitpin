@@ -46,6 +46,5 @@
   - `docs/launch.md`
   - `src/launch-readiness-truth.test.ts`
   - `.superpowers/sdd/launch-readiness/task-2-report.md`
-  - `.superpowers/sdd/launch-readiness/progress.md` (included in Task 2 scope)
 - Verification run: `pnpm test -- src/launch-readiness-truth.test.ts` and `pnpm validate`
 - Status: implemented
