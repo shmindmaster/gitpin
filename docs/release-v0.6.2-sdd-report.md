@@ -139,14 +139,15 @@ The current release version is 0.6.2 in:
 The dated 0.6.1 and 0.6.0 changelog history and links remain unchanged. `ROADMAP.md` retains its historical
 “completed before the 0.6.1 candidate” heading.
 
-## Release workflow expectations
+## Release workflow and post-publication self-gate
 
-The repository self-gate intentionally remains pinned to the already-published `shmindmaster/gitpin@v0.6.1` during
-the 0.6.2 candidate PR. Its explicit bootstrap comment and regression test require a separate post-publication PR to
-advance the self-gate to `v0.6.2`. Pointing the candidate PR at a not-yet-existent immutable Action tag would prevent
-the required check from materializing.
+The repository self-gate intentionally remained pinned to the already-published `shmindmaster/gitpin@v0.6.1` during
+the 0.6.2 candidate PR, because pointing that PR at a not-yet-existent Action tag would prevent the required check from
+materializing. After `v0.6.2` was published from `d2122379f4be315973a0bfa92bbd628e2cf7cfeb`, this separate follow-up
+advances the self-gate to the matching immutable `shmindmaster/gitpin@v0.6.2` Action. Exact-head CI and independent
+review remain required before that follow-up can merge.
 
-When separately authorized, the release sequence is:
+The staged release sequence is:
 
 1. Push the focused candidate and open a PR; require exact-head `evidence` and all Validate jobs plus independent
    review.
@@ -158,7 +159,7 @@ When separately authorized, the release sequence is:
    PostHog project destination.
 6. Independently inspect the PostHog project-level raw-IP discard setting. Until that is verified, public copy must
    not claim server-side raw-IP discard.
-7. Open the post-publication self-gate PR advancing `.github/workflows/evidence-gate.yml` to
-   `shmindmaster/gitpin@v0.6.2`, then validate it against the released Action.
+7. Advance `.github/workflows/evidence-gate.yml` to `shmindmaster/gitpin@v0.6.2` in a separate post-publication PR,
+   then validate its exact head against the released Action.
 
-None of these external publication or configuration actions is performed by this patch.
+This patch performs no external publication or configuration action and is not pushed, opened, or merged.
