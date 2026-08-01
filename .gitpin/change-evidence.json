@@ -220,11 +220,12 @@
     },
     {
       "id": "V062-LAUNCH-AND-BOOTSTRAP",
-      "statement": "Launch, setup, regression, and generated demo surfaces target 0.6.2, and the separate post-publication repository self-gate pins the matching immutable v0.6.2 Action without changing product or package behavior.",
+      "statement": "Launch, setup, regression, and generated demo surfaces target the published 0.6.2 release, the repository self-gate pins that immutable Action, and the public setup documentation clearly separates GitPin's required evidence gate from an optional CrewScore check.",
       "covers": [
         ".github/workflows/evidence-gate.yml",
         "src/gate-action.test.ts",
         "src/launch-readiness-truth.test.ts",
+        "README.md",
         "docs/pr-evidence-gate.md",
         "docs/launch.md",
         "scripts/build-pr-gate-fail-to-pass-artifact.mjs",
@@ -255,10 +256,17 @@
         },
         {
           "ref": "head",
+          "path": "README.md",
+          "lineStart": 31,
+          "lineEnd": 39,
+          "contentSha256": "ce518099a2206565524352be56457a13bbde97bcb799f37a8866e4fdbd2ebd14"
+        },
+        {
+          "ref": "head",
           "path": "docs/pr-evidence-gate.md",
-          "lineStart": 48,
-          "lineEnd": 48,
-          "contentSha256": "0f612ad152a496ac62a447903995d96f8860080d0c4f521a3abd99e8d16e4ca0"
+          "lineStart": 56,
+          "lineEnd": 80,
+          "contentSha256": "02092044e17c7be0c8b33baa9bff56d194048bba5b5dfe9eb52632a6cf7f3bb3"
         },
         {
           "ref": "head",

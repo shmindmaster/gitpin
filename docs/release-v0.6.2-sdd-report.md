@@ -147,6 +147,9 @@ materializing. After `v0.6.2` was published from `d2122379f4be315973a0bfa92bbd62
 advances the self-gate to the matching immutable `shmindmaster/gitpin@v0.6.2` Action. Exact-head CI and independent
 review remain required before that follow-up can merge.
 
+The same follow-up corrects the now-stale release-candidate banner and makes the documentation boundary explicit:
+GitPin's evidence gate stands alone, while CrewScore is an optional, separate written-control check.
+
 The staged release sequence is:
 
 1. Push the focused candidate and open a PR; require exact-head `evidence` and all Validate jobs plus independent

@@ -53,9 +53,9 @@ jobs:
 
 Use `pull_request`, never `pull_request_target`. Give the job `contents: read`, no secrets, and make it a required workflow with a GitHub ruleset so a PR cannot replace its own enforcement workflow.
 
-## CrewScore named controls
+## Optional separate check: CrewScore named controls
 
-CrewScore complements the evidence gate: it checks whether named written controls are present before execution. Keep it a separate required check and use explicit controls—not its aggregate coverage score.
+CrewScore is a separate product and is not required to use GitPin. Teams may add it as another required check when they also want to test whether named written controls are present before execution. Keep the checks independent and use explicit CrewScore controls—not its aggregate coverage score—as policy gates.
 
 ```yaml
   written-controls:
@@ -77,7 +77,7 @@ CrewScore complements the evidence gate: it checks whether named written control
           threshold: ""
 ```
 
-CrewScore observes written text only. It does not prove runtime enforcement, agent obedience, certification, or compliance. Pin its Action version and ruleset, and keep `.crewscore.yml` on the trusted base branch.
+This optional example uses CrewScore's currently published `v0.6.9` Action. CrewScore observes written text only. It does not prove runtime enforcement, agent obedience, certification, or compliance. Pin its Action version and ruleset, and keep `.crewscore.yml` on the trusted base branch.
 
 ## Local CLI
 
