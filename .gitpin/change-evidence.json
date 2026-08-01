@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "summary": "Post-publication control-plane evidence binds GitPin's own required evidence workflow to published v0.6.1 from release merge 555afdd907c4ef4646fffdfe1002a5230010cbb3.",
+  "summary": "Post-publication control-plane evidence binds GitPin's own required evidence workflow and explicitly versioned regression description to published v0.6.1 at content commit ab8d67d3b657b752594e86c1afbd38ae5c600962.",
   "claims": [
     {
       "id": "SELF-GATE-V061",
@@ -15,6 +15,13 @@
           "lineStart": 18,
           "lineEnd": 25,
           "contentSha256": "0f70c01341f6170662669368383a1131b0950f3a1b6589e432d0e14888d1a674"
+        },
+        {
+          "ref": "head",
+          "path": ".github/workflows/evidence-gate.yml",
+          "lineStart": 6,
+          "lineEnd": 7,
+          "contentSha256": "893e619df25e8e991d1fccf5091944563f0dc5b2b977e71116e5b9fc02acbdc8"
         }
       ]
     },
@@ -30,7 +37,7 @@
           "path": "src/gate-action.test.ts",
           "lineStart": 22,
           "lineEnd": 29,
-          "contentSha256": "f1f0a2022afe83e09331df31ea842cd920c9b13daeeb758e3505c2bfa9e85a8c"
+          "contentSha256": "391df5612439bcac459b7b243e6368dbaf22c60d986fd81cb7bed88b75a3f666"
         }
       ]
     }
