@@ -31,7 +31,7 @@ The trust moment is that a pull request cannot weaken the policy used to judge i
 
 ## Supporting demo: local evidence retrieval
 
-Use `npx -y gitpin@0.6.0 init --client codex` when an agent needs local, index-free evidence across repositories. Search results are candidates; `pin.prove` and `pin.verify` produce path, line, line hash, and full-SHA evidence for the PR manifest. This MCP workflow supports the gate but is not required to adopt it.
+After publication, use `npx -y gitpin@0.6.1 init --client codex` when an agent needs local, index-free evidence across repositories. Search results are candidates; `pin.prove` and `pin.verify` produce path, line, line hash, and full-SHA evidence for the PR manifest. This MCP workflow supports the gate but is not required to use it.
 
 ## Positioning
 
@@ -57,22 +57,22 @@ GitPin is maintained by Sarosh Hussain, who leads its technical direction. Pendo
 >
 > Maintained by Sarosh Hussain. Pendoah is his company and operating context.
 
-## Canonical announcement package (v0.6.0)
+## Canonical announcement candidate (v0.6.1)
 
-Canonical links for this release package:
+These are the canonical targets for the release package. Do not announce until the release gate above verifies every destination:
 
 - npm: https://www.npmjs.com/package/gitpin
-- GitHub release: https://github.com/shmindmaster/gitpin/releases/tag/v0.6.0
+- GitHub release target: https://github.com/shmindmaster/gitpin/releases/tag/v0.6.1
 - GitHub Actions evidence gate workflow: https://github.com/shmindmaster/gitpin/actions/workflows/evidence-gate.yml
 - MCP Registry entry search (live): https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.shmindmaster/gitpin&limit=20
 - Project site: https://shmindmaster.github.io/gitpin/
 - GitHub Action setup:
-  - `uses: shmindmaster/gitpin@v0.6.0` in workflow YAML
-  - CLI bootstrap: `npx -y gitpin@0.6.0 init --client codex`
+  - `uses: shmindmaster/gitpin@v0.6.1` in workflow YAML
+  - CLI bootstrap after publication: `npx -y gitpin@0.6.1 init --client codex`
 
 ## Show HN draft
 
-**GitPin 0.6.0: commit-level PR evidence for agent-authored changes**
+**GitPin 0.6.1: commit-level PR evidence for agent-authored changes**
 
 GitPin is a base-trusted PR gate that compares the merge-base diff and validates evidence claims against exact file, line, and full-SHA locations. It is designed so reviewers can independently re-check every accepted locator with `git show`.
 
@@ -81,9 +81,9 @@ For merge requests that include material file changes, GitPin enforces that requ
 Release setup for this version:
 
 ```bash
-npx -y gitpin@0.6.0 init --client codex
+npx -y gitpin@0.6.1 init --client codex
 gitpin gate --base <full-base-sha> --head <full-head-sha>
-uses: shmindmaster/gitpin@v0.6.0
+uses: shmindmaster/gitpin@v0.6.1
 ```
 
 Relevant links:
@@ -94,7 +94,7 @@ Relevant links:
 
 ## LinkedIn draft
 
-GitPin 0.6.0 is now the shipped PR evidence gate for agent-authored changes. It enforces material-path coverage and validates locators at exact commit SHAs using canonical handle or cite formats from the mini-spec, for example:
+After the release gate is complete, this draft may state: GitPin 0.6.1 is the shipped PR evidence gate for agent-authored changes. It enforces material-path coverage and validates locators at exact commit SHAs using canonical handle or cite formats from the mini-spec, for example:
 
 - canonical cite: `task-2-synthetic-pr-fixture/docs/protocol.md:5 @ 57bce1a312f6153e171b515c41727ff81e77fb3c`
 - canonical handle: `gitpin:task-2-synthetic-pr-fixture@57bce1a312f6153e171b515c41727ff81e77fb3c:docs/protocol.md:5`
@@ -106,22 +106,22 @@ Try the setup:
 
 ## X draft
 
-GitPin 0.6.0 now ships a required PR gate path-coverage loop for agent-authored changes. If a material file is changed without evidence, merge is blocked. If evidence is complete, the proof includes the canonical cite `task-2-synthetic-pr-fixture/docs/protocol.md:5 @ 57bce1a312f6153e171b515c41727ff81e77fb3c` and durable handle `gitpin:task-2-synthetic-pr-fixture@57bce1a312f6153e171b515c41727ff81e77fb3c:docs/protocol.md:5`; both can be re-checked via `git show`.
+After the release gate is complete, this draft may state: GitPin 0.6.1 ships a required PR gate path-coverage loop for agent-authored changes. If a material file is changed without evidence, merge is blocked. If evidence is complete, the proof includes the canonical cite `task-2-synthetic-pr-fixture/docs/protocol.md:5 @ 57bce1a312f6153e171b515c41727ff81e77fb3c` and durable handle `gitpin:task-2-synthetic-pr-fixture@57bce1a312f6153e171b515c41727ff81e77fb3c:docs/protocol.md:5`; both can be re-checked via `git show`.
 
 Signals to use this as infrastructure:
-- `uses: shmindmaster/gitpin@v0.6.0`
+- `uses: shmindmaster/gitpin@v0.6.1`
 - https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.shmindmaster/gitpin&limit=20
 - https://www.npmjs.com/package/gitpin
 
 ## Adaptable community post draft
 
-GitPin 0.6.0 enforces commit-pinned PR evidence for material diff paths: the gate requires coverage for changed files and checks exact file-line evidence against full SHA sources at merge time. It is intended as a trust-boundary control for review, not as a rollout claim or replacement for human code review.
+After the release gate is complete, this draft may state: GitPin 0.6.1 enforces commit-pinned PR evidence for material diff paths. The gate requires coverage for changed files and checks exact file-line evidence against full SHA sources at merge time. It is intended as a trust-boundary control for review, not as a rollout claim or replacement for human code review.
 
 Quick rollout setup:
-1) Install: `npx -y gitpin@0.6.0 init --client codex`
+1) Install: `npx -y gitpin@0.6.1 init --client codex`
 2) Configure `.gitpin/gate.yml` on the trusted base commit
 3) Add `.gitpin/change-evidence.json` in PR heads
-4) Enable `uses: shmindmaster/gitpin@v0.6.0` on PR checks
+4) Enable `uses: shmindmaster/gitpin@v0.6.1` on PR checks
 5) Verify in CI with deterministic pass/fail outputs before merge
 
 If your audience needs concrete proof of behavior, point them to the deterministic artifact in `docs/demos/pr-gate-fail-to-pass.md` and the synthetic fixture in the same directory.

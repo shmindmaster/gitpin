@@ -2,6 +2,8 @@
 
 GitPin ships a static public site in `site/`. It leads with the required PR evidence gate, explains the trust boundary, demonstrates the local EvidenceBrief companion, and links directly to source setup and contributor documentation.
 
+The source in this repository is the GitPin 0.6.1 website release candidate. A local build or browser pass does not establish that Pages has deployed this version; deployment and production verification remain release gates.
+
 The deployable surface includes a privacy page, canonical and social metadata, `robots.txt`, and a sitemap for the GitHub Pages URL. These are static release artifacts; they do not change the MCP server's read-only boundary.
 
 ## Local verification

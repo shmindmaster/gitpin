@@ -28,7 +28,7 @@ The name “RepoContext” collides with many open-source tools (often embedding
 ## Client config
 
 ```bash
-npx -y gitpin@latest init --client codex
+npx -y gitpin@0.6.1 init --client codex
 ```
 
 Or update MCP config:
@@ -38,7 +38,7 @@ Or update MCP config:
   "mcpServers": {
     "gitpin": {
       "command": "npx",
-      "args": ["-y", "gitpin@latest"],
+      "args": ["-y", "gitpin@0.6.1"],
       "env": {
         "GITPIN_REGISTRY": "/absolute/path/to/repositories.yaml"
       }

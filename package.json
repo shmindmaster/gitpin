@@ -1,6 +1,6 @@
 {
   "name": "gitpin",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "mcpName": "io.github.shmindmaster/gitpin",
   "type": "commonjs",
   "description": "Verify agent-authored change claims at exact Git commits with an evidence-first PR gate and local MCP.",

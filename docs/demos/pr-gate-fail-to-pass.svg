@@ -20,7 +20,7 @@
     </marker>
   </defs>
   <rect width="1120" height="732" class="bg"/>
-    <text x="36" y="48" class="title">GitPin 0.6.0: synthetic fail-to-pass</text>
+    <text x="36" y="48" class="title">GitPin 0.6.1: synthetic fail-to-pass</text>
     <text x="36" y="72" class="title">PR evidence gate artifact</text>
 
   <g id="phase-a-(fail)" data-panel-width="360" data-panel-height="294.00" transform="translate(36,94)">
