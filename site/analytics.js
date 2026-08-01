@@ -127,6 +127,10 @@ function hasExplicitTestTrafficFlag() {
   return flag === '1' || /^true$/i.test(flag || '');
 }
 
+function getTrafficClass() {
+  return hasExplicitTestTrafficFlag() ? 'synthetic_qa' : 'production';
+}
+
 function buildStrictPayload(event) {
   if (isLikelyAutomatedVisitor() && hasExplicitTestTrafficFlag()) return null;
 
@@ -153,6 +157,7 @@ function buildStrictPayload(event) {
     ...outboundProperties,
     token,
     distinct_id: distinctId,
+    traffic_class: getTrafficClass(),
   };
 
   if (properties.$session_id !== undefined) {

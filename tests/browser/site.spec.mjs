@@ -299,6 +299,7 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
           distinct_id: 'anon_session_001',
           $session_id: 'session_abc1234567890',
           $process_person_profile: false,
+          traffic_class: 'production',
         },
       },
       {
@@ -311,6 +312,7 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
           distinct_id: 'anon_session_001',
           $session_id: 'session_abc1234567890',
           $process_person_profile: false,
+          traffic_class: 'production',
         },
       },
       {
@@ -323,6 +325,7 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
           distinct_id: 'anon_session_001',
           $session_id: 'session_abc1234567890',
           $process_person_profile: false,
+          traffic_class: 'production',
         },
       },
       {
@@ -335,6 +338,7 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
           distinct_id: 'anon_session_001',
           $session_id: 'session_abc1234567890',
           $process_person_profile: false,
+          traffic_class: 'production',
         },
       },
       {
@@ -347,6 +351,7 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
           distinct_id: 'anon_session_001',
           $session_id: 'session_abc1234567890',
           $process_person_profile: false,
+          traffic_class: 'production',
         },
       },
       {
@@ -359,6 +364,7 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
           distinct_id: 'anon_session_001',
           $session_id: 'session_abc1234567890',
           $process_person_profile: false,
+          traffic_class: 'production',
         },
       },
     ]);
@@ -394,19 +400,19 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
     )
     .toEqual({
       hasSensitiveKeys: false,
-      keys: ['surface', 'token', 'distinct_id', '$session_id', '$process_person_profile'],
+      keys: ['surface', 'token', 'distinct_id', 'traffic_class', '$session_id', '$process_person_profile'],
     });
 
   const capturedEvents = await page.evaluate(() =>
     window.__capturedEvents.filter(Boolean).map((event) => Object.keys(event.properties || {})),
   );
   expect(capturedEvents).toEqual([
-    ['surface', 'token', 'distinct_id', '$session_id', '$process_person_profile'],
-    ['step', 'token', 'distinct_id', '$session_id', '$process_person_profile'],
-    ['phase', 'token', 'distinct_id', '$session_id', '$process_person_profile'],
-    ['result', 'token', 'distinct_id', '$session_id', '$process_person_profile'],
-    ['result', 'token', 'distinct_id', '$session_id', '$process_person_profile'],
-    ['surface', 'token', 'distinct_id', '$session_id', '$process_person_profile'],
+    ['surface', 'token', 'distinct_id', 'traffic_class', '$session_id', '$process_person_profile'],
+    ['step', 'token', 'distinct_id', 'traffic_class', '$session_id', '$process_person_profile'],
+    ['phase', 'token', 'distinct_id', 'traffic_class', '$session_id', '$process_person_profile'],
+    ['result', 'token', 'distinct_id', 'traffic_class', '$session_id', '$process_person_profile'],
+    ['result', 'token', 'distinct_id', 'traffic_class', '$session_id', '$process_person_profile'],
+    ['surface', 'token', 'distinct_id', 'traffic_class', '$session_id', '$process_person_profile'],
   ]);
 
   const topLevelKeys = await page.evaluate(() => Object.keys(window.__capturedEvents[0]).sort());
@@ -577,12 +583,6 @@ test('launch-funnel analytics drops events only for automation + explicit test-t
       get: () => false,
       configurable: true,
     });
-  });
-  await page.evaluate(() => {
-    Object.defineProperty(navigator, 'webdriver', {
-      get: () => false,
-      configurable: true,
-    });
     window.__capturedEvents = [];
     delete window.__posthogInitConfig;
     delete window.posthog._i;
@@ -590,6 +590,25 @@ test('launch-funnel analytics drops events only for automation + explicit test-t
   await page.goto('/task-3-analytics-fixture-auto');
   await page.getByRole('link', { name: 'Start setup' }).click();
   await expect.poll(() => page.evaluate(() => window.__capturedEvents.length)).toEqual(1);
+  await expect
+    .poll(() => page.evaluate(() => window.__capturedEvents[0]?.properties?.traffic_class))
+    .toEqual('production');
+
+  await page.evaluate(() => {
+    window.__capturedEvents = [];
+  });
+  await page.goto('/task-3-analytics-fixture-auto?gitpin_test_traffic=true');
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'webdriver', {
+      get: () => false,
+      configurable: true,
+    });
+  });
+  await page.getByRole('link', { name: 'Start setup' }).click();
+  await expect.poll(() => page.evaluate(() => window.__capturedEvents.length)).toEqual(1);
+  await expect
+    .poll(() => page.evaluate(() => window.__capturedEvents[0]?.properties?.traffic_class))
+    .toEqual('synthetic_qa');
 });
 
 test('launch-funnel SVG text stays inside panels and text blocks do not overlap', async ({ page }) => {

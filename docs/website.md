@@ -51,6 +51,7 @@ Launch-funnel transport fields are explicit and constrained before `before_send`
 - anonymous `distinct_id`,
 - optional `$session_id` (if session analysis is active),
 - optional `$process_person_profile` (SDK-required process-person flag only),
+- optional `traffic_class`, constrained to `production` or `synthetic_qa`,
 - event timestamp,
 - SDK-generated event UUID used for deduplication.
 
@@ -61,7 +62,7 @@ Test-traffic suppression is explicitly bounded to:
 - automated signal detected (`navigator.webdriver`, headless, Playwright, etc.),
 - plus explicit test marker (`gitpin_test_traffic=true` query flag or `window.__gitpinTestTraffic === true`).
 
-Ordinary QA or unmarked automation traffic is not treated as automatically detectable test traffic.
+Every browser capture defaults to `traffic_class: production`. An explicit `gitpin_test_traffic=true` marker labels a human QA capture as `traffic_class: synthetic_qa`; if that same marker is present for an automated visitor, the event remains suppressed. Ordinary QA or unmarked automation traffic is not treated as automatically detectable test traffic.
 
 The launch-funnel schema is strict by design: only enumerated event names and enumerated property values are recorded.
 No repository contents, filesystem paths, prompt text, URLs, secret tokens, account identifiers, or free-text answers are sent. The only identifiers retained are the cookieless anonymous `distinct_id`, optional anonymous `$session_id`, and per-event deduplication UUID described above.

@@ -94,6 +94,15 @@ describe('launch readiness Task 3 instrumentation invariants', () => {
     expect(analytics).toContain('capture_pageleave: false');
   });
 
+  it('documents the constrained traffic classification schema', () => {
+    const websiteGuide = readArtifact('docs/website.md');
+
+    expect(websiteGuide).toContain('`traffic_class`');
+    expect(websiteGuide).toContain('`production`');
+    expect(websiteGuide).toContain('`synthetic_qa`');
+    expect(websiteGuide).toContain('`gitpin_test_traffic=true`');
+  });
+
   it('keeps index analytics surfaces strictly allowlisted and complete', () => {
     const index = readArtifact('site/index.html');
     const tags = extractDataAnalyticsTags(index);
