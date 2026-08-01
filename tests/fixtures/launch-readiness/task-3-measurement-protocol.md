@@ -21,15 +21,15 @@ No repository contents, filesystem paths, questions, prompt text, tokens, secret
 
 Observed instrumentation surfaces are only:
 
-`hero setup_intent (surface=hero)`  
-`setup setup_guide_intent (step=open_setup_guide)`  
-`setup sample_view_intent (phase=sample_view)`  
-`setup gate_result_intent (result=pass_demo|fail_demo)`  
-`feedback feedback_intent (surface=footer|footer_nav|feedback_nav|feedback_footer|feedback_footer_nav|navigation)`  
+`hero setup_intent (surface=hero)`
+`setup setup_guide_intent (step=open_setup_guide)`
+`setup sample_view_intent (phase=sample_view)`
+`setup gate_result_intent (result=pass_demo|fail_demo)`
+`feedback feedback_intent (surface=footer|footer_nav|feedback_nav|feedback_footer|feedback_footer_nav|navigation)`
 
 Optional baseline:
 
-`audience_changed (audience=engineering|release|governance)`  
+`audience_changed (audience=engineering|release|governance)`
 `cta_clicked (placement=... listed above)`
 
 ## Launch-funnel metrics and exact numerators/denominators
@@ -38,10 +38,10 @@ All funnel calculations use a 7-day sliding window and exclude bot/test sessions
 
 For each unique visit session:
 
-- `setup_intent_sessions` = sessions with `setup_intent`  
-- `setup_guide_sessions` = sessions with `setup_guide_intent` after `setup_intent` within 24h  
-- `sample_view_sessions` = sessions with `sample_view_intent` after `setup_guide_intent` within 24h  
-- `result_observed_sessions` = sessions with `gate_result_intent` after `setup_guide_intent` within 24h  
+- `setup_intent_sessions` = sessions with `setup_intent`
+- `setup_guide_sessions` = sessions with `setup_guide_intent` after `setup_intent` within 24h
+- `sample_view_sessions` = sessions with `sample_view_intent` after `setup_guide_intent` within 24h
+- `result_observed_sessions` = sessions with `gate_result_intent` after `setup_guide_intent` within 24h
 
 Rates:
 
@@ -52,7 +52,7 @@ Rates:
 
 Median and p95 latency metrics:
 
-- `time_to_setup_guide_seconds` = first `setup_guide_intent` timestamp minus first `setup_intent` timestamp (within session window)  
+- `time_to_setup_guide_seconds` = first `setup_guide_intent` timestamp minus first `setup_intent` timestamp (within session window)
 - `time_to_sample_view_seconds` = first `sample_view_intent` timestamp minus first `setup_guide_intent` timestamp (within session window)
 
 `time_to_sample_view_seconds` is `number` for sessions where `sample_view_intent` is observed and `null` when not applicable.
