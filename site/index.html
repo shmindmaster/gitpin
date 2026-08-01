@@ -58,6 +58,17 @@
       </nav>
     </header>
 
+    <aside class="analytics-choice" aria-labelledby="analytics-choice-heading">
+      <div>
+        <p class="analytics-choice-title" id="analytics-choice-heading">Website analytics choice</p>
+        <p>Optional, cookieless website analytics can be turned off permanently in this browser.</p>
+      </div>
+      <div class="analytics-choice-action">
+        <button type="button" data-analytics-opt-out>Turn off website analytics</button>
+        <p role="status" aria-live="polite" data-analytics-opt-out-status></p>
+      </div>
+    </aside>
+
     <main id="main">
       <section class="hero page-section" id="top">
         <div class="hero-copy">
@@ -239,7 +250,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with: { fetch-depth: 0 }
-      - uses: shmindmaster/gitpin@v0.6.1
+      - uses: shmindmaster/gitpin@v0.6.2
         with:
           base-sha: ${{ github.event.pull_request.base.sha }}
           head-sha: ${{ github.event.pull_request.head.sha }}</code></pre>

@@ -1,43 +1,316 @@
 {
   "schemaVersion": 1,
-  "summary": "Post-publication control-plane evidence binds GitPin's own required evidence workflow and explicitly versioned regression description to published v0.6.1 at content commit ab8d67d3b657b752594e86c1afbd38ae5c600962.",
+  "summary": "GitPin 0.6.2 adds a fail-closed persistent website analytics opt-out, disables GeoIP enrichment on permitted events, preserves strict telemetry boundaries, and aligns the complete release candidate surface while retaining the published v0.6.1 self-gate bootstrap.",
   "claims": [
     {
-      "id": "SELF-GATE-V061",
-      "statement": "GitPin's pull-request evidence workflow now runs the published v0.6.1 Action while preserving its read-only base/head SHA contract.",
+      "id": "V062-ANALYTICS-PRIVACY",
+      "statement": "The static website exposes a persistent keyboard-operable analytics opt-out, prevents SDK load after stored opt-out or storage failure, stops runtime capture, sends geo-IP suppression, and proves the strict request boundary across browsers.",
       "covers": [
-        ".github/workflows/evidence-gate.yml"
+        "site/analytics.js",
+        "site/index.html",
+        "site/privacy.html",
+        "site/styles.css",
+        "tests/browser/analytics-privacy.spec.mjs",
+        "tests/browser/site.spec.mjs",
+        "docs/website.md",
+        "tests/fixtures/launch-readiness/task-3-measurement-protocol.md"
       ],
       "evidence": [
         {
           "ref": "head",
-          "path": ".github/workflows/evidence-gate.yml",
-          "lineStart": 18,
-          "lineEnd": 25,
-          "contentSha256": "0f70c01341f6170662669368383a1131b0950f3a1b6589e432d0e14888d1a674"
+          "path": "site/analytics.js",
+          "lineStart": 3,
+          "lineEnd": 3,
+          "contentSha256": "f34b7e91281d6a51bd45539ecbd34e9d27f9605b2c12850a958aa5389e95e82f"
         },
         {
           "ref": "head",
-          "path": ".github/workflows/evidence-gate.yml",
-          "lineStart": 6,
-          "lineEnd": 7,
-          "contentSha256": "893e619df25e8e991d1fccf5091944563f0dc5b2b977e71116e5b9fc02acbdc8"
+          "path": "site/index.html",
+          "lineStart": 61,
+          "lineEnd": 61,
+          "contentSha256": "a06fe81cdd0a006aa898965b1bdfff835634295cea7cbc90acbbf6808c547058"
+        },
+        {
+          "ref": "head",
+          "path": "site/privacy.html",
+          "lineStart": 15,
+          "lineEnd": 15,
+          "contentSha256": "5079624cff6447259163b5030a3ec5a0a549f8b11c375ba0f176f31a005b12a6"
+        },
+        {
+          "ref": "head",
+          "path": "site/styles.css",
+          "lineStart": 28,
+          "lineEnd": 28,
+          "contentSha256": "be033efb4040872c8b3452484bccb86ba3a28d56ace873d659fce094a33e9cf6"
+        },
+        {
+          "ref": "head",
+          "path": "tests/browser/analytics-privacy.spec.mjs",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "c1391d6ee15281f422083fc396009afa1eb48b407341c8b23816108c35e48d22"
+        },
+        {
+          "ref": "head",
+          "path": "tests/browser/site.spec.mjs",
+          "lineStart": 49,
+          "lineEnd": 49,
+          "contentSha256": "b1dbaa143c85aec07674be734225886e04f4151536944473f310499457d2e624"
+        },
+        {
+          "ref": "head",
+          "path": "docs/website.md",
+          "lineStart": 5,
+          "lineEnd": 5,
+          "contentSha256": "6ba040660a7027ef97f0db62b4d4853f2a6f19a20f1e2559dcac9e9e8c29e306"
+        },
+        {
+          "ref": "head",
+          "path": "tests/fixtures/launch-readiness/task-3-measurement-protocol.md",
+          "lineStart": 93,
+          "lineEnd": 93,
+          "contentSha256": "091fb36f6dff2f4b39e167aab3b354da2aaf396b1c3740ad07d95ace85953e86"
         }
       ]
     },
     {
-      "id": "SELF-GATE-V061-TEST",
-      "statement": "The focused trust-boundary test requires the v0.6.1 self-gate pin and rejects the retired bootstrap comment and v0.6.0 pin.",
+      "id": "V062-PACKAGE-ACTION-MCP",
+      "statement": "Package, distributable Action, MCP runtime metadata, onboarding output, registry guidance, client template, and matching onboarding regression advance coherently to 0.6.2.",
       "covers": [
-        "src/gate-action.test.ts"
+        "package.json",
+        "action.yml",
+        "server.json",
+        "src/server.ts",
+        "src/onboarding.ts",
+        "src/registry.ts",
+        "templates/client-rules.md",
+        "src/onboarding.test.ts"
       ],
       "evidence": [
         {
           "ref": "head",
+          "path": "package.json",
+          "lineStart": 3,
+          "lineEnd": 3,
+          "contentSha256": "7a44ca68d019d9e534b1096ea3815eb2e42c52552618c34fbed7210139c6a55c"
+        },
+        {
+          "ref": "head",
+          "path": "action.yml",
+          "lineStart": 26,
+          "lineEnd": 26,
+          "contentSha256": "81cb0f78f18400abf29d57edf44b4a5e389094a5cf09fb08ffe7e4a53784f4dd"
+        },
+        {
+          "ref": "head",
+          "path": "server.json",
+          "lineStart": 10,
+          "lineEnd": 10,
+          "contentSha256": "7a44ca68d019d9e534b1096ea3815eb2e42c52552618c34fbed7210139c6a55c"
+        },
+        {
+          "ref": "head",
+          "path": "src/server.ts",
+          "lineStart": 11,
+          "lineEnd": 11,
+          "contentSha256": "c3abcbdb5b206dcd929de7d46fdd73b877e22c157bfc75678d2bfc215bef9da4"
+        },
+        {
+          "ref": "head",
+          "path": "src/onboarding.ts",
+          "lineStart": 216,
+          "lineEnd": 216,
+          "contentSha256": "d0223d5a9f2b4e31bd5d2d6b42128c3e98c23284c990af0a585db6aafff7b92e"
+        },
+        {
+          "ref": "head",
+          "path": "src/registry.ts",
+          "lineStart": 46,
+          "lineEnd": 46,
+          "contentSha256": "3981d08228504000d742d8eacab7dff417746449e802271845e70f830af42de9"
+        },
+        {
+          "ref": "head",
+          "path": "templates/client-rules.md",
+          "lineStart": 13,
+          "lineEnd": 13,
+          "contentSha256": "8b54c44bd45a7653d0ce3a439321d4fcd1887ba66a88c3defef32128971c553b"
+        },
+        {
+          "ref": "head",
+          "path": "src/onboarding.test.ts",
+          "lineStart": 48,
+          "lineEnd": 48,
+          "contentSha256": "7db46ce651ba721c31f92c1dc38734d91ae07b1473b3c0ebe74e081f050b3ed3"
+        }
+      ]
+    },
+    {
+      "id": "V062-RELEASE-TRUTH",
+      "statement": "Current repository, changelog, setup, migration, and troubleshooting copy identifies 0.6.2 as the candidate without rewriting immutable 0.6.1 or 0.6.0 release history.",
+      "covers": [
+        "AGENTS.md",
+        "README.md",
+        "ROADMAP.md",
+        "CHANGELOG.md",
+        "docs/ci.md",
+        "docs/clients.md",
+        "docs/migration-gitpin.md",
+        "docs/troubleshooting.md"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "AGENTS.md",
+          "lineStart": 6,
+          "lineEnd": 6,
+          "contentSha256": "6981dfc2cd0440c4e0a115a640ffce4ecc10b80c84444b1532e786eac0c2efb9"
+        },
+        {
+          "ref": "head",
+          "path": "README.md",
+          "lineStart": 39,
+          "lineEnd": 39,
+          "contentSha256": "bef8a460add9ef9e2fe1a1a9531143d109e9c4277c26ec0f4e96979c5c1c27cc"
+        },
+        {
+          "ref": "head",
+          "path": "ROADMAP.md",
+          "lineStart": 11,
+          "lineEnd": 11,
+          "contentSha256": "2f0c692fc058151b5b11561968b80f37410881a3275356f5875a838643af7c7d"
+        },
+        {
+          "ref": "head",
+          "path": "CHANGELOG.md",
+          "lineStart": 7,
+          "lineEnd": 7,
+          "contentSha256": "38ffe97d69afaccea198f2e01778949f2f2d8121b87ed69ecc83a1800096bee1"
+        },
+        {
+          "ref": "head",
+          "path": "docs/ci.md",
+          "lineStart": 26,
+          "lineEnd": 26,
+          "contentSha256": "7a36b6e0a94a04a8ec035568a37c5b004cb105f14afa11ea576a4a1acb8f03d6"
+        },
+        {
+          "ref": "head",
+          "path": "docs/clients.md",
+          "lineStart": 6,
+          "lineEnd": 6,
+          "contentSha256": "c2398659d280aaa389bdf233de5685e587235e02ba878fbd44f5d7d07118ba9e"
+        },
+        {
+          "ref": "head",
+          "path": "docs/migration-gitpin.md",
+          "lineStart": 31,
+          "lineEnd": 31,
+          "contentSha256": "c2398659d280aaa389bdf233de5685e587235e02ba878fbd44f5d7d07118ba9e"
+        },
+        {
+          "ref": "head",
+          "path": "docs/troubleshooting.md",
+          "lineStart": 7,
+          "lineEnd": 7,
+          "contentSha256": "5865073f21d22a73b0c552a8f298ad7e51233cdd7faa257cacc8c285ffd86a01"
+        }
+      ]
+    },
+    {
+      "id": "V062-LAUNCH-AND-BOOTSTRAP",
+      "statement": "Launch, setup, regression, and generated demo surfaces target 0.6.2 while the repository self-gate truthfully remains on published v0.6.1 until the new tag exists.",
+      "covers": [
+        ".github/workflows/evidence-gate.yml",
+        "src/gate-action.test.ts",
+        "src/launch-readiness-truth.test.ts",
+        "docs/pr-evidence-gate.md",
+        "docs/launch.md",
+        "scripts/build-pr-gate-fail-to-pass-artifact.mjs",
+        "docs/demos/pr-gate-fail-to-pass.artifact.json",
+        "docs/demos/pr-gate-fail-to-pass.md"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": ".github/workflows/evidence-gate.yml",
+          "lineStart": 21,
+          "lineEnd": 21,
+          "contentSha256": "924410bd6b199c80040e877a9581f107f510c579603b6f4749a0988f3c805448"
+        },
+        {
+          "ref": "head",
           "path": "src/gate-action.test.ts",
-          "lineStart": 22,
-          "lineEnd": 29,
-          "contentSha256": "391df5612439bcac459b7b243e6368dbaf22c60d986fd81cb7bed88b75a3f666"
+          "lineStart": 12,
+          "lineEnd": 12,
+          "contentSha256": "8e851451e28b1a1218e55de3a2be63d2902775356184701e86a2465021b5a094"
+        },
+        {
+          "ref": "head",
+          "path": "src/launch-readiness-truth.test.ts",
+          "lineStart": 36,
+          "lineEnd": 36,
+          "contentSha256": "3bd3ea681a82cf36995199217e0c9d92a2dc3253facdab8b716e869df4f9489f"
+        },
+        {
+          "ref": "head",
+          "path": "docs/pr-evidence-gate.md",
+          "lineStart": 48,
+          "lineEnd": 48,
+          "contentSha256": "0f612ad152a496ac62a447903995d96f8860080d0c4f521a3abd99e8d16e4ca0"
+        },
+        {
+          "ref": "head",
+          "path": "docs/launch.md",
+          "lineStart": 34,
+          "lineEnd": 34,
+          "contentSha256": "18f5f7ac8a2a69bad859588c996a9c12b0904361e233f606d27a4b0027341049"
+        },
+        {
+          "ref": "head",
+          "path": "scripts/build-pr-gate-fail-to-pass-artifact.mjs",
+          "lineStart": 165,
+          "lineEnd": 165,
+          "contentSha256": "75344443eca13af061149cfd30c2ef9e04abb39febab25bfb3c54493dc582e78"
+        },
+        {
+          "ref": "head",
+          "path": "docs/demos/pr-gate-fail-to-pass.artifact.json",
+          "lineStart": 4,
+          "lineEnd": 4,
+          "contentSha256": "7a44ca68d019d9e534b1096ea3815eb2e42c52552618c34fbed7210139c6a55c"
+        },
+        {
+          "ref": "head",
+          "path": "docs/demos/pr-gate-fail-to-pass.md",
+          "lineStart": 5,
+          "lineEnd": 5,
+          "contentSha256": "d10f444013e561e20c2f3ad45ef4fdb25788f9e28edc62e8658690161904abe0"
+        }
+      ]
+    },
+    {
+      "id": "V062-REPRODUCIBILITY",
+      "statement": "The regenerated visual identifies the 0.6.2 deterministic artifact, and the committed SDD report records scope, red-green evidence, validation, version inventory, and staged release expectations.",
+      "covers": [
+        "docs/demos/pr-gate-fail-to-pass.svg",
+        "docs/release-v0.6.2-sdd-report.md"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "docs/demos/pr-gate-fail-to-pass.svg",
+          "lineStart": 23,
+          "lineEnd": 23,
+          "contentSha256": "c78b730d800a94523e3f54edadb809ab73f1479ef133bfff25a2d0f55b085aaa"
+        },
+        {
+          "ref": "head",
+          "path": "docs/release-v0.6.2-sdd-report.md",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "3da6b901f39ffe25132e19714b4da712d926fc900c4b25c9345782b9c30fd953"
         }
       ]
     }

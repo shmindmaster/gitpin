@@ -23,7 +23,7 @@ inputs:
   gitpin-version:
     description: Exact npm version to execute. Override only from a trusted workflow.
     required: false
-    default: 0.6.1
+    default: 0.6.2
 
 outputs:
   report-path:

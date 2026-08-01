@@ -3,7 +3,7 @@
 ## What this is
 
 **GitPin** is an index-free, read-only MCP server for multi-repo evidence pinned to Git HEAD. Answers carry path, line, and full SHA. It has no databases, embeddings, queues, or write tools.
-GitPin 0.6.1 is the release candidate for the required PR evidence gate: required changed-path coverage, commit-pinned locators at full SHA, and read-only MCP support for traceable claim retrieval. Publication and production verification remain separate release gates.
+GitPin 0.6.2 is the release candidate for the required PR evidence gate, commit-pinned locators, and website analytics privacy correction. The previous immutable release remains published until 0.6.2 completes publication and production verification.
 
 Package: `gitpin`. Tools: `pin.*`. CLI: `gitpin`.
 

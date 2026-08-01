@@ -4,7 +4,7 @@
 
 | Symptom | Likely cause | What to do |
 | --- | --- | --- |
-| `npx` fails on Node | Node older than 20 | Install Node 20+ and retry `npx -y gitpin@0.6.1 init --client codex` |
+| `npx` fails on Node | Node older than 20 | Install Node 20+ and retry `npx -y gitpin@0.6.2 init --client codex` |
 | Init says path is not a Git root | Directory has no `.git` | Run from a repository root or pass `--repository` to a real root |
 | Init refuses to write the registry | Destination already has different content | Choose `--registry <other-path>` or remove the conflicting file deliberately |
 | Init refuses registry inside a repo | Registry would live under an indexed root | Keep the default `~/.gitpin/repositories.yaml` or another external path |
@@ -41,6 +41,6 @@
 
 ## Still stuck
 
-1. Run `npx -y gitpin@0.6.1 doctor` with `GITPIN_REGISTRY` set.
+1. Run `npx -y gitpin@0.6.2 doctor` with `GITPIN_REGISTRY` set.
 2. Run `pnpm verify:package` from a source checkout to compare a clean packed install.
 3. Open a [GitHub issue](https://github.com/shmindmaster/gitpin/issues) with the doctor JSON (redact private paths if needed) and client name.

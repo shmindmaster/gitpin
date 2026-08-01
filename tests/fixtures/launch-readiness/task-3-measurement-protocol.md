@@ -90,6 +90,7 @@ Transport fields sent with each launch-funnel event are limited to:
 - anonymous `distinct_id`,
 - optional `$session_id` when retained by cookieless session analysis,
 - optional `$process_person_profile` when required by the SDK,
+- `$geoip_disable: true` to prevent GeoIP enrichment of the event,
 - event timestamp,
 - and SDK-generated event UUID used for deduplication.
 

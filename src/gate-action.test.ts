@@ -9,7 +9,7 @@ describe('GitHub Action trust boundary', () => {
   it('runs the exact gate version from the public npm registry and documents read-only workflow permissions', () => {
     const action = readFileSync(resolve('action.yml'), 'utf8');
     const docs = readFileSync(resolve('docs/pr-evidence-gate.md'), 'utf8');
-    expect(action).toContain('default: 0.6.1');
+    expect(action).toContain('default: 0.6.2');
     expect(action).toContain('--registry="https://registry.npmjs.org"');
     expect(action).toContain('--userconfig="$EMPTY_NPMRC"');
     expect(action).toContain('cd "$RUNNER_TEMP"');
@@ -20,11 +20,12 @@ describe('GitHub Action trust boundary', () => {
     expect(docs).not.toContain('permissions:\n  contents: write');
   });
 
-  it('runs the repository self-gate on the published v0.6.1 Action', () => {
+  it('keeps the repository self-gate on the published bootstrap version until post-publication', () => {
     const workflow = readFileSync(resolve('.github/workflows/evidence-gate.yml'), 'utf8');
+    expect(workflow).toContain('keep the self-gate on published v0.6.1 until v0.6.2 is tagged');
     expect(workflow).toContain('uses: shmindmaster/gitpin@v0.6.1');
-    expect(workflow).not.toContain('Bootstrap boundary');
     expect(workflow).not.toContain('uses: shmindmaster/gitpin@v0.6.0');
+    expect(workflow).not.toContain('uses: shmindmaster/gitpin@v0.6.2');
   });
 
   it('fails closed when the gate output is not a valid report', () => {

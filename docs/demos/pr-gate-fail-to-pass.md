@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Deterministic, synthetic, fail-to-pass artifact for the GitPin v0.6.1 PR evidence gate.
+Deterministic, synthetic, fail-to-pass artifact for the GitPin v0.6.2 PR evidence gate.
 
 ## Accessibility
 
