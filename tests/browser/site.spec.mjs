@@ -146,5 +146,13 @@ test('keeps the primary content within the viewport', async ({ page }) => {
   );
   expect(overflow).toBeLessThanOrEqual(1);
   await expect(page.getByRole('link', { name: /View on GitHub/i }).first()).toBeVisible();
+  await expect(page.locator('a[data-analytics="feedback_nav"]')).toHaveAttribute(
+    'href',
+    'https://github.com/shmindmaster/gitpin/issues/new?template=launch_feedback.md',
+  );
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+    'content',
+    'https://shmindmaster.github.io/gitpin/social-card.png',
+  );
   await expect(page.getByRole('link', { name: /Add the PR gate/i })).toBeVisible();
 });

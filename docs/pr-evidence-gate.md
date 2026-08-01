@@ -41,7 +41,7 @@ jobs:
   evidence:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
@@ -61,7 +61,7 @@ CrewScore complements the evidence gate: it checks whether named written control
   written-controls:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
@@ -70,7 +70,7 @@ CrewScore complements the evidence gate: it checks whether named written control
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: git show "$BASE_SHA:.crewscore.yml" > "$RUNNER_TEMP/crewscore.yml"
-      - uses: shmindmaster/crewscore@v0.6.8
+      - uses: shmindmaster/crewscore@v0.6.9
         with:
           scan-path: .
           config: ${{ runner.temp }}/crewscore.yml
