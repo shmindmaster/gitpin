@@ -23,35 +23,50 @@ const publicArtifacts = [
 ];
 
 const legacyBrandPattern = /\bRepoContext\b|\bRepocontext\b|\brepocontext\b|\bREPOCONTEXT\b/;
-const compatibilityLineHints = [
-  /legacy/i,
-  /historical/i,
-  /migration/i,
-  /compatib/i,
-  /formerly/i,
-  /deprecated/i,
-  /renamed/i,
-  /removed/i,
-  /previous/i,
-  /alias/i,
-  /why not call this/i,
-];
+const legacyBrandCompatibilityAllowlist: Record<string, ((line: string) => boolean)[]> = {
+  'AGENTS.md': [(line) => line.includes('.repocontext/wiki.yaml') && line.includes('migration alias')],
+  'README.md': [
+    (line) => line === 'Formerly RepoContext 0.3.x. See [migration](docs/migration-gitpin.md).',
+    (line) => line.startsWith('| `GITPIN_REGISTRY` |') && line.includes('REPOCONTEXT_REGISTRY'),
+    (line) => line.startsWith('| `GITPIN_MCP_TOKEN` |') && line.includes('REPOCONTEXT_MCP_TOKEN'),
+    (line) => line.startsWith('| `GITPIN_ALLOWED_HOSTS` |') && line.includes('REPOCONTEXT_ALLOWED_HOSTS'),
+    (line) => line.includes('~/.repocontext/...') && line.includes('legacy compatibility fallback'),
+    (line) =>
+      line ===
+      'Site: [shmindmaster.github.io/gitpin](https://shmindmaster.github.io/gitpin/). GitPin is the canonical product and repository name; legacy `repocontext` references exist only for migration compatibility.',
+  ],
+  'docs/configuration.md': [
+    (line) => line.includes('~/.repocontext') && line.includes('legacy compatibility fallback'),
+  ],
+  'docs/faq.md': [
+    (line) => line === '## Migration from RepoContext 0.3.x?',
+    (line) =>
+      line.includes('Supported compatibility aliases are the `repocontext` bin') &&
+      line.includes('`REPOCONTEXT_*` environment variables'),
+  ],
+};
+
+function isAllowlistedLegacyLine(relativePath: string, line: string): boolean {
+  const allowlist = legacyBrandCompatibilityAllowlist[relativePath];
+  if (!allowlist) return false;
+  const normalized = line.trim();
+  return allowlist.some((predicate) => predicate(normalized));
+}
 
 function readArtifact(relativePath: string): string {
   return readFileSync(join(rootDirectory, relativePath), 'utf8');
 }
 
-function detectUnmarkedLegacyBranding(fileContent: string): string[] {
+function detectUnmarkedLegacyBranding(relativePath: string, fileContent: string): string[] {
   const lines = fileContent.split('\n');
   const matches: string[] = [];
 
-  for (const line of lines) {
-    if (!legacyBrandPattern.test(line)) continue;
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    if (!legacyBrandPattern.test(line) || isAllowlistedLegacyLine(relativePath, line)) continue;
 
-    const hasCompatibilityContext = compatibilityLineHints.some((hint) => hint.test(line));
-    if (!hasCompatibilityContext) {
-      matches.push(line.trim());
-    }
+    const lineNumber = index + 1;
+    matches.push(`${relativePath}#${lineNumber}: ${line.trim()}`);
   }
 
   return matches;
@@ -95,12 +110,33 @@ describe('public launch truth', () => {
   it('does not regress current branding to legacy RepoContext in current public artifacts', () => {
     for (const artifact of publicArtifacts) {
       const content = readArtifact(artifact);
-      const legacyBrandingMatches = detectUnmarkedLegacyBranding(content);
+      const legacyBrandingMatches = detectUnmarkedLegacyBranding(artifact, content);
       expect(
         legacyBrandingMatches,
         `${artifact} contains unmarked legacy branding: ${legacyBrandingMatches.slice(0, 4).join(' | ')}`,
       ).toEqual([]);
     }
+  });
+
+  it('allows only enumerated compatibility lines for legacy branding', () => {
+    const allowlistedReadmeLine = `Formerly RepoContext 0.3.x. See [migration](docs/migration-gitpin.md).`;
+    const allowlistedArtifact = 'README.md';
+    expect(detectUnmarkedLegacyBranding(allowlistedArtifact, allowlistedReadmeLine)).toEqual([]);
+
+    const allowlistedAliasLine =
+      '| `GITPIN_REGISTRY` | Registry YAML path (legacy compatibility alias: `REPOCONTEXT_REGISTRY`) |';
+    expect(detectUnmarkedLegacyBranding(allowlistedArtifact, allowlistedAliasLine)).toEqual([]);
+  });
+
+  it('does not allow legacy-branding on non-allowlisted lines even with adjacent context', () => {
+    const syntheticArtifact = 'README.md';
+    const syntheticContent = [
+      'RepoContext references must be explicit and explicit-compat lines cannot be inferred from neighbors.',
+      'This following line mentions migration only, which is not on the allowlist.',
+    ].join('\n');
+    expect(detectUnmarkedLegacyBranding(syntheticArtifact, syntheticContent)).toEqual([
+      'README.md#1: RepoContext references must be explicit and explicit-compat lines cannot be inferred from neighbors.',
+    ]);
   });
 
   it('keeps public release/version assertions on the current package version', () => {

@@ -30,7 +30,8 @@ Completed Task 1 only in `C:\wt\gitpin\launch-evidence-v060` on branch `agent/la
     - `{"analytics":"disabled","output":"C:\\wt\\gitpin\\launch-evidence-v060\\.site-dist"}`
 
 ## Commit
-- `acd7045`
+- Implementation commit: `7f50c64`
+- Review-fix provenance: recorded by the task controller/ledger.
 
 ## Self-review
 - Requirements are implemented for the listed files and test gate:
@@ -42,3 +43,31 @@ Completed Task 1 only in `C:\wt\gitpin\launch-evidence-v060` on branch `agent/la
 ## Concerns
 - No functional code paths were changed; only docs and Test/AGENTS documentation truthing were updated.
 - Ongoing warnings in this repo indicate many tracked files still show LF→CRLF normalization notices when touched, but this run did not introduce line-ending churn in unrelated files.
+
+## Fix round 1
+
+### Files changed
+- `src/launch-readiness-truth.test.ts`
+  - Replaced line-local compatibility heuristics with artifact-specific allowlists.
+  - Added deterministic positive and negative coverage for legacy-brand allowlisted vs unallowlisted cases.
+- `docs/migration-gitpin.md`
+  - Narrowed `REPOCONTEXT_*` demo/tooling wording to an explicit verified list.
+- `.superpowers/sdd/launch-readiness/task-1-report.md`
+  - Corrected implementation commit reference and documented review-fix provenance.
+
+### Commands
+- `pnpm test -- src/launch-readiness-truth.test.ts`
+- `pnpm validate`
+
+### Outputs
+- Focused truth test: `pnpm test -- src/launch-readiness-truth.test.ts` → `78 passed (78), 14 passed (14)` after one failing pass and one deterministic-allowlist correction.
+- `pnpm validate` → `0` exit with outputs:
+  - `{"clients":4,"status":"valid"}`
+  - `{"entries":8,"status":"valid"}`
+  - `{"name":"io.github.shmindmaster/gitpin","version":"0.6.0","package":"gitpin","transport":"stdio","publication":"manual-oidc","status":"matched"}`
+  - `{"tag":"v0.6.0","version":"0.6.0","serverVersion":"0.6.0","releaseDate":"2026-07-31","status":"matched"}`
+  - `{"analytics":"disabled","output":"C:\\wt\\gitpin\\launch-evidence-v060\\.site-dist"}`
+
+### Self-review
+- Confirmed all required Task 1 findings (truth commit provenance, deterministic legacy-brand test behavior, and migration statement precision) are addressed.
+- Verified scope is limited to Task 1 fix-round adjustments; no additional task files were touched.
