@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "summary": "GitPin 0.6.2 adds a fail-closed browser-stored website analytics opt-out bounded by site-data clearing, verifies storage writability before SDK load and during runtime activation, configures every analytics-enabled built page consistently, disables GeoIP enrichment and feature-flag requests, preserves strict telemetry boundaries, and aligns the complete release candidate surface while retaining the published v0.6.1 self-gate bootstrap.",
+  "summary": "GitPin 0.6.2 adds a fail-closed browser-stored website analytics opt-out bounded by site-data clearing, verifies storage writability before SDK load and during runtime activation, configures every analytics-enabled built page consistently, disables GeoIP enrichment and feature-flag requests, preserves strict telemetry boundaries, aligns the complete release surface, and commit-pins the repository self-gate to the published v0.6.2 Action source.",
   "claims": [
     {
       "id": "V062-ANALYTICS-PRIVACY",
-      "statement": "The static website exposes a keyboard-operable analytics opt-out that persists until site data is cleared, prevents SDK load after stored opt-out or any storage read/write/remove failure, preserves an existing opt-out key, stops runtime capture even when its persistence write fails, sends geo-IP suppression, disables feature-flag requests, and proves the strict request boundary across browsers.",
+      "statement": "The static website exposes a keyboard-operable analytics opt-out that persists until site data is cleared, prevents SDK load after stored opt-out or any storage read/write/remove failure, preserves an existing opt-out key, stops runtime capture even when its persistence write fails, sends geo-IP suppression, disables feature-flag requests, proves the strict request boundary across browsers, and reports the deployment-specific dedicated-project raw-IP verification boundary consistently.",
       "covers": [
         "site/analytics.js",
         "site/index.html",
@@ -33,9 +33,9 @@
         {
           "ref": "head",
           "path": "site/privacy.html",
-          "lineStart": 79,
-          "lineEnd": 82,
-          "contentSha256": "d9b17be82f9d242fb0b91e69640079f5cd682143459714b781bc87a125b329c5"
+          "lineStart": 73,
+          "lineEnd": 83,
+          "contentSha256": "359db6c794ba565dfc3673af8ff85c3be91cf64720896fd7601dc41293213d1f"
         },
         {
           "ref": "head",
@@ -61,9 +61,9 @@
         {
           "ref": "head",
           "path": "docs/website.md",
-          "lineStart": 73,
-          "lineEnd": 82,
-          "contentSha256": "e0afc51a2bdc9e0ecc8851973a5bbf250f22c23d01cfb3848ecae1ab485adb62"
+          "lineStart": 67,
+          "lineEnd": 70,
+          "contentSha256": "7454acd3203f0e85d739ed430384fd8e586555fbb215439822ef1d84d462140e"
         },
         {
           "ref": "head",
@@ -148,7 +148,7 @@
     },
     {
       "id": "V062-RELEASE-TRUTH",
-      "statement": "Current repository, changelog, setup, migration, and troubleshooting copy identifies 0.6.2 as the candidate without rewriting immutable 0.6.1 or 0.6.0 release history.",
+      "statement": "Current repository, changelog, setup, migration, and website copy identifies 0.6.2 as published while separating the immutable release SHA from later self-gate, documentation, and Pages deployment provenance without rewriting 0.6.1 or 0.6.0 history.",
       "covers": [
         "AGENTS.md",
         "README.md",
@@ -157,7 +157,7 @@
         "docs/ci.md",
         "docs/clients.md",
         "docs/migration-gitpin.md",
-        "docs/troubleshooting.md"
+        "docs/website.md"
       ],
       "evidence": [
         {
@@ -165,28 +165,28 @@
           "path": "AGENTS.md",
           "lineStart": 6,
           "lineEnd": 6,
-          "contentSha256": "6981dfc2cd0440c4e0a115a640ffce4ecc10b80c84444b1532e786eac0c2efb9"
+          "contentSha256": "fcc46e9acff69b60202ac4e53b929e86e959ca56aa2ebbd98109900f6c2de717"
         },
         {
           "ref": "head",
           "path": "README.md",
           "lineStart": 39,
           "lineEnd": 39,
-          "contentSha256": "bef8a460add9ef9e2fe1a1a9531143d109e9c4277c26ec0f4e96979c5c1c27cc"
+          "contentSha256": "9d1cce2dd3508acdf25631e8d6776fc349ca5acf3ee9ca7cb21eeb9bd115c861"
         },
         {
           "ref": "head",
           "path": "ROADMAP.md",
           "lineStart": 11,
           "lineEnd": 11,
-          "contentSha256": "2f0c692fc058151b5b11561968b80f37410881a3275356f5875a838643af7c7d"
+          "contentSha256": "5ca19b3dc00aea9684ad3966fd3b1c37318b7d834f615223ef5b47126a911a17"
         },
         {
           "ref": "head",
           "path": "CHANGELOG.md",
-          "lineStart": 16,
-          "lineEnd": 16,
-          "contentSha256": "766b2d8573ddc6913e8635c331acf6056f40a305fdadfded7d12dc918135d0ad"
+          "lineStart": 11,
+          "lineEnd": 17,
+          "contentSha256": "bf258a9baf3eb9608a4504c372deb962d248cd28eea5bc152a6f74abcccc96ac"
         },
         {
           "ref": "head",
@@ -211,16 +211,16 @@
         },
         {
           "ref": "head",
-          "path": "docs/troubleshooting.md",
-          "lineStart": 7,
-          "lineEnd": 7,
-          "contentSha256": "5865073f21d22a73b0c552a8f298ad7e51233cdd7faa257cacc8c285ffd86a01"
+          "path": "docs/website.md",
+          "lineStart": 5,
+          "lineEnd": 5,
+          "contentSha256": "729e857d7d871c77d8c18aade34cea940cf49fe1ef03660b7dd6ff73e7517188"
         }
       ]
     },
     {
       "id": "V062-LAUNCH-AND-BOOTSTRAP",
-      "statement": "Launch, setup, regression, and generated demo surfaces target 0.6.2 while the repository self-gate truthfully remains on published v0.6.1 until the new tag exists.",
+      "statement": "Launch, setup, regression, and generated demo surfaces target the published 0.6.2 release, the repository self-gate uses its full release commit, and the public setup documentation clearly separates GitPin's required evidence gate from an optional CrewScore check.",
       "covers": [
         ".github/workflows/evidence-gate.yml",
         "src/gate-action.test.ts",
@@ -236,15 +236,15 @@
           "ref": "head",
           "path": ".github/workflows/evidence-gate.yml",
           "lineStart": 21,
-          "lineEnd": 21,
-          "contentSha256": "924410bd6b199c80040e877a9581f107f510c579603b6f4749a0988f3c805448"
+          "lineEnd": 22,
+          "contentSha256": "3368bf9a9dab31532caaafd6d729e2d39a14b4ed7b46f0e038b2e76578c06e9c"
         },
         {
           "ref": "head",
           "path": "src/gate-action.test.ts",
-          "lineStart": 12,
-          "lineEnd": 12,
-          "contentSha256": "8e851451e28b1a1218e55de3a2be63d2902775356184701e86a2465021b5a094"
+          "lineStart": 23,
+          "lineEnd": 30,
+          "contentSha256": "7360491a132d8e82dd097f9913689b0c0c6c1e3367c946e9dbf6237ff5a35095"
         },
         {
           "ref": "head",
@@ -256,9 +256,9 @@
         {
           "ref": "head",
           "path": "docs/pr-evidence-gate.md",
-          "lineStart": 48,
-          "lineEnd": 48,
-          "contentSha256": "0f612ad152a496ac62a447903995d96f8860080d0c4f521a3abd99e8d16e4ca0"
+          "lineStart": 56,
+          "lineEnd": 83,
+          "contentSha256": "e51eb43be6fce9ff81b3fb5d305c7310ff7f64a187737ff48d974e16bd5cae40"
         },
         {
           "ref": "head",
@@ -332,9 +332,9 @@
         {
           "ref": "head",
           "path": "docs/release-v0.6.2-sdd-report.md",
-          "lineStart": 88,
-          "lineEnd": 95,
-          "contentSha256": "0d1d6828e57d100cab0224932b6226e12970b4fff955b78e4af571677d53deec"
+          "lineStart": 142,
+          "lineEnd": 148,
+          "contentSha256": "f1ebf18c03ad6d82329b7b0b8247ded607e0940ee350c23afd4f1217b9bc5296"
         }
       ]
     }

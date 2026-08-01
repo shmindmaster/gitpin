@@ -20,12 +20,13 @@ describe('GitHub Action trust boundary', () => {
     expect(docs).not.toContain('permissions:\n  contents: write');
   });
 
-  it('keeps the repository self-gate on the published bootstrap version until post-publication', () => {
+  it('commit-pins the repository self-gate to the published 0.6.2 Action source', () => {
     const workflow = readFileSync(resolve('.github/workflows/evidence-gate.yml'), 'utf8');
-    expect(workflow).toContain('keep the self-gate on published v0.6.1 until v0.6.2 is tagged');
-    expect(workflow).toContain('uses: shmindmaster/gitpin@v0.6.1');
-    expect(workflow).not.toContain('uses: shmindmaster/gitpin@v0.6.0');
+    expect(workflow).toContain('commit-pin the self-gate to the published v0.6.2 release source');
+    expect(workflow).toContain('uses: shmindmaster/gitpin@d2122379f4be315973a0bfa92bbd628e2cf7cfeb');
     expect(workflow).not.toContain('uses: shmindmaster/gitpin@v0.6.2');
+    expect(workflow).not.toContain('uses: shmindmaster/gitpin@v0.6.0');
+    expect(workflow).not.toContain('uses: shmindmaster/gitpin@v0.6.1');
   });
 
   it('fails closed when the gate output is not a valid report', () => {

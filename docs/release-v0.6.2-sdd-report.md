@@ -4,12 +4,12 @@ Date: 2026-08-01 (America/Chicago)
 
 ## Scope and outcome
 
-This focused forward patch prepares GitPin 0.6.2 from exact base
+Historical candidate context: this focused forward patch prepared GitPin 0.6.2 from exact base
 `a9c6dc7ce3518cba7d10aea39e44f30e56072f25`. It changes only the website analytics privacy boundary, its
 request-level tests, the version-coherence surfaces required for a release, and this evidence report.
 
-The CLI, stdio MCP server, HTTP MCP server, package verifier, and container remain telemetry-free. No PostHog
-project setting was changed, and this branch was not pushed, tagged, published, or deployed.
+The CLI, stdio MCP server, HTTP MCP server, package verifier, and container remain telemetry-free. At candidate-review
+time, no PostHog project setting was changed and the branch had not yet been pushed, tagged, published, or deployed.
 
 ## Specification
 
@@ -26,7 +26,7 @@ The website must:
 - prevent feature-flag and remote-configuration requests outside the explicit event transport;
 - preserve the strict event/property/transport allowlist, `traffic_class`, autoplay silence, and removal of
   URL/referrer/browser/device and canary-shaped enrichment;
-- distinguish the active browser controls from the still-unverified PostHog project-level raw-IP discard setting.
+- distinguish the active browser controls from the independently verified PostHog project-level raw-IP discard setting.
 
 ## TDD evidence
 
@@ -139,14 +139,18 @@ The current release version is 0.6.2 in:
 The dated 0.6.1 and 0.6.0 changelog history and links remain unchanged. `ROADMAP.md` retains its historical
 “completed before the 0.6.1 candidate” heading.
 
-## Release workflow expectations
+## Release workflow and post-publication self-gate
 
-The repository self-gate intentionally remains pinned to the already-published `shmindmaster/gitpin@v0.6.1` during
-the 0.6.2 candidate PR. Its explicit bootstrap comment and regression test require a separate post-publication PR to
-advance the self-gate to `v0.6.2`. Pointing the candidate PR at a not-yet-existent immutable Action tag would prevent
-the required check from materializing.
+The repository self-gate intentionally remained pinned to the already-published `shmindmaster/gitpin@v0.6.1` during
+the 0.6.2 candidate PR, because pointing that PR at a not-yet-existent Action tag would prevent the required check from
+materializing. After `v0.6.2` was published from `d2122379f4be315973a0bfa92bbd628e2cf7cfeb`, this separate follow-up
+commit-pins the self-gate to that exact published Action source. Exact-head CI and independent review remain required
+before that follow-up can merge.
 
-When separately authorized, the release sequence is:
+The same follow-up corrects the now-stale release-candidate banner and makes the documentation boundary explicit:
+GitPin's evidence gate stands alone, while CrewScore is an optional, separate written-control check.
+
+The staged release sequence is:
 
 1. Push the focused candidate and open a PR; require exact-head `evidence` and all Validate jobs plus independent
    review.
@@ -156,9 +160,10 @@ When separately authorized, the release sequence is:
 4. Dispatch `Publish to MCP Registry` with `release_ref=v0.6.2` only after npm exposes the exact tag commit.
 5. Dispatch `Deploy website`; independently verify the deployed SHA/content, opt-out behavior, capture payload, and
    PostHog project destination.
-6. Independently inspect the PostHog project-level raw-IP discard setting. Until that is verified, public copy must
-   not claim server-side raw-IP discard.
-7. Open the post-publication self-gate PR advancing `.github/workflows/evidence-gate.yml` to
-   `shmindmaster/gitpin@v0.6.2`, then validate it against the released Action.
+6. Independently inspect the PostHog project-level raw-IP discard setting. This production gate completed: the setting
+   was enabled and the bounded verification query contained no raw-IP or GeoIP-derived fields.
+7. Advance `.github/workflows/evidence-gate.yml` to the full `v0.6.2` release commit in a separate
+   post-publication PR, then validate its exact head against the released Action.
 
-None of these external publication or configuration actions is performed by this patch.
+This patch performs no package publication, deployment, or PostHog configuration action; it only advances the
+repository self-gate to the published Action and reconciles repository documentation.

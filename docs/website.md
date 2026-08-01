@@ -2,7 +2,7 @@
 
 GitPin ships a static public site in `site/`. It leads with the required PR evidence gate, explains the trust boundary, demonstrates the local EvidenceBrief companion, and links directly to source setup and contributor documentation.
 
-The source in this repository is the GitPin 0.6.2 website release candidate. The previous immutable release remains published until Pages deployment and production verification establish 0.6.2.
+The immutable GitPin 0.6.2 tag, npm package, GitHub Release, and MCP Registry artifact were published from `d2122379f4be315973a0bfa92bbd628e2cf7cfeb`. This later source includes the post-publication self-gate and documentation corrections. A Pages deployment has its own deployment SHA and must be verified independently; package parity does not imply website-source parity. Historical release artifacts remain immutable.
 
 The deployable surface includes a privacy page, canonical and social metadata, `robots.txt`, and a sitemap for the GitHub Pages URL. These are static release artifacts; they do not change the MCP server's read-only boundary.
 
@@ -64,9 +64,10 @@ Launch-funnel transport fields are explicit and constrained before `before_send`
 
 The outbound event object is not sent with URL/referrer/host/browser/device/screen context.
 
-The browser-level `$geoip_disable: true` control is active in every permitted event. The separate PostHog
-project-level setting that discards raw IP addresses is still pending independent verification, so GitPin does not
-claim server-side raw-IP discard yet.
+The browser-level `$geoip_disable: true` control is active in every permitted event. At production verification time,
+the dedicated GitPin PostHog project was configured to discard raw IP addresses, and the bounded query contained no
+raw-IP or GeoIP-derived fields. That result is deployment-specific: any other project key or later deployment must
+verify the injected project's setting independently.
 
 ## Browser opt-out
 

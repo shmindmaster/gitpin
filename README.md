@@ -34,9 +34,9 @@ Formerly RepoContext 0.3.x. See [migration](docs/migration-gitpin.md).
 gitpin gate --base <full-base-sha> --head <full-head-sha>
 ```
 
-The gate reads policy only from the trusted base commit, reads the submitted manifest only from the head commit, compares the merge-base diff, and verifies exact line-slice hashes. It never executes PR code and never labels a locator match as proof of semantic correctness. Use the [GitHub Action and CrewScore named-control setup](docs/pr-evidence-gate.md) as a required check.
+The gate reads policy only from the trusted base commit, reads the submitted manifest only from the head commit, compares the merge-base diff, and verifies exact line-slice hashes. It never executes PR code and never labels a locator match as proof of semantic correctness. Use the [GitPin GitHub Action setup](docs/pr-evidence-gate.md) to make it a required check. That guide also documents an optional, separate CrewScore check for teams that want written-control coverage alongside GitPin evidence verification.
 
-> **Release candidate:** GitPin 0.6.2 is prepared for npm, MCP Registry, GitHub Release, and Pages. The previous immutable release remains published until 0.6.2 completes publication and production verification. After publication, install with `npx -y gitpin@0.6.2`. Node 20+.
+> **Current release:** GitPin 0.6.2 is published on npm, the MCP Registry, GitHub Releases, and Pages. Install with `npx -y gitpin@0.6.2`. Node 20+.
 
 GitPin is maintained by **Sarosh Hussain**, who leads the project's technical direction. **Pendoah** is his company and operating context; GitPin remains the product and repository.
 
