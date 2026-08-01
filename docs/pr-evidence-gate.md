@@ -60,6 +60,8 @@ CrewScore is a separate product and is not required to use GitPin. Teams may add
 ```yaml
   written-controls:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v7
         with:
@@ -77,7 +79,7 @@ CrewScore is a separate product and is not required to use GitPin. Teams may add
           threshold: ""
 ```
 
-This optional example uses CrewScore's currently published `v0.6.9` Action. CrewScore observes written text only. It does not prove runtime enforcement, agent obedience, certification, or compliance. Pin its Action version and ruleset, and keep `.crewscore.yml` on the trusted base branch.
+This optional example pins the immutable CrewScore `v0.6.9` Action as a concrete version; choose and verify the release appropriate for your repository. CrewScore observes written text only. It does not prove runtime enforcement, agent obedience, certification, or compliance. Pin its Action version and ruleset, and keep `.crewscore.yml` on the trusted base branch.
 
 ## Local CLI
 

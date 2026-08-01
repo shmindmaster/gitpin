@@ -148,7 +148,7 @@
     },
     {
       "id": "V062-RELEASE-TRUTH",
-      "statement": "Current repository, changelog, setup, migration, troubleshooting, and website copy identifies 0.6.2 as published while separating the immutable release SHA from later self-gate, documentation, and Pages deployment provenance without rewriting 0.6.1 or 0.6.0 history.",
+      "statement": "Current repository, changelog, setup, migration, and website copy identifies 0.6.2 as published while separating the immutable release SHA from later self-gate, documentation, and Pages deployment provenance without rewriting 0.6.1 or 0.6.0 history.",
       "covers": [
         "AGENTS.md",
         "README.md",
@@ -157,7 +157,6 @@
         "docs/ci.md",
         "docs/clients.md",
         "docs/migration-gitpin.md",
-        "docs/troubleshooting.md",
         "docs/website.md"
       ],
       "evidence": [
@@ -258,8 +257,8 @@
           "ref": "head",
           "path": "docs/pr-evidence-gate.md",
           "lineStart": 56,
-          "lineEnd": 80,
-          "contentSha256": "02092044e17c7be0c8b33baa9bff56d194048bba5b5dfe9eb52632a6cf7f3bb3"
+          "lineEnd": 82,
+          "contentSha256": "96420452b9e6adf35ed874fe137673cd3373f7c5835f0f447699b9d31e688f76"
         },
         {
           "ref": "head",
