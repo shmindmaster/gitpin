@@ -72,14 +72,15 @@ CrewScore is a separate product and is not required to use GitPin. Teams may add
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: git show "$BASE_SHA:.crewscore.yml" > "$RUNNER_TEMP/crewscore.yml"
-      - uses: shmindmaster/crewscore@v0.6.9
+      # CrewScore v0.6.9 release commit; use a full SHA, not a movable tag.
+      - uses: shmindmaster/crewscore@50f7fdde2572b16f8efc6cc4a3ed40cacc8bfe10
         with:
           scan-path: .
           config: ${{ runner.temp }}/crewscore.yml
           threshold: ""
 ```
 
-This optional example pins the immutable CrewScore `v0.6.9` Action as a concrete version; choose and verify the release appropriate for your repository. CrewScore observes written text only. It does not prove runtime enforcement, agent obedience, certification, or compliance. Pin its Action version and ruleset, and keep `.crewscore.yml` on the trusted base branch.
+This optional example commit-pins the CrewScore `v0.6.9` release; choose and verify the exact release commit appropriate for your repository. CrewScore observes written text only. It does not prove runtime enforcement, agent obedience, certification, or compliance. Pin its Action commit and ruleset, and keep `.crewscore.yml` on the trusted base branch.
 
 ## Local CLI
 
