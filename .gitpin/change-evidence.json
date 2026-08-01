@@ -4,7 +4,7 @@
   "claims": [
     {
       "id": "V062-ANALYTICS-PRIVACY",
-      "statement": "The static website exposes a keyboard-operable analytics opt-out that persists until site data is cleared, prevents SDK load after stored opt-out or any storage read/write/remove failure, preserves an existing opt-out key, stops runtime capture even when its persistence write fails, sends geo-IP suppression, disables feature-flag requests, proves the strict request boundary across browsers, and reports the independently verified dedicated-project raw-IP discard state consistently.",
+      "statement": "The static website exposes a keyboard-operable analytics opt-out that persists until site data is cleared, prevents SDK load after stored opt-out or any storage read/write/remove failure, preserves an existing opt-out key, stops runtime capture even when its persistence write fails, sends geo-IP suppression, disables feature-flag requests, proves the strict request boundary across browsers, and reports the deployment-specific dedicated-project raw-IP verification boundary consistently.",
       "covers": [
         "site/analytics.js",
         "site/index.html",
@@ -34,8 +34,8 @@
           "ref": "head",
           "path": "site/privacy.html",
           "lineStart": 73,
-          "lineEnd": 82,
-          "contentSha256": "666a2a1f79d069f8b85e64303e0529774d1206caa14b6c67c880c670816232bd"
+          "lineEnd": 83,
+          "contentSha256": "359db6c794ba565dfc3673af8ff85c3be91cf64720896fd7601dc41293213d1f"
         },
         {
           "ref": "head",
@@ -62,8 +62,8 @@
           "ref": "head",
           "path": "docs/website.md",
           "lineStart": 67,
-          "lineEnd": 69,
-          "contentSha256": "b134dbe94088e17a98d046e69663be2f38dbd16709e89ba75d026d568b77e8c7"
+          "lineEnd": 70,
+          "contentSha256": "7454acd3203f0e85d739ed430384fd8e586555fbb215439822ef1d84d462140e"
         },
         {
           "ref": "head",
@@ -148,7 +148,7 @@
     },
     {
       "id": "V062-RELEASE-TRUTH",
-      "statement": "Current repository, changelog, setup, migration, and troubleshooting copy identifies 0.6.2 as the published release without rewriting immutable 0.6.1 or 0.6.0 release history.",
+      "statement": "Current repository, changelog, setup, migration, troubleshooting, and website copy identifies 0.6.2 as published while separating the immutable release SHA from later self-gate, documentation, and Pages deployment provenance without rewriting 0.6.1 or 0.6.0 history.",
       "covers": [
         "AGENTS.md",
         "README.md",
@@ -185,9 +185,9 @@
         {
           "ref": "head",
           "path": "CHANGELOG.md",
-          "lineStart": 16,
-          "lineEnd": 16,
-          "contentSha256": "766b2d8573ddc6913e8635c331acf6056f40a305fdadfded7d12dc918135d0ad"
+          "lineStart": 11,
+          "lineEnd": 17,
+          "contentSha256": "bf258a9baf3eb9608a4504c372deb962d248cd28eea5bc152a6f74abcccc96ac"
         },
         {
           "ref": "head",
@@ -212,10 +212,10 @@
         },
         {
           "ref": "head",
-          "path": "docs/troubleshooting.md",
-          "lineStart": 7,
-          "lineEnd": 7,
-          "contentSha256": "5865073f21d22a73b0c552a8f298ad7e51233cdd7faa257cacc8c285ffd86a01"
+          "path": "docs/website.md",
+          "lineStart": 5,
+          "lineEnd": 5,
+          "contentSha256": "729e857d7d871c77d8c18aade34cea940cf49fe1ef03660b7dd6ff73e7517188"
         }
       ]
     },

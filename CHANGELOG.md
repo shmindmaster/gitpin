@@ -8,13 +8,13 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 
 ### Changed
 
-- Align package, MCP, Action, documentation, website, and generated demo release surfaces on the 0.6.2 candidate.
+- Align package, MCP, Action, documentation, website, and generated demo release surfaces for the 0.6.2 artifacts published from `d2122379f4be315973a0bfa92bbd628e2cf7cfeb`.
 - Send `$geoip_disable: true` on every permitted website analytics event, disable feature-flag and remote-configuration requests, and preserve the strict event and property allowlist.
 
 ### Fixed
 
 - Add a keyboard-operable website analytics opt-out to the homepage and privacy page that persists until site data is cleared; a stored opt-out prevents SDK loading, runtime activation stops subsequent capture, and unavailable browser storage fails closed.
-- Clarify that browser GeoIP suppression is active while independent verification of PostHog's project-level raw-IP discard setting remains pending.
+- Clarify that browser GeoIP suppression is active for every permitted event; the dedicated production GitPin PostHog project's raw-IP discard setting was verified separately, and other deployments must verify their own injected project.
 
 ## [0.6.1] - 2026-08-01
 
