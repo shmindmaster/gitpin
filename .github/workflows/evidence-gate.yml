@@ -18,6 +18,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
+      # Bootstrap boundary: keep the self-gate on published v0.6.1 until v0.6.2 is tagged; advance it in a post-publication PR.
       - uses: shmindmaster/gitpin@v0.6.1
         with:
           base-sha: ${{ github.event.pull_request.base.sha }}

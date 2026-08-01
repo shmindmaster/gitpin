@@ -46,8 +46,12 @@ test('presents the release path and safety boundary without analytics by default
   await expect(page.getByRole('heading', { name: 'A deliberately narrow trust boundary.' })).toBeVisible();
   if (await menu.isVisible()) await menu.click();
   await page.getByRole('link', { name: 'Install', exact: true }).click();
-  await expect(page.locator('.terminal')).toContainText('shmindmaster/gitpin@v0.6.1');
+  await expect(page.locator('.terminal')).toContainText('shmindmaster/gitpin@v0.6.2');
   await expect(page.locator('body')).not.toContainText(/release candidate/i);
+  await expect(page.locator('body')).toContainText(
+    'Optional, cookieless website analytics can be turned off until site data is cleared in this browser.',
+  );
+  await expect(page.locator('body')).not.toContainText('turned off permanently in this browser');
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://shmindmaster.github.io/gitpin/');
   await expect(page.getByRole('link', { name: 'Privacy', exact: true })).toHaveAttribute('href', './privacy.html');
   await expect(
@@ -63,7 +67,7 @@ test('makes the pull-request gate the primary activation path', async ({ page })
   await expect(page.getByRole('heading', { name: 'Require evidence before merge.' })).toBeVisible();
   await expect(page.locator('.terminal')).toContainText('pull_request:');
   await expect(page.locator('.terminal')).toContainText('runs-on: ubuntu-latest');
-  await expect(page.locator('.terminal')).toContainText('uses: shmindmaster/gitpin@v0.6.1');
+  await expect(page.locator('.terminal')).toContainText('uses: shmindmaster/gitpin@v0.6.2');
   await expect(page.locator('.terminal')).toContainText('contents: read');
   await expect(page.getByRole('link', { name: 'Open the complete setup guide' })).toHaveAttribute(
     'href',
@@ -229,10 +233,15 @@ test('uses the real configured analytics transport and emits no autoplay analyti
   });
   await page.route('**/analytics-hero-fixture', async (route) => {
     await route.fulfill({
-      body: siteIndex.replace(
-        '<meta name="posthog-project-key" content="" />',
-        '<meta name="posthog-project-key" content="phc_test" />',
-      ),
+      body: siteIndex
+        .replace(
+          '<meta name="posthog-project-key" content="" />',
+          '<meta name="posthog-project-key" content="phc_test" />',
+        )
+        .replace(
+          '<meta name="posthog-api-host" content="" />',
+          '<meta name="posthog-api-host" content="https://us.i.posthog.com" />',
+        ),
       contentType: 'text/html',
     });
   });
@@ -509,6 +518,7 @@ test('launch-funnel analytics accepts SDK-shaped events without timestamps and e
           $session_id: 'session_abc1234567890',
           $process_person_profile: false,
           traffic_class: 'production',
+          $geoip_disable: true,
         },
       },
       {
@@ -523,6 +533,7 @@ test('launch-funnel analytics accepts SDK-shaped events without timestamps and e
           $session_id: 'session_abc1234567890',
           $process_person_profile: false,
           traffic_class: 'production',
+          $geoip_disable: true,
         },
       },
       {
@@ -537,6 +548,7 @@ test('launch-funnel analytics accepts SDK-shaped events without timestamps and e
           $session_id: 'session_abc1234567890',
           $process_person_profile: false,
           traffic_class: 'production',
+          $geoip_disable: true,
         },
       },
       {
@@ -551,6 +563,7 @@ test('launch-funnel analytics accepts SDK-shaped events without timestamps and e
           $session_id: 'session_abc1234567890',
           $process_person_profile: false,
           traffic_class: 'production',
+          $geoip_disable: true,
         },
       },
       {
@@ -565,6 +578,7 @@ test('launch-funnel analytics accepts SDK-shaped events without timestamps and e
           $session_id: 'session_abc1234567890',
           $process_person_profile: false,
           traffic_class: 'production',
+          $geoip_disable: true,
         },
       },
       {
@@ -579,6 +593,7 @@ test('launch-funnel analytics accepts SDK-shaped events without timestamps and e
           $session_id: 'session_abc1234567890',
           $process_person_profile: false,
           traffic_class: 'production',
+          $geoip_disable: true,
         },
       },
     ]);
@@ -614,19 +629,27 @@ test('launch-funnel analytics accepts SDK-shaped events without timestamps and e
     )
     .toEqual({
       hasSensitiveKeys: false,
-      keys: ['surface', 'token', 'distinct_id', 'traffic_class', '$session_id', '$process_person_profile'],
+      keys: [
+        'surface',
+        'token',
+        'distinct_id',
+        'traffic_class',
+        '$geoip_disable',
+        '$session_id',
+        '$process_person_profile',
+      ],
     });
 
   const capturedEvents = await page.evaluate(() =>
     window.__capturedEvents.filter(Boolean).map((event) => Object.keys(event.properties || {})),
   );
   expect(capturedEvents).toEqual([
-    ['surface', 'token', 'distinct_id', 'traffic_class', '$session_id', '$process_person_profile'],
-    ['step', 'token', 'distinct_id', 'traffic_class', '$session_id', '$process_person_profile'],
-    ['phase', 'token', 'distinct_id', 'traffic_class', '$session_id', '$process_person_profile'],
-    ['result', 'token', 'distinct_id', 'traffic_class', '$session_id', '$process_person_profile'],
-    ['result', 'token', 'distinct_id', 'traffic_class', '$session_id', '$process_person_profile'],
-    ['surface', 'token', 'distinct_id', 'traffic_class', '$session_id', '$process_person_profile'],
+    ['surface', 'token', 'distinct_id', 'traffic_class', '$geoip_disable', '$session_id', '$process_person_profile'],
+    ['step', 'token', 'distinct_id', 'traffic_class', '$geoip_disable', '$session_id', '$process_person_profile'],
+    ['phase', 'token', 'distinct_id', 'traffic_class', '$geoip_disable', '$session_id', '$process_person_profile'],
+    ['result', 'token', 'distinct_id', 'traffic_class', '$geoip_disable', '$session_id', '$process_person_profile'],
+    ['result', 'token', 'distinct_id', 'traffic_class', '$geoip_disable', '$session_id', '$process_person_profile'],
+    ['surface', 'token', 'distinct_id', 'traffic_class', '$geoip_disable', '$session_id', '$process_person_profile'],
   ]);
 
   const topLevelKeys = await page.evaluate(() => Object.keys(window.__capturedEvents[0]).sort());
@@ -653,6 +676,7 @@ test('launch-funnel analytics accepts SDK-shaped events without timestamps and e
       token: 'phc_test',
       distinct_id: 'anon_session_001',
       traffic_class: 'production',
+      $geoip_disable: true,
     },
   });
 

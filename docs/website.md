@@ -2,7 +2,7 @@
 
 GitPin ships a static public site in `site/`. It leads with the required PR evidence gate, explains the trust boundary, demonstrates the local EvidenceBrief companion, and links directly to source setup and contributor documentation.
 
-The source in this repository is the GitPin 0.6.1 website release candidate. A local build or browser pass does not establish that Pages has deployed this version; deployment and production verification remain release gates.
+The source in this repository is the GitPin 0.6.2 website release candidate. The previous immutable release remains published until Pages deployment and production verification establish 0.6.2.
 
 The deployable surface includes a privacy page, canonical and social metadata, `robots.txt`, and a sitemap for the GitHub Pages URL. These are static release artifacts; they do not change the MCP server's read-only boundary.
 
@@ -26,7 +26,9 @@ The `Deploy website` workflow is manual so merging source cannot publish a publi
 4. Run the `Deploy website` workflow.
 5. Add a custom domain only after DNS ownership is confirmed.
 
-The build succeeds with analytics disabled when the variable is absent.
+The build succeeds with analytics disabled when the variable is absent. Repository source and unconfigured build
+output keep both analytics meta values empty. When the variable is present, the builder injects the same dedicated
+project key and API host into every HTML page that loads the analytics script, including the homepage and privacy page.
 
 ## Analytics boundary
 
@@ -44,7 +46,9 @@ Website collection is intentionally narrow:
 | `audience_changed` | `audience` only |
 | `feedback_intent` | `surface` only (`footer`, `footer_nav`, `feedback_nav`, `feedback_footer`, `feedback_footer_nav`, `navigation`) |
 
-Autocapture, pageview/pageleave capture, and session replay are disabled, person profiles are never created, and the site uses cookieless mode.
+Autocapture, pageview/pageleave capture, feature flags and remote configuration, and session replay are disabled,
+person profiles are never created, and the site uses cookieless mode. Disabling feature flags prevents the SDK from
+making an initialization-time `/flags` request outside the explicit launch-funnel event transport.
 
 Launch-funnel transport fields are explicit and constrained before `before_send` strips SDK enrichment:
 
@@ -53,11 +57,29 @@ Launch-funnel transport fields are explicit and constrained before `before_send`
 - anonymous `distinct_id`,
 - optional `$session_id` (if session analysis is active),
 - optional `$process_person_profile` (SDK-required process-person flag only),
+- `$geoip_disable: true` to instruct PostHog not to enrich the event through GeoIP,
 - optional `traffic_class`, constrained to `production` or `synthetic_qa`,
 - event timestamp,
 - SDK-generated event UUID used for deduplication.
 
 The outbound event object is not sent with URL/referrer/host/browser/device/screen context.
+
+The browser-level `$geoip_disable: true` control is active in every permitted event. The separate PostHog
+project-level setting that discards raw IP addresses is still pending independent verification, so GitPin does not
+claim server-side raw-IP discard yet.
+
+## Browser opt-out
+
+The homepage and privacy page expose a native, keyboard-operable **Turn off website analytics** control. Its
+preference is stored in the browser until site data is cleared. A stored opt-out prevents the PostHog SDK from loading
+on later visits; activating the control also stops subsequent capture immediately in the current page. If browser
+preference storage cannot be read, written, or cleaned up, the site fails closed and does not load analytics. The
+startup check uses a fixed, non-identifying probe key and never changes the stored opt-out value. If storage later becomes
+unavailable during the button action, capture still stops for the current page and the status reports that persistence
+was unavailable.
+
+This browser control does not alter the PostHog project configuration. Clearing site storage clears the browser
+choice, so the control does not promise a permanent opt-out.
 
 Test-traffic suppression is explicitly bounded to:
 

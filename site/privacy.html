@@ -9,9 +9,12 @@
     />
     <meta name="theme-color" content="#ffffff" />
     <meta name="robots" content="index,follow" />
+    <meta name="posthog-project-key" content="" />
+    <meta name="posthog-api-host" content="" />
     <link rel="canonical" href="https://shmindmaster.github.io/gitpin/privacy.html" />
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="./styles.css" />
+    <script src="./analytics.js" defer></script>
     <title>Privacy — GitPin</title>
   </head>
   <body>
@@ -34,6 +37,17 @@
           configuration collection.
         </p>
 
+        <aside class="analytics-choice" aria-labelledby="privacy-analytics-choice-heading">
+          <div>
+            <p class="analytics-choice-title" id="privacy-analytics-choice-heading">Website analytics choice</p>
+            <p>This browser-level control applies across the GitPin website.</p>
+          </div>
+          <div class="analytics-choice-action">
+            <button type="button" data-analytics-opt-out>Turn off website analytics</button>
+            <p role="status" aria-live="polite" data-analytics-opt-out-status></p>
+          </div>
+        </aside>
+
         <h2>Product telemetry</h2>
         <p>The CLI and MCP transports do not send telemetry.</p>
         <p>
@@ -45,8 +59,8 @@
         <p>
           The site is built with analytics disabled unless its operator configures a dedicated GitPin PostHog
           project. When enabled, transport is cookieless and limited to explicit launch-funnel event names and
-          validated event properties only. Automatic pageview/pageleave collection is disabled. Autocapture, session
-          replay, and person profiles are disabled.
+          validated event properties only. Automatic pageview/pageleave collection is disabled. Autocapture, feature
+          flags and remote configuration, session replay, and person profiles are disabled.
         </p>
         <p>
           The outbound transport includes the allowlisted event name and property, the public PostHog project key
@@ -55,6 +69,17 @@
         </p>
         <p>
           No automatic URL/referrer/host/browser/device/screen fields are sent.
+        </p>
+        <p>
+          The browser asks PostHog not to perform GeoIP enrichment on every permitted event. The separate
+          project-level setting that discards raw IP addresses has not yet been independently verified, so this page
+          does not claim that server-side discard is active.
+        </p>
+        <p>
+          Use the website analytics control above to store an opt-out in this browser until site data is cleared. A
+          stored opt-out prevents the analytics SDK from loading on later visits, and activating it stops subsequent
+          capture immediately. If the browser blocks preference storage, GitPin fails closed and does not load website
+          analytics.
         </p>
         <p>
           Test traffic is excluded only when automated-browser signals are present and a deliberate marker is set

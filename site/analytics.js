@@ -1,11 +1,74 @@
 const projectKey = document.querySelector('meta[name="posthog-project-key"]')?.content.trim();
 const apiHost = document.querySelector('meta[name="posthog-api-host"]')?.content.trim();
+const ANALYTICS_OPT_OUT_KEY = 'gitpin.analytics.opt_out';
+const ANALYTICS_STORAGE_PROBE_KEY = 'gitpin.analytics.storage_probe';
+let analyticsPreferenceAvailable = true;
+let analyticsOptedOut = readAnalyticsOptOut();
 
 const MAX_EVENT_NAME_LENGTH = 64;
 const MAX_TOKEN_LENGTH = 64;
 const MAX_DISTINCT_ID_LENGTH = 128;
 const MAX_SESSION_ID_LENGTH = 256;
 const EVENT_UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu;
+
+function readAnalyticsOptOut() {
+  try {
+    const optedOut = window.localStorage.getItem(ANALYTICS_OPT_OUT_KEY) === 'true';
+    if (optedOut) return true;
+
+    const previousProbeValue = window.localStorage.getItem(ANALYTICS_STORAGE_PROBE_KEY);
+    window.localStorage.setItem(ANALYTICS_STORAGE_PROBE_KEY, '1');
+    window.localStorage.removeItem(ANALYTICS_STORAGE_PROBE_KEY);
+    if (previousProbeValue !== null) {
+      window.localStorage.setItem(ANALYTICS_STORAGE_PROBE_KEY, previousProbeValue);
+    }
+    return false;
+  } catch {
+    analyticsPreferenceAvailable = false;
+    return true;
+  }
+}
+
+function getAnalyticsStatus() {
+  if (!analyticsPreferenceAvailable) {
+    return 'Website analytics are off because this browser cannot store the preference.';
+  }
+  if (analyticsOptedOut) return 'Website analytics are off on this browser.';
+  if (!projectKey || !apiHost) {
+    return 'Website analytics are not configured for this build. You can still save an opt-out for future visits.';
+  }
+  return 'Optional website analytics are on for this browser.';
+}
+
+function renderAnalyticsControls() {
+  for (const control of document.querySelectorAll('[data-analytics-opt-out]')) {
+    control.disabled = analyticsOptedOut;
+  }
+  for (const status of document.querySelectorAll('[data-analytics-opt-out-status]')) {
+    status.textContent = getAnalyticsStatus();
+  }
+}
+
+function disableAnalytics() {
+  analyticsOptedOut = true;
+  try {
+    window.localStorage.setItem(ANALYTICS_OPT_OUT_KEY, 'true');
+  } catch {
+    analyticsPreferenceAvailable = false;
+  }
+
+  try {
+    window.posthog?.opt_out_capturing?.();
+  } catch {
+    // The in-memory guard and before_send remain fail-closed even if the SDK cannot update its own state.
+  }
+  renderAnalyticsControls();
+}
+
+for (const control of document.querySelectorAll('[data-analytics-opt-out]')) {
+  control.addEventListener('click', disableAnalytics);
+}
+renderAnalyticsControls();
 
 const launchFunnelEventSchema = {
   cta_clicked: {
@@ -132,6 +195,7 @@ function getTrafficClass() {
 }
 
 function buildStrictPayload(event) {
+  if (analyticsOptedOut) return null;
   if (isLikelyAutomatedVisitor() && hasExplicitTestTrafficFlag()) return null;
 
   if (!event || typeof event !== 'object') return null;
@@ -163,6 +227,7 @@ function buildStrictPayload(event) {
     token,
     distinct_id: distinctId,
     traffic_class: getTrafficClass(),
+    $geoip_disable: true,
   };
 
   if (properties.$session_id !== undefined) {
@@ -206,7 +271,7 @@ function getEventProperties(element, eventName) {
   return parseEventProperties(element, eventName);
 }
 
-if (projectKey && apiHost) {
+if (!analyticsOptedOut && projectKey && apiHost) {
   const posthog = window.posthog || [];
   window.posthog = posthog;
   posthog.__SV = posthog.__SV || 1;
@@ -228,6 +293,7 @@ if (projectKey && apiHost) {
   window.gitpinTrack = (event, properties = {}) => track(event, properties);
   posthog.init(projectKey, {
     api_host: apiHost,
+    advanced_disable_flags: true,
     autocapture: false,
     capture_pageview: false,
     capture_pageleave: false,
@@ -249,6 +315,7 @@ if (projectKey && apiHost) {
 }
 
 function track(eventName, properties = {}) {
+  if (analyticsOptedOut) return;
   if (!window.posthog?.capture) return;
   const normalizedName = String(eventName || '');
   const sanitized = sanitizeProperties(normalizedName, properties);
