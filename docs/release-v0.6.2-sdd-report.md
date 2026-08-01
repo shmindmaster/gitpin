@@ -4,12 +4,12 @@ Date: 2026-08-01 (America/Chicago)
 
 ## Scope and outcome
 
-This focused forward patch prepares GitPin 0.6.2 from exact base
+Historical candidate context: this focused forward patch prepared GitPin 0.6.2 from exact base
 `a9c6dc7ce3518cba7d10aea39e44f30e56072f25`. It changes only the website analytics privacy boundary, its
 request-level tests, the version-coherence surfaces required for a release, and this evidence report.
 
-The CLI, stdio MCP server, HTTP MCP server, package verifier, and container remain telemetry-free. No PostHog
-project setting was changed, and this branch was not pushed, tagged, published, or deployed.
+The CLI, stdio MCP server, HTTP MCP server, package verifier, and container remain telemetry-free. At candidate-review
+time, no PostHog project setting was changed and the branch had not yet been pushed, tagged, published, or deployed.
 
 ## Specification
 
