@@ -178,6 +178,8 @@ function buildStrictPayload(event) {
 
   const payload = {
     event: eventName,
+    token,
+    distinct_id: distinctId,
     properties: nextProperties,
     uuid,
   };

@@ -69,6 +69,12 @@ const shouldWrite = args.has('--write');
 const shouldVerify = args.has('--verify') || args.has('--check');
 const persistFixture = args.has('--persist');
 
+let existingArtifact;
+if (shouldVerify) {
+  existingArtifact = readArtifactJson(artifactPath, `fixture artifact at ${artifactPath}`);
+  assertAdvertisedArtifactSha256(existingArtifact, `fixture ${artifactPath}`);
+}
+
 if (!existsSync(DEFAULT_SERVER_PATH)) {
   throw new Error('Expected built GitPin CLI at dist/server.js. Run pnpm build first.');
 }
@@ -92,8 +98,6 @@ if (shouldWrite) {
 }
 
 if (shouldVerify) {
-  const existingArtifact = readArtifactJson(artifactPath);
-  assertAdvertisedArtifactSha256(existingArtifact, `fixture ${artifactPath}`);
   assertDeepEqual(generated.artifact, existingArtifact, `fixture ${artifactPath}`);
 
   const expectedMarkdown = readFileUtf8(markdownPath);
@@ -410,6 +414,7 @@ function calculateArtifactSha256(artifact) {
 }
 
 function assertAdvertisedArtifactSha256(artifact, label) {
+  assertArtifactShape(artifact, label);
   const advertised = artifact?.reproducibility?.artifactSha256;
   const recomputed = calculateArtifactSha256(artifact);
   if (advertised !== recomputed) {
@@ -417,6 +422,26 @@ function assertAdvertisedArtifactSha256(artifact, label) {
       `Checked-in ${label} advertised reproducibility.artifactSha256 does not match recomputed checksum.`,
     );
   }
+}
+
+function assertArtifactShape(artifact, label) {
+  if (!isObjectRecord(artifact)) {
+    throw new Error(`Malformed ${label}: expected a JSON object.`);
+  }
+
+  if (!isObjectRecord(artifact.reproducibility)) {
+    throw new Error(`Malformed ${label}: expected reproducibility to be a JSON object.`);
+  }
+
+  if (!/^[0-9a-f]{64}$/.test(artifact.reproducibility.artifactSha256 ?? '')) {
+    throw new Error(
+      `Malformed ${label}: expected reproducibility.artifactSha256 to be a 64-character lowercase hexadecimal string.`,
+    );
+  }
+}
+
+function isObjectRecord(value) {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 function commit(repositoryPath, message, date, env) {
@@ -456,8 +481,12 @@ function extractText(error) {
   return '';
 }
 
-function readArtifactJson(path) {
-  return JSON.parse(readFileSync(path, 'utf8'));
+function readArtifactJson(path, label = `artifact at ${path}`) {
+  try {
+    return JSON.parse(readFileSync(path, 'utf8'));
+  } catch {
+    throw new Error(`Malformed ${label}: expected valid JSON.`);
+  }
 }
 
 function readFileUtf8(path) {

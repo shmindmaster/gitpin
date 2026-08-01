@@ -283,6 +283,8 @@ test('launch-funnel analytics accepts SDK-shaped events without timestamps and e
     .toEqual([
       {
         event: 'setup_intent',
+        token: 'phc_test',
+        distinct_id: 'anon_session_001',
         uuid: '018f3f9a-7b2c-7def-8123-456789abcdef',
         properties: {
           surface: 'hero',
@@ -295,6 +297,8 @@ test('launch-funnel analytics accepts SDK-shaped events without timestamps and e
       },
       {
         event: 'setup_guide_intent',
+        token: 'phc_test',
+        distinct_id: 'anon_session_001',
         uuid: '018f3f9a-7b2c-7def-8123-456789abcdef',
         properties: {
           step: 'open_setup_guide',
@@ -307,6 +311,8 @@ test('launch-funnel analytics accepts SDK-shaped events without timestamps and e
       },
       {
         event: 'sample_view_intent',
+        token: 'phc_test',
+        distinct_id: 'anon_session_001',
         uuid: '018f3f9a-7b2c-7def-8123-456789abcdef',
         properties: {
           phase: 'sample_view',
@@ -319,6 +325,8 @@ test('launch-funnel analytics accepts SDK-shaped events without timestamps and e
       },
       {
         event: 'gate_result_intent',
+        token: 'phc_test',
+        distinct_id: 'anon_session_001',
         uuid: '018f3f9a-7b2c-7def-8123-456789abcdef',
         properties: {
           result: 'pass_demo',
@@ -331,6 +339,8 @@ test('launch-funnel analytics accepts SDK-shaped events without timestamps and e
       },
       {
         event: 'gate_result_intent',
+        token: 'phc_test',
+        distinct_id: 'anon_session_001',
         uuid: '018f3f9a-7b2c-7def-8123-456789abcdef',
         properties: {
           result: 'fail_demo',
@@ -343,6 +353,8 @@ test('launch-funnel analytics accepts SDK-shaped events without timestamps and e
       },
       {
         event: 'feedback_intent',
+        token: 'phc_test',
+        distinct_id: 'anon_session_001',
         uuid: '018f3f9a-7b2c-7def-8123-456789abcdef',
         properties: {
           surface: 'footer',
@@ -402,7 +414,31 @@ test('launch-funnel analytics accepts SDK-shaped events without timestamps and e
   ]);
 
   const topLevelKeys = await page.evaluate(() => Object.keys(window.__capturedEvents[0]).sort());
-  expect(topLevelKeys).toEqual(['event', 'properties', 'uuid']);
+  expect(topLevelKeys).toEqual(['distinct_id', 'event', 'properties', 'token', 'uuid']);
+
+  const propertyFallback = await page.evaluate(() =>
+    window.__posthogInitConfig?.before_send?.({
+      event: 'setup_intent',
+      uuid: '018f3f9a-7b2c-7def-8123-456789abcdef',
+      properties: {
+        surface: 'hero',
+        token: 'phc_test',
+        distinct_id: 'anon_session_001',
+      },
+    }),
+  );
+  expect(propertyFallback).toEqual({
+    event: 'setup_intent',
+    token: 'phc_test',
+    distinct_id: 'anon_session_001',
+    uuid: '018f3f9a-7b2c-7def-8123-456789abcdef',
+    properties: {
+      surface: 'hero',
+      token: 'phc_test',
+      distinct_id: 'anon_session_001',
+      traffic_class: 'production',
+    },
+  });
 
   const invalidOutbound = await page.evaluate(() =>
     window.__posthogInitConfig?.before_send?.({
