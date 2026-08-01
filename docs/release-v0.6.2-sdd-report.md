@@ -165,4 +165,5 @@ The staged release sequence is:
 7. Advance `.github/workflows/evidence-gate.yml` to `shmindmaster/gitpin@v0.6.2` in a separate post-publication PR,
    then validate its exact head against the released Action.
 
-This patch performs no external publication or configuration action and is not pushed, opened, or merged.
+This patch performs no package publication, deployment, or PostHog configuration action; it only advances the
+repository self-gate to the published Action and reconciles repository documentation.
