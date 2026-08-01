@@ -229,10 +229,15 @@ test('uses the real configured analytics transport and emits no autoplay analyti
   });
   await page.route('**/analytics-hero-fixture', async (route) => {
     await route.fulfill({
-      body: siteIndex.replace(
-        '<meta name="posthog-project-key" content="" />',
-        '<meta name="posthog-project-key" content="phc_test" />',
-      ),
+      body: siteIndex
+        .replace(
+          '<meta name="posthog-project-key" content="" />',
+          '<meta name="posthog-project-key" content="phc_test" />',
+        )
+        .replace(
+          '<meta name="posthog-api-host" content="" />',
+          '<meta name="posthog-api-host" content="https://us.i.posthog.com" />',
+        ),
       contentType: 'text/html',
     });
   });

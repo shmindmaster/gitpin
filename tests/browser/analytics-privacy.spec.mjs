@@ -36,10 +36,12 @@ const analyticsFixture = `
 `;
 
 function configuredIndex() {
-  return siteIndex.replace(
-    '<meta name="posthog-project-key" content="" />',
-    '<meta name="posthog-project-key" content="phc_test" />',
-  );
+  return siteIndex
+    .replace('<meta name="posthog-project-key" content="" />', '<meta name="posthog-project-key" content="phc_test" />')
+    .replace(
+      '<meta name="posthog-api-host" content="" />',
+      '<meta name="posthog-api-host" content="https://us.i.posthog.com" />',
+    );
 }
 
 async function installInspectableAnalytics(page, fixtureHtml = analyticsFixture) {
@@ -241,4 +243,50 @@ test('fails closed without loading or capture when preference storage is unavail
     'Website analytics are off because this browser cannot store the preference.',
   );
   await expect(page.getByRole('button', { name: 'Turn off website analytics' })).toBeDisabled();
+});
+
+test('fails closed across reloads when storage reads succeed but writes fail', async ({ page }) => {
+  await page.addInitScript((key) => {
+    const originalSetItem = Storage.prototype.setItem;
+    originalSetItem.call(window.localStorage, key, 'false');
+    Storage.prototype.setItem = () => {
+      throw new DOMException('blocked', 'QuotaExceededError');
+    };
+  }, optOutStorageKey);
+  const requests = await installInspectableAnalytics(page);
+
+  await page.goto('/analytics-privacy-fixture');
+  await page.getByRole('link', { name: 'Start setup' }).click();
+  await page.reload();
+  await page.getByRole('link', { name: 'Start setup' }).click();
+  await page.goto('/analytics-privacy-fixture');
+  await page.evaluate(() => window.gitpinTrack?.('setup_intent', { surface: 'hero' }));
+  await page.waitForTimeout(100);
+
+  expect(requests.sdkRequests).toEqual([]);
+  expect(requests.captureRequests).toEqual([]);
+  expect(await page.evaluate((key) => localStorage.getItem(key), optOutStorageKey)).toBe('false');
+  await expect(page.getByRole('status')).toHaveText(
+    'Website analytics are off because this browser cannot store the preference.',
+  );
+  await expect(page.getByRole('button', { name: 'Turn off website analytics' })).toBeDisabled();
+});
+
+test('fails closed when the storage writability probe cannot remove its temporary key', async ({ page }) => {
+  await page.addInitScript(() => {
+    Storage.prototype.removeItem = () => {
+      throw new DOMException('blocked', 'SecurityError');
+    };
+  });
+  const requests = await installInspectableAnalytics(page);
+
+  await page.goto('/analytics-privacy-fixture');
+  await page.getByRole('link', { name: 'Start setup' }).click();
+  await page.waitForTimeout(100);
+
+  expect(requests.sdkRequests).toEqual([]);
+  expect(requests.captureRequests).toEqual([]);
+  await expect(page.getByRole('status')).toHaveText(
+    'Website analytics are off because this browser cannot store the preference.',
+  );
 });

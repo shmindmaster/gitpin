@@ -26,7 +26,9 @@ The `Deploy website` workflow is manual so merging source cannot publish a publi
 4. Run the `Deploy website` workflow.
 5. Add a custom domain only after DNS ownership is confirmed.
 
-The build succeeds with analytics disabled when the variable is absent.
+The build succeeds with analytics disabled when the variable is absent. Repository source and unconfigured build
+output keep both analytics meta values empty. When the variable is present, the builder injects the same dedicated
+project key and API host into every HTML page that loads the analytics script, including the homepage and privacy page.
 
 ## Analytics boundary
 
@@ -71,8 +73,9 @@ claim server-side raw-IP discard yet.
 The homepage and privacy page expose a native, keyboard-operable **Turn off website analytics** control. Its
 preference is stored in the browser. A stored opt-out prevents the PostHog SDK from loading on later visits;
 activating the control also stops subsequent capture immediately in the current page. If browser preference storage
-cannot be read, the site fails closed and does not load analytics. If storage later becomes unavailable during the
-button action, capture still stops for the current page and the status reports that persistence was unavailable.
+cannot be read, written, or cleaned up, the site fails closed and does not load analytics. The startup check uses a
+fixed, non-identifying probe key and never changes the stored opt-out value. If storage later becomes unavailable during
+the button action, capture still stops for the current page and the status reports that persistence was unavailable.
 
 This browser control does not alter the PostHog project configuration. Clearing site storage clears the persisted
 browser choice.

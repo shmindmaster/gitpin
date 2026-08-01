@@ -1,6 +1,7 @@
 const projectKey = document.querySelector('meta[name="posthog-project-key"]')?.content.trim();
 const apiHost = document.querySelector('meta[name="posthog-api-host"]')?.content.trim();
 const ANALYTICS_OPT_OUT_KEY = 'gitpin.analytics.opt_out';
+const ANALYTICS_STORAGE_PROBE_KEY = 'gitpin.analytics.storage_probe';
 let analyticsPreferenceAvailable = true;
 let analyticsOptedOut = readAnalyticsOptOut();
 
@@ -12,7 +13,16 @@ const EVENT_UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9
 
 function readAnalyticsOptOut() {
   try {
-    return window.localStorage.getItem(ANALYTICS_OPT_OUT_KEY) === 'true';
+    const optedOut = window.localStorage.getItem(ANALYTICS_OPT_OUT_KEY) === 'true';
+    if (optedOut) return true;
+
+    const previousProbeValue = window.localStorage.getItem(ANALYTICS_STORAGE_PROBE_KEY);
+    window.localStorage.setItem(ANALYTICS_STORAGE_PROBE_KEY, '1');
+    window.localStorage.removeItem(ANALYTICS_STORAGE_PROBE_KEY);
+    if (previousProbeValue !== null) {
+      window.localStorage.setItem(ANALYTICS_STORAGE_PROBE_KEY, previousProbeValue);
+    }
+    return false;
   } catch {
     analyticsPreferenceAvailable = false;
     return true;

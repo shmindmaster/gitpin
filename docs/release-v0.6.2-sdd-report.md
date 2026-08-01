@@ -19,7 +19,9 @@ The website must:
 - persist the opt-out when browser storage is available;
 - avoid loading the PostHog SDK when an opt-out is already stored;
 - stop subsequent capture immediately when opt-out is activated at runtime;
-- fail closed without loading analytics when preference storage cannot be read;
+- fail closed without loading analytics when preference storage cannot be read, written, or cleaned up;
+- inject the same configured PostHog project and API host into every analytics-enabled built page while leaving the
+  repository source telemetry-free;
 - add `$geoip_disable: true` to every permitted outbound event;
 - prevent feature-flag and remote-configuration requests outside the explicit event transport;
 - preserve the strict event/property/transport allowlist, `traffic_class`, autoplay silence, and removal of
@@ -58,23 +60,39 @@ Independent review then identified that PostHog could make an initialization-tim
 that unexpected request. Adding `advanced_disable_flags: true` closed the bypass; the strengthened test and complete
 suite were rerun before the remediation commit.
 
-Hosted review subsequently raised four findings. The one-way opt-out control incorrectly exposed toggle-style
+Hosted review subsequently raised six findings. The one-way opt-out control incorrectly exposed toggle-style
 `aria-pressed` state even though activation permanently disables the control; the attribute was removed and the
 keyboard, disabled-state, persistence, and status coverage now explicitly assert the resulting button semantics. The
-other three findings proposed replacing `advanced_disable_flags` with `advanced_disable_decide`. They were rejected
+three findings proposing replacement of `advanced_disable_flags` with `advanced_disable_decide` were rejected
 against the current official PostHog type contract at commit
 `57f371e540968afaa8a0fe9aec8a53ef1db6b654`: `advanced_disable_flags` is the current option, while
 `advanced_disable_decide` is explicitly deprecated in favor of it. The production option, request harness, and earlier
 report statement therefore remain unchanged.
 
+The remaining two findings were valid. A browser could allow storage reads but reject writes, which allowed analytics
+to initialize even though a runtime opt-out could not persist across navigation. A fixed, non-identifying storage
+writability probe now verifies read, write, and removal before initialization without changing the existing opt-out
+key; any failure disables analytics before SDK load. Red coverage observed three SDK loads across the original page,
+reload, and navigation when `setItem` failed, plus one SDK load when probe cleanup failed. Both cases now produce zero
+SDK or capture requests and preserve the pre-existing opt-out-key value.
+
+The configured site build also injected the PostHog project only into `index.html`, leaving the analytics-enabled
+privacy page unconfigured. The new build regression failed for both source/API-host emptiness and missing privacy-page
+configuration. The builder now discovers every HTML page that loads `analytics.js`, requires empty configuration
+placeholders, and injects the same project key and API host into each output page. Repository source and unconfigured
+build output remain empty.
+
+After both later remediations, the combined focused privacy/site command passed 13/13 and the configured-site build
+regression passed 2/2.
+
 ## Full validation evidence
 
-- `pnpm validate` — passed on rerun: 15 Vitest files, 88 tests, lint, format check, typecheck, client/CI/env/MCP/tag
+- `pnpm validate` — passed after the remediations: 16 Vitest files, 90 tests, lint, format check, typecheck, client/CI/env/MCP/tag
   verifiers, site build, and deterministic demo verification.
 - `pnpm build` — passed.
 - `pnpm verify:package` — passed for `gitpin-0.6.2.tgz`; clean install, initialization, doctor, context brief,
   first answer, PR evidence gate, and public docs were verified.
-- `pnpm site:test` — passed 112/112 across Chromium, Firefox, WebKit, and mobile Chromium.
+- `pnpm site:test` — passed 120/120 across Chromium, Firefox, WebKit, and mobile Chromium.
 - Focused release truth — 34/34 tests passed across `launch-readiness-task3`, `launch-readiness-truth`,
   `gate-action`, and `onboarding`.
 - `pnpm verify:release-tag` — matched `v0.6.2`, package `0.6.2`, MCP runtime `0.6.2`, release date `2026-08-01`.
@@ -87,6 +105,12 @@ The first `pnpm validate` attempt had one unrelated 5-second timeout in the onbo
 result from any non-empty exposed document”; 87/88 tests passed. The exact timed-out test then passed alone in 2.18
 seconds, and the complete `pnpm validate` rerun passed 88/88. No product change was made for that non-reproducing timing
 failure.
+
+Two later full-validation attempts after evidence-only edits encountered unrelated Windows fixture contention. The first
+had three 5-second Git-heavy timeouts followed by five `EPERM` cleanup failures on one temporary wiki directory; the
+second had two 5-second onboarding timeouts. The affected gate test passed alone in 2.74 seconds, and the two affected
+onboarding tests passed together in 6.98 seconds. No product change was made for these non-reproducing timing failures;
+the exact pull-request head still requires the remote CI gate.
 
 ## Version surface inventory
 
