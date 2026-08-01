@@ -69,7 +69,7 @@
 ## Commit
 - Implementation commit: `3122c19ce7cde9e6a85e6ee8edadaed211db8eee`
 - Report-reference commit: `457ed0980156f5b27546abeff83f6aef7fc83bd4`
-- Fix round 1 commit: pending (will follow this remediation pass)
+- Fix round 1 commit: `014757dff4abe2f59aa1ae73903b9643bce2c143`
 
 ## Fix round 1
 
