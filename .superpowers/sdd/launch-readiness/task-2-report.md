@@ -28,7 +28,8 @@
   - `{"tag":"v0.6.0","version":"0.6.0","serverVersion":"0.6.0","releaseDate":"2026-07-31","status":"matched"}`
 
 ## Commit
-- `c09601dfe0352df7b230f9f1be58d999e512a50b`
+- Primary Task 2 implementation: `c09601dfe0352df7b230f9f1be58d999e512a50b`
+- Task 2 report file (this file): `9fb0594f4f67a0f5f4dd9e3f2de0e0f8b6e3c3a2`
 
 ## Self-review
 - Updated synthetic artifact and tests so the canonical release version is explicit in artifact markdown and JSON (`v0.6.0`).
