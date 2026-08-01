@@ -19,14 +19,16 @@
       property="og:description"
       content="A base-trusted GitHub gate that checks changed-path coverage and exact line hashes at the pull request head."
     />
-    <meta property="og:image" content="https://shmindmaster.github.io/gitpin/social-card.svg" />
+    <meta property="og:image" content="https://shmindmaster.github.io/gitpin/social-card.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="GitPin — require exact PR evidence before merge" />
     <meta
       name="twitter:description"
       content="Make agent-authored changes carry exact, independently re-checkable evidence before merge."
     />
-    <meta name="twitter:image" content="https://shmindmaster.github.io/gitpin/social-card.svg" />
+    <meta name="twitter:image" content="https://shmindmaster.github.io/gitpin/social-card.png" />
     <title>GitPin — require exact PR evidence before merge</title>
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="./styles.css" />
@@ -44,6 +46,7 @@
         <a href="#how-it-works">PR gate</a>
         <a href="#safety">Safety</a>
         <a href="#install">Install</a>
+        <a data-analytics="feedback_nav" href="https://github.com/shmindmaster/gitpin/issues/new?template=launch_feedback.md">Feedback</a>
         <a data-analytics="github_nav" href="https://github.com/shmindmaster/gitpin">GitHub</a>
       </nav>
     </header>
@@ -191,7 +194,7 @@ jobs:
   evidence:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with: { fetch-depth: 0 }
       - uses: shmindmaster/gitpin@v0.6.0
         with:
@@ -213,7 +216,7 @@ jobs:
         <p>MIT licensed. Built in public.<br />Contributions backed by repeatable validation.</p>
         <div class="actions">
           <a class="button primary" data-analytics="github_footer" href="https://github.com/shmindmaster/gitpin">View on GitHub →</a>
-          <a class="button secondary" data-analytics="contributing_footer" href="https://github.com/shmindmaster/gitpin/blob/main/CONTRIBUTING.md">Contributing guide →</a>
+          <a class="button secondary" data-analytics="feedback_footer" href="https://github.com/shmindmaster/gitpin/issues/new?template=launch_feedback.md">Report setup friction →</a>
         </div>
       </section>
     </main>
@@ -227,6 +230,7 @@ jobs:
         <a href="./privacy.html">Privacy</a>
         <a href="https://github.com/shmindmaster/gitpin/blob/main/ROADMAP.md">Roadmap</a>
         <a href="https://github.com/shmindmaster/gitpin/blob/main/CHANGELOG.md">Changelog</a>
+        <a data-analytics="feedback_footer_nav" href="https://github.com/shmindmaster/gitpin/issues/new?template=launch_feedback.md">Feedback</a>
       </nav>
     </footer>
   </body>

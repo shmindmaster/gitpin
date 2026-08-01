@@ -6,11 +6,11 @@ labels: enhancement
 
 ## Problem
 
-What coding-agent or repository-context problem is not solved today?
+What agent-delivery evidence or verification problem is not solved today?
 
 ## Proposed behavior
 
-Describe the MCP result an agent should receive, including provenance and safety expectations.
+Describe the evidence-gate or local MCP result needed, including provenance and safety expectations.
 
 ## Alternatives considered
 
