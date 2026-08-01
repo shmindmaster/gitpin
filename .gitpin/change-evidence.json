@@ -157,7 +157,8 @@
         "docs/ci.md",
         "docs/clients.md",
         "docs/migration-gitpin.md",
-        "docs/troubleshooting.md"
+        "docs/troubleshooting.md",
+        "docs/website.md"
       ],
       "evidence": [
         {
@@ -165,7 +166,7 @@
           "path": "AGENTS.md",
           "lineStart": 6,
           "lineEnd": 6,
-          "contentSha256": "6981dfc2cd0440c4e0a115a640ffce4ecc10b80c84444b1532e786eac0c2efb9"
+          "contentSha256": "fcc46e9acff69b60202ac4e53b929e86e959ca56aa2ebbd98109900f6c2de717"
         },
         {
           "ref": "head",
@@ -179,7 +180,7 @@
           "path": "ROADMAP.md",
           "lineStart": 11,
           "lineEnd": 11,
-          "contentSha256": "2f0c692fc058151b5b11561968b80f37410881a3275356f5875a838643af7c7d"
+          "contentSha256": "5ca19b3dc00aea9684ad3966fd3b1c37318b7d834f615223ef5b47126a911a17"
         },
         {
           "ref": "head",
