@@ -89,7 +89,9 @@ Transport fields sent with each launch-funnel event are limited to:
 - public PostHog project key (`token`, not a secret) validated against the deployed project key,
 - anonymous `distinct_id`,
 - optional `$session_id` when retained by cookieless session analysis,
-- and optional `$process_person_profile` when required by the SDK.
+- optional `$process_person_profile` when required by the SDK,
+- event timestamp,
+- and SDK-generated event UUID used for deduplication.
 
 No other SDK-enrichment fields are retained.
 

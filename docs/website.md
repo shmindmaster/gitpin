@@ -46,10 +46,13 @@ Autocapture, pageview/pageleave capture, and session replay are disabled, person
 
 Launch-funnel transport fields are explicit and constrained before `before_send` strips SDK enrichment:
 
+- allowlisted event name and its single allowlisted launch-funnel property,
 - public PostHog project key in `token` (must match the configured `posthog-project-key`; this is not a secret),
 - anonymous `distinct_id`,
 - optional `$session_id` (if session analysis is active),
-- optional `$process_person_profile` (SDK-required process-person flag only).
+- optional `$process_person_profile` (SDK-required process-person flag only),
+- event timestamp,
+- SDK-generated event UUID used for deduplication.
 
 The outbound event object is not sent with URL/referrer/host/browser/device/screen context.
 
@@ -61,7 +64,7 @@ Test-traffic suppression is explicitly bounded to:
 Ordinary QA or unmarked automation traffic is not treated as automatically detectable test traffic.
 
 The launch-funnel schema is strict by design: only enumerated event names and enumerated property values are recorded.
-No repository contents, filesystem paths, prompt text, URLs, secret tokens, account identifiers, or free-text answers are sent. The only identifiers retained are the cookieless anonymous `distinct_id` and optional anonymous `$session_id` described above.
+No repository contents, filesystem paths, prompt text, URLs, secret tokens, account identifiers, or free-text answers are sent. The only identifiers retained are the cookieless anonymous `distinct_id`, optional anonymous `$session_id`, and per-event deduplication UUID described above.
 
 Only intent surfaces are observed here:
 - site `feedback_*` clicks indicate intent to report friction,

@@ -197,6 +197,10 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
           const [eventName, properties] = args;
           const payload = {
             event: eventName,
+            uuid: '018f3f9a-7b2c-7def-8123-456789abcdef',
+            timestamp: new Date('2026-07-31T12:00:00.000Z'),
+            ip: '127.0.0.1',
+            top_level_secret: 'must-be-dropped',
             properties: {
               ...properties,
               $current_url: 'https://example.com/page',
@@ -276,10 +280,19 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
   await page.locator('#invalid-cta-extra-prop').click();
 
   await expect
-    .poll(async () => page.evaluate(() => window.__capturedEvents.filter(Boolean)))
+    .poll(async () =>
+      page.evaluate(() =>
+        window.__capturedEvents.filter(Boolean).map((event) => ({
+          ...event,
+          timestamp: event.timestamp.toISOString(),
+        })),
+      ),
+    )
     .toEqual([
       {
         event: 'setup_intent',
+        uuid: '018f3f9a-7b2c-7def-8123-456789abcdef',
+        timestamp: '2026-07-31T12:00:00.000Z',
         properties: {
           surface: 'hero',
           token: 'phc_test',
@@ -290,6 +303,8 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
       },
       {
         event: 'setup_guide_intent',
+        uuid: '018f3f9a-7b2c-7def-8123-456789abcdef',
+        timestamp: '2026-07-31T12:00:00.000Z',
         properties: {
           step: 'open_setup_guide',
           token: 'phc_test',
@@ -300,6 +315,8 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
       },
       {
         event: 'sample_view_intent',
+        uuid: '018f3f9a-7b2c-7def-8123-456789abcdef',
+        timestamp: '2026-07-31T12:00:00.000Z',
         properties: {
           phase: 'sample_view',
           token: 'phc_test',
@@ -310,6 +327,8 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
       },
       {
         event: 'gate_result_intent',
+        uuid: '018f3f9a-7b2c-7def-8123-456789abcdef',
+        timestamp: '2026-07-31T12:00:00.000Z',
         properties: {
           result: 'pass_demo',
           token: 'phc_test',
@@ -320,6 +339,8 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
       },
       {
         event: 'gate_result_intent',
+        uuid: '018f3f9a-7b2c-7def-8123-456789abcdef',
+        timestamp: '2026-07-31T12:00:00.000Z',
         properties: {
           result: 'fail_demo',
           token: 'phc_test',
@@ -330,6 +351,8 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
       },
       {
         event: 'feedback_intent',
+        uuid: '018f3f9a-7b2c-7def-8123-456789abcdef',
+        timestamp: '2026-07-31T12:00:00.000Z',
         properties: {
           surface: 'footer',
           token: 'phc_test',
@@ -386,9 +409,14 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
     ['surface', 'token', 'distinct_id', '$session_id', '$process_person_profile'],
   ]);
 
+  const topLevelKeys = await page.evaluate(() => Object.keys(window.__capturedEvents[0]).sort());
+  expect(topLevelKeys).toEqual(['event', 'properties', 'timestamp', 'uuid']);
+
   const invalidOutbound = await page.evaluate(() =>
     window.__posthogInitConfig?.before_send?.({
       event: 'setup_intent',
+      uuid: '018f3f9a-7b2c-7def-8123-456789abcdef',
+      timestamp: new Date('2026-07-31T12:00:00.000Z'),
       properties: {
         surface: 'secret-value',
         token: 'phc_test',
@@ -402,6 +430,8 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
   const invalidTransport = await page.evaluate(() =>
     window.__posthogInitConfig?.before_send?.({
       event: 'setup_intent',
+      uuid: '018f3f9a-7b2c-7def-8123-456789abcdef',
+      timestamp: new Date('2026-07-31T12:00:00.000Z'),
       properties: {
         surface: 'hero',
         token: 'phc_wrong',
@@ -415,6 +445,8 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
   const invalidDistinctId = await page.evaluate(() =>
     window.__posthogInitConfig?.before_send?.({
       event: 'setup_intent',
+      uuid: '018f3f9a-7b2c-7def-8123-456789abcdef',
+      timestamp: new Date('2026-07-31T12:00:00.000Z'),
       properties: {
         surface: 'hero',
         token: 'phc_test',
@@ -428,6 +460,8 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
   const invalidSession = await page.evaluate(() =>
     window.__posthogInitConfig?.before_send?.({
       event: 'setup_intent',
+      uuid: '018f3f9a-7b2c-7def-8123-456789abcdef',
+      timestamp: new Date('2026-07-31T12:00:00.000Z'),
       properties: {
         surface: 'hero',
         token: 'phc_test',
@@ -437,6 +471,20 @@ test('launch-funnel analytics events only emit strict allowlisted payloads and k
     }),
   );
   expect(invalidSession).toBeNull();
+
+  const invalidEventMetadata = await page.evaluate(() =>
+    window.__posthogInitConfig?.before_send?.({
+      event: 'setup_intent',
+      uuid: 'email@example.com',
+      timestamp: new Date('invalid'),
+      properties: {
+        surface: 'hero',
+        token: 'phc_test',
+        distinct_id: 'anon_session_001',
+      },
+    }),
+  );
+  expect(invalidEventMetadata).toBeNull();
 
   await expect
     .poll(() => page.evaluate(() => window.__posthogInitConfig))
@@ -474,6 +522,8 @@ test('launch-funnel analytics drops events only for automation + explicit test-t
           const [eventName, properties] = args;
           const payload = {
             event: eventName,
+            uuid: '018f3f9a-7b2c-7def-8123-456789abcdef',
+            timestamp: new Date('2026-07-31T12:00:00.000Z'),
             properties: {
               ...properties,
               token: 'phc_test',

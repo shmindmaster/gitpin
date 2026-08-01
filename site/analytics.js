@@ -5,6 +5,7 @@ const MAX_EVENT_NAME_LENGTH = 64;
 const MAX_TOKEN_LENGTH = 64;
 const MAX_DISTINCT_ID_LENGTH = 128;
 const MAX_SESSION_ID_LENGTH = 256;
+const EVENT_UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu;
 
 const launchFunnelEventSchema = {
   cta_clicked: {
@@ -144,6 +145,10 @@ function buildStrictPayload(event) {
   const distinctId = normalizeTransportValue(properties.distinct_id, MAX_DISTINCT_ID_LENGTH);
   if (!distinctId || !isLikelyAnonymousDistinctId(distinctId)) return null;
 
+  const uuid = normalizeTransportValue(event.uuid, 36);
+  if (!uuid || !EVENT_UUID_PATTERN.test(uuid)) return null;
+  if (!(event.timestamp instanceof Date) || Number.isNaN(event.timestamp.getTime())) return null;
+
   const nextProperties = {
     ...outboundProperties,
     token,
@@ -162,9 +167,10 @@ function buildStrictPayload(event) {
   }
 
   return {
-    ...event,
     event: eventName,
     properties: nextProperties,
+    uuid,
+    timestamp: event.timestamp,
   };
 }
 
