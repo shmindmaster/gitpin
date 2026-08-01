@@ -20,10 +20,11 @@ describe('GitHub Action trust boundary', () => {
     expect(docs).not.toContain('permissions:\n  contents: write');
   });
 
-  it('pins the repository self-gate to the immutable 0.6.2 Action after publication', () => {
+  it('commit-pins the repository self-gate to the published 0.6.2 Action source', () => {
     const workflow = readFileSync(resolve('.github/workflows/evidence-gate.yml'), 'utf8');
-    expect(workflow).toContain('v0.6.2 is published and immutable; keep the self-gate pinned to that release');
-    expect(workflow).toContain('uses: shmindmaster/gitpin@v0.6.2');
+    expect(workflow).toContain('commit-pin the self-gate to the published v0.6.2 release source');
+    expect(workflow).toContain('uses: shmindmaster/gitpin@d2122379f4be315973a0bfa92bbd628e2cf7cfeb');
+    expect(workflow).not.toContain('uses: shmindmaster/gitpin@v0.6.2');
     expect(workflow).not.toContain('uses: shmindmaster/gitpin@v0.6.0');
     expect(workflow).not.toContain('uses: shmindmaster/gitpin@v0.6.1');
   });

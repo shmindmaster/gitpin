@@ -144,8 +144,8 @@ The dated 0.6.1 and 0.6.0 changelog history and links remain unchanged. `ROADMAP
 The repository self-gate intentionally remained pinned to the already-published `shmindmaster/gitpin@v0.6.1` during
 the 0.6.2 candidate PR, because pointing that PR at a not-yet-existent Action tag would prevent the required check from
 materializing. After `v0.6.2` was published from `d2122379f4be315973a0bfa92bbd628e2cf7cfeb`, this separate follow-up
-advances the self-gate to the matching immutable `shmindmaster/gitpin@v0.6.2` Action. Exact-head CI and independent
-review remain required before that follow-up can merge.
+commit-pins the self-gate to that exact published Action source. Exact-head CI and independent review remain required
+before that follow-up can merge.
 
 The same follow-up corrects the now-stale release-candidate banner and makes the documentation boundary explicit:
 GitPin's evidence gate stands alone, while CrewScore is an optional, separate written-control check.
@@ -162,8 +162,8 @@ The staged release sequence is:
    PostHog project destination.
 6. Independently inspect the PostHog project-level raw-IP discard setting. This production gate completed: the setting
    was enabled and the bounded verification query contained no raw-IP or GeoIP-derived fields.
-7. Advance `.github/workflows/evidence-gate.yml` to `shmindmaster/gitpin@v0.6.2` in a separate post-publication PR,
-   then validate its exact head against the released Action.
+7. Advance `.github/workflows/evidence-gate.yml` to the full `v0.6.2` release commit in a separate
+   post-publication PR, then validate its exact head against the released Action.
 
 This patch performs no package publication, deployment, or PostHog configuration action; it only advances the
 repository self-gate to the published Action and reconciles repository documentation.

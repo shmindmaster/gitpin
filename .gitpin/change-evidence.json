@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "summary": "GitPin 0.6.2 adds a fail-closed browser-stored website analytics opt-out bounded by site-data clearing, verifies storage writability before SDK load and during runtime activation, configures every analytics-enabled built page consistently, disables GeoIP enrichment and feature-flag requests, preserves strict telemetry boundaries, aligns the complete release surface, and advances the repository self-gate to the published immutable v0.6.2 Action.",
+  "summary": "GitPin 0.6.2 adds a fail-closed browser-stored website analytics opt-out bounded by site-data clearing, verifies storage writability before SDK load and during runtime activation, configures every analytics-enabled built page consistently, disables GeoIP enrichment and feature-flag requests, preserves strict telemetry boundaries, aligns the complete release surface, and commit-pins the repository self-gate to the published v0.6.2 Action source.",
   "claims": [
     {
       "id": "V062-ANALYTICS-PRIVACY",
@@ -220,7 +220,7 @@
     },
     {
       "id": "V062-LAUNCH-AND-BOOTSTRAP",
-      "statement": "Launch, setup, regression, and generated demo surfaces target the published 0.6.2 release, the repository self-gate pins that immutable Action, and the public setup documentation clearly separates GitPin's required evidence gate from an optional CrewScore check.",
+      "statement": "Launch, setup, regression, and generated demo surfaces target the published 0.6.2 release, the repository self-gate uses its full release commit, and the public setup documentation clearly separates GitPin's required evidence gate from an optional CrewScore check.",
       "covers": [
         ".github/workflows/evidence-gate.yml",
         "src/gate-action.test.ts",
@@ -237,14 +237,14 @@
           "path": ".github/workflows/evidence-gate.yml",
           "lineStart": 21,
           "lineEnd": 22,
-          "contentSha256": "293de496a771cd35d0c5094d1b05f6f4e404c9f5b8e8263fbf49e86fde39b507"
+          "contentSha256": "3368bf9a9dab31532caaafd6d729e2d39a14b4ed7b46f0e038b2e76578c06e9c"
         },
         {
           "ref": "head",
           "path": "src/gate-action.test.ts",
           "lineStart": 23,
-          "lineEnd": 29,
-          "contentSha256": "cd367dfd7aad24fd526ad5c375713579c04509e46ab71002acf8763c10421266"
+          "lineEnd": 30,
+          "contentSha256": "7360491a132d8e82dd097f9913689b0c0c6c1e3367c946e9dbf6237ff5a35095"
         },
         {
           "ref": "head",
@@ -334,7 +334,7 @@
           "path": "docs/release-v0.6.2-sdd-report.md",
           "lineStart": 142,
           "lineEnd": 148,
-          "contentSha256": "03d56ef8398a0d34384daa4c8d6272cc3be8d0396f9d7827578ba0fda6758eb3"
+          "contentSha256": "f1ebf18c03ad6d82329b7b0b8247ded607e0940ee350c23afd4f1217b9bc5296"
         }
       ]
     }
