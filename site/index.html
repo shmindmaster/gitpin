@@ -95,33 +95,29 @@
           </div>
         </div>
 
-        <div class="evidence-console" id="evidence-panel" role="tabpanel" aria-labelledby="tab-engineering">
+        <div class="evidence-console hero-demo" id="evidence-panel" role="tabpanel" aria-labelledby="tab-engineering" aria-describedby="hero-walkthrough-summary" data-hero-demo data-hero-phase="loading" aria-busy="true">
           <div class="console-bar">
             <span>gitpin</span>
             <span>BASE POLICY · HEAD EVIDENCE</span>
           </div>
-          <div class="console-step">
-            <span class="step-number">1</span>
-            <div>
-              <strong>Review question</strong>
-              <p id="audience-question">Did the agent cover every material file it changed?</p>
-            </div>
+          <p class="hero-demo-label">Synthetic PR gate walkthrough</p>
+          <ol class="hero-timeline" aria-label="Fail-to-pass gate sequence">
+            <li data-hero-step="material"><span>1</span><div><strong>Material path enters the diff</strong><code data-hero-path>Loading artifact…</code></div></li>
+            <li data-hero-step="uncovered"><span>2</span><div><strong>Required coverage is missing</strong><p><b>FAIL</b> <span data-hero-fail>Loading artifact…</span></p></div></li>
+            <li data-hero-step="evidence"><span>3</span><div><strong>Pin the exact committed line</strong><div class="hero-locator"><code data-hero-locator>Loading artifact…</code><code data-hero-hash>Loading artifact…</code></div></div></li>
+            <li data-hero-step="pass"><span>4</span><div><strong>Rerun with complete coverage</strong><p><b>PASS</b> <span data-hero-pass>Loading artifact…</span></p></div></li>
+          </ol>
+          <div class="hero-result" role="status" aria-live="polite" data-hero-result>Loading deterministic walkthrough…</div>
+          <div class="hero-controls" role="group" aria-label="Gate walkthrough controls">
+            <button type="button" data-hero-play disabled>Play</button>
+            <button type="button" data-hero-pause disabled>Pause</button>
+            <button type="button" data-hero-replay disabled>Replay</button>
           </div>
-          <div class="console-arrow" aria-hidden="true">↓</div>
-          <div class="console-step active">
-            <span class="step-number">2</span>
-            <div>
-              <strong>GitPin</strong>
-              <p>Comparing the merge-base diff with committed claims…</p>
-            </div>
-          </div>
-          <div class="console-arrow" aria-hidden="true">↓</div>
-          <div class="citation">
-            <div class="citation-head">
-              <strong>src/gate-policy.ts:60</strong>
-              <span>990c830d58cc68d63901985e5234ed3137819802</span>
-            </div>
-            <div class="source-line"><span>60</span><mark id="audience-fact">Every material changed path must map to a named claim.</mark></div>
+          <p class="hero-summary" id="hero-walkthrough-summary" data-hero-summary>Loading static walkthrough summary…</p>
+          <div class="hero-audience">
+            <strong>Review question</strong>
+            <p id="audience-question">Did the agent cover every material file it changed?</p>
+            <p id="audience-fact">Every material changed path must map to a named claim.</p>
           </div>
           <dl class="evidence-legend">
             <div><dt>Verified</dt><dd id="audience-known">Coverage is checked against the merge-base diff.</dd></div>

@@ -2,6 +2,14 @@ import { expect, test } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
+const heroArtifact = JSON.parse(
+  readFileSync(resolve(process.cwd(), 'docs/demos/pr-gate-fail-to-pass.artifact.json'), 'utf8'),
+);
+const siteIndex = readFileSync(resolve(process.cwd(), 'site/index.html'), 'utf8');
+const siteApp = readFileSync(resolve(process.cwd(), 'site/app.js'), 'utf8');
+const siteAnalytics = readFileSync(resolve(process.cwd(), 'site/analytics.js'), 'utf8');
+const siteStyles = readFileSync(resolve(process.cwd(), 'site/styles.css'), 'utf8');
+
 test.beforeEach(async ({ page }) => {
   const errors = [];
   const failedRequests = [];
@@ -64,6 +72,213 @@ test('makes the pull-request gate the primary activation path', async ({ page })
   await expect(page.getByText(/Keep retrieval local with the optional MCP server/)).toBeVisible();
 });
 
+test('renders a finite, artifact-derived fail-to-pass hero with keyboard controls', async ({ page }) => {
+  const coverage = heroArtifact.passCase.coverage;
+  const demo = page.locator('[data-hero-demo]');
+  const replay = page.getByRole('button', { name: 'Replay gate walkthrough', exact: true });
+  const play = page.getByRole('button', { name: 'Play gate walkthrough', exact: true });
+  const pause = page.getByRole('button', { name: 'Pause gate walkthrough', exact: true });
+
+  await expect(demo).toBeVisible();
+  await expect(demo).toContainText(coverage.path);
+  await expect(demo).toContainText(String(coverage.lineStart));
+  await expect(demo).toContainText(coverage.sha);
+  await expect(demo).toContainText(coverage.contentSha256);
+  await expect(page.locator('[data-hero-summary]')).toContainText(heroArtifact.accessibility.caption);
+
+  await replay.click();
+  await expect(demo).toHaveAttribute('data-hero-phase', 'material');
+  await play.press('Enter');
+  await expect(demo).toHaveAttribute('data-hero-phase', 'uncovered');
+  await pause.press('Space');
+  await expect(demo).toHaveAttribute('data-hero-paused', 'true');
+  await play.click();
+  await expect(demo).toHaveAttribute('data-hero-phase', 'evidence');
+  await expect(demo).toHaveAttribute('data-hero-phase', 'pass', { timeout: 5_000 });
+  await expect(demo).toHaveAttribute('data-hero-complete', 'true');
+  await expect(pause).toBeDisabled();
+});
+
+test('loads the hero artifact from the GitHub Pages project subpath', async ({ page }) => {
+  const artifactRequests = [];
+  await page.route('**/gitpin/', async (route) => {
+    await route.fulfill({ body: siteIndex, contentType: 'text/html' });
+  });
+  await page.route('**/gitpin/app.js', async (route) => {
+    await route.fulfill({ body: siteApp, contentType: 'text/javascript' });
+  });
+  await page.route('**/gitpin/analytics.js', async (route) => {
+    await route.fulfill({ body: siteAnalytics, contentType: 'text/javascript' });
+  });
+  await page.route('**/gitpin/styles.css', async (route) => {
+    await route.fulfill({ body: siteStyles, contentType: 'text/css' });
+  });
+  await page.route('**/gitpin/_gitpin-artifacts/pr-gate-fail-to-pass.artifact.json', async (route) => {
+    artifactRequests.push(route.request().url());
+    await route.fulfill({ body: JSON.stringify(heroArtifact), contentType: 'application/json' });
+  });
+
+  await page.goto('/gitpin/');
+  await expect(page.locator('[data-hero-demo]')).toContainText(heroArtifact.fixture.changedPath);
+  expect(artifactRequests).toEqual([
+    'http://127.0.0.1:4173/gitpin/_gitpin-artifacts/pr-gate-fail-to-pass.artifact.json',
+  ]);
+});
+
+test('keeps the active tab as the tabpanel name and the artifact summary as its description', async ({ page }) => {
+  const panel = page.getByRole('tabpanel');
+  const summary = page.locator('#hero-walkthrough-summary');
+
+  await expect(panel).toHaveAttribute('aria-labelledby', 'tab-engineering');
+  await expect(panel).not.toHaveAttribute('aria-label');
+  await expect(panel).toHaveAttribute('aria-describedby', 'hero-walkthrough-summary');
+  await expect(summary).toHaveText(heroArtifact.accessibility.caption);
+  await page.getByRole('tab', { name: 'Release owners' }).click();
+  await expect(panel).toHaveAttribute('aria-labelledby', 'tab-release');
+  await expect(panel).not.toHaveAttribute('aria-label');
+});
+
+test('bails out cleanly and clears busy state when a required hero node is missing', async ({ page }) => {
+  const pageErrors = [];
+  page.on('pageerror', (error) => pageErrors.push(error.message));
+  await page.route('**/hero-missing-node-fixture', async (route) => {
+    await route.fulfill({
+      body: siteIndex.replace(' data-hero-play', ''),
+      contentType: 'text/html',
+    });
+  });
+
+  await page.goto('/hero-missing-node-fixture');
+  await expect(page.locator('[data-hero-demo]')).toHaveAttribute('aria-busy', 'false');
+  await expect(page.locator('[data-hero-demo]')).toHaveAttribute('data-hero-unavailable', 'true');
+  expect(pageErrors).toEqual([]);
+});
+
+test('loads and remains operable without IntersectionObserver', async ({ page }) => {
+  await page.addInitScript(() => {
+    delete window.IntersectionObserver;
+  });
+  await page.reload();
+
+  const demo = page.locator('[data-hero-demo]');
+  const replay = page.getByRole('button', { name: 'Replay gate walkthrough', exact: true });
+  const play = page.getByRole('button', { name: 'Play gate walkthrough', exact: true });
+  await expect(demo).toContainText(heroArtifact.fixture.changedPath);
+  await replay.click();
+  await play.click();
+  await expect(demo).toHaveAttribute('data-hero-phase', 'uncovered');
+});
+
+test('exposes the walkthrough controls as a named group', async ({ page }) => {
+  const controls = page.getByRole('group', { name: 'Gate walkthrough controls' });
+  await expect(controls).toBeVisible();
+  await expect(controls.getByRole('button')).toHaveCount(3);
+});
+
+test('pauses the hero walkthrough outside the viewport without shifting page layout', async ({ page }) => {
+  const demo = page.locator('[data-hero-demo]');
+  const replay = page.getByRole('button', { name: 'Replay gate walkthrough', exact: true });
+  const play = page.getByRole('button', { name: 'Play gate walkthrough', exact: true });
+  const before = await demo.boundingBox();
+
+  await replay.click();
+  await play.click();
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await expect(demo).toHaveAttribute('data-hero-paused', 'true');
+  await page.evaluate(() => window.scrollTo(0, 0));
+
+  const after = await demo.boundingBox();
+
+  expect(after?.width).toBe(before?.width);
+  expect(after?.height).toBeCloseTo(before?.height ?? 0, 3);
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  );
+  expect(overflow).toBeLessThanOrEqual(1);
+});
+
+test('pauses the hero walkthrough when the visible document becomes hidden', async ({ page }) => {
+  const demo = page.locator('[data-hero-demo]');
+  const replay = page.getByRole('button', { name: 'Replay gate walkthrough', exact: true });
+  const play = page.getByRole('button', { name: 'Play gate walkthrough', exact: true });
+
+  await expect(demo).toBeInViewport();
+  await replay.click();
+  await play.click();
+  await expect(demo).toHaveAttribute('data-hero-phase', 'uncovered');
+  await page.evaluate(() => {
+    Object.defineProperty(document, 'hidden', { configurable: true, value: true });
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+  await expect(demo).toHaveAttribute('data-hero-paused', 'true');
+  await page.waitForTimeout(1_000);
+  await expect(demo).toHaveAttribute('data-hero-phase', 'uncovered');
+});
+
+test('uses the real configured analytics transport and emits no autoplay analytics', async ({ browser }) => {
+  const context = await browser.newContext({ reducedMotion: 'no-preference', viewport: { width: 1280, height: 900 } });
+  const page = await context.newPage();
+  await page.route('https://us-assets.i.posthog.com/static/array.js', async (route) => {
+    await route.fulfill({
+      body: `
+        window.__capturedAnalytics = [];
+        window.posthog.capture = (...args) => window.__capturedAnalytics.push(args);
+      `,
+      contentType: 'application/javascript',
+    });
+  });
+  await page.route('**/analytics-hero-fixture', async (route) => {
+    await route.fulfill({
+      body: siteIndex.replace(
+        '<meta name="posthog-project-key" content="" />',
+        '<meta name="posthog-project-key" content="phc_test" />',
+      ),
+      contentType: 'text/html',
+    });
+  });
+  await page.goto('/analytics-hero-fixture');
+  await expect.poll(() => page.evaluate(() => typeof window.gitpinTrack)).toBe('function');
+  await expect.poll(() => page.evaluate(() => Array.isArray(window.__capturedAnalytics))).toBe(true);
+  await expect(page.locator('[data-hero-demo]')).toHaveAttribute('data-hero-phase', 'pass', { timeout: 5_000 });
+  expect(await page.evaluate(() => window.__capturedAnalytics)).toEqual([]);
+  await context.close();
+});
+
+test('uses a complete static before-and-after hero under reduced motion', async ({ browser }) => {
+  const context = await browser.newContext({ reducedMotion: 'reduce', viewport: { width: 1280, height: 900 } });
+  const page = await context.newPage();
+  await page.goto('/');
+
+  const demo = page.locator('[data-hero-demo]');
+  await expect(demo).toHaveAttribute('data-hero-reduced-motion', 'true');
+  await expect(demo).toHaveAttribute('data-hero-phase', 'pass');
+  await expect(demo).toContainText(heroArtifact.failCase.message);
+  await expect(demo).toContainText(heroArtifact.passCase.message);
+  await context.close();
+});
+
+test('keeps the product walkthrough visible on wide, tablet, and mobile viewports', async ({ page }) => {
+  for (const viewport of [
+    { width: 1440, height: 900 },
+    { width: 820, height: 900 },
+    { width: 390, height: 844 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto('/');
+    const consoleBox = await page.locator('[data-hero-demo]').boundingBox();
+    expect(consoleBox).not.toBeNull();
+    expect(consoleBox?.y).toBeGreaterThanOrEqual(0);
+    expect(consoleBox?.y).toBeLessThan(viewport.height);
+    expect((consoleBox?.y ?? viewport.height) + Math.min(consoleBox?.height ?? 0, 160)).toBeLessThanOrEqual(
+      viewport.height,
+    );
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(1);
+  }
+});
+
 test('publishes a narrow, accessible privacy statement', async ({ page }) => {
   await page.goto('/privacy.html');
   await expect(page).toHaveTitle(/Privacy/);
@@ -73,7 +288,8 @@ test('publishes a narrow, accessible privacy statement', async ({ page }) => {
 });
 
 test('switches audience presentation while preserving the evidence set', async ({ page }) => {
-  const evidenceSet = await page.locator('.evidence-id code').textContent();
+  const evidenceSet = page.locator('.evidence-id code');
+  await expect(evidenceSet).toHaveText('8e44b735…be61');
   await expect(page.getByRole('tab', { name: 'Engineering managers' })).toHaveAttribute('aria-selected', 'true');
   await expect(page.locator('#audience-question')).toHaveText('Did the agent cover every material file it changed?');
 
@@ -86,12 +302,12 @@ test('switches audience presentation while preserving the evidence set', async (
   await expect(page.locator('#audience-fact')).toHaveText(
     'Each locator is re-hashed at the full base or head commit SHA.',
   );
-  await expect(page.locator('.evidence-id code')).toHaveText(evidenceSet);
+  await expect(evidenceSet).toHaveText('8e44b735…be61');
 
   await page.getByRole('tab', { name: 'Release owners' }).press('ArrowRight');
   await expect(page.getByRole('tab', { name: 'Governance & review' })).toBeFocused();
   await expect(page.locator('#audience-fact')).toHaveText('Policy is loaded from the trusted base branch.');
-  await expect(page.locator('.evidence-id code')).toHaveText(evidenceSet);
+  await expect(evidenceSet).toHaveText('8e44b735…be61');
 
   await page.getByRole('tab', { name: 'Governance & review' }).press('Home');
   await expect(page.getByRole('tab', { name: 'Engineering managers' })).toBeFocused();

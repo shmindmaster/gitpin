@@ -1,204 +1,82 @@
 {
   "schemaVersion": 1,
-  "summary": "Candidate release evidence covers every material path changed from origin/main through the launch-readiness candidate.",
+  "summary": "Native hero evidence covers every material path changed from origin/main through the reviewed fail-to-pass walkthrough.",
   "claims": [
     {
-      "id": "LAUNCH-CONTENT",
-      "statement": "Launch content and feedback artifacts describe the required GitPin PR evidence gate and its release boundary.",
+      "id": "HERO-NATIVE-WALKTHROUGH",
+      "statement": "The site resolves the committed fail-to-pass artifact at local and project subpaths and presents a native finite walkthrough with accessible controls and tab relationships, graceful runtime fallbacks, reduced motion, stable evidence presentation, and responsive layout.",
       "covers": [
-        ".github/ISSUE_TEMPLATE/launch_feedback.md",
-        "AGENTS.md",
-        "README.md",
-        "ROADMAP.md",
-        "docs/configuration.md",
-        "docs/demos/pr-gate-fail-to-pass.artifact.json",
-        "docs/demos/pr-gate-fail-to-pass.md",
-        "docs/demos/pr-gate-fail-to-pass.svg"
+        "scripts/build-site.mjs",
+        "scripts/serve-site.mjs",
+        "site/app.js",
+        "site/index.html",
+        "site/styles.css"
       ],
       "evidence": [
         {
           "ref": "head",
-          "path": ".github/ISSUE_TEMPLATE/launch_feedback.md",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "cb3f91d54eee30e53e35b2b99905f70f169ed549fd78909d3dac2defc9ed8d3b"
+          "path": "scripts/build-site.mjs",
+          "lineStart": 15,
+          "lineEnd": 19,
+          "contentSha256": "d28384939be275ebff1443874d218692ff2da07b688a4d1e19204defbde0cec3"
         },
         {
           "ref": "head",
-          "path": "AGENTS.md",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "687d8b55747e256bcfb2c79c16559103ec9120fc8fa862cd1bc5540ded05944d"
+          "path": "scripts/serve-site.mjs",
+          "lineStart": 16,
+          "lineEnd": 25,
+          "contentSha256": "973b2d47a5232783cf05b1514f7cf511143fe0bfbc948c11947590e0279c8c5f"
         },
         {
           "ref": "head",
-          "path": "README.md",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "b5da833420e376fd31b2245dc02ef1124c6a4249bec7b556f346e73b83487d50"
-        },
-        {
-          "ref": "head",
-          "path": "ROADMAP.md",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "565f11e9c179df6219ac059610f79652f6cf4128892b6a8d8759934c48bbdd44"
-        },
-        {
-          "ref": "head",
-          "path": "docs/configuration.md",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "2161b63730b0bebc097c747fcb2b4018682d66ce6b34c43dd9db4585ddb5d1c5"
-        },
-        {
-          "ref": "head",
-          "path": "docs/demos/pr-gate-fail-to-pass.artifact.json",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "021fb596db81e6d02bf3d2586ee3981fe519f275c0ac9ca76bbcf2ebb4097d96"
-        },
-        {
-          "ref": "head",
-          "path": "docs/demos/pr-gate-fail-to-pass.md",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "171112270f5c82c9655a9fa6a156054e73f89d50f6709d47b5d0a2dc3d462318"
-        },
-        {
-          "ref": "head",
-          "path": "docs/demos/pr-gate-fail-to-pass.svg",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "12c29731e40adc0c969c3ed5c62403898314a22e6d43c3afd86e8f858b2cc038"
-        }
-      ]
-    },
-    {
-      "id": "LAUNCH-PROOF",
-      "statement": "Launch proof, package, and site artifacts provide reproducible required-gate setup and evidence context.",
-      "covers": [
-        "docs/demos/release-evidence-brief.claims.json",
-        "docs/launch.md",
-        "docs/migration-gitpin.md",
-        "docs/website.md",
-        "package.json",
-        "scripts/build-pr-gate-fail-to-pass-artifact.mjs",
-        "site/analytics.js",
-        "site/index.html"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "docs/demos/release-evidence-brief.claims.json",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "021fb596db81e6d02bf3d2586ee3981fe519f275c0ac9ca76bbcf2ebb4097d96"
-        },
-        {
-          "ref": "head",
-          "path": "docs/launch.md",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "8b241ca72daeaa6e6c6abd8da2e4a753d7bf0578c93cfda36e44bdd9d7288a6c"
-        },
-        {
-          "ref": "head",
-          "path": "docs/migration-gitpin.md",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "a46ff2bdcced427a1410865805b6f5606282af4a3de0b97441b786db9671e2b7"
-        },
-        {
-          "ref": "head",
-          "path": "docs/website.md",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "42a54e87e77f52fd1fd00284f40bf4d69b9d038f21d74f05bbbf75bafbc92a6e"
-        },
-        {
-          "ref": "head",
-          "path": "package.json",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "021fb596db81e6d02bf3d2586ee3981fe519f275c0ac9ca76bbcf2ebb4097d96"
-        },
-        {
-          "ref": "head",
-          "path": "scripts/build-pr-gate-fail-to-pass-artifact.mjs",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "9d196a1875159c508cfac6bfb2060ff64a56d5d38cb28623767e3b75870fba67"
-        },
-        {
-          "ref": "head",
-          "path": "site/analytics.js",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "caa1205884c5bba4486480480f62c48f5adfe0d9282c395968f1fb6c23aa0c0e"
+          "path": "site/app.js",
+          "lineStart": 82,
+          "lineEnd": 235,
+          "contentSha256": "bf89373a27e331129c6f324b4240637bc3774d74d28836e5af43cd31fae22dde"
         },
         {
           "ref": "head",
           "path": "site/index.html",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "fe26c59e91ac8de694b2531dc3bdc1b7faf471d3d7e4e00870af60f5f22897cb"
+          "lineStart": 98,
+          "lineEnd": 127,
+          "contentSha256": "06826d533d60970c059f7d81ff6ad3722c76248e23b768d9142efd25370ef0b4"
+        },
+        {
+          "ref": "head",
+          "path": "site/styles.css",
+          "lineStart": 46,
+          "lineEnd": 73,
+          "contentSha256": "424e03ec7e46a37ade558e72ea0b8c0078c1a9bd893057bc58efaa8fc2bd6b13"
+        },
+        {
+          "ref": "head",
+          "path": "site/styles.css",
+          "lineStart": 136,
+          "lineEnd": 140,
+          "contentSha256": "4aec5b6fc85ae12eebea80fec38e946ba44ab3ba6c6cc34559ada8ba5104736f"
         }
       ]
     },
     {
-      "id": "ANALYTICS-VALIDATION",
-      "statement": "Analytics and validation artifacts constrain launch-funnel collection to user intent and verify the documented behavior.",
+      "id": "HERO-BROWSER-VALIDATION",
+      "statement": "Browser coverage verifies artifact-derived values, project-subpath loading, tabpanel and control semantics, graceful node and observer fallbacks, finite controls, independent visibility pauses, analytics silence, reduced motion, stable layout, and meaningful wide, tablet, and mobile viewport presence.",
       "covers": [
-        "site/privacy.html",
-        "src/launch-readiness-task3.test.ts",
-        "src/launch-readiness-truth.test.ts",
-        "tests/browser/site.spec.mjs",
-        "tests/fixtures/launch-readiness/task-3-measurement-fixture.json",
-        "tests/fixtures/launch-readiness/task-3-measurement-protocol.md"
+        "tests/browser/site.spec.mjs"
       ],
       "evidence": [
         {
           "ref": "head",
-          "path": "site/privacy.html",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "fe26c59e91ac8de694b2531dc3bdc1b7faf471d3d7e4e00870af60f5f22897cb"
-        },
-        {
-          "ref": "head",
-          "path": "src/launch-readiness-task3.test.ts",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "acdb187297667b502b21af95a1d232ab0b1e8950445003ecaa44631d7d1588b6"
-        },
-        {
-          "ref": "head",
-          "path": "src/launch-readiness-truth.test.ts",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "ad73ca8dd2be89150d9ce0f13eae68ebf5fc6eae24f81e521b6223459d4a6005"
+          "path": "tests/browser/site.spec.mjs",
+          "lineStart": 75,
+          "lineEnd": 176,
+          "contentSha256": "76eb402e07b6ab9e22446333ac6fbd79d7ad3e90d846725748e5d955ff6b31e0"
         },
         {
           "ref": "head",
           "path": "tests/browser/site.spec.mjs",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "c1391d6ee15281f422083fc396009afa1eb48b407341c8b23816108c35e48d22"
-        },
-        {
-          "ref": "head",
-          "path": "tests/fixtures/launch-readiness/task-3-measurement-fixture.json",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "021fb596db81e6d02bf3d2586ee3981fe519f275c0ac9ca76bbcf2ebb4097d96"
-        },
-        {
-          "ref": "head",
-          "path": "tests/fixtures/launch-readiness/task-3-measurement-protocol.md",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "b6e079f9d37b5ef9f8f1681240cf81d5a3e87af333b5fb5e22570206f6f6cff5"
+          "lineStart": 178,
+          "lineEnd": 279,
+          "contentSha256": "64ee72ede9dbf711233ea7a038823b2f267e6ac0acf23e2353d8fb76310523da"
         }
       ]
     }

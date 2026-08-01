@@ -12,6 +12,11 @@ if (projectKey && !/^phc_[A-Za-z0-9]+$/.test(projectKey)) {
 rmSync(output, { force: true, recursive: true });
 mkdirSync(output, { recursive: true });
 cpSync(source, output, { recursive: true });
+mkdirSync(join(output, '_gitpin-artifacts'), { recursive: true });
+cpSync(
+  resolve('docs/demos/pr-gate-fail-to-pass.artifact.json'),
+  join(output, '_gitpin-artifacts/pr-gate-fail-to-pass.artifact.json'),
+);
 
 if (projectKey) {
   const indexPath = join(output, 'index.html');
