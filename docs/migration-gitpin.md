@@ -80,6 +80,5 @@ Per the table above, these are back-compat surfaces and are **not** bugs:
 - `~/.repocontext` config discovery
 - CHANGELOG entries describing 0.3.x, which are a historical record
 
-Note that several `REPOCONTEXT_*` names in `scripts/` and the Dockerfiles are
-current tooling rather than compat shims, so they are inconsistent with the
-`GITPIN_*` policy above. Renaming those is a separate, deliberate change.
+The compatibility aliases above are intentionally limited to backwards-compatible entry points.
+`REPOCONTEXT_*` references in demo and tooling scripts are explicit compatibility helpers and do not alter the primary product path.

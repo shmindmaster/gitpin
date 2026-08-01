@@ -1,6 +1,6 @@
 # Configuration
 
-GitPin reads repository entries from `GITPIN_REGISTRY`, `registry/repositories.yaml` in the current workspace, `repositories.yaml` in the current workspace, or `~/.gitpin/repositories.yaml`. The old `~/.repocontext` path is read only as a migration fallback.
+GitPin reads repository entries from `GITPIN_REGISTRY`, `registry/repositories.yaml` in the current workspace, `repositories.yaml` in the current workspace, or `~/.gitpin/repositories.yaml`. The old `~/.repocontext` path is still read as a legacy compatibility fallback.
 
 Registry paths are relative to the registry file. Register Git repository roots only.
 
