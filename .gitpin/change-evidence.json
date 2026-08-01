@@ -4,7 +4,7 @@
   "claims": [
     {
       "id": "HERO-NATIVE-WALKTHROUGH",
-      "statement": "The site serves the committed fail-to-pass artifact to a native finite hero walkthrough with explicit controls, reduced-motion behavior, stable evidence presentation, and responsive layout.",
+      "statement": "The site resolves the committed fail-to-pass artifact at local and project subpaths and presents a native finite walkthrough with accessible controls and tab relationships, graceful runtime fallbacks, reduced motion, stable evidence presentation, and responsive layout.",
       "covers": [
         "scripts/build-site.mjs",
         "scripts/serve-site.mjs",
@@ -31,15 +31,15 @@
           "ref": "head",
           "path": "site/app.js",
           "lineStart": 82,
-          "lineEnd": 220,
-          "contentSha256": "68055e28a5777338c61c5a1129241c9571bc26f75358c7e1fc1972a8a5c750c4"
+          "lineEnd": 235,
+          "contentSha256": "bf89373a27e331129c6f324b4240637bc3774d74d28836e5af43cd31fae22dde"
         },
         {
           "ref": "head",
           "path": "site/index.html",
           "lineStart": 98,
           "lineEnd": 127,
-          "contentSha256": "aa837a4fb912db43e6af3a034f209afab4b8172d9fdda4695f012ee0f6c8bbe0"
+          "contentSha256": "06826d533d60970c059f7d81ff6ad3722c76248e23b768d9142efd25370ef0b4"
         },
         {
           "ref": "head",
@@ -59,7 +59,7 @@
     },
     {
       "id": "HERO-BROWSER-VALIDATION",
-      "statement": "Browser coverage verifies artifact-derived values, finite controls, independent visibility pauses, analytics silence, reduced motion, stable layout, and meaningful wide, tablet, and mobile viewport presence.",
+      "statement": "Browser coverage verifies artifact-derived values, project-subpath loading, tabpanel and control semantics, graceful node and observer fallbacks, finite controls, independent visibility pauses, analytics silence, reduced motion, stable layout, and meaningful wide, tablet, and mobile viewport presence.",
       "covers": [
         "tests/browser/site.spec.mjs"
       ],
@@ -67,9 +67,16 @@
         {
           "ref": "head",
           "path": "tests/browser/site.spec.mjs",
-          "lineStart": 72,
-          "lineEnd": 200,
-          "contentSha256": "87688eb787687fdfb1b4924cadbcb40bf3b00932599a5b65318f51214846e6f6"
+          "lineStart": 75,
+          "lineEnd": 176,
+          "contentSha256": "76eb402e07b6ab9e22446333ac6fbd79d7ad3e90d846725748e5d955ff6b31e0"
+        },
+        {
+          "ref": "head",
+          "path": "tests/browser/site.spec.mjs",
+          "lineStart": 178,
+          "lineEnd": 279,
+          "contentSha256": "64ee72ede9dbf711233ea7a038823b2f267e6ac0acf23e2353d8fb76310523da"
         }
       ]
     }
