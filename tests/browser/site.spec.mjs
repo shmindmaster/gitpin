@@ -177,6 +177,7 @@ test('launch-funnel analytics events only emit strict allowlisted payloads', asy
   await page.route('https://us-assets.i.posthog.com/static/array.js', async (route) => {
     await route.fulfill({
       body: `
+        window.__posthogInitConfig = window.posthog?._i?.[0]?.[1] || null;
         window.__capturedEvents = [];
         window.posthog = {
           capture: (...args) => window.__capturedEvents.push(args),
@@ -236,4 +237,13 @@ test('launch-funnel analytics events only emit strict allowlisted payloads', asy
       ['gate_result_intent', { result: 'fail_demo' }],
       ['feedback_intent', { surface: 'footer' }],
     ]);
+
+  await expect
+    .poll(() => page.evaluate(() => window.__posthogInitConfig))
+    .toEqual(
+      expect.objectContaining({
+        capture_pageview: false,
+        capture_pageleave: false,
+      }),
+    );
 });

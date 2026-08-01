@@ -118,8 +118,8 @@ if (projectKey && apiHost) {
   posthog.init(projectKey, {
     api_host: apiHost,
     autocapture: false,
-    capture_pageview: true,
-    capture_pageleave: true,
+    capture_pageview: false,
+    capture_pageleave: false,
     cookieless_mode: 'always',
     disable_session_recording: true,
     person_profiles: 'never',

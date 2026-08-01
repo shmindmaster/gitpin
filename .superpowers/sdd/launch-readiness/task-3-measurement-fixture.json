@@ -120,6 +120,7 @@
         "start_ts_utc",
         "event_trace",
         "time_to_install_seconds",
+        "time_to_first_pass_seconds",
         "unsafe_assumptions_count",
         "attribution_observed",
         "friction_points",

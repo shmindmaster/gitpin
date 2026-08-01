@@ -2,8 +2,8 @@
 
 ## Status
 - Scope completed in worktree `C:\wt\gitpin\launch-evidence-v060` on branch `agent/launch-evidence-v060`.
-- All Task 3 implementation and documentation changes are completed in code, tests, launch protocol documentation, and GitHub feedback form guidance.
-- Required checks now pass: focused launch-readiness deterministic tests, focused browser assertion, and `pnpm validate`.
+- Task 3 implementation and documentation changes were previously completed in worktree `C:\wt\gitpin\launch-evidence-v060`.
+- This fix round addresses independent review issues and updates Task 3 privacy, protocol, and assertions.
 
 ## Scout findings integrated
 - Preserved existing partial edits in:
@@ -28,6 +28,7 @@
 - `.superpowers/sdd/launch-readiness/task-3-measurement-protocol.md`
 - `.superpowers/sdd/launch-readiness/task-3-measurement-fixture.json`
 - `.superpowers/sdd/launch-readiness/task-3-report.md`
+- `site/privacy.html`
 
 ## Decisions
 - Keep schema strict for all click instrumentation and refuse partial or expanded payloads.
@@ -38,11 +39,13 @@
 
 ## Commands and results
 - `pnpm test -- src/launch-readiness-task3.test.ts`
-  - Result: pass (`84 passed (84)`).
+  - Result: pass (`15` test files, `84` tests).
 - `pnpm site:test -- --grep "launch-funnel analytics events only emit strict allowlisted payloads"`
-  - Result: pass (4 passed across browser matrix).
+  - Initial result: fail because the browser mock inspected the loaded SDK instead of PostHog's pre-load init queue; the harness was corrected.
+  - Final result: pass (`4` browser variants).
 - `pnpm validate`
-  - Result: pass (format/lint/typecheck/verify checks + site build succeeded).
+  - Initial result: one formatter-only failure in the new cross-functional assertion; formatting was corrected.
+  - Final result: pass (lint, format, typecheck, client/CI/env/registry/release checks, `84` tests, and site build).
 
 ## Self-review
 - Verified strict reject behavior at browser runtime for:
@@ -64,4 +67,35 @@
 - No production deployment or rollout gate changes were executed in Task 3.
 
 ## Commit
-- Implementation/Report commit: `3122c19ce7cde9e6a85e6ee8edadaed211db8eee`
+- Implementation commit: `3122c19ce7cde9e6a85e6ee8edadaed211db8eee`
+- Report-reference commit: `457ed0980156f5b27546abeff83f6aef7fc83bd4`
+- Fix round 1 commit: pending (will follow this remediation pass)
+
+## Fix round 1
+
+### Findings
+- High risk: PostHog automatic pageview/pageleave collection was still enabled, which could emit URL/page context outside allowlist.
+- Medium risk: `time_to_first_pass_seconds` was omitted from cross-functional session required captures despite task protocol requiring both sessions.
+- Medium risk: launch schema validation in `src/launch-readiness-task3.test.ts` compared `launchEventSchema` to itself for property keys and did not directly align with fixture schema.
+
+### Files
+- `site/analytics.js`
+- `docs/website.md`
+- `site/privacy.html`
+- `tests/browser/site.spec.mjs`
+- `src/launch-readiness-task3.test.ts`
+- `.superpowers/sdd/launch-readiness/task-3-measurement-protocol.md`
+- `.superpowers/sdd/launch-readiness/task-3-measurement-fixture.json`
+- `.superpowers/sdd/launch-readiness/task-3-report.md`
+
+### Commands and results
+- `pnpm test -- src/launch-readiness-task3.test.ts`: pass (`15` test files, `84` tests).
+- `pnpm site:test -- --grep "launch-funnel analytics events only emit strict allowlisted payloads"`: pass (`4` browser variants) after correcting the PostHog init-queue mock.
+- `pnpm validate`: pass after one formatter-only repair.
+
+### Status
+- Implemented, validated, and ready for scoped re-review.
+
+### Concerns
+- Cross-functional synthetic fixture still marks `time_to_first_pass_seconds` as `null` when `first_pass_intent` is not observed.
+- Real participant sessions remain pending and unchanged.

@@ -69,6 +69,7 @@ Median and p95 latency metrics:
 
 - `time_to_install_seconds` = first `setup_progress` timestamp minus first `setup_intent` timestamp (within session window)  
 - `time_to_first_pass_seconds` = first `first_pass_intent` timestamp minus first `setup_progress` timestamp (within session window)
+- `time_to_first_pass_seconds` is `number` for sessions where `first_pass_intent` is observed and `null` when not applicable.
 
 Deduplication and identity:
 
@@ -121,7 +122,7 @@ Actual participant sessions are still pending and not completed.
   - `event_time_utc` (ISO-8601)
   - `event_property_signature`
 - `time_to_install_seconds`
-- `time_to_first_pass_seconds`
+- `time_to_first_pass_seconds` (for every session record; `null` when not applicable)
 - `unsafe_assumptions_count`
 - `attribution_observed` (`true|false`)
 - `friction_points` list entries:
@@ -144,6 +145,7 @@ Actual participant sessions are still pending and not completed.
 - `participant_role`: `product_or_release_owner`
 - Path: `setup_intent` -> `setup_progress` -> `feedback_intent` -> `gate_result_intent`
 - Required captures:
+  - `time_to_first_pass_seconds` (`null` for synthetic cross-functional sessions without first_pass_intent)
   - `unsafe_assumptions_count`
   - `friction_points`
   - attribution summary after `gate_result_intent`
@@ -155,11 +157,12 @@ Actual participant sessions are still pending and not completed.
 - `attribution_correctness = sessions with expected event order / sessions with result_observed`
 - `unsafe_assumption_rate = sum(unsafe_assumptions_count) / sessions_with_feedback`
 - `friction_rate = total(friction_points) / sessions_with_feedback`
-- `time_to_install_seconds` and `time_to_first_pass_seconds` reported as median + p95
+- `time_to_install_seconds` and `time_to_first_pass_seconds` reported as median + p95 across non-null values where applicable
 - A session is a successful observed run when:
   - event trace has no schema-invalid events,
   - `setup_intent` is present,
   - `time_to_install_seconds <= 1800`,
+  - `time_to_first_pass_seconds` is either a numeric seconds value or `null` when `first_pass_intent` is not observed,
   - `attribution_observed = true`
 
 ## Data handling commitments

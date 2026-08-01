@@ -34,7 +34,6 @@ Website collection is intentionally narrow:
 
 | Event | Properties |
 | --- | --- |
-| `$pageview` | PostHog's cookieless page context |
 | `cta_clicked` | `placement` only (`feedback_footer`, `feedback_footer_nav`, `feedback_nav`, `github_footer`, `github_hero`, `github_nav`, `setup_hero`) |
 | `setup_intent` | `surface` only (`hero`, `install`, `navigation`) |
 | `setup_progress` | `step` only (`open_setup_guide`, `open_install_section`) |
@@ -43,10 +42,10 @@ Website collection is intentionally narrow:
 | `audience_changed` | `audience` only |
 | `feedback_intent` | `surface` only (`footer`, `footer_nav`, `feedback_nav`, `feedback_footer`, `feedback_footer_nav`, `navigation`) |
 
-Autocapture and session replay are disabled, person profiles are never created, and the site uses cookieless mode.
+Autocapture, pageview/pageleave capture, and session replay are disabled, person profiles are never created, and the site uses cookieless mode.
 
 The launch-funnel schema is strict by design: only enumerated event names and enumerated property values are recorded.
-No repository contents, filesystem paths, prompt text, tokens, secrets, arbitrary URLs, user identifiers, or free-text answers are sent.
+No repository contents, filesystem paths, prompt text, URLs, tokens, secrets, user identifiers, or free-text answers are sent.
 
 Only intent surfaces are observed here:
 - site `feedback_*` clicks indicate intent to report friction,
@@ -55,7 +54,7 @@ Only intent surfaces are observed here:
 Clicks do not prove GitHub Action installation or pass/fail status; they are not equivalent to completed setup.
 
 For launch inference, the product boundary remains:
-- instrumentation: only what is in this event schema and pageview context
+- instrumentation: only what is in this event schema (no automatic pageview/page context)
 - observed behavior: sessioned counts of event progression and latency windows
 - inferred adoption: inferred from post-session interpretation, with confidence tags
 - PMF: deferred until approved synthetic and real sessions are completed

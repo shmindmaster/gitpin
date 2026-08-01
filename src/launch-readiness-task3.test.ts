@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 const rootDirectory = join(dirname(fileURLToPath(import.meta.url)), '..');
+const measurementFixturePath = '.superpowers/sdd/launch-readiness/task-3-measurement-fixture.json';
 
 function readArtifact(relativePath: string): string {
   return readFileSync(join(rootDirectory, relativePath), 'utf8');
@@ -77,17 +78,28 @@ describe('launch readiness Task 3 instrumentation invariants', () => {
   it('uses strict launch-funnel event/property allowlists in site analytics code', () => {
     const analytics = readArtifact('site/analytics.js');
     const websiteGuide = readArtifact('docs/website.md');
+    const fixture = readJsonArtifact<{
+      events: { schema: Record<string, string[]>; allowedEventNames: string[] };
+    }>(measurementFixturePath);
+    const fixtureSchema = fixture.events.schema;
+    const fixtureAllowedEvents = [...fixture.events.allowedEventNames].sort();
+    const localAllowedEvents = [...launchEventAllowlist].sort();
 
-    for (const eventName of launchEventAllowlist) {
+    for (const eventName of localAllowedEvents) {
       expect(analytics).toContain(`${eventName}:`);
     }
 
+    expect(localAllowedEvents).toEqual(fixtureAllowedEvents);
+
     for (const [eventName, props] of Object.entries(launchEventSchema)) {
-      for (const prop of props) {
-        expect(launchEventSchema[eventName]).toContain(prop);
-      }
+      expect(fixtureSchema).toHaveProperty(eventName);
+      expect(fixtureSchema[eventName]).toEqual(props);
       expect(websiteGuide).toContain(`${eventName}`);
     }
+
+    expect(websiteGuide).not.toContain('$pageview');
+    expect(analytics).toContain('capture_pageview: false');
+    expect(analytics).toContain('capture_pageleave: false');
   });
 
   it('keeps index analytics surfaces strictly allowlisted and complete', () => {
@@ -218,6 +230,9 @@ describe('launch readiness Task 3 instrumentation invariants', () => {
 
     expect(fixture.sessions.map((session) => session.session_type)).toContain('technical');
     expect(fixture.sessions.map((session) => session.session_type)).toContain('cross-functional');
+    expect(
+      fixture.sessions.filter((session) => session.session_type === 'cross-functional')[0]?.required_fields,
+    ).toContain('time_to_first_pass_seconds');
     expect(fixture.sessions.length).toBe(2);
   });
 
