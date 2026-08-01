@@ -1,43 +1,20 @@
 {
   "schemaVersion": 1,
-  "summary": "Post-publication control-plane evidence binds GitPin's own required evidence workflow and explicitly versioned regression description to published v0.6.1 at content commit ab8d67d3b657b752594e86c1afbd38ae5c600962.",
+  "summary": "Synthetic production validation for released shmindmaster/gitpin@v0.6.1 binds the material probe to exact committed content after the observed uncovered-path failure.",
   "claims": [
     {
-      "id": "SELF-GATE-V061",
-      "statement": "GitPin's pull-request evidence workflow now runs the published v0.6.1 Action while preserving its read-only base/head SHA contract.",
+      "id": "ACTION-V061-FAIL-PASS-PROBE",
+      "statement": "The synthetic fixture records the released Action v0.6.1 required-check validation sequence without changing product behavior.",
       "covers": [
-        ".github/workflows/evidence-gate.yml"
+        "docs/demos/action-v061-required-check-probe.md"
       ],
       "evidence": [
         {
           "ref": "head",
-          "path": ".github/workflows/evidence-gate.yml",
-          "lineStart": 18,
-          "lineEnd": 25,
-          "contentSha256": "0f70c01341f6170662669368383a1131b0950f3a1b6589e432d0e14888d1a674"
-        },
-        {
-          "ref": "head",
-          "path": ".github/workflows/evidence-gate.yml",
-          "lineStart": 6,
-          "lineEnd": 7,
-          "contentSha256": "893e619df25e8e991d1fccf5091944563f0dc5b2b977e71116e5b9fc02acbdc8"
-        }
-      ]
-    },
-    {
-      "id": "SELF-GATE-V061-TEST",
-      "statement": "The focused trust-boundary test requires the v0.6.1 self-gate pin and rejects the retired bootstrap comment and v0.6.0 pin.",
-      "covers": [
-        "src/gate-action.test.ts"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "src/gate-action.test.ts",
-          "lineStart": 22,
-          "lineEnd": 29,
-          "contentSha256": "391df5612439bcac459b7b243e6368dbaf22c60d986fd81cb7bed88b75a3f666"
+          "path": "docs/demos/action-v061-required-check-probe.md",
+          "lineStart": 1,
+          "lineEnd": 5,
+          "contentSha256": "f19211a0ecba05268eb7696138ffadccc053af4a5f4cdc0f4b0ae34f81fc3aa1"
         }
       ]
     }
