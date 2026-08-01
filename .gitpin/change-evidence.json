@@ -44,7 +44,7 @@
         { "ref": "head", "path": "docs/launch.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "0509f66945807ac23ca5e712992cd632d0fb18bf46dd961ac577ff3231e6d5ef" },
         { "ref": "head", "path": "docs/migration-gitpin.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "ec4baf3a371f474e6d9b8a7119e3b1907af0b362744023a339c345166907bab4" },
         { "ref": "head", "path": "docs/website.md", "lineStart": 1, "lineEnd": 1, "contentSha256": "20c6f84970ffe5b97dbd3b35b84c229955f3b74670b2bf4c415ee22e5510543c" },
-        { "ref": "head", "path": "package.json", "lineStart": 1, "lineEnd": 1, "contentSha256": "21dbf3181423e321b0c52aaafaf3412a9c103a9c5a801201283c9c93bafa478" },
+        { "ref": "head", "path": "package.json", "lineStart": 1, "lineEnd": 1, "contentSha256": "21dbf3181423e3213b0c52aaafaf3412a9c103a9c5a801201283c9c93bafa478" },
         { "ref": "head", "path": "scripts/build-pr-gate-fail-to-pass-artifact.mjs", "lineStart": 1, "lineEnd": 1, "contentSha256": "a882d70cd9004a39073a1d481da608f7d3931bdbafd37c0faaaebf73b0f23ca0" },
         { "ref": "head", "path": "site/analytics.js", "lineStart": 1, "lineEnd": 1, "contentSha256": "bbaabdc779ae29f737fef46be371da071025c0bcbb09bb361764ff4980df6c72" },
         { "ref": "head", "path": "site/index.html", "lineStart": 1, "lineEnd": 1, "contentSha256": "d3ede7383eb0d5bc974c10c0787ff8058a71d5e4c33f913ed369c0c94b20071c" }
