@@ -4,6 +4,22 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-08-01
+
+### Added
+
+- Add the deterministic synthetic PR-gate fail-to-pass release artifact and native interactive website hero for the already-merged release candidate.
+
+### Changed
+
+- Classify explicitly marked human QA analytics as `synthetic_qa`, keep unmarked browser traffic classified as production, and continue suppressing automated test traffic.
+- Align package, MCP, Action, documentation, website, and generated demo release surfaces on the 0.6.1 candidate.
+
+### Fixed
+
+- Harden deterministic artifact verification against malformed shapes and checksum tampering.
+- Constrain launch analytics to the allowlisted event and transport fields before delivery.
+
 ## [0.6.0] - 2026-07-31
 
 ### Added
@@ -169,7 +185,8 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 - Snapshot generation replaces only marked RepoContext output directories and rejects registered repository roots or their ancestors.
 - Malformed exposure policies fail closed.
 
-[Unreleased]: https://github.com/shmindmaster/gitpin/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/shmindmaster/gitpin/compare/v0.6.1...HEAD
+[0.6.1]: https://github.com/shmindmaster/gitpin/releases/tag/v0.6.1
 [0.6.0]: https://github.com/shmindmaster/gitpin/releases/tag/v0.6.0
 [0.5.3]: https://github.com/shmindmaster/gitpin/releases/tag/v0.5.3
 [0.5.2]: https://github.com/shmindmaster/gitpin/releases/tag/v0.5.2

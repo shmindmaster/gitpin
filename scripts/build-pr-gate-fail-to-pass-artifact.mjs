@@ -162,7 +162,7 @@ function buildFixture(workspaceRoot) {
   const artifact = {
     artifactId: 'pr-gate-fail-to-pass',
     name: 'GitPin PR evidence gate fail-to-pass sample',
-    version: '0.6.0',
+    version: '0.6.1',
     scenario: 'Deterministic synthetic PR gate fail-to-pass validation.',
     reducedMotionSafe: true,
     accessibility: {
@@ -174,9 +174,9 @@ function buildFixture(workspaceRoot) {
     },
     links: {
       npm: 'https://www.npmjs.com/package/gitpin',
-      github_release: 'https://github.com/shmindmaster/gitpin/releases/tag/v0.6.0',
+      github_release: 'https://github.com/shmindmaster/gitpin/releases/tag/v0.6.1',
       github_action: 'https://github.com/shmindmaster/gitpin/actions/workflows/evidence-gate.yml',
-      github_action_snippet: 'uses: shmindmaster/gitpin@v0.6.0',
+      github_action_snippet: 'uses: shmindmaster/gitpin@v0.6.1',
       mcp_registry:
         'https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.shmindmaster/gitpin&limit=20',
       pages: 'https://shmindmaster.github.io/gitpin/',
@@ -514,7 +514,7 @@ function generateMarkdown(artifact) {
 
 ## Purpose
 
-Deterministic, synthetic, fail-to-pass artifact for the GitPin v0.6.0 PR evidence gate.
+Deterministic, synthetic, fail-to-pass artifact for the GitPin v0.6.1 PR evidence gate.
 
 ## Accessibility
 
@@ -713,7 +713,7 @@ function generateSvg(artifact) {
     }-${artifact.passCase?.coverage?.lineEnd} @ ${artifact.fixture.head}`;
 
   const titleLines = emitTextLines(
-    'GitPin 0.6.0: synthetic fail-to-pass PR evidence gate artifact',
+    'GitPin 0.6.1: synthetic fail-to-pass PR evidence gate artifact',
     36,
     48,
     'title',

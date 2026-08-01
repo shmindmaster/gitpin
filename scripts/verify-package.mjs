@@ -8,6 +8,7 @@ import { pathToFileURL } from 'node:url';
 const marker = 'REPOCONTEXT_PACKED_FIRST_ANSWER';
 const packageManifest = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 const packageName = packageManifest.name;
+const packageVersion = packageManifest.version;
 const temporaryRoot = mkdtempSync(join(tmpdir(), 'repocontext-package-'));
 const repositoryPath = join(temporaryRoot, 'repository');
 const clientPath = join(temporaryRoot, 'client');
@@ -143,7 +144,7 @@ try {
     throw new Error('Packed .env.example must keep GITPIN_MCP_TOKEN empty.');
   }
   const packageReadme = readFileSync(join(packageRoot, 'README.md'), 'utf8');
-  if (!packageReadme.includes('gitpin@latest')) {
+  if (!packageReadme.includes(`gitpin@${packageVersion}`)) {
     throw new Error('Packed README must document the published GitPin package.');
   }
   if (
@@ -216,7 +217,7 @@ try {
     !initialization.includes('First evidence:') ||
     !initialization.includes('README.md') ||
     !initialization.includes('codex mcp add --env') ||
-    !initialization.includes('gitpin@latest') ||
+    !initialization.includes(`gitpin@${packageVersion}`) ||
     !existsSync(initializedRegistryPath)
   ) {
     throw new Error(`Packed init journey did not reach a configured first fact: ${initialization.trim()}`);

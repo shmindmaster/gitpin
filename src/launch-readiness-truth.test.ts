@@ -33,11 +33,11 @@ const announcementArtifacts = [
 
 const launchCanonicalLinks = [
   'https://www.npmjs.com/package/gitpin',
-  'https://github.com/shmindmaster/gitpin/releases/tag/v0.6.0',
+  'https://github.com/shmindmaster/gitpin/releases/tag/v0.6.1',
   'https://github.com/shmindmaster/gitpin/actions/workflows/evidence-gate.yml',
   'https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.shmindmaster/gitpin&limit=20',
   'https://shmindmaster.github.io/gitpin/',
-  'uses: shmindmaster/gitpin@v0.6.0',
+  'uses: shmindmaster/gitpin@v0.6.1',
 ];
 
 const legacyBrandPattern = /\bRepoContext\b|\bRepocontext\b|\brepocontext\b|\bREPOCONTEXT\b/;
@@ -134,7 +134,7 @@ function extractCurrentSemverClaims(fileContent: string): string[] {
 }
 
 describe('public launch truth', () => {
-  it('keeps AGENTS and roadmap aligned to GitPin 0.6.0 evidence-gate truth', () => {
+  it('keeps AGENTS and roadmap aligned to GitPin 0.6.1 evidence-gate truth', () => {
     const agents = readArtifact('AGENTS.md');
     const roadmap = readArtifact('ROADMAP.md');
 
@@ -142,7 +142,7 @@ describe('public launch truth', () => {
     expect(agents).toContain('commit-pinned');
     expect(agents).toContain('read-only');
     expect(agents).toContain(`GitPin ${packageVersion}`);
-    expect(roadmap).toContain('0.6.0');
+    expect(roadmap).toContain('0.6.1');
     expect(roadmap).toContain('Read-only `gitpin gate`');
     expect(roadmap).toContain('read-only');
   });
@@ -191,13 +191,13 @@ describe('public launch truth', () => {
       expect(launchCopy, `docs/launch.md missing canonical link: ${link}`).toContain(link);
     }
 
-    expect(launchBootstrapMatches).not.toContain('npx -y gitpin@0.6.0');
-    expect(launchBootstrapMatches).toContain('npx -y gitpin@0.6.0 init --client codex');
+    expect(launchBootstrapMatches).not.toContain('npx -y gitpin@0.6.1');
+    expect(launchBootstrapMatches).toContain('npx -y gitpin@0.6.1 init --client codex');
     expect(launchCopy).not.toMatch(/gitpin@latest/g);
 
     for (const link of launchCanonicalLinks) {
       expect(JSON.stringify(releaseArtifact)).toContain(link);
-      if (link === 'uses: shmindmaster/gitpin@v0.6.0') {
+      if (link === 'uses: shmindmaster/gitpin@v0.6.1') {
         expect(JSON.stringify(releaseArtifact.links)).toContain(link);
       }
     }

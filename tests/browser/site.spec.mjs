@@ -46,7 +46,7 @@ test('presents the release path and safety boundary without analytics by default
   await expect(page.getByRole('heading', { name: 'A deliberately narrow trust boundary.' })).toBeVisible();
   if (await menu.isVisible()) await menu.click();
   await page.getByRole('link', { name: 'Install', exact: true }).click();
-  await expect(page.locator('.terminal')).toContainText('shmindmaster/gitpin@v0.6.0');
+  await expect(page.locator('.terminal')).toContainText('shmindmaster/gitpin@v0.6.1');
   await expect(page.locator('body')).not.toContainText(/release candidate/i);
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://shmindmaster.github.io/gitpin/');
   await expect(page.getByRole('link', { name: 'Privacy', exact: true })).toHaveAttribute('href', './privacy.html');
@@ -63,7 +63,7 @@ test('makes the pull-request gate the primary activation path', async ({ page })
   await expect(page.getByRole('heading', { name: 'Require evidence before merge.' })).toBeVisible();
   await expect(page.locator('.terminal')).toContainText('pull_request:');
   await expect(page.locator('.terminal')).toContainText('runs-on: ubuntu-latest');
-  await expect(page.locator('.terminal')).toContainText('uses: shmindmaster/gitpin@v0.6.0');
+  await expect(page.locator('.terminal')).toContainText('uses: shmindmaster/gitpin@v0.6.1');
   await expect(page.locator('.terminal')).toContainText('contents: read');
   await expect(page.getByRole('link', { name: 'Open the complete setup guide' })).toHaveAttribute(
     'href',

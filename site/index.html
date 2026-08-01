@@ -239,7 +239,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with: { fetch-depth: 0 }
-      - uses: shmindmaster/gitpin@v0.6.0
+      - uses: shmindmaster/gitpin@v0.6.1
         with:
           base-sha: ${{ github.event.pull_request.base.sha }}
           head-sha: ${{ github.event.pull_request.head.sha }}</code></pre>
