@@ -93,6 +93,7 @@ if (shouldWrite) {
 
 if (shouldVerify) {
   const existingArtifact = readArtifactJson(artifactPath);
+  assertAdvertisedArtifactSha256(existingArtifact, `fixture ${artifactPath}`);
   assertDeepEqual(generated.artifact, existingArtifact, `fixture ${artifactPath}`);
 
   const expectedMarkdown = readFileUtf8(markdownPath);
@@ -222,9 +223,7 @@ function buildFixture(workspaceRoot) {
     },
   };
 
-  artifact.reproducibility.artifactSha256 = createHash('sha256')
-    .update(JSON.stringify(reproduciblePayload(artifact), null, 2), 'utf8')
-    .digest('hex');
+  artifact.reproducibility.artifactSha256 = calculateArtifactSha256(artifact);
 
   return {
     artifact,
@@ -402,6 +401,22 @@ function reproduciblePayload(artifact) {
   const copy = JSON.parse(JSON.stringify(artifact));
   delete copy.reproducibility.artifactSha256;
   return copy;
+}
+
+function calculateArtifactSha256(artifact) {
+  return createHash('sha256')
+    .update(JSON.stringify(reproduciblePayload(artifact), null, 2), 'utf8')
+    .digest('hex');
+}
+
+function assertAdvertisedArtifactSha256(artifact, label) {
+  const advertised = artifact?.reproducibility?.artifactSha256;
+  const recomputed = calculateArtifactSha256(artifact);
+  if (advertised !== recomputed) {
+    throw new Error(
+      `Checked-in ${label} advertised reproducibility.artifactSha256 does not match recomputed checksum.`,
+    );
+  }
 }
 
 function commit(repositoryPath, message, date, env) {

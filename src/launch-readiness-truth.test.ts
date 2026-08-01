@@ -1,6 +1,9 @@
+import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { dirname, join } from 'node:path';
+import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
@@ -313,6 +316,45 @@ describe('public launch truth', () => {
     expect(markdown).toContain(artifact.fixture.head);
     expect(markdown).toContain(artifact.passCase.coverage.citation);
   });
+
+  it('rejects a tampered advertised artifact checksum during deterministic artifact verification', () => {
+    const temporaryDirectory = mkdtempSync(join(tmpdir(), 'gitpin-artifact-checksum-'));
+    const artifactPath = join(temporaryDirectory, 'pr-gate-fail-to-pass.artifact.json');
+
+    try {
+      const artifact = readArtifactJson('docs/demos/pr-gate-fail-to-pass.artifact.json') as {
+        reproducibility: { artifactSha256: string };
+      };
+      artifact.reproducibility.artifactSha256 = '0'.repeat(64);
+      writeFileSync(artifactPath, `${JSON.stringify(artifact, null, 2)}\n`, 'utf8');
+
+      let verificationFailure = '';
+      try {
+        execFileSync(
+          process.execPath,
+          [
+            join(rootDirectory, 'scripts/build-pr-gate-fail-to-pass-artifact.mjs'),
+            '--verify',
+            '--artifact',
+            artifactPath,
+          ],
+          { cwd: rootDirectory, encoding: 'utf8', windowsHide: true },
+        );
+      } catch (error) {
+        if (typeof error === 'object' && error !== null) {
+          const processError = error as { stdout?: string | Buffer; stderr?: string | Buffer; message?: string };
+          verificationFailure = [processError.stdout, processError.stderr, processError.message]
+            .filter((value): value is string | Buffer => value !== undefined)
+            .map((value) => value.toString())
+            .join('\n');
+        }
+      }
+
+      expect(verificationFailure).toContain('advertised reproducibility.artifactSha256 does not match');
+    } finally {
+      rmSync(temporaryDirectory, { recursive: true, force: true });
+    }
+  }, 15_000);
 
   it('keeps public release/version assertions on the current package version', () => {
     for (const artifact of publicArtifacts) {

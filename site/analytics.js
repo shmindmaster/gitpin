@@ -143,15 +143,20 @@ function buildStrictPayload(event) {
   const outboundProperties = sanitizeOutboundProperties(eventName, properties);
   if (!outboundProperties) return null;
 
-  const token = normalizeTransportValue(properties.token, MAX_TOKEN_LENGTH);
+  const token = normalizeTransportValue(event.token ?? properties.token, MAX_TOKEN_LENGTH);
   if (!token || token !== projectKey) return null;
 
-  const distinctId = normalizeTransportValue(properties.distinct_id, MAX_DISTINCT_ID_LENGTH);
+  const distinctId = normalizeTransportValue(event.distinct_id ?? properties.distinct_id, MAX_DISTINCT_ID_LENGTH);
   if (!distinctId || !isLikelyAnonymousDistinctId(distinctId)) return null;
 
   const uuid = normalizeTransportValue(event.uuid, 36);
   if (!uuid || !EVENT_UUID_PATTERN.test(uuid)) return null;
-  if (!(event.timestamp instanceof Date) || Number.isNaN(event.timestamp.getTime())) return null;
+  if (
+    event.timestamp !== undefined &&
+    (!(event.timestamp instanceof Date) || Number.isNaN(event.timestamp.getTime()))
+  ) {
+    return null;
+  }
 
   const nextProperties = {
     ...outboundProperties,
@@ -171,12 +176,14 @@ function buildStrictPayload(event) {
     nextProperties.$process_person_profile = properties.$process_person_profile;
   }
 
-  return {
+  const payload = {
     event: eventName,
     properties: nextProperties,
     uuid,
-    timestamp: event.timestamp,
   };
+
+  if (event.timestamp !== undefined) payload.timestamp = event.timestamp;
+  return payload;
 }
 
 function buildBeforeSend(event) {
