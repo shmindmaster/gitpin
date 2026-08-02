@@ -133,6 +133,13 @@ function extractCurrentSemverClaims(fileContent: string): string[] {
   return [...claims];
 }
 
+function extractLaunchDraft(fileContent: string, heading: string): string {
+  const sectionPattern = new RegExp(`^## ${heading}\\r?\\n\\r?\\n([^\\r\\n]+)\\r?\\n\\r?\\n## `, 'm');
+  const match = fileContent.match(sectionPattern);
+  expect(match, `${heading} must be exactly one paragraph`).not.toBeNull();
+  return match?.[1] ?? '';
+}
+
 describe('public launch truth', () => {
   it('keeps AGENTS and roadmap aligned to the current GitPin evidence-gate truth', () => {
     const agents = readArtifact('AGENTS.md');
@@ -231,6 +238,25 @@ describe('public launch truth', () => {
       accessibility: { staticOnly: true },
       links: { mcp_registry: expect.any(String) },
     });
+  });
+
+  it('keeps the X draft within one post and aligned to the shipped Action', () => {
+    const xDraft = extractLaunchDraft(readArtifact('docs/launch.md'), 'X draft');
+    const xDraftVersions = [...xDraft.matchAll(/\b\d+\.\d+\.\d+\b/g)].map((match) => match[0]);
+    // Conservatively reject X URL entities: schemes, www hosts, and bare DNS-like domains with optional tails.
+    const xUrlEntityPattern =
+      /\b(?:https?:\/\/\S+|www\.\S+|(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}(?:[/?#]\S*)?)/i;
+
+    // With URLs and non-ASCII characters excluded, raw length equals X's weighted length for this draft.
+    expect('x.co/a').toMatch(xUrlEntityPattern);
+    expect(xDraft).not.toMatch(xUrlEntityPattern);
+    expect(xDraft).toMatch(/^[\x20-\x7e]+$/);
+    expect(xDraft.length).toBeLessThanOrEqual(280);
+    expect(xDraft).toContain(`GitPin ${packageVersion}`);
+    expect(xDraft).toContain(`uses: shmindmaster/gitpin@v${packageVersion}`);
+    expect([...new Set(xDraftVersions)]).toEqual([packageVersion]);
+    expect(xDraft).toContain('commit-pinned evidence');
+    expect(xDraft).toContain('not semantic truth');
   });
 
   it('contains deterministic fail-to-pass evidence locus with exact full-SHA path and line data', () => {

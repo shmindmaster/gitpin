@@ -106,12 +106,7 @@ Try the setup:
 
 ## X draft
 
-After the release gate is complete, this draft may state: GitPin 0.6.2 ships a required PR gate path-coverage loop for agent-authored changes and a browser-level website analytics opt-out. If a material file is changed without evidence, merge is blocked. If evidence is complete, the proof includes the canonical cite `task-2-synthetic-pr-fixture/docs/protocol.md:5 @ 57bce1a312f6153e171b515c41727ff81e77fb3c` and durable handle `gitpin:task-2-synthetic-pr-fixture@57bce1a312f6153e171b515c41727ff81e77fb3c:docs/protocol.md:5`; both can be re-checked via `git show`.
-
-Signals to use this as infrastructure:
-- `uses: shmindmaster/gitpin@v0.6.2`
-- https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.shmindmaster/gitpin&limit=20
-- https://www.npmjs.com/package/gitpin
+GitPin 0.6.2 blocks merges when material PR changes lack commit-pinned evidence. Add valid coverage, rerun, and the gate passes with exact SHA/path/line citations. It checks evidence integrity, not semantic truth. Action: `uses: shmindmaster/gitpin@v0.6.2`.
 
 ## Adaptable community post draft
 
