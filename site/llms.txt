@@ -1,0 +1,17 @@
+# GitPin
+
+> GitPin is a base-trusted required PR evidence gate for agent-authored pull requests. It compares the merge-base diff with named claims, requires coverage for material changed paths, and re-checks exact line hashes at full commit SHAs before merge. It verifies evidence integrity, not semantic truth.
+
+## GitPin
+
+- Site: https://shmindmaster.github.io/gitpin/
+- Evidence-gate documentation: https://github.com/shmindmaster/gitpin/blob/main/docs/pr-evidence-gate.md
+- Repository: https://github.com/shmindmaster/gitpin
+- npm package: https://www.npmjs.com/package/gitpin
+- MCP registry: https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.shmindmaster/gitpin&limit=20
+
+## Quickstart
+
+Install: `npx -y gitpin@0.6.2 init --client codex`
+Run the gate: `gitpin gate --base <full-base-sha> --head <full-head-sha>`
+Use as a GitHub Action: `uses: shmindmaster/gitpin@v0.6.2`

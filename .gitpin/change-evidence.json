@@ -133,6 +133,34 @@
           "contentSha256": "036523ebd7c599f69361ed059407b28593d768adc5670f89d9eb2c5c72e248a6"
         }
       ]
+    },
+    {
+      "id": "LAUNCH-2",
+      "statement": "The public site ships LLM/agent-facing discovery surfaces for AEO: site/llms.txt summarizes GitPin and its key links, site/index.html carries a Schema.org SoftwareApplication JSON-LD block with the current version, and src/site-build.test.ts asserts both surfaces survive the build into .site-dist.",
+      "covers": ["site/llms.txt", "site/index.html", "src/site-build.test.ts"],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "site/llms.txt",
+          "lineStart": 1,
+          "lineEnd": 18,
+          "contentSha256": "85c01110408944e066e5217e14d1c7368c3b4288923572147c343762a7c4e594"
+        },
+        {
+          "ref": "head",
+          "path": "site/index.html",
+          "lineStart": 37,
+          "lineEnd": 49,
+          "contentSha256": "5d5c97e7a3b7a2549b8d09c4492e018be7becb2f604ca048d20458b7794236bf"
+        },
+        {
+          "ref": "head",
+          "path": "src/site-build.test.ts",
+          "lineStart": 31,
+          "lineEnd": 46,
+          "contentSha256": "ea8c7b72071190e001994bdb3bc1a8b654a8ab15166a03086def2dcdae2cb3b9"
+        }
+      ]
     }
   ]
 }
