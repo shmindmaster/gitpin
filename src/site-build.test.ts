@@ -28,6 +28,23 @@ function metaContent(html: string, name: string): string | null {
 
 afterAll(() => buildSite());
 
+describe('AEO discovery surfaces', () => {
+  it('keeps llms.txt and JSON-LD in the source and the built site', () => {
+    buildSite();
+
+    const sourceLlms = readFileSync(resolve('site/llms.txt'), 'utf8');
+    expect(sourceLlms).toContain('GitPin');
+    expect(sourceLlms).toContain('https://shmindmaster.github.io/gitpin/');
+
+    const builtLlms = readFileSync(resolve('.site-dist/llms.txt'), 'utf8');
+    expect(builtLlms).toBe(sourceLlms);
+
+    const builtIndex = pageHtml('.site-dist', 'index.html');
+    expect(builtIndex).toContain('application/ld+json');
+    expect(builtIndex).toContain('"@type": "SoftwareApplication"');
+  });
+});
+
 describe('configured static-site analytics', () => {
   it('keeps every analytics-enabled source and unconfigured build telemetry-free', () => {
     buildSite();
