@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { basename, join, resolve } from 'node:path';
+import { basename, dirname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const marker = 'REPOCONTEXT_PACKED_FIRST_ANSWER';
@@ -14,6 +14,9 @@ const repositoryPath = join(temporaryRoot, 'repository');
 const clientPath = join(temporaryRoot, 'client');
 const registryPath = join(temporaryRoot, 'repositories.yaml');
 const npmCommand = 'npm';
+// Canonical absolute path to the Windows command interpreter; see commandInvocation
+// for why this is hardcoded rather than environment-derived or a bare name.
+const WINDOWS_COMMAND_INTERPRETER = 'C:\\Windows\\System32\\cmd.exe';
 const commandEnvironment = { ...process.env };
 delete commandEnvironment.npm_config_manage_package_manager_versions;
 let client;
@@ -182,17 +185,16 @@ try {
   if (gateReport.status !== 'ok' || gateReport.claims?.[0]?.status !== 'evidence-verified') {
     throw new Error('Packed PR evidence gate did not verify exact committed evidence.');
   }
-  const legacyCommand = join(
-    clientPath,
-    'node_modules',
-    '.bin',
-    process.platform === 'win32' ? 'repocontext.cmd' : 'repocontext',
-  );
-  const legacyInvocation =
-    process.platform === 'win32'
-      ? { command: process.env.ComSpec ?? 'cmd.exe', args: ['/d', '/s', '/c', legacyCommand, 'help'] }
-      : { command: legacyCommand, args: ['help'] };
-  const legacyHelp = execFileSync(legacyInvocation.command, legacyInvocation.args, {
+  // Verify the repocontext migration alias by invoking its packed bin target
+  // directly through the current Node executable. This stays shell-free, so no
+  // interpreter name has to be resolved through the environment or the current
+  // directory (CodeQL js/shell-command-injection-from-environment; avoids
+  // bare-name interpreter shadowing).
+  const legacyBinTarget = packedManifest.bin?.repocontext;
+  if (!legacyBinTarget || typeof legacyBinTarget !== 'string') {
+    throw new Error('Packed npm manifest must retain the repocontext migration alias.');
+  }
+  const legacyHelp = execFileSync(process.execPath, [join(packageRoot, legacyBinTarget), 'help'], {
     cwd: clientPath,
     env: commandEnvironment,
     encoding: 'utf8',
@@ -311,5 +313,14 @@ function runOutput(command, args, cwd) {
 
 function commandInvocation(command, args) {
   if (process.platform !== 'win32' || command !== npmCommand) return { command, args };
-  return { command: process.env.ComSpec ?? 'cmd.exe', args: ['/d', '/s', '/c', command, ...args] };
+  // npm resolves to a .cmd shim on Windows, so it must be executed through the
+  // command interpreter. Use a hardcoded absolute System32 path: %ComSpec% is an
+  // environment-controlled value and a bare 'cmd.exe' name can be shadowed by a
+  // file in the current working directory. A string literal also keeps this free
+  // of CodeQL js/shell-command-injection-from-environment taint sources (env
+  // reads and path.resolve/join outputs are all treated as untrusted).
+  if (!existsSync(WINDOWS_COMMAND_INTERPRETER)) {
+    throw new Error(`Windows command interpreter not found at ${WINDOWS_COMMAND_INTERPRETER}.`);
+  }
+  return { command: WINDOWS_COMMAND_INTERPRETER, args: ['/d', '/s', '/c', command, ...args] };
 }
