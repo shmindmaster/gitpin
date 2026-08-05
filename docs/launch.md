@@ -106,7 +106,7 @@ Try the setup:
 
 ## X draft
 
-Configured as a required check, GitPin 0.6.2 blocks merges when material PR changes lack commit-pinned evidence. Add valid coverage and rerun to pass with exact SHA/path/line citations. It verifies evidence integrity, not semantic truth. `uses: shmindmaster/gitpin@v0.6.2`
+Configured as a required check, GitPin 0.6.2 blocks merges when material changed paths lack a covering claim with commit-pinned evidence. Add valid coverage and rerun to pass. It verifies evidence integrity, not semantic truth. `uses: shmindmaster/gitpin@v0.6.2`
 
 ## Adaptable community post draft
 
