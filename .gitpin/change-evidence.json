@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "summary": "Post-launch hardening: pin hono, fast-uri, and postcss to patched releases via pnpm overrides, remove environment-derived and bare-name command-interpreter paths from package verification, and SHA-pin all GitHub-owned Actions.",
+  "summary": "Qualify the launch copy of the evidence-gate guarantee: the gate blocks merges when material changed paths lack a covering claim with verified locators (path-level coverage), matching the gate's actual behavior. The earlier HARDEN-1/2/3 claims (dependency overrides, CodeQL-clean interpreter, SHA-pinned Actions) are carried forward unchanged from the merged hardening work.",
   "claims": [
     {
       "id": "HARDEN-1",
@@ -117,6 +117,20 @@
           "lineStart": 24,
           "lineEnd": 28,
           "contentSha256": "bb219448893022cce75bab4864e90b45f1db7437e4e7eb1418f17262a37528d7"
+        }
+      ]
+    },
+    {
+      "id": "LAUNCH-1",
+      "statement": "docs/launch.md launch copy describes the evidence-gate guarantee precisely: the gate blocks merges when material changed paths lack a covering claim with commit-pinned evidence (coverage is claim-path level; locators are verified independently at head SHA), matching actual gate behavior.",
+      "covers": ["docs/launch.md"],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "docs/launch.md",
+          "lineStart": 109,
+          "lineEnd": 109,
+          "contentSha256": "036523ebd7c599f69361ed059407b28593d768adc5670f89d9eb2c5c72e248a6"
         }
       ]
     }
