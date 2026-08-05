@@ -1,20 +1,20 @@
 {
   "schemaVersion": 1,
-  "summary": "Add Glama MCP registry maintainer metadata so the GitPin listing at glama.ai can be claimed by the repository owner (shmindmaster).",
+  "summary": "Migrate record-demo-qwen.ps1 from retired D:\\\\AI-Platform / AI_PLATFORM_ROOT to D:\\\\Local-AI / LOCAL_AI_ROOT.",
   "claims": [
     {
-      "id": "GLAMA-1",
-      "statement": "Root glama.json declares schema https://glama.ai/mcp/schemas/server.json and lists shmindmaster as the sole maintainer for Glama MCP server ownership claim.",
+      "id": "LOCALAI-1",
+      "statement": "scripts/record-demo-qwen.ps1 reads LOCAL_AI_ROOT (fallback D:\\\\Local-AI) instead of AI_PLATFORM_ROOT / D:\\\\AI-Platform.",
       "covers": [
-        "glama.json"
+        "scripts/record-demo-qwen.ps1"
       ],
       "evidence": [
         {
           "ref": "head",
-          "path": "glama.json",
-          "lineStart": 1,
-          "lineEnd": 6,
-          "contentSha256": "9213a37c405189c8e40cd5ac3336dccfd50d693e4d9ec72e54f5bf52720a0682"
+          "path": "scripts/record-demo-qwen.ps1",
+          "lineStart": 2,
+          "lineEnd": 11,
+          "contentSha256": "661c441c0f88254918fdc8a8295dc782c9b63c9692d57a23065fc1d326acaf12"
         }
       ]
     }
