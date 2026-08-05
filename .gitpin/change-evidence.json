@@ -1,164 +1,20 @@
 {
   "schemaVersion": 1,
-  "summary": "Qualify the launch copy of the evidence-gate guarantee: the gate blocks merges when material changed paths lack a covering claim with verified locators (path-level coverage), matching the gate's actual behavior. The earlier HARDEN-1/2/3 claims (dependency overrides, CodeQL-clean interpreter, SHA-pinned Actions) are carried forward unchanged from the merged hardening work.",
+  "summary": "Add Glama MCP registry maintainer metadata so the GitPin listing at glama.ai can be claimed by the repository owner (shmindmaster).",
   "claims": [
     {
-      "id": "HARDEN-1",
-      "statement": "pnpm overrides constrain hono to >=4.12.34 (resolves 4.13.0), fast-uri to >=3.1.5 (resolves 3.1.5), and postcss to >=8.5.23 (resolves 8.5.25); pnpm audit reports no known vulnerabilities after regeneration.",
-      "covers": ["pnpm-lock.yaml", "pnpm-workspace.yaml"],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "pnpm-workspace.yaml",
-          "lineStart": 4,
-          "lineEnd": 7,
-          "contentSha256": "a24af05941df2c230df0d95ea00ecc2d446b6458e7dd019d6f96cb4394497b43"
-        },
-        {
-          "ref": "head",
-          "path": "pnpm-lock.yaml",
-          "lineStart": 7,
-          "lineEnd": 10,
-          "contentSha256": "a24af05941df2c230df0d95ea00ecc2d446b6458e7dd019d6f96cb4394497b43"
-        },
-        {
-          "ref": "head",
-          "path": "pnpm-lock.yaml",
-          "lineStart": 750,
-          "lineEnd": 751,
-          "contentSha256": "eff21b75c0040d6d6f31e60403f01aba56c9b3716bb66313e5ed3b4886a019cd"
-        },
-        {
-          "ref": "head",
-          "path": "pnpm-lock.yaml",
-          "lineStart": 807,
-          "lineEnd": 809,
-          "contentSha256": "00156bac9df5d5f88f4addf85ca468f59032421228f0b5a55cb37a1ca2a26318"
-        },
-        {
-          "ref": "head",
-          "path": "pnpm-lock.yaml",
-          "lineStart": 934,
-          "lineEnd": 936,
-          "contentSha256": "bf5879f86c605e3ea6660481296c4334b39dc72a1062efea459e82cc264840ea"
-        }
-      ]
-    },
-    {
-      "id": "HARDEN-2",
-      "statement": "scripts/verify-package.mjs no longer derives the Windows command interpreter from an environment value or a bare shadowable name: npm runs through a hardcoded absolute System32 path validated at call time, and the repocontext migration alias is invoked shell-free through the current Node executable; CI publish paths run on Linux and are unchanged.",
-      "covers": ["scripts/verify-package.mjs"],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "scripts/verify-package.mjs",
-          "lineStart": 19,
-          "lineEnd": 19,
-          "contentSha256": "cc08e9ec70156b2c06e23841f00f91bb519cf67f33deaddae61ae72e6748f615"
-        },
-        {
-          "ref": "head",
-          "path": "scripts/verify-package.mjs",
-          "lineStart": 188,
-          "lineEnd": 202,
-          "contentSha256": "5963d632c33f4156178f5600f23ccdf51a12f2ecf12440cd9ea6e1537496d2ef"
-        },
-        {
-          "ref": "head",
-          "path": "scripts/verify-package.mjs",
-          "lineStart": 314,
-          "lineEnd": 326,
-          "contentSha256": "752bb3becba6f45f17ae450074cf6570126a4ee941e8126f8c6bfd59eb9e6a8d"
-        }
-      ]
-    },
-    {
-      "id": "HARDEN-3",
-      "statement": "All GitHub-owned Action references in the CI, evidence gate, Pages, MCP publish, and release workflows are pinned to full commit SHAs with tag comments preserved; each locator spans every changed Action reference in its workflow. The non-GitHub self-gate reference was already commit-pinned.",
+      "id": "GLAMA-1",
+      "statement": "Root glama.json declares schema https://glama.ai/mcp/schemas/server.json and lists shmindmaster as the sole maintainer for Glama MCP server ownership claim.",
       "covers": [
-        ".github/workflows/ci.yml",
-        ".github/workflows/evidence-gate.yml",
-        ".github/workflows/pages.yml",
-        ".github/workflows/publish-mcp.yml",
-        ".github/workflows/release.yml"
+        "glama.json"
       ],
       "evidence": [
         {
           "ref": "head",
-          "path": ".github/workflows/ci.yml",
-          "lineStart": 23,
-          "lineEnd": 85,
-          "contentSha256": "961b25d9f7e49d75b820a3ea17dc17869f268d51905b1b778b153c41ac79ab39"
-        },
-        {
-          "ref": "head",
-          "path": ".github/workflows/evidence-gate.yml",
-          "lineStart": 17,
-          "lineEnd": 17,
-          "contentSha256": "46a9c10ac643c6d6797acbaeed457699a8c512d88ab3e97377aa5ca9ffb0e007"
-        },
-        {
-          "ref": "head",
-          "path": ".github/workflows/pages.yml",
-          "lineStart": 22,
-          "lineEnd": 36,
-          "contentSha256": "124f6032f1684233e0680930dd331a3963ec2c527ffee1eb5ad6527f5c5821fb"
-        },
-        {
-          "ref": "head",
-          "path": ".github/workflows/publish-mcp.yml",
-          "lineStart": 21,
-          "lineEnd": 26,
-          "contentSha256": "27b891d6a85b208386e3863fb5875bede004daefc1a77c21b33f9e3b0950e05c"
-        },
-        {
-          "ref": "head",
-          "path": ".github/workflows/release.yml",
-          "lineStart": 24,
-          "lineEnd": 28,
-          "contentSha256": "bb219448893022cce75bab4864e90b45f1db7437e4e7eb1418f17262a37528d7"
-        }
-      ]
-    },
-    {
-      "id": "LAUNCH-1",
-      "statement": "docs/launch.md launch copy describes the evidence-gate guarantee precisely: the gate blocks merges when material changed paths lack a covering claim with commit-pinned evidence (coverage is claim-path level; locators are verified independently at head SHA), matching actual gate behavior.",
-      "covers": ["docs/launch.md"],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "docs/launch.md",
-          "lineStart": 109,
-          "lineEnd": 109,
-          "contentSha256": "036523ebd7c599f69361ed059407b28593d768adc5670f89d9eb2c5c72e248a6"
-        }
-      ]
-    },
-    {
-      "id": "LAUNCH-2",
-      "statement": "The public site ships LLM/agent-facing discovery surfaces for AEO: site/llms.txt summarizes GitPin and its key links, site/index.html carries a Schema.org SoftwareApplication JSON-LD block with the current version, and src/site-build.test.ts asserts both surfaces survive the build into .site-dist.",
-      "covers": ["site/llms.txt", "site/index.html", "src/site-build.test.ts"],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "site/llms.txt",
+          "path": "glama.json",
           "lineStart": 1,
-          "lineEnd": 18,
-          "contentSha256": "85c01110408944e066e5217e14d1c7368c3b4288923572147c343762a7c4e594"
-        },
-        {
-          "ref": "head",
-          "path": "site/index.html",
-          "lineStart": 37,
-          "lineEnd": 49,
-          "contentSha256": "5d5c97e7a3b7a2549b8d09c4492e018be7becb2f604ca048d20458b7794236bf"
-        },
-        {
-          "ref": "head",
-          "path": "src/site-build.test.ts",
-          "lineStart": 31,
-          "lineEnd": 46,
-          "contentSha256": "ea8c7b72071190e001994bdb3bc1a8b654a8ab15166a03086def2dcdae2cb3b9"
+          "lineEnd": 6,
+          "contentSha256": "9213a37c405189c8e40cd5ac3336dccfd50d693e4d9ec72e54f5bf52720a0682"
         }
       ]
     }
