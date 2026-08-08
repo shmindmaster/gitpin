@@ -5,6 +5,7 @@ generated/
 .repocontext-index/
 .gitpin-index/
 .site-dist/
+.repowise/
 .demo/
 playwright-report/
 test-results/
@@ -24,3 +25,4 @@ _product-experience/
 dist/
 .turbo/
 .DS_Store
+.vscode/
