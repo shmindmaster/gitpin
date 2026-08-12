@@ -7,13 +7,16 @@ monorepo packages. The detailed architecture reference is `docs/architecture.md`
 
 ```
 src/
-  server.ts     Shared pin.* MCP contract and stdio entry
-  http.ts       Bearer-authenticated Streamable HTTP transport
-  snapshot.ts   Docs/manifests snapshot builder
-  registry.ts   repositories.yaml multi-repo Git roots
-  git*.ts       HEAD-pinned source operations
-  wiki*.ts      Documentation catalog/search/gaps/brief
-  cli.ts        init / doctor / brief / verify
+  server.ts       Shared pin.* MCP contract and stdio entry
+  http.ts         Bearer-authenticated Streamable HTTP transport
+  snapshot.ts     Docs/manifests snapshot builder
+  registry.ts     repositories.yaml multi-repo Git roots
+  git*.ts         HEAD-pinned source operations
+  wiki*.ts        Documentation catalog/search/gaps/brief
+  cli.ts          init / doctor / brief / verify
+  cli-gate.ts     PR evidence gate CLI entry
+  gate.ts         Gate evidence evaluation
+  gate-policy.ts  Gate policy parsing and enforcement
 ```
 
 ## Invariants
@@ -32,7 +35,9 @@ src/
 - `docs/wiki.yaml` / `.gitpin/wiki.yaml` expose documentation to the wiki tools
   (`.repocontext/wiki.yaml` remains a migration alias); `templates/wiki.yaml` is the
   schema template shipped to consumers.
-- `action.yml` + `templates/gate.yml` implement the PR evidence gate.
+- `src/cli-gate.ts`, `src/gate.ts`, and `src/gate-policy.ts` implement the PR
+  evidence gate; `action.yml` is the GitHub Action integration and
+  `templates/gate.yml` is the sample consumer policy.
 - `server.json` carries MCP server metadata.
 - `package.json` `files` pins the publish surface; `scripts/verify-package.mjs`
   enforces it.
