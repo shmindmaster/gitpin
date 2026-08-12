@@ -21,8 +21,8 @@ pnpm mcp:http              # run the HTTP transport
 pnpm doctor:check          # CLI doctor check
 pnpm build                 # compile src/ to dist/ (tsc)
 pnpm validate              # full gate: lint + format + typecheck + verifiers + tests + site build + gate demo
-pnpm site:serve            # serve the built site locally (site/)
-pnpm site:build            # build the static site
+pnpm site:serve            # serve the site/ source tree for local preview
+pnpm site:build            # build the deployable static site in .site-dist/
 pnpm site:test             # Playwright suite against the site
 ```
 
