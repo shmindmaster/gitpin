@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "summary": "Align GitPin contributor guidance, documentation taxonomy, generated artifacts, release runbooks, testing instructions, and evidence-gate architecture with the verified repository workflows.",
+  "summary": "Align GitPin documentation and release guidance, then patch the newly published nanoid high-severity advisory without crossing major versions.",
   "claims": [
     {
       "id": "DOCS-1",
@@ -111,6 +111,30 @@
           "lineStart": 34,
           "lineEnd": 40,
           "contentSha256": "8897c1a6c25816800e8881070f47638145aad740c875502a99e7e017f7d04d70"
+        }
+      ]
+    },
+    {
+      "id": "DEPS-1",
+      "statement": "The frozen pnpm graph forces nanoid to the patched 3.3.17 release while preserving the existing dependency major.",
+      "covers": [
+        "pnpm-lock.yaml",
+        "pnpm-workspace.yaml"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "pnpm-workspace.yaml",
+          "lineStart": 4,
+          "lineEnd": 8,
+          "contentSha256": "6874ae6d22591f7af07f17884df2950417d33ed54f065920851158b55342d1ac"
+        },
+        {
+          "ref": "head",
+          "path": "pnpm-lock.yaml",
+          "lineStart": 7,
+          "lineEnd": 11,
+          "contentSha256": "6874ae6d22591f7af07f17884df2950417d33ed54f065920851158b55342d1ac"
         }
       ]
     }
