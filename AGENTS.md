@@ -4,17 +4,17 @@
 
 **GitPin** is an index-free, read-only MCP server for multi-repo evidence pinned to
 Git HEAD. Answers carry path, line, and full SHA. It has no databases, embeddings,
-queues, or write tools. GitPin 0.6.2 is the current published release for the required
-PR evidence gate, commit-pinned locators, and website analytics privacy correction; its
-npm package, MCP Registry entry, GitHub Release, and Pages deployment have been
-production-verified. Package: `gitpin`. Tools: `pin.*`. CLI: `gitpin`.
+queues, or write tools. GitPin 0.6.2 is the current published release for the required PR evidence gate,
+commit-pinned locators, and website analytics privacy correction; its npm package,
+MCP Registry entry, GitHub Release, and Pages deployment have been production-verified.
+Package: `gitpin`. Tools: `pin.*`. CLI: `gitpin`.
 
 ## Knowledge authority
 
 - `README.md` — entry point: what GitPin is, install, quick start, and publishing.
 - `docs/` — the durable documentation home, indexed by `docs/README.md`; includes
   `docs/architecture.md`, `docs/ci.md`, `docs/cite-spec.md`, `docs/configuration.md`,
-  `docs/faq.md`,   `docs/troubleshooting.md`, `docs/website.md`, and the wiki schema template in
+  `docs/faq.md`, `docs/troubleshooting.md`, `docs/website.md`, and the wiki schema template in
   `templates/wiki.yaml`.
 - `templates/` — client rules, wiki schema, and gate policy authored for consumers.
 - `src/` — TypeScript sources (see Architecture below); `dist/` is the compiled package.
@@ -51,8 +51,7 @@ One bounded responsibility per file. No monorepo packages.
 1. Read-only. Zero writes to indexed repositories.
 2. Commit-pinned. Content answers include full SHA; blocked/unavailable are explicit.
 3. Sensitive paths blocked at read time.
-4. Exposure via `docs/wiki.yaml` or `.gitpin/wiki.yaml` (`.repocontext/wiki.yaml` remains
-   a migration alias).
+4. Exposure via `docs/wiki.yaml` or `.gitpin/wiki.yaml` (`.repocontext/wiki.yaml` remains a migration alias).
 5. Local stdio may expose source; HTTP image is docs/manifests only.
 6. No databases, caches, workers, or embeddings.
 7. Registry entries point only to Git roots.
@@ -69,8 +68,8 @@ repowise update --repo gitpin
 ```
 
 The `.repowise/` directory and `.claude/CLAUDE.md` are gitignored on purpose; do not
-commit them. `.repocontext-index/`, `.demo/`, and `.site-dist/` are local generated
-artifacts and also stay ignored.
+commit them. `.gitpin-index/`, `.demo/`, and `.site-dist/` are local generated artifacts
+and also stay ignored.
 
 ## Canonical commands
 
