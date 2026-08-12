@@ -1,20 +1,116 @@
 {
   "schemaVersion": 1,
-  "summary": "Migrate record-demo-qwen.ps1 from retired D:\\\\AI-Platform / AI_PLATFORM_ROOT to D:\\\\Local-AI / LOCAL_AI_ROOT.",
+  "summary": "Align GitPin contributor guidance, documentation taxonomy, generated artifacts, release runbooks, testing instructions, and evidence-gate architecture with the verified repository workflows.",
   "claims": [
     {
-      "id": "LOCALAI-1",
-      "statement": "scripts/record-demo-qwen.ps1 reads LOCAL_AI_ROOT (fallback D:\\\\Local-AI) instead of AI_PLATFORM_ROOT / D:\\\\AI-Platform.",
+      "id": "DOCS-1",
+      "statement": "Contributor and product documentation consistently describe GitPin as a read-only, commit-pinned evidence gate and route readers through the durable documentation taxonomy.",
       "covers": [
-        "scripts/record-demo-qwen.ps1"
+        "AGENTS.md",
+        "CLAUDE.md",
+        "docs/README.md",
+        "docs/plans/PLANS.md",
+        "docs/product/overview.md"
       ],
       "evidence": [
         {
           "ref": "head",
-          "path": "scripts/record-demo-qwen.ps1",
-          "lineStart": 2,
+          "path": "AGENTS.md",
+          "lineStart": 5,
+          "lineEnd": 10,
+          "contentSha256": "10912090829b59eda21aa8925fc9f613cf533ac24b6de6053617c4c661815ab0"
+        },
+        {
+          "ref": "head",
+          "path": "CLAUDE.md",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "918b1c90559355ef78f33fdf3562f2b021ef8bdfd8a5c8415e5decd44934de55"
+        },
+        {
+          "ref": "head",
+          "path": "docs/README.md",
+          "lineStart": 7,
+          "lineEnd": 13,
+          "contentSha256": "376fefc5a0c067eca3ec0545a71a9d4db2b1a656d769292e8b7fc52f2ecffec5"
+        },
+        {
+          "ref": "head",
+          "path": "docs/plans/PLANS.md",
+          "lineStart": 3,
+          "lineEnd": 6,
+          "contentSha256": "49fb69a41fc9020cf1de65b65686c7e8dd602a4b9086fe85c9da546c33983a43"
+        },
+        {
+          "ref": "head",
+          "path": "docs/product/overview.md",
+          "lineStart": 15,
+          "lineEnd": 21,
+          "contentSha256": "ce9728d2be8ef715f5d698bbcca2a47e910c6aac8bf07543a8551afa7606ca6c"
+        }
+      ]
+    },
+    {
+      "id": "DOCS-2",
+      "statement": "Operational documentation accurately distinguishes generated package and site artifacts, source previews, the separate browser gate, and manual release publishing workflows.",
+      "covers": [
+        "docs/current-state.md",
+        "docs/development/setup.md",
+        "docs/development/testing.md",
+        "docs/runbooks/deployment.md"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "docs/current-state.md",
+          "lineStart": 17,
+          "lineEnd": 20,
+          "contentSha256": "9bfe919aa49b4aabcabab5b947bb52c9a98e90c964c4a648fa0e3243c8b7346f"
+        },
+        {
+          "ref": "head",
+          "path": "docs/development/setup.md",
+          "lineStart": 22,
+          "lineEnd": 26,
+          "contentSha256": "c8746fe34af77c15771f1ecaa58aaf91055d817b49468e0e4865e1202364e332"
+        },
+        {
+          "ref": "head",
+          "path": "docs/development/testing.md",
+          "lineStart": 23,
+          "lineEnd": 35,
+          "contentSha256": "138ae4868530f7922482ccd700dc51b7697ce29c8b98cf7bcb93ef40719a52ef"
+        },
+        {
+          "ref": "head",
+          "path": "docs/runbooks/deployment.md",
+          "lineStart": 21,
+          "lineEnd": 36,
+          "contentSha256": "b6bb203944ad91b413cf77b702096f9438bdbd66a80aab9f45820268c1a5cee0"
+        }
+      ]
+    },
+    {
+      "id": "DOCS-3",
+      "statement": "The architecture map names the actual evidence-gate implementation modules and generated work products remain excluded from Git.",
+      "covers": [
+        ".gitignore",
+        "docs/architecture/overview.md"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": ".gitignore",
+          "lineStart": 5,
           "lineEnd": 11,
-          "contentSha256": "661c441c0f88254918fdc8a8295dc782c9b63c9692d57a23065fc1d326acaf12"
+          "contentSha256": "3a204ad20dc072a0339756f601e80ae524519456e969a7ddc596ae734f7581be"
+        },
+        {
+          "ref": "head",
+          "path": "docs/architecture/overview.md",
+          "lineStart": 34,
+          "lineEnd": 40,
+          "contentSha256": "8897c1a6c25816800e8881070f47638145aad740c875502a99e7e017f7d04d70"
         }
       ]
     }
