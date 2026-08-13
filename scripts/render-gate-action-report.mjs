@@ -43,7 +43,16 @@ if (process.env.GITHUB_STEP_SUMMARY) {
   appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${lines.join('\n')}\n`);
 }
 
+if (report.status === 'failed') {
+  const message = [report.message, ...report.violations.slice(0, 20).map((v) => `- ${v.message}`)].join('\n');
+  process.stderr.write(`::error title=GitPin Evidence Gate::${escapeWorkflowCommand(message)}\n`);
+}
+
 function fail(message) {
-  process.stderr.write(`::error title=GitPin Evidence Gate::${message}\n`);
+  process.stderr.write(`::error title=GitPin Evidence Gate::${escapeWorkflowCommand(message)}\n`);
   process.exit(1);
+}
+
+function escapeWorkflowCommand(value) {
+  return value.replaceAll('%', '%25').replaceAll('\r', '%0D').replaceAll('\n', '%0A');
 }

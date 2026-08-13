@@ -1,4 +1,4 @@
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
@@ -44,6 +44,46 @@ describe('GitHub Action trust boundary', () => {
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
+  });
+
+  it('emits a legible error annotation when the gate report status is failed', () => {
+    const root = mkdtempSync(resolve(tmpdir(), 'gitpin-action-report-'));
+    const report = resolve(root, 'report.json');
+    writeFileSync(
+      report,
+      JSON.stringify({
+        kind: 'gitpin-gate-report',
+        schemaVersion: 1,
+        status: 'failed',
+        reportId: 'c4f2f5f25eabd5c1',
+        message: 'Gate failed with 1 violation(s).',
+        changedPaths: { required: ['package.json'], claimed: [] },
+        claims: [],
+        violations: [
+          {
+            kind: 'uncovered-change',
+            path: 'package.json',
+            message: 'Changed path has no material claim: package.json.',
+          },
+        ],
+      }),
+      'utf8',
+    );
+    let stderr = '';
+    try {
+      const result = spawnSync(process.execPath, [resolve('scripts/render-gate-action-report.mjs'), report], {
+        cwd: process.cwd(),
+        stdio: 'pipe',
+        windowsHide: true,
+        encoding: 'utf8',
+      });
+      stderr = result.stderr ?? '';
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+    expect(stderr).toContain('::error title=GitPin Evidence Gate::');
+    expect(stderr).toContain('Gate failed with 1 violation(s).');
+    expect(stderr).toContain('Changed path has no material claim: package.json.');
   });
 
   it('keeps the public path schema aligned with runtime validation', () => {
