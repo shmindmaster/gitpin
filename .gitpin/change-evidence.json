@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "summary": "Align the package, MCP Registry, Action, documentation, website, and generated demo release surfaces on the 0.6.3 candidate, and preserve the legible gate-report failure annotation from the current published release.",
+  "summary": "Align the package, MCP Registry, Action, documentation, website, and generated demo release surfaces on the 0.6.3 candidate, and re-pin the repository self-gate to the published v0.6.3 release source.",
   "claims": [
     {
       "id": "DOCS-1",
@@ -301,14 +301,22 @@
     },
     {
       "id": "V063-LAUNCH-AND-BOOTSTRAP",
-      "statement": "The launch package, PR evidence gate setup guide, and deterministic fail-to-pass demo advertise the 0.6.3 candidate.",
+      "statement": "The launch package, PR evidence gate setup guide, deterministic fail-to-pass demo, and the repository self-gate commit-pin advertise the 0.6.3 candidate.",
       "covers": [
+        ".github/workflows/evidence-gate.yml",
         "docs/launch.md",
         "docs/pr-evidence-gate.md",
         "docs/demos/pr-gate-fail-to-pass.md",
         "docs/demos/pr-gate-fail-to-pass.artifact.json"
       ],
       "evidence": [
+        {
+          "ref": "head",
+          "path": ".github/workflows/evidence-gate.yml",
+          "lineStart": 21,
+          "lineEnd": 22,
+          "contentSha256": "b1b34ad0a0cc4ced18ff07fa2328a8fca1c5aeff8e133f9174adc9c77421d27e"
+        },
         {
           "ref": "head",
           "path": "docs/launch.md",
