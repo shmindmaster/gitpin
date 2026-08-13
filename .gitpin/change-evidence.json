@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "summary": "Align GitPin documentation and release guidance, then patch the newly published nanoid high-severity advisory without crossing major versions.",
+  "summary": "Align GitPin documentation and release guidance, patch the nanoid high-severity advisory, and make evidence-gate failures emit a legible workflow annotation.",
   "claims": [
     {
       "id": "DOCS-1",
@@ -135,6 +135,30 @@
           "lineStart": 7,
           "lineEnd": 11,
           "contentSha256": "6874ae6d22591f7af07f17884df2950417d33ed54f065920851158b55342d1ac"
+        }
+      ]
+    },
+    {
+      "id": "GATE-1",
+      "statement": "The evidence-gate action renderer emits a legible workflow error annotation when a valid gate report has failed status, so failures surface on the check run instead of silently failing.",
+      "covers": [
+        "scripts/render-gate-action-report.mjs",
+        "src/gate-action.test.ts"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "scripts/render-gate-action-report.mjs",
+          "lineStart": 46,
+          "lineEnd": 49,
+          "contentSha256": "ea5d8c9d408d8816b9375e1e26833d4b7ca3731e9de39928e2076ffc225bac90"
+        },
+        {
+          "ref": "head",
+          "path": "src/gate-action.test.ts",
+          "lineStart": 49,
+          "lineEnd": 87,
+          "contentSha256": "2d6380050c8e145beadfdf913920f95782d4e92667c247af807bb387726daaf3"
         }
       ]
     }
