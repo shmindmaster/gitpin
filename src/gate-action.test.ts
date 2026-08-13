@@ -9,7 +9,7 @@ describe('GitHub Action trust boundary', () => {
   it('runs the exact gate version from the public npm registry and documents read-only workflow permissions', () => {
     const action = readFileSync(resolve('action.yml'), 'utf8');
     const docs = readFileSync(resolve('docs/pr-evidence-gate.md'), 'utf8');
-    expect(action).toContain('default: 0.6.2');
+    expect(action).toContain('default: 0.6.3');
     expect(action).toContain('--registry="https://registry.npmjs.org"');
     expect(action).toContain('--userconfig="$EMPTY_NPMRC"');
     expect(action).toContain('cd "$RUNNER_TEMP"');

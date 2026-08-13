@@ -10,4 +10,4 @@ When answering questions about **our local repositories** registered with GitPin
 6. If GitPin returns blocked/missing/contradicted, report that instead of inventing content.  
 7. For release / review decisions, prefer `pin.analyze` brief (`EvidenceBrief`).  
 
-Install: `npx -y gitpin@0.6.2` and set `GITPIN_REGISTRY`.
+Install: `npx -y gitpin@0.6.3` and set `GITPIN_REGISTRY`.

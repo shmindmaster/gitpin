@@ -42,7 +42,7 @@
       "applicationCategory": "DeveloperApplication",
       "operatingSystem": "Linux, macOS, Windows",
       "url": "https://shmindmaster.github.io/gitpin/",
-      "softwareVersion": "0.6.2",
+      "softwareVersion": "0.6.3",
       "description": "Base-trusted required PR evidence gate for agent-authored pull requests. It requires coverage for material changed paths and re-checks exact line hashes at full commit SHAs before merge.",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
     }
@@ -263,7 +263,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with: { fetch-depth: 0 }
-      - uses: shmindmaster/gitpin@v0.6.2
+      - uses: shmindmaster/gitpin@v0.6.3
         with:
           base-sha: ${{ github.event.pull_request.base.sha }}
           head-sha: ${{ github.event.pull_request.head.sha }}</code></pre>

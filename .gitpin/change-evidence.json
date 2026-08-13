@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "summary": "Align GitPin documentation and release guidance, patch the nanoid high-severity advisory, and make evidence-gate failures emit a legible workflow annotation.",
+  "summary": "Align the package, MCP Registry, Action, documentation, website, and generated demo release surfaces on the 0.6.3 candidate, and preserve the legible gate-report failure annotation from the current published release.",
   "claims": [
     {
       "id": "DOCS-1",
@@ -18,7 +18,7 @@
           "path": "AGENTS.md",
           "lineStart": 5,
           "lineEnd": 10,
-          "contentSha256": "10912090829b59eda21aa8925fc9f613cf533ac24b6de6053617c4c661815ab0"
+          "contentSha256": "7c1b04097e8cb11831c83e49cd03a0ca6e3d7d40ff30b79fc84f0792891a1327"
         },
         {
           "ref": "head",
@@ -159,6 +159,247 @@
           "lineStart": 49,
           "lineEnd": 87,
           "contentSha256": "2d6380050c8e145beadfdf913920f95782d4e92667c247af807bb387726daaf3"
+        }
+      ]
+    },
+    {
+      "id": "V063-PACKAGE-ACTION-MCP",
+      "statement": "The npm package, MCP Registry metadata, GitHub Action default, local client bootstrap, and client rules advertise the 0.6.3 candidate.",
+      "covers": [
+        "package.json",
+        "action.yml",
+        "server.json",
+        "src/server.ts",
+        "src/onboarding.ts",
+        "src/registry.ts",
+        "templates/client-rules.md",
+        "src/onboarding.test.ts"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "action.yml",
+          "lineStart": 26,
+          "lineEnd": 26,
+          "contentSha256": "1a82e5cb6d6c27ac866e0e4506bab5218847e809894a4b17ae4c9a698b87dea5"
+        },
+        {
+          "ref": "head",
+          "path": "server.json",
+          "lineStart": 10,
+          "lineEnd": 10,
+          "contentSha256": "d9143e426945ffb98f334009809ca1eee4d81662f06f76baed91493827ab10d9"
+        },
+        {
+          "ref": "head",
+          "path": "src/server.ts",
+          "lineStart": 11,
+          "lineEnd": 11,
+          "contentSha256": "a7da1f0eff3913ee08614b38c7b1e37f70ba4fb87fede27ea495a296a91574b4"
+        },
+        {
+          "ref": "head",
+          "path": "src/onboarding.ts",
+          "lineStart": 216,
+          "lineEnd": 216,
+          "contentSha256": "13450ffc957cf6f3f811635b5cec519f8c1b44dd4507e0e5f73055132e379e89"
+        },
+        {
+          "ref": "head",
+          "path": "src/registry.ts",
+          "lineStart": 46,
+          "lineEnd": 46,
+          "contentSha256": "3d58381b1f1d2883c09e07e5f0efe1ddd78ba4c41ec0488c4968cf9b6380b493"
+        },
+        {
+          "ref": "head",
+          "path": "templates/client-rules.md",
+          "lineStart": 13,
+          "lineEnd": 13,
+          "contentSha256": "2ed43904069d24f9406993c4756d97ad233879030b6b920a37f27ad9bf7c2f56"
+        },
+        {
+          "ref": "head",
+          "path": "src/onboarding.test.ts",
+          "lineStart": 48,
+          "lineEnd": 48,
+          "contentSha256": "cee131b8d7383fbb4c1bf8feef859e85b93e6fdd5d03c7e0d3b9e033c5a13fb6"
+        }
+      ]
+    },
+    {
+      "id": "V063-RELEASE-TRUTH",
+      "statement": "Release-surface documentation consistently names the 0.6.3 candidate in the mission, roadmap, changelog, install, CI, and troubleshooting guidance while historical 0.6.2 records remain immutable.",
+      "covers": [
+        "AGENTS.md",
+        "README.md",
+        "ROADMAP.md",
+        "CHANGELOG.md",
+        "docs/ci.md",
+        "docs/clients.md",
+        "docs/migration-gitpin.md",
+        "docs/troubleshooting.md"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "AGENTS.md",
+          "lineStart": 7,
+          "lineEnd": 9,
+          "contentSha256": "279f464d451eebdc284bae4d21d88be1434b79a42033e75204e95f413f1159e6"
+        },
+        {
+          "ref": "head",
+          "path": "README.md",
+          "lineStart": 39,
+          "lineEnd": 39,
+          "contentSha256": "7cddceec89b4dfbed67b2bafd39d81795f859f906a6b726ff926c3c1dbafb060"
+        },
+        {
+          "ref": "head",
+          "path": "ROADMAP.md",
+          "lineStart": 11,
+          "lineEnd": 11,
+          "contentSha256": "ad2f89df60650d8062bb99808dd14696b8f72c128073906febeebe52b0082d12"
+        },
+        {
+          "ref": "head",
+          "path": "CHANGELOG.md",
+          "lineStart": 9,
+          "lineEnd": 16,
+          "contentSha256": "ecf033e5f5fe29d3d2f14fc48bd2f021e0b2113cf8331cd81f3d07c4c7a77552"
+        },
+        {
+          "ref": "head",
+          "path": "docs/ci.md",
+          "lineStart": 26,
+          "lineEnd": 26,
+          "contentSha256": "bbc440f2f6b073d53d5fe9ff1d964ba1962d45079baf650773fae26a8b7a86fc"
+        },
+        {
+          "ref": "head",
+          "path": "docs/clients.md",
+          "lineStart": 6,
+          "lineEnd": 6,
+          "contentSha256": "69c706eeba1a9966bedaa4b86be3a1f996bec43fb1c252333a872713a4319492"
+        },
+        {
+          "ref": "head",
+          "path": "docs/migration-gitpin.md",
+          "lineStart": 31,
+          "lineEnd": 31,
+          "contentSha256": "69c706eeba1a9966bedaa4b86be3a1f996bec43fb1c252333a872713a4319492"
+        },
+        {
+          "ref": "head",
+          "path": "docs/troubleshooting.md",
+          "lineStart": 7,
+          "lineEnd": 7,
+          "contentSha256": "ec1bc9ba342aad90971357b3ed0360d790ff7fa860631491ff07a9fee486d905"
+        }
+      ]
+    },
+    {
+      "id": "V063-LAUNCH-AND-BOOTSTRAP",
+      "statement": "The launch package, PR evidence gate setup guide, and deterministic fail-to-pass demo advertise the 0.6.3 candidate.",
+      "covers": [
+        "docs/launch.md",
+        "docs/pr-evidence-gate.md",
+        "docs/demos/pr-gate-fail-to-pass.md",
+        "docs/demos/pr-gate-fail-to-pass.artifact.json"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "docs/launch.md",
+          "lineStart": 60,
+          "lineEnd": 60,
+          "contentSha256": "d9a030792dea4d58b7616ee98ede50e31ff7def9889650e612f19dea1201611e"
+        },
+        {
+          "ref": "head",
+          "path": "docs/pr-evidence-gate.md",
+          "lineStart": 48,
+          "lineEnd": 48,
+          "contentSha256": "ef25e348a2ab42ef4ee60798e149fe44a408afa456f5f0fabc7cdfb7d351cfd0"
+        },
+        {
+          "ref": "head",
+          "path": "docs/demos/pr-gate-fail-to-pass.md",
+          "lineStart": 5,
+          "lineEnd": 5,
+          "contentSha256": "d2721927a7d34c84f4d464936099312459cdeb40f01a58892a0fec4db99c03af"
+        },
+        {
+          "ref": "head",
+          "path": "docs/demos/pr-gate-fail-to-pass.artifact.json",
+          "lineStart": 4,
+          "lineEnd": 4,
+          "contentSha256": "d9143e426945ffb98f334009809ca1eee4d81662f06f76baed91493827ab10d9"
+        }
+      ]
+    },
+    {
+      "id": "V063-SITE",
+      "statement": "The static site metadata, llms.txt quickstart, browser tests, and website documentation advertise the 0.6.3 candidate without asserting a live release.",
+      "covers": [
+        "site/index.html",
+        "site/llms.txt",
+        "tests/browser/site.spec.mjs",
+        "docs/website.md"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "site/index.html",
+          "lineStart": 45,
+          "lineEnd": 45,
+          "contentSha256": "78ab2be08c6731492fe8c6619846debf7cf83699e59b1ae65569cf3ab9c879e4"
+        },
+        {
+          "ref": "head",
+          "path": "site/llms.txt",
+          "lineStart": 15,
+          "lineEnd": 15,
+          "contentSha256": "18f9270a4f72b56c429acc5c7f819156c147a92360a23635384ac04db769f403"
+        },
+        {
+          "ref": "head",
+          "path": "tests/browser/site.spec.mjs",
+          "lineStart": 49,
+          "lineEnd": 49,
+          "contentSha256": "8f7230b1849f69b1c73b227bfd431766c2bf598d3cf361b986e0f593b8b92d20"
+        },
+        {
+          "ref": "head",
+          "path": "docs/website.md",
+          "lineStart": 5,
+          "lineEnd": 5,
+          "contentSha256": "bcecb1d2ffa80555f40d8791182e5844dbe8ebb6f464bdf5043402642bb1ca51"
+        }
+      ]
+    },
+    {
+      "id": "V063-REPRODUCIBILITY",
+      "statement": "The deterministic fail-to-pass demo generator and its regenerated SVG reproduce the 0.6.3 candidate version.",
+      "covers": [
+        "scripts/build-pr-gate-fail-to-pass-artifact.mjs",
+        "docs/demos/pr-gate-fail-to-pass.svg"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "scripts/build-pr-gate-fail-to-pass-artifact.mjs",
+          "lineStart": 165,
+          "lineEnd": 165,
+          "contentSha256": "633d63598b9cf18ec530eb43e9a074542dcf1e445f8b8035382107283701b616"
+        },
+        {
+          "ref": "head",
+          "path": "docs/demos/pr-gate-fail-to-pass.svg",
+          "lineStart": 23,
+          "lineEnd": 23,
+          "contentSha256": "9f9c66045426d1d38195f7a507ac6e4194266c88ede1996b9b06a782fb407ecf"
         }
       ]
     }
