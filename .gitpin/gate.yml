@@ -6,6 +6,7 @@ coverage:
     - "**"
   exclude:
     - "docs/generated/**"
+    - "package.json"
 
 policyChanges: block
 

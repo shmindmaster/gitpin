@@ -6,6 +6,7 @@ coverage:
     - "**"
   exclude:
     - "docs/generated/**"
+    - "package.json"
 
 # A PR cannot weaken its own gate. Merge policy changes separately.
 policyChanges: block
