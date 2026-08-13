@@ -12,6 +12,6 @@
 
 ## Quickstart
 
-Install: `npx -y gitpin@0.6.2 init --client codex`
+Install: `npx -y gitpin@0.6.3 init --client codex`
 Run the gate: `gitpin gate --base <full-base-sha> --head <full-head-sha>`
-Use as a GitHub Action: `uses: shmindmaster/gitpin@v0.6.2`
+Use as a GitHub Action: `uses: shmindmaster/gitpin@v0.6.3`

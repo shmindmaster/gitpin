@@ -2,7 +2,7 @@
 
 GitPin ships a static public site in `site/`. It leads with the required PR evidence gate, explains the trust boundary, demonstrates the local EvidenceBrief companion, and links directly to source setup and contributor documentation.
 
-The immutable GitPin 0.6.2 tag, npm package, GitHub Release, and MCP Registry artifact were published from `d2122379f4be315973a0bfa92bbd628e2cf7cfeb`. This later source includes the post-publication self-gate and documentation corrections. A Pages deployment has its own deployment SHA and must be verified independently; package parity does not imply website-source parity. Historical release artifacts remain immutable.
+The GitPin 0.6.3 release candidate is prepared for the npm package, GitHub Release, and MCP Registry artifact. The 0.6.2 artifacts remain published and immutable until 0.6.3 completes publication and production verification. A Pages deployment has its own deployment SHA and must be verified independently; package parity does not imply website-source parity. Historical release artifacts remain immutable.
 
 The deployable surface includes a privacy page, canonical and social metadata, `robots.txt`, and a sitemap for the GitHub Pages URL. These are static release artifacts; they do not change the MCP server's read-only boundary.
 

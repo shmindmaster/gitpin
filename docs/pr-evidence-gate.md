@@ -45,7 +45,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
-      - uses: shmindmaster/gitpin@v0.6.2
+      - uses: shmindmaster/gitpin@v0.6.3
         with:
           base-sha: ${{ github.event.pull_request.base.sha }}
           head-sha: ${{ github.event.pull_request.head.sha }}

@@ -4,6 +4,16 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 
 ## [Unreleased]
 
+## [0.6.3] - 2026-08-13
+
+### Changed
+
+- Align package, MCP, Action, documentation, website, and generated demo release surfaces on the 0.6.3 candidate.
+
+### Fixed
+
+- Emit a legible error annotation when the gate report fails, so required-check failures are actionable.
+
 ## [0.6.2] - 2026-08-01
 
 ### Changed
@@ -197,7 +207,8 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 - Snapshot generation replaces only marked RepoContext output directories and rejects registered repository roots or their ancestors.
 - Malformed exposure policies fail closed.
 
-[Unreleased]: https://github.com/shmindmaster/gitpin/compare/v0.6.2...HEAD
+[Unreleased]: https://github.com/shmindmaster/gitpin/compare/v0.6.3...HEAD
+[0.6.3]: https://github.com/shmindmaster/gitpin/releases/tag/v0.6.3
 [0.6.2]: https://github.com/shmindmaster/gitpin/releases/tag/v0.6.2
 [0.6.1]: https://github.com/shmindmaster/gitpin/releases/tag/v0.6.1
 [0.6.0]: https://github.com/shmindmaster/gitpin/releases/tag/v0.6.0

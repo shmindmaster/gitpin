@@ -45,7 +45,7 @@ describe('initializeRepoContext', () => {
     expect(result.firstContext.sourcePath).toBe('README.md');
     expect(result.firstContext.line).toBe(1);
     expect(result.firstContext.commitSha).toMatch(/^[0-9a-f]{40}$/u);
-    expect(result.clientConfig).toContain('gitpin@0.6.2');
+    expect(result.clientConfig).toContain('gitpin@0.6.3');
     expect(result.clientConfig).toContain(registryPath.replace(/\\/gu, '\\\\'));
     expect(readFileSync(registryPath, 'utf8')).toContain(repositoryPath.replace(/\\/gu, '/'));
     expect(gitStatus(repositoryPath)).toBe(before);
@@ -194,7 +194,7 @@ describe('init option parsing and client output', () => {
       registryPath: perClientRegistry,
     });
 
-    expect(result.clientConfig).toContain('gitpin@0.6.2');
+    expect(result.clientConfig).toContain('gitpin@0.6.3');
     expect(result.clientConfig).toContain('GITPIN_REGISTRY');
     if (client === 'codex') {
       expect(result.clientConfig).toMatch(/^codex mcp add --env /u);
@@ -206,7 +206,7 @@ describe('init option parsing and client output', () => {
     } else {
       const config = JSON.parse(result.clientConfig);
       const server = client === 'zed' ? config.context_servers.gitpin : config.mcpServers.gitpin;
-      expect(server.args).toEqual(['-y', 'gitpin@0.6.2']);
+      expect(server.args).toEqual(['-y', 'gitpin@0.6.3']);
       if (client === 'cursor') expect(server.type).toBe('stdio');
     }
   });

@@ -3,7 +3,7 @@
 ## Fast path from npm
 
 ```bash
-npx -y gitpin@0.6.2 init --client codex
+npx -y gitpin@0.6.3 init --client codex
 ```
 
 Clients: `claude-code`, `codex`, `cursor`, `windsurf`, `zed`, `continue`.
@@ -85,7 +85,7 @@ See [Zed MCP docs](https://zed.dev/docs/ai/mcp).
 <!-- config:continue:start -->
 ```yaml
 name: GitPin
-version: 0.6.2
+version: 0.6.3
 schema: v1
 mcpServers:
   - name: GitPin

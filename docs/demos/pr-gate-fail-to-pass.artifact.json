@@ -1,7 +1,7 @@
 {
   "artifactId": "pr-gate-fail-to-pass",
   "name": "GitPin PR evidence gate fail-to-pass sample",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "scenario": "Deterministic synthetic PR gate fail-to-pass validation.",
   "reducedMotionSafe": true,
   "accessibility": {
@@ -11,9 +11,9 @@
   },
   "links": {
     "npm": "https://www.npmjs.com/package/gitpin",
-    "github_release": "https://github.com/shmindmaster/gitpin/releases/tag/v0.6.2",
+    "github_release": "https://github.com/shmindmaster/gitpin/releases/tag/v0.6.3",
     "github_action": "https://github.com/shmindmaster/gitpin/actions/workflows/evidence-gate.yml",
-    "github_action_snippet": "uses: shmindmaster/gitpin@v0.6.2",
+    "github_action_snippet": "uses: shmindmaster/gitpin@v0.6.3",
     "mcp_registry": "https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.shmindmaster/gitpin&limit=20",
     "pages": "https://shmindmaster.github.io/gitpin/"
   },
@@ -77,6 +77,6 @@
       "claimLine": 5,
       "claimContentSha256": "2ad449fd22a840f9bb138b299ba4ac247379a14a4dce6825eb84ed692d80938a"
     },
-    "artifactSha256": "c81709e1438a998473132ee212b09cb83812ffc7e6d5aa13f84fb5821dad8a69"
+    "artifactSha256": "5f0f61606d1e2973b2b135c5f28ea61a144b4535d550c2ae48e5c2f28ecc1d92"
   }
 }
