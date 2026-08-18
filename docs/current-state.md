@@ -9,9 +9,8 @@ Update this file whenever the project surface or its operational truth changes.
   Git HEAD: `pin.*` tools, `gitpin` CLI, and a PR evidence gate. No databases,
   embeddings, queues, or write tools.
 - **Package:** `gitpin` (npm, MIT). **Homepage:** `https://shmindmaster.github.io/gitpin/`.
-- **Published:** npm and GitHub Releases expose `0.6.3`; the MCP Registry and GitHub
-  Pages still expose `0.6.2` pending explicit publication and independent verification.
-  Historical releases remain immutable.
+- **Published:** `0.6.3` is the current verified release across npm, the MCP Registry,
+  GitHub Releases, and GitHub Pages. Historical releases remain immutable.
 
 ## Source layout
 
