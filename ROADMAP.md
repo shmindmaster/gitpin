@@ -8,7 +8,7 @@ GitPin's roadmap is evidence-led. Planned work may change when validation shows 
 - GitHub Action that emits a deterministic report suitable for a required merge check.
 - Twelve bounded, read-only `pin.*` MCP tools for discovery, evidence, verification, and decision support.
 - Git `HEAD` pinning with path, line, content hash, and full commit provenance.
-- 0.6.3 is the release candidate for source, npm, MCP Registry metadata, GitHub Release, Pages, Action/install snippets, deterministic demos, launch materials, and the legible gate-report failure annotation; historical releases remain immutable.
+- 0.6.3 is published to npm and GitHub Releases; MCP Registry and Pages publication remain pending. The release includes the Action/install snippets, deterministic demos, launch materials, and the legible gate-report failure annotation; historical releases remain immutable.
 - Exposure policies that fail closed and sensitive-path blocking.
 - Local stdio and bearer-authenticated, documentation-only HTTP transports.
 - `init`, `doctor`, EvidenceBrief, deterministic tests, and clean packed install verification.

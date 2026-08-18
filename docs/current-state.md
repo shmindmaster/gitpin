@@ -9,8 +9,9 @@ Update this file whenever the project surface or its operational truth changes.
   Git HEAD: `pin.*` tools, `gitpin` CLI, and a PR evidence gate. No databases,
   embeddings, queues, or write tools.
 - **Package:** `gitpin` (npm, MIT). **Homepage:** `https://shmindmaster.github.io/gitpin/`.
-- **Published:** `0.6.2` is the current verified release (npm package, MCP Registry
-  entry, GitHub Release, GitHub Pages site). Historical releases remain immutable.
+- **Published:** npm and GitHub Releases expose `0.6.3`; the MCP Registry and GitHub
+  Pages still expose `0.6.2` pending explicit publication and independent verification.
+  Historical releases remain immutable.
 
 ## Source layout
 
@@ -26,7 +27,9 @@ Update this file whenever the project surface or its operational truth changes.
 - GitHub Actions: `ci.yml` (lint/format/typecheck/verifiers/tests), `evidence-gate.yml`
   (PR evidence gate), `pages.yml` (site deploy), `publish-mcp.yml` (MCP registry),
   `release.yml` (npm release).
-- Publishing runs only from tagged releases on `main`.
+- npm publishes from tags on `main`; MCP publication is manually dispatched against a
+  validated release tag. Pages is manually dispatched and requires independent deployed
+  SHA and content verification.
 
 ## Local generated artifacts
 
