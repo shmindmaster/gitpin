@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "summary": "Restore the 0.6.3 launch gates by patching a newly disclosed dependency advisory, hardening package truth checks, and documenting the current publication split.",
+  "summary": "Record the independently verified 0.6.3 release state across npm, GitHub Releases, the official MCP Registry, and Pages.",
   "claims": [
     {
       "id": "DOCS-1",
@@ -18,7 +18,7 @@
           "path": "AGENTS.md",
           "lineStart": 5,
           "lineEnd": 10,
-          "contentSha256": "da608bc5f1a6233fce6caa8e978dee617ca4d7b75671bee878e8b6eba216db69"
+          "contentSha256": "dd698c5443a9f0dc457a1240cf8ceb0cece3c5d54cef944f307dfdd2cfa3a3d2"
         },
         {
           "ref": "head",
@@ -63,8 +63,8 @@
         {
           "ref": "head",
           "path": "docs/current-state.md",
-          "lineStart": 27,
-          "lineEnd": 34,
+          "lineStart": 26,
+          "lineEnd": 33,
           "contentSha256": "71a2f01d3ad003f65df6b2f82c815e0f5c056ff2fa46d50213b1ff7b689c4051"
         },
         {
@@ -245,7 +245,7 @@
     },
     {
       "id": "V063-RELEASE-TRUTH",
-      "statement": "Release-surface documentation consistently names the published 0.6.3 package and GitHub Release while explicitly keeping MCP Registry and Pages verification pending.",
+      "statement": "Release-surface documentation consistently names 0.6.3 as verified across npm, GitHub Releases, the official MCP Registry, and Pages.",
       "covers": [
         "AGENTS.md",
         "README.md",
@@ -262,28 +262,28 @@
           "path": "AGENTS.md",
           "lineStart": 7,
           "lineEnd": 9,
-          "contentSha256": "44406fa5abfed446890a83b725107fa728e7ac0d7af72fb42450c300a95b217e"
+          "contentSha256": "c8f5fe47ce6979119c65e21191b78ec6968c360236355b3926010491957b34fc"
         },
         {
           "ref": "head",
           "path": "README.md",
           "lineStart": 39,
           "lineEnd": 39,
-          "contentSha256": "b302ef8dc9ee5beccf8ed27dd7a9f6a40626b264a708f56d512d19e814ffd7ae"
+          "contentSha256": "f224a30bdbcf220f5cf86a19082a01ea15c1fdc460c9cb21c46b2735d90b541b"
         },
         {
           "ref": "head",
           "path": "ROADMAP.md",
           "lineStart": 11,
           "lineEnd": 11,
-          "contentSha256": "1a1e491a39460a358b7697f44664fa672c9685cdb9c13d082586a62a7033f20b"
+          "contentSha256": "5e54e4072d77eac45cc821b9466c9fcda4df93f198f0863a8a1820071b972fbe"
         },
         {
           "ref": "head",
           "path": "CHANGELOG.md",
           "lineStart": 9,
           "lineEnd": 16,
-          "contentSha256": "ecf033e5f5fe29d3d2f14fc48bd2f021e0b2113cf8331cd81f3d07c4c7a77552"
+          "contentSha256": "5fd8fda5c9db39c7ee35db2304a2795d3d0ef45ee5b1fac0f0becb3907982f52"
         },
         {
           "ref": "head",
@@ -365,7 +365,7 @@
     },
     {
       "id": "V063-SITE",
-      "statement": "The static site metadata, llms.txt quickstart, browser tests, and website documentation distinguish the 0.6.3 source from the still-live 0.6.2 Pages deployment.",
+      "statement": "The static site metadata, llms.txt quickstart, browser tests, and website documentation consistently advertise the verified 0.6.3 release.",
       "covers": [
         "site/index.html",
         "site/llms.txt",
@@ -399,7 +399,7 @@
           "path": "docs/website.md",
           "lineStart": 5,
           "lineEnd": 5,
-          "contentSha256": "820ae8ab0dd15828f445cf144a28b6a6f280d1d45d11d37bbcadd86e55efbcc5"
+          "contentSha256": "b0e13b436f4490bf597225e37eddd8feadbba748a07df19bbd92b75d4fa56dc2"
         }
       ]
     },

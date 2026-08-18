@@ -8,7 +8,7 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 
 ### Changed
 
-- Align package, MCP, Action, documentation, website, and generated demo release surfaces on the 0.6.3 candidate.
+- Align package, MCP, Action, documentation, website, and generated demo release surfaces on the verified 0.6.3 release.
 
 ### Fixed
 
