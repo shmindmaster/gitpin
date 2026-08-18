@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { basename, dirname, join, resolve } from 'node:path';
+import { basename, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const marker = 'REPOCONTEXT_PACKED_FIRST_ANSWER';
@@ -151,7 +151,8 @@ try {
     throw new Error('Packed README must document the published GitPin package.');
   }
   if (
-    packageReadme.includes('After the package is published') ||
+    /(?:after|once) (?:the )?(?:package |release )?is published/iu.test(packageReadme) ||
+    /prepared for (?:npm|publication)/iu.test(packageReadme) ||
     packageReadme.includes('GitHub Discussions or issues')
   ) {
     throw new Error('Packed README must not contain stale pre-publication or disabled-community guidance.');
