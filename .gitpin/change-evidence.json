@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "summary": "Align the package, MCP Registry, Action, documentation, website, and generated demo release surfaces on the 0.6.3 candidate, and re-pin the repository self-gate to the published v0.6.3 release source.",
+  "summary": "Restore the 0.6.3 launch gates by patching a newly disclosed dependency advisory, hardening package truth checks, and documenting the current publication split.",
   "claims": [
     {
       "id": "DOCS-1",
@@ -18,7 +18,7 @@
           "path": "AGENTS.md",
           "lineStart": 5,
           "lineEnd": 10,
-          "contentSha256": "7c1b04097e8cb11831c83e49cd03a0ca6e3d7d40ff30b79fc84f0792891a1327"
+          "contentSha256": "da608bc5f1a6233fce6caa8e978dee617ca4d7b75671bee878e8b6eba216db69"
         },
         {
           "ref": "head",
@@ -63,9 +63,9 @@
         {
           "ref": "head",
           "path": "docs/current-state.md",
-          "lineStart": 17,
-          "lineEnd": 20,
-          "contentSha256": "9bfe919aa49b4aabcabab5b947bb52c9a98e90c964c4a648fa0e3243c8b7346f"
+          "lineStart": 27,
+          "lineEnd": 34,
+          "contentSha256": "71a2f01d3ad003f65df6b2f82c815e0f5c056ff2fa46d50213b1ff7b689c4051"
         },
         {
           "ref": "head",
@@ -116,7 +116,7 @@
     },
     {
       "id": "DEPS-1",
-      "statement": "The frozen pnpm graph forces nanoid to the patched 3.3.17 release while preserving the existing dependency major.",
+      "statement": "The frozen pnpm graph forces nanoid to the patched 3.3.18 release while preserving the existing dependency major.",
       "covers": [
         "pnpm-lock.yaml",
         "pnpm-workspace.yaml"
@@ -127,14 +127,30 @@
           "path": "pnpm-workspace.yaml",
           "lineStart": 4,
           "lineEnd": 8,
-          "contentSha256": "6874ae6d22591f7af07f17884df2950417d33ed54f065920851158b55342d1ac"
+          "contentSha256": "291c8788800b4c28f39a3041dee6396fa1ebc351fd70ad04678409eb85d9cea9"
         },
         {
           "ref": "head",
           "path": "pnpm-lock.yaml",
           "lineStart": 7,
           "lineEnd": 11,
-          "contentSha256": "6874ae6d22591f7af07f17884df2950417d33ed54f065920851158b55342d1ac"
+          "contentSha256": "291c8788800b4c28f39a3041dee6396fa1ebc351fd70ad04678409eb85d9cea9"
+        }
+      ]
+    },
+    {
+      "id": "PACKAGE-TRUTH",
+      "statement": "The packed-package gate rejects multiple equivalent forms of stale pre-publication README guidance.",
+      "covers": [
+        "scripts/verify-package.mjs"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "scripts/verify-package.mjs",
+          "lineStart": 149,
+          "lineEnd": 160,
+          "contentSha256": "a8b5cdeb1c85a81988a139020324d3a3d29fe7c13c029a9058ad76fbd2032437"
         }
       ]
     },
@@ -229,7 +245,7 @@
     },
     {
       "id": "V063-RELEASE-TRUTH",
-      "statement": "Release-surface documentation consistently names the 0.6.3 candidate in the mission, roadmap, changelog, install, CI, and troubleshooting guidance while historical 0.6.2 records remain immutable.",
+      "statement": "Release-surface documentation consistently names the published 0.6.3 package and GitHub Release while explicitly keeping MCP Registry and Pages verification pending.",
       "covers": [
         "AGENTS.md",
         "README.md",
@@ -246,21 +262,21 @@
           "path": "AGENTS.md",
           "lineStart": 7,
           "lineEnd": 9,
-          "contentSha256": "279f464d451eebdc284bae4d21d88be1434b79a42033e75204e95f413f1159e6"
+          "contentSha256": "44406fa5abfed446890a83b725107fa728e7ac0d7af72fb42450c300a95b217e"
         },
         {
           "ref": "head",
           "path": "README.md",
           "lineStart": 39,
           "lineEnd": 39,
-          "contentSha256": "7cddceec89b4dfbed67b2bafd39d81795f859f906a6b726ff926c3c1dbafb060"
+          "contentSha256": "b302ef8dc9ee5beccf8ed27dd7a9f6a40626b264a708f56d512d19e814ffd7ae"
         },
         {
           "ref": "head",
           "path": "ROADMAP.md",
           "lineStart": 11,
           "lineEnd": 11,
-          "contentSha256": "ad2f89df60650d8062bb99808dd14696b8f72c128073906febeebe52b0082d12"
+          "contentSha256": "1a1e491a39460a358b7697f44664fa672c9685cdb9c13d082586a62a7033f20b"
         },
         {
           "ref": "head",
@@ -349,7 +365,7 @@
     },
     {
       "id": "V063-SITE",
-      "statement": "The static site metadata, llms.txt quickstart, browser tests, and website documentation advertise the 0.6.3 candidate without asserting a live release.",
+      "statement": "The static site metadata, llms.txt quickstart, browser tests, and website documentation distinguish the 0.6.3 source from the still-live 0.6.2 Pages deployment.",
       "covers": [
         "site/index.html",
         "site/llms.txt",
@@ -383,7 +399,7 @@
           "path": "docs/website.md",
           "lineStart": 5,
           "lineEnd": 5,
-          "contentSha256": "bcecb1d2ffa80555f40d8791182e5844dbe8ebb6f464bdf5043402642bb1ca51"
+          "contentSha256": "820ae8ab0dd15828f445cf144a28b6a6f280d1d45d11d37bbcadd86e55efbcc5"
         }
       ]
     },
