@@ -457,6 +457,28 @@
           "contentSha256": "cf7c0c456f4952ec3430d3a60cc30e71fa8eceb441757a152a3bd992ee72482b"
         }
       ]
+    },
+    {
+      "id": "NODE-24-20-0-PIN",
+      "statement": "Single-version CI jobs, the composite action default, and the remote image are pinned to Node 24.20.0, the multi-major test matrices are left intact, and the CI routing verifier accepts an exact 24.x.y pin as well as the bare major.",
+      "covers": [
+        ".github/workflows/ci.yml",
+        ".github/workflows/pages.yml",
+        ".github/workflows/publish-mcp.yml",
+        ".github/workflows/release.yml",
+        "Dockerfile.remote",
+        "action.yml",
+        "scripts/verify-ci-runner-routing.mjs"
+      ],
+      "evidence": [
+        { "ref": "head", "path": ".github/workflows/ci.yml", "lineStart": 39, "lineEnd": 39, "contentSha256": "182ba05e28612493711f41f15a52237e546852410b00f244ec793380297c6049" },
+        { "ref": "head", "path": ".github/workflows/pages.yml", "lineStart": 25, "lineEnd": 25, "contentSha256": "182ba05e28612493711f41f15a52237e546852410b00f244ec793380297c6049" },
+        { "ref": "head", "path": ".github/workflows/publish-mcp.yml", "lineStart": 28, "lineEnd": 28, "contentSha256": "182ba05e28612493711f41f15a52237e546852410b00f244ec793380297c6049" },
+        { "ref": "head", "path": ".github/workflows/release.yml", "lineStart": 30, "lineEnd": 30, "contentSha256": "182ba05e28612493711f41f15a52237e546852410b00f244ec793380297c6049" },
+        { "ref": "head", "path": "Dockerfile.remote", "lineStart": 1, "lineEnd": 1, "contentSha256": "778859d58d4afee7c624b382df1ef74109da48b36cef5ce1930776e5814dfedd" },
+        { "ref": "head", "path": "action.yml", "lineStart": 45, "lineEnd": 45, "contentSha256": "c5898ef35c6e39eb04d86bdd323ea25126a701bd0047eabee8a182ee637f63af" },
+        { "ref": "head", "path": "scripts/verify-ci-runner-routing.mjs", "lineStart": 53, "lineEnd": 60, "contentSha256": "f97581bad3f20ff1b22cac8c1b1029aeabaa9194b536294bde8945c96516fbce" }
+      ]
     }
   ]
 }

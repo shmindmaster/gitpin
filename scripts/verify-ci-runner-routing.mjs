@@ -50,12 +50,19 @@ if (releaseJob?.['runs-on'] !== 'ubuntu-latest') {
 }
 
 const setupNodeStep = releaseJob.steps?.find((step) => String(step.uses ?? '').startsWith('actions/setup-node@'));
+// The release job must be on the Node 24 line. Accept either the bare major or
+// an exact 24.x.y pin: pinning the patch is strictly more reproducible than
+// floating on the major, so a check written as `=== '24'` would reject the
+// safer of the two. Anything outside 24 is still refused.
+const releaseNodeVersion = String(setupNodeStep?.with?.['node-version'] ?? '');
 if (
-  String(setupNodeStep?.with?.['node-version']) !== '24' ||
+  !/^24(\.\d+\.\d+)?$/.test(releaseNodeVersion) ||
   setupNodeStep?.with?.['registry-url'] !== 'https://registry.npmjs.org' ||
   setupNodeStep?.with?.['package-manager-cache'] !== false
 ) {
-  throw new Error('The trusted release job must use Node 24, the npm registry URL, and package-manager-cache: false.');
+  throw new Error(
+    `The trusted release job must use Node 24 (bare major or exact 24.x.y; got "${releaseNodeVersion}"), the npm registry URL, and package-manager-cache: false.`,
+  );
 }
 
 const toolchainStep = releaseJob.steps?.find((step) => step.name === 'Install release toolchain');
