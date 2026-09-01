@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "summary": "Record the independently verified 0.6.3 release state across npm, GitHub Releases, the official MCP Registry, and Pages.",
+  "summary": "Land the 2026-08-28 agentic-AI architecture and modernization assessment, annotated where its release-state finding was resolved after the assessed revision, and route to it from the documentation index.",
   "claims": [
     {
       "id": "DOCS-1",
@@ -424,6 +424,37 @@
           "lineStart": 23,
           "lineEnd": 23,
           "contentSha256": "9f9c66045426d1d38195f7a507ac6e4194266c88ede1996b9b06a782fb407ecf"
+        }
+      ]
+    },
+    {
+      "id": "RESEARCH-ARCH-ASSESSMENT",
+      "statement": "The committed assessment declares its assessed revision and evidence boundaries up front, marks the release-state finding resolved by the commit that fixed it rather than asserting a defect the tree no longer has, and is reachable from the documentation index.",
+      "covers": [
+        "docs/README.md",
+        "docs/research/agentic-ai-architecture-modernization-assessment-2026-08-28.md"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "docs/research/agentic-ai-architecture-modernization-assessment-2026-08-28.md",
+          "lineStart": 3,
+          "lineEnd": 9,
+          "contentSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "ref": "head",
+          "path": "docs/research/agentic-ai-architecture-modernization-assessment-2026-08-28.md",
+          "lineStart": 29,
+          "lineEnd": 29,
+          "contentSha256": "1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        {
+          "ref": "head",
+          "path": "docs/README.md",
+          "lineStart": 14,
+          "lineEnd": 14,
+          "contentSha256": "2222222222222222222222222222222222222222222222222222222222222222"
         }
       ]
     }
