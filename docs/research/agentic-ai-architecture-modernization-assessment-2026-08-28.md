@@ -2,7 +2,8 @@
 
 **Assessment date:** 2026-08-28 (America/Chicago)  
 **Repository:** `C:\Repos\shmindmaster\gitpin` only  
-**Assessed Git revision:** `defb193a7ed89d8b9bb821994f224b6ace1d2dfe`  
+**Assessed Git revision:** `defb193a7ed89d8b9bb821994f224b6ace1d2dfe` — this was the actual local-checkout revision assessed, but it was never pushed and is not reachable from `origin/main` history, so `git cat-file -e defb193a7ed89d8b9bb821994f224b6ace1d2dfe` fails on a fresh downstream clone.  
+**Reproducible citation anchor:** `4de3ee8f9941e4d9b180e6c119b3370b647a7b6a` — reachable on `origin/main` (merged as PR #53). `git diff defb193a7ed89d8b9bb821994f224b6ace1d2dfe 4de3ee8f9941e4d9b180e6c119b3370b647a7b6a --stat` shows the two trees differ only in `.gitpin/change-evidence.json`, which no citation below cites by line range; every `path:line-range` citation in this document therefore resolves to byte-identical content at this reachable commit. Re-verify any citation with `git show 4de3ee8f9941e4d9b180e6c119b3370b647a7b6a:<path>`.  
 **Branch state at start:** local `main` was one commit ahead of and one commit behind the then-known `origin/main`; it was deliberately not reconciled.  
 **Change boundary:** assessment document and documentation-index link only; no production code, dependency, configuration, release, deployment, registry, or other external-system change.  
 **Status vocabulary:** **Observed** = exercised or live-checked; **Implemented** = verified in source; **Documented** = repository prose; **Inferred** = reasoned from evidence; **Unknown** = not established.  
@@ -12,7 +13,7 @@
 
 RepoWise was used first for architecture, symbol, dependency, security, integration, workflow, CI/CD, and duplication discovery. Its index reported revision `defb193a7ed89d8b9bb821994f224b6ace1d2dfe`, 82 pages, and 146 indexed files. Architecture retrieval was weak/low-confidence and security retrieval was only medium-confidence; in particular, broad conceptual queries under-described transport policy, release workflows, and snapshot selection. RepoWise did accurately route to files such as `src/snapshot-files.ts`, `scripts/verify-ci-runner-routing.mjs`, and `scripts/demo-workflow.mjs`. Every material finding below was therefore rechecked against the current source. RepoWise is a navigation aid here, not the evidence authority.
 
-Repository citations use `path:line-range` and refer to the assessed SHA above. External links are current primary sources as of the assessment date. Live public checks covered npm, GitHub Releases, GitHub Pages, and the Official MCP Registry. No private/client data was used; runtime validation used repository-native synthetic fixtures. Production traffic, private deployment configuration, consumer telemetry, and portfolio-wide duplication were unavailable or out of scope.
+Repository citations use `path:line-range` and refer to the assessed SHA above; because that SHA is unreachable from a downstream clone, reproduce them against the reachable citation anchor given above instead. External links are current primary sources as of the assessment date. Live public checks covered npm, GitHub Releases, GitHub Pages, and the Official MCP Registry. No private/client data was used; runtime validation used repository-native synthetic fixtures. Production traffic, private deployment configuration, consumer telemetry, and portfolio-wide duplication were unavailable or out of scope.
 
 The weighted opportunity score is `impact×25% + engineering leverage×20% + reliability/security×15% + architectural fit×15% + strategic leverage×10% + time-to-value×5% + cost/performance×5% + reversibility×5%`, with each factor scored 0–5 and normalized to 100. Factor vectors appear as `I/E/R/A/S/T/C/V` so arithmetic is reproducible.
 
@@ -24,9 +25,9 @@ GitPin is a strong, deliberately compact evidence product, not an autonomous age
 
 The highest-value modernization is at the protocol and trust edges. The repository uses `@modelcontextprotocol/sdk` 1.30.0 (`package.json:83-95`) while the MCP ecosystem has moved to the [2026-07-28 stateless core](https://blog.modelcontextprotocol.io/posts/2026-07-28/) and the TypeScript SDK's [modern v2 package generation](https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/protocol-versions.md). GitPin's per-request stateless HTTP construction is directionally aligned, so this is an incremental compatibility migration rather than an architectural rewrite.
 
-Security fundamentals are good: subprocesses use argument arrays rather than a shell; Git content is read at a resolved SHA; filesystem traversal rejects symlink/root escapes; exposure policy blocks secret patterns and fails closed; request size and bearer authentication are enforced; and CI/release actions are SHA-pinned. Concrete gaps remain: an empty host allowlist permits every host, unauthenticated health output reveals repository counts and names on some failures, remote auth is one static bearer secret, Git subprocess limits are inconsistent, and repository instructions/skills are not explicitly treated or tested as untrusted inputs.
+Security fundamentals are good: subprocesses use argument arrays rather than a shell; Git content is read at a resolved SHA; filesystem traversal rejects symlink/root escapes; exposure policy blocks secret patterns and fails closed; request size and bearer authentication are enforced; and this repository's own CI/release actions are SHA-pinned. Concrete gaps remain: an empty host allowlist permits every host, unauthenticated health output reveals repository counts and names on some failures, remote auth is one static bearer secret, Git subprocess limits are inconsistent, repository instructions/skills are not explicitly treated or tested as untrusted inputs, and the published composite action's own `actions/setup-node@v7` dependency is pinned only to a floating tag, not a commit (§8 gap 8).
 
-The public release state is healthier than the durable documentation says. **Observed on 2026-08-28:** npm `gitpin@0.6.3`, immutable GitHub Release `v0.6.3`, MCP Registry `io.github.shmindmaster/gitpin@0.6.3`, and the Pages site all resolve successfully. `AGENTS.md:5-10` and `docs/current-state.md:1-18` still say MCP Registry and Pages publication are pending/0.6.2. This is a current-state evidence drift defect, not a deployment defect. **Resolved after assessment:** commit `7b57f3a` ("docs(release): record verified v0.6.3", PR #54) updated both files to name 0.6.3 as verified across npm, the MCP Registry, GitHub Releases, and Pages. The finding is retained because the assessed revision is pinned above and the underlying gap — nothing *automatically* keeps durable docs aligned with live release state — is unchanged; that gap is opportunity 2 in §4.
+The public release state is healthier than the durable documentation at the assessed revision says. **Observed on 2026-08-28:** npm `gitpin@0.6.3`, immutable GitHub Release `v0.6.3`, MCP Registry `io.github.shmindmaster/gitpin@0.6.3`, and the Pages site all resolve successfully. At the assessed revision, `AGENTS.md:5-10` and `docs/current-state.md:1-18` still said MCP Registry and Pages publication were pending/0.6.2. This was a current-state evidence drift defect, not a deployment defect. **Already corrected on `origin/main` before this assessment date, but absent from the pinned revision:** commit `7b57f3a` ("docs(release): record verified v0.6.3", PR #54, 2026-08-18 09:55 America/Chicago — 31 minutes after the assessed revision and ten days before this assessment date) updated both files to name 0.6.3 as verified across npm, the MCP Registry, GitHub Releases, and Pages; `origin/main` carried this correction throughout the assessment window, and `docs/current-state.md:12-13` reads correctly as of this document's own HEAD. The finding is retained here — not because the docs are still wrong, but because the assessed revision was deliberately pinned above instead of reconciled with `origin/main` (see line 6), and because the underlying gap it exposes — nothing *automatically* keeps durable docs aligned with live release state — is unchanged; that gap is opportunity 2 in §4.
 
 Top priorities are: (1) preserve the Git-only/index-free core while migrating deliberately to MCP 2026-07-28 and SDK v2; (2) turn public release state into an automated, read-only truth check; (3) add deterministic adversarial tests for tool/instruction/repository-content trust; (4) harden the remote HTTP health/host/auth policy; and (5) consolidate Git subprocess execution and validate the shipped Agent Skill. Do not add LangGraph, a managed agent runtime, Convex, RAG/memory, connector middleware, an authorization database, a sandbox product, an agent gateway, or an observability SaaS without a concrete future boundary that requires it.
 
@@ -89,7 +90,7 @@ flowchart TB
 | Authorization | Exposure policy + hard deny | Resource/path authorization, not actor authorization (`src/policy.ts:3-80`). |
 | Secrets | Environment and GitHub OIDC | No committed secret store; release jobs use minimal job permissions (`.github/workflows/release.yml:14-38`). |
 | CI/CD | GitHub Actions, pnpm, Vitest, Playwright, Biome | SHA-pinned actions; validate/package/runtime/site matrices (`.github/workflows/ci.yml:1-91`). |
-| Delivery | npm, GitHub Release, MCP Registry, Pages | All four publicly observed at 0.6.3; durable docs are stale. |
+| Delivery | npm, GitHub Release, MCP Registry, Pages | All four publicly observed at 0.6.3; durable docs were stale at the assessed revision, corrected pre-assessment by commit `7b57f3a` (see §1). |
 | Observability | Process errors, CI artifacts; optional site analytics | No product telemetry or trace backend; appropriate now. Website analytics is allowlisted/optional (`site/privacy.html:51-83`). |
 | Agent assets | 12 MCP tools, one prompt, one skill template, AGENTS instructions | Versioned in Git; trust/provenance metadata is incomplete. |
 
@@ -292,6 +293,7 @@ The assessment uses the OWASP Agentic Applications 2026 categories as a baseline
 | 5 | Git subprocess resource/security options vary | Multiple wrappers; compare `src/gate-policy.ts:85-97`, `src/git-content.ts:100-163`, `src/snapshot.ts:211-220` | Large/pathological repositories may yield inconsistent availability or replace-ref behavior | Common bounded runner with command-specific limits/safe flags | Medium / High |
 | 6 | Agent asset provenance/version is fragmented | Package/server/action/skill metadata are separate | Drift or supply-chain confusion across distributed assets | One validated asset manifest; official skill validator; pinned workflow dependencies | Medium / High |
 | 7 | Operational audit is process-level, not caller-level | No request identity or structured metric layer | Incident diagnosis is limited for a remote service | Content-free operation/status/latency metrics; scoped client identity only when needed | Low now / Medium |
+| 8 | Published composite action has an unpinned transitive dependency | `action.yml:43` invokes `actions/setup-node@v7` by floating tag, unlike this repository's own SHA-pinned `ci.yml`/`release.yml` | A consumer that pins the GitPin evidence-gate action to a full SHA still inherits whatever commit `actions/setup-node`'s `v7` tag currently resolves to, breaking the reproducibility the SHA pin is meant to guarantee | Pin `actions/setup-node` in `action.yml` to a full commit SHA, matching the standard already applied in `ci.yml`/`release.yml` | Medium / High |
 
 ### Controls already working well
 
@@ -301,7 +303,7 @@ The assessment uses the OWASP Agentic Applications 2026 categories as a baseline
 - HTTP requires POST for MCP, enforces a 1 MiB body limit, and compares bearer tokens in constant time (`src/http.ts:54-90`, `src/http.ts:115-137`).
 - PR policy is read from the trusted base while the manifest comes from the proposed head (`src/gate.ts:24-48`); sensitive evidence locator paths are rejected (`src/gate.ts:95-112`).
 - Snapshot selection is restricted before copy, HEAD-only, and followed by a gitleaks scan (`src/snapshot-files.ts:4-39`; `src/snapshot.ts:48-182`).
-- GitHub Actions use least-scoped job permissions and SHA-pinned actions (`.github/workflows/ci.yml:1-30`; `.github/workflows/release.yml:14-38`).
+- This repository's own GitHub Actions workflows use least-scoped job permissions and SHA-pinned actions (`.github/workflows/ci.yml:1-30`; `.github/workflows/release.yml:14-38`). The published composite action does not fully extend this: see gap 8 above.
 
 ### Explicit non-gaps
 
@@ -351,14 +353,14 @@ There is no generated-code execution, browser control, model prompt execution, c
 7. **No browser/computer automation or web-ingestion layer.** GitPin reads local Git and official release APIs; visual automation would be less deterministic and harder to audit.
 8. **No sandbox vendor.** GitPin neither generates nor executes untrusted code. If write/code execution is ever introduced, treat that as a separate product/security decision.
 9. **No model observability SaaS.** LangSmith, Langfuse, Phoenix, OpenInference, and DSPy solve model/agent optimization problems the server does not own. Add only content-free operational metrics when an SLO exists.
-10. **No build-platform migration without measurement.** Current validation is healthy. Bun, Rspack, hosted build accelerators, and new container builders lack a measured bottleneck.
+10. **No build-platform migration without measurement.** `pnpm validate` was not reproducibly green during this assessment: a final full run failed 23 Git-heavy tests on Windows-specific timeouts and temporary-directory `EPERM` cleanup errors, and two subsequent serialized/default reruns each landed at 92/93 with a different timeout (§22). That is a Windows Git-fixture concurrency defect to stabilize first (Phase 0, §17) — it is not evidence of a build-speed problem, and no build-speed bottleneck was measured on any platform. Reject Bun, Rspack, hosted build accelerators, and new container builders on that narrower, measured ground alone.
 
 ## 11. Protocol & Version Matrix
 
 | Protocol | Current implementation | Current standard/status as of 2026-08-28 | Gap | Migration needed | Decision |
 | --- | --- | --- | --- | --- | --- |
 | MCP core | SDK 1.30.0; stdio + stateless Streamable HTTP | [2026-07-28 final specification](https://blog.modelcontextprotocol.io/posts/2026-07-28/); SDK v2 modern packages | Legacy generation; discovery/routing/cache/auth behavior not proven | Dual-era fixtures and incremental v2 port | PILOT → ADOPT |
-| MCP Registry | `server.json` schema dated 2025-12-11; live 0.6.3 | [Official registry remains preview](https://modelcontextprotocol.io/registry/about) | Durable docs say pending; preview reset/change risk | Automate live verification; retain republish runbook | KEEP/PERIODIC VERIFY |
+| MCP Registry | `server.json` schema dated 2025-12-11; live 0.6.3 | [Official registry remains preview](https://modelcontextprotocol.io/registry/about) | Durable docs said pending at the assessed revision (corrected pre-assessment by `7b57f3a`, see §1); preview reset/change risk remains | Automate live verification; retain republish runbook | KEEP/PERIODIC VERIFY |
 | MCP auth extension | Static bearer only | Official opt-in extension and M2M client-credentials profile; client support varies | No scoped/revocable clients | Only for multi-client/public trigger | LATER |
 | MCP Tasks | None | Long-running capability is an extension in modern MCP | No long-running operation exists | None | NOT NEEDED |
 | MCP Apps | None | Official negotiated extension; client support required | No interactive tool result UI | None now | FUTURE OPTION |
@@ -385,7 +387,7 @@ There is no generated-code execution, browser control, model prompt execution, c
 | `AGENTS.md` | Repository instruction | Repository owner | `AGENTS.md:1-120` | Governs contributors/agents | Git | Trusted for this repo; must not confer external authority | Coding agents |
 | `CLAUDE.md` | Provider adapter | Repository owner | `CLAUDE.md:1` | Imports `AGENTS.md` | Git | Same trust as root instructions | Claude-compatible hosts |
 | MCP server metadata | Registry asset | GitPin | `server.json:1-30` | Describes stdio package | Git + registry | Published metadata; registry preview | MCP Registry/clients |
-| GitHub Action | CI capability | GitPin | `action.yml` | PR evidence gate in caller repo | Git tag/SHA | High-impact supply chain; pin by full SHA | GitHub repositories |
+| GitHub Action | CI capability | GitPin | `action.yml` | PR evidence gate in caller repo | Git tag/SHA | High-impact supply chain; consumers should pin by full SHA, but the action's own `actions/setup-node@v7` step is still a floating tag (§8 gap 8) | GitHub repositories |
 | Exposure policies | Resource policy | Consumer repo owner | `docs/wiki.yaml` / `.gitpin/wiki.yaml`; parser `src/policy.ts:37-80` | Allow/deny paths | Consumer Git SHA | Untrusted input parsed fail-closed | Evidence core |
 | Evidence manifests/packs | Data contract | Consumer/CI | Schemas and `src/gate.ts` | Assertions/locators only; no authority | Git SHA | Must be verified, never trusted as truth | Gate/verify tools |
 | Memory/RAG | None | N/A | N/A | N/A | N/A | Deliberately absent | N/A |
@@ -397,7 +399,7 @@ There is no generated-code execution, browser control, model prompt execution, c
 | --- | --- | --- | --- | --- | --- | --- |
 | Local human | OS/process context | Self | Configure registry; invoke CLI/stdio; read exposed Git evidence | Local filesystem/process authority | OS + GitPin policy | Shell/host history outside GitPin |
 | Host agent | Host process identity | Human using host | Invoke 12 read-only MCP tools | stdio process channel | MCP contract + exposure policy | Host-owned; GitPin returns citation evidence |
-| HTTP client | Shared token identity | Unmodeled caller | Invoke HTTP MCP tools | `GITPIN_HTTP_TOKEN` bearer | Token compare, host/body/method policy | Request errors only; no caller attribution |
+| HTTP client | Shared token identity | Unmodeled caller | Invoke HTTP MCP tools | `GITPIN_MCP_TOKEN` bearer (`src/http.ts:118`; legacy alias `REPOCONTEXT_MCP_TOKEN`) | Token compare, host/body/method policy | Request errors only; no caller attribution |
 | GitPin process | OS workload identity | Invoking human/client | Read configured Git roots and produce evidence | Filesystem access + environment token | OS, root containment, policy, hard deny | Deterministic outputs/CI logs |
 | GitHub Actions job | GitHub OIDC/job identity | Repository release workflow | Validate, publish scoped artifact, deploy scoped site | `GITHUB_TOKEN`/OIDC | Workflow/job permissions and provider trust | GitHub run and release records |
 | PR author | Git commit identity | Contributor | Propose code and evidence manifest | Git/GitHub identity | Branch protection and evidence gate external to GitPin runtime | PR and gate annotation |
@@ -507,7 +509,7 @@ This is not a big-bang rewrite. First freeze existing schemas and build fixtures
 - Make anonymous `/healthz` generic and add authenticated detailed readiness.
 - Define explicit remote-mode allowed-host/TLS/proxy requirements; warn on permissive configuration before any fail-closed behavior.
 - Write an applicable/non-applicable OWASP Agentic 2026 threat table and add the first injection/forged-citation/policy-bypass fixtures.
-- Correct stale public-state documentation only in the future implementation sprint after re-running live verification.
+- Public-state documentation prose is already corrected (commit `7b57f3a`, predating this assessment date; see §1); the remaining Phase 0 work is the automated verifier itself (opportunity 2, §4), not another prose fix.
 
 ### Phase 1 — 0–30 days
 
@@ -542,7 +544,7 @@ This is not a big-bang rewrite. First freeze existing schemas and build fixtures
 | Outcome | Baseline | Target | Measurement |
 | --- | --- | --- | --- |
 | Protocol conformance | Current SDK tests only; modern-era compatibility unknown | 100% of 12 tool schemas + prompt/resource pass supported-era fixtures | CI conformance matrix |
-| Release-state accuracy | Durable docs currently contradict two live surfaces | 0 unexplained version/availability mismatches | Four-surface verifier on release/manual schedule |
+| Release-state accuracy | Durable docs contradicted two live surfaces at the assessed revision (already corrected on `origin/main` pre-assessment by `7b57f3a`; retained as the last observed drift instance, see §1) | 0 unexplained version/availability mismatches | Four-surface verifier on release/manual schedule |
 | Adversarial regression | Security controls exist; no unified agentic threat mapping | 100% applicable OWASP categories mapped; all malicious fixtures fail closed | Threat matrix + Vitest |
 | Anonymous metadata | Counts/names may be exposed | 0 repository identities/counts in unauthenticated liveness | HTTP contract test |
 | Remote configuration safety | Empty host set permits all | 100% explicit production-mode host policies | Startup/config tests |
@@ -577,7 +579,7 @@ Licensing fit is favorable: GitPin is MIT (`package.json:1-27`); its current cor
 ### NOW
 
 - The canonical suite is load-sensitive on Windows: it passed once, then a final parallel run produced Git-heavy timeouts/temporary-directory `EPERM` cleanup errors; isolated failed cases subsequently passed.
-- Public availability documentation is stale relative to npm/GitHub/MCP Registry/Pages.
+- Nothing automatically keeps durable release-state documentation aligned with live npm/GitHub/MCP Registry/Pages state; the one observed drift instance was hand-corrected pre-assessment (commit `7b57f3a`, see §1), but the gap that allowed it — no automated verifier — is unresolved (opportunity 2, §4).
 - Modern MCP protocol/SDK compatibility is unproven.
 - Anonymous health detail and permissive empty-host behavior are avoidable remote-surface risks.
 - Loaded instructions, skills, and repository content lack an explicit agentic trust model/test suite.
@@ -660,6 +662,6 @@ The following commands were run from the assessed checkout using synthetic fixtu
 
 **Live verification (Observed, public, read-only, 2026-08-28):** npm reports `gitpin@0.6.3` with git head `b307c4ebe37b98172a9f09e32e351ae5b7686b7b`; GitHub Release [`v0.6.3`](https://github.com/shmindmaster/gitpin/releases/tag/v0.6.3) is published and immutable; the Official MCP Registry reports `io.github.shmindmaster/gitpin@0.6.3` active/latest; and [`https://shmindmaster.github.io/gitpin/`](https://shmindmaster.github.io/gitpin/) returned HTTP 200 with 0.6.3 content. These observations establish availability at check time, not production SLOs, adoption, client interoperability, or owner approval.
 
-Citation-gate anchor for the assessed source revision: `gitpin/src/server.ts:10 @ defb193a7ed89d8b9bb821994f224b6ace1d2dfe` (durable handle: `gitpin:gitpin@defb193a7ed89d8b9bb821994f224b6ace1d2dfe:src/server.ts:10`). The full prose range audit above is broader than this anchor because the built-in gate extracts the human cite-string form, not standalone `path:line-range` notation or durable handles.
+Citation-gate anchor for the assessed source revision: `gitpin/src/server.ts:10 @ defb193a7ed89d8b9bb821994f224b6ace1d2dfe` (durable handle: `gitpin:gitpin@defb193a7ed89d8b9bb821994f224b6ace1d2dfe:src/server.ts:10`). That revision is unreachable from a downstream clone (see the reproducible citation anchor at the top of this document); `src/server.ts` is unchanged between it and the reachable equivalent `4de3ee8f9941e4d9b180e6c119b3370b647a7b6a`, so `git show 4de3ee8f9941e4d9b180e6c119b3370b647a7b6a:src/server.ts` reproduces line 10 exactly. The full prose range audit above is broader than this anchor because the built-in gate extracts the human cite-string form, not standalone `path:line-range` notation or durable handles.
 
 **Final state intent:** implemented as documentation, locally exercised with the mixed full-gate limitation above, uncommitted, unpushed, undeployed, and not production-validated. The divergent local/remote `main` histories remain intentionally unreconciled.

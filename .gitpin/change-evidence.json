@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "summary": "Land the 2026-08-28 agentic-AI architecture and modernization assessment, annotated where its release-state finding was resolved after the assessed revision, and route to it from the documentation index.",
+  "summary": "Land the 2026-08-28 agentic-AI architecture and modernization assessment, annotated where its release-state finding was already corrected on origin/main before the assessment date but absent from the deliberately-pinned assessed revision, and route to it from the documentation index.",
   "claims": [
     {
       "id": "DOCS-1",
@@ -429,7 +429,7 @@
     },
     {
       "id": "RESEARCH-ARCH-ASSESSMENT",
-      "statement": "The committed assessment declares its assessed revision and evidence boundaries up front, marks the release-state finding resolved by the commit that fixed it rather than asserting a defect the tree no longer has, and is reachable from the documentation index.",
+      "statement": "The committed assessment declares its assessed revision, evidence boundaries, and a reachable citation anchor up front, marks the release-state finding as already corrected on origin/main before the assessment date (not merely 'resolved after' it) rather than asserting a defect the tree no longer has, and is reachable from the documentation index.",
       "covers": [
         "docs/README.md",
         "docs/research/agentic-ai-architecture-modernization-assessment-2026-08-28.md"
@@ -439,15 +439,15 @@
           "ref": "head",
           "path": "docs/research/agentic-ai-architecture-modernization-assessment-2026-08-28.md",
           "lineStart": 3,
-          "lineEnd": 9,
-          "contentSha256": "4a10a0620d1d115e32d1c29474debcc877808d9292a0cf82672132adfc4f0f4e"
+          "lineEnd": 10,
+          "contentSha256": "103ef750ba334f7ff68b3aea049a0bb332f7309566645731cca94e14e95ebe4d"
         },
         {
           "ref": "head",
           "path": "docs/research/agentic-ai-architecture-modernization-assessment-2026-08-28.md",
-          "lineStart": 29,
-          "lineEnd": 29,
-          "contentSha256": "39f42225e1025c3bab3582cb8513c81be4af58101c538540b7ddad3fcb3e296e"
+          "lineStart": 30,
+          "lineEnd": 30,
+          "contentSha256": "60ede40c3e827b0bf0f070baa84eaa09593c2ee78268db737990dd8973fc7cb3"
         },
         {
           "ref": "head",
