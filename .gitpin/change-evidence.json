@@ -440,21 +440,21 @@
           "path": "docs/research/agentic-ai-architecture-modernization-assessment-2026-08-28.md",
           "lineStart": 3,
           "lineEnd": 9,
-          "contentSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          "contentSha256": "4a10a0620d1d115e32d1c29474debcc877808d9292a0cf82672132adfc4f0f4e"
         },
         {
           "ref": "head",
           "path": "docs/research/agentic-ai-architecture-modernization-assessment-2026-08-28.md",
           "lineStart": 29,
           "lineEnd": 29,
-          "contentSha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          "contentSha256": "39f42225e1025c3bab3582cb8513c81be4af58101c538540b7ddad3fcb3e296e"
         },
         {
           "ref": "head",
           "path": "docs/README.md",
           "lineStart": 14,
           "lineEnd": 14,
-          "contentSha256": "2222222222222222222222222222222222222222222222222222222222222222"
+          "contentSha256": "cf7c0c456f4952ec3430d3a60cc30e71fa8eceb441757a152a3bd992ee72482b"
         }
       ]
     }
