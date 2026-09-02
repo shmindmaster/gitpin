@@ -64,6 +64,7 @@
     "test": "vitest run src",
     "verify:clients": "node scripts/validate-client-configs.mjs",
     "verify:ci": "node scripts/verify-ci-runner-routing.mjs",
+    "verify:automerge": "node --test .github/scripts/owner-automerge.test.js",
     "verify:env": "node scripts/validate-env-example.mjs",
     "verify:release-tag": "node scripts/verify-release-tag.mjs",
     "verify:mcp-registry": "node scripts/verify-mcp-registry.mjs",
@@ -78,7 +79,7 @@
     "site:serve": "node scripts/serve-site.mjs site",
     "site:build": "node scripts/build-site.mjs",
     "site:test": "playwright test",
-    "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm verify:clients && pnpm verify:ci && pnpm verify:env && pnpm verify:mcp-registry && pnpm verify:release-tag && pnpm test && pnpm site:build && pnpm verify:artifact-gate-demo"
+    "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm verify:clients && pnpm verify:ci && pnpm verify:automerge && pnpm verify:env && pnpm verify:mcp-registry && pnpm verify:release-tag && pnpm test && pnpm site:build && pnpm verify:artifact-gate-demo"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
