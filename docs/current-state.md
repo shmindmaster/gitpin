@@ -25,7 +25,10 @@ Update this file whenever the project surface or its operational truth changes.
 
 - GitHub Actions: `ci.yml` (lint/format/typecheck/verifiers/tests), `evidence-gate.yml`
   (PR evidence gate), `pages.yml` (site deploy), `publish-mcp.yml` (MCP registry),
-  `release.yml` (npm release).
+  `release.yml` (npm release), and `auto-merge-owner-prs.yml` (machine squash-merge of
+  owner-authored same-repo PRs to `main` once the ruleset's required checks pass; the
+  controller in `.github/scripts/owner-automerge.js` is loaded from the base revision,
+  `no-automerge` withdraws an armed request, and non-owner pushes never re-arm it).
 - npm publishes from tags on `main`; MCP publication is manually dispatched against a
   validated release tag. Pages is manually dispatched and requires independent deployed
   SHA and content verification.
