@@ -65,7 +65,7 @@
           "path": "docs/current-state.md",
           "lineStart": 26,
           "lineEnd": 33,
-          "contentSha256": "71a2f01d3ad003f65df6b2f82c815e0f5c056ff2fa46d50213b1ff7b689c4051"
+          "contentSha256": "6f1929dbb8f30dd918a04adb1df6eba086f30059b58f422fd3db9148ce1841ab"
         },
         {
           "ref": "head",
@@ -483,16 +483,18 @@
     },
     {
       "id": "OWNER-AUTOMERGE",
-      "statement": "Maintainer-owned same-repo pull requests are squash-merged by machine once the ruleset's required checks pass: the workflow admits only PRs authored by the repository owner from a same-repo head without a no-automerge label, loads its merge controller from the base revision so a PR cannot rewrite its own gate, and the controller merges a CLEAN PR only at the exact head it evaluated. The controller's retry, race, and fail-closed paths are covered by a node:test suite wired into pnpm validate.",
+      "statement": "Maintainer-owned same-repo pull requests are squash-merged by machine once the ruleset's required checks pass: the workflow admits only PRs authored by the repository owner from a same-repo head without a no-automerge label, loads its merge controller from the base revision so a PR cannot rewrite its own gate, and the controller merges a CLEAN PR only at the exact head it evaluated. It runs only for PRs targeting main, admits every event structurally but lets only owner-sent, unlabelled events arm or merge -- a collaborator push or a no-automerge label from anyone reaches the controller and may only withdraw an armed request, with bounded retries so withdrawal is as robust as arming, replaces any non-squash request with SQUASH, and is recorded in docs/current-state.md. Thirteen node:test cases cover retry, race, opt-out, method replacement, and fail-closed paths, wired into pnpm validate.",
       "covers": [
         ".github/workflows/auto-merge-owner-prs.yml",
         ".github/scripts/owner-automerge.js",
-        ".github/scripts/owner-automerge.test.js"
+        ".github/scripts/owner-automerge.test.js",
+        "docs/current-state.md"
       ],
       "evidence": [
-        { "ref": "head", "path": ".github/workflows/auto-merge-owner-prs.yml", "lineStart": 30, "lineEnd": 30, "contentSha256": "53ce99ae50aa81819ba870f8fa911183577dec8a8fc8622f4cbec7975de8e869" },
-        { "ref": "head", "path": ".github/scripts/owner-automerge.js", "lineStart": 23, "lineEnd": 23, "contentSha256": "60f150a0485a44e99de5c2c92c44f88361c40723d7a1f8a5fa0fe588620d2243" },
-        { "ref": "head", "path": ".github/scripts/owner-automerge.test.js", "lineStart": 39, "lineEnd": 39, "contentSha256": "ecf8bc45e31810f80daf703ef567ce9ca4cec577966e22fbf1d991f5f21a5c68" }
+        { "ref": "head", "path": ".github/workflows/auto-merge-owner-prs.yml", "lineStart": 95, "lineEnd": 95, "contentSha256": "f403efa10586934707998cf80bd9d7fa2dd9e3f638ac4e3a6bd38c7a21c2c536" },
+        { "ref": "head", "path": ".github/scripts/owner-automerge.js", "lineStart": 27, "lineEnd": 27, "contentSha256": "60f150a0485a44e99de5c2c92c44f88361c40723d7a1f8a5fa0fe588620d2243" },
+        { "ref": "head", "path": ".github/scripts/owner-automerge.test.js", "lineStart": 113, "lineEnd": 113, "contentSha256": "f170a5f0692e8db74115acc67f9dafb1267cbc35be33a1656f3489e461e22a83" },
+        { "ref": "head", "path": "docs/current-state.md", "lineStart": 28, "lineEnd": 28, "contentSha256": "ca87bab47a6b2adb18c6fcc39a060f524239078980e7b0f7159feb0da4f3f1bf" }
       ]
     }
   ]
