@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "summary": "Record the independently verified 0.6.3 release state across npm, GitHub Releases, the official MCP Registry, and Pages.",
+  "summary": "Land the 2026-08-28 agentic-AI architecture and modernization assessment, annotated where its release-state finding was already corrected on origin/main before the assessment date but absent from the deliberately-pinned assessed revision, and route to it from the documentation index.",
   "claims": [
     {
       "id": "DOCS-1",
@@ -424,6 +424,37 @@
           "lineStart": 23,
           "lineEnd": 23,
           "contentSha256": "9f9c66045426d1d38195f7a507ac6e4194266c88ede1996b9b06a782fb407ecf"
+        }
+      ]
+    },
+    {
+      "id": "RESEARCH-ARCH-ASSESSMENT",
+      "statement": "The committed assessment declares its assessed revision, evidence boundaries, and a reachable citation anchor up front, marks the release-state finding as already corrected on origin/main before the assessment date (not merely 'resolved after' it) rather than asserting a defect the tree no longer has, and is reachable from the documentation index.",
+      "covers": [
+        "docs/README.md",
+        "docs/research/agentic-ai-architecture-modernization-assessment-2026-08-28.md"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "docs/research/agentic-ai-architecture-modernization-assessment-2026-08-28.md",
+          "lineStart": 3,
+          "lineEnd": 10,
+          "contentSha256": "103ef750ba334f7ff68b3aea049a0bb332f7309566645731cca94e14e95ebe4d"
+        },
+        {
+          "ref": "head",
+          "path": "docs/research/agentic-ai-architecture-modernization-assessment-2026-08-28.md",
+          "lineStart": 30,
+          "lineEnd": 30,
+          "contentSha256": "60ede40c3e827b0bf0f070baa84eaa09593c2ee78268db737990dd8973fc7cb3"
+        },
+        {
+          "ref": "head",
+          "path": "docs/README.md",
+          "lineStart": 14,
+          "lineEnd": 14,
+          "contentSha256": "cf7c0c456f4952ec3430d3a60cc30e71fa8eceb441757a152a3bd992ee72482b"
         }
       ]
     }

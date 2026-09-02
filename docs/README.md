@@ -11,6 +11,7 @@ Start with [current-state.md](./current-state.md) for verified repository realit
 - [compare.md](./compare.md) — comparison against alternative approaches.
 - [migration-gitpin.md](./migration-gitpin.md) — migration path from earlier/other tooling.
 - [research/](./research/) — competitive landscape and feature research.
+- [research/agentic-ai-architecture-modernization-assessment-2026-08-28.md](./research/agentic-ai-architecture-modernization-assessment-2026-08-28.md) — evidence-based agentic-AI architecture and modernization assessment.
 
 ### Architecture
 
