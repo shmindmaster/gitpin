@@ -116,7 +116,7 @@
     },
     {
       "id": "DEPS-1",
-      "statement": "The frozen pnpm graph forces nanoid to the patched 3.3.18 release while preserving the existing dependency major.",
+      "statement": "The frozen pnpm graph forces nanoid to the patched 3.3.18 release and fast-uri to the patched 3.1.6+ line (GHSA host-confusion advisories, pnpm audit high) while preserving the existing dependency majors.",
       "covers": [
         "pnpm-lock.yaml",
         "pnpm-workspace.yaml"
@@ -127,14 +127,14 @@
           "path": "pnpm-workspace.yaml",
           "lineStart": 4,
           "lineEnd": 8,
-          "contentSha256": "291c8788800b4c28f39a3041dee6396fa1ebc351fd70ad04678409eb85d9cea9"
+          "contentSha256": "9da7a8c46b57f353016c7371b9dbcc32401f3ae3d5a259efc5879c394d86285a"
         },
         {
           "ref": "head",
           "path": "pnpm-lock.yaml",
           "lineStart": 7,
           "lineEnd": 11,
-          "contentSha256": "291c8788800b4c28f39a3041dee6396fa1ebc351fd70ad04678409eb85d9cea9"
+          "contentSha256": "9da7a8c46b57f353016c7371b9dbcc32401f3ae3d5a259efc5879c394d86285a"
         }
       ]
     },
