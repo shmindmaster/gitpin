@@ -60,11 +60,11 @@ One bounded responsibility per file. No monorepo packages.
 ## RepoWise
 
 This repository is indexed in the shared RepoWise workspace at
-`C:\Repos\shmindmaster` (one workspace, all portfolio repos). After committing, refresh
+`C:\Repos` (one workspace, scoped repository queries). After committing, refresh
 the index so the workspace stays current:
 
 ```powershell
-repowise update --repo gitpin
+repowise update C:\Repos\shmindmaster\gitpin --no-workspace --index-only --no-agents
 ```
 
 The `.repowise/` directory and `.claude/CLAUDE.md` are gitignored on purpose; do not
