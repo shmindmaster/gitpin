@@ -49,7 +49,9 @@ function sourceContains(sourceFile, predicate) {
     for (const key of visitorKeys[node.type] ?? []) {
       const child = node[key];
       if (Array.isArray(child)) {
-        for (const item of child) visit(item);
+        for (const item of child) {
+          if (item) visit(item);
+        }
       } else if (child) {
         visit(child);
       }
