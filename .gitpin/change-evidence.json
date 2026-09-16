@@ -1,7 +1,50 @@
 {
   "schemaVersion": 1,
-  "summary": "Land the 2026-08-28 agentic-AI architecture and modernization assessment, annotated where its release-state finding was already corrected on origin/main before the assessment date but absent from the deliberately-pinned assessed revision, and route to it from the documentation index.",
+  "summary": "Publish an auditable grant-readiness package without claiming adoption or awarded funding, and make Windows test cleanup resilient to transient file locks.",
   "claims": [
+    {
+      "id": "GRANT-READINESS-2026-09",
+      "statement": "GitPin now states its public-good thesis, bounded unfunded security roadmap, current single-maintainer governance, and funding disclosure rules; the full validation suite also tolerates transient Windows fixture-cleanup locks without changing product assertions.",
+      "covers": [
+        "README.md",
+        "ROADMAP.md",
+        "GOVERNANCE.md",
+        "src/doctor.test.ts",
+        "src/evidence.test.ts",
+        "src/gate-action.test.ts",
+        "src/gate.test.ts",
+        "src/git.test.ts",
+        "src/http.test.ts",
+        "src/launch-readiness-truth.test.ts",
+        "src/onboarding.test.ts",
+        "src/registry.test.ts",
+        "src/snapshot-output.test.ts",
+        "src/wiki.test.ts"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "GOVERNANCE.md",
+          "lineStart": 1,
+          "lineEnd": 30,
+          "contentSha256": "22f84372562da3c733e28bd098daccc16f0ce9b835f0ea1d34621ab087e9acd3"
+        },
+        {
+          "ref": "head",
+          "path": "ROADMAP.md",
+          "lineStart": 34,
+          "lineEnd": 45,
+          "contentSha256": "4b7c90d091322fa2fdeff72d186578f24c0c61d54a39b824c11bbc0502446301"
+        },
+        {
+          "ref": "head",
+          "path": "src/git.test.ts",
+          "lineStart": 30,
+          "lineEnd": 52,
+          "contentSha256": "aae47949b793821336ab79358e02672907154ea80532721b94aec08262ada4d9"
+        }
+      ]
+    },
     {
       "id": "DOCS-1",
       "statement": "Contributor and product documentation consistently describe GitPin as a read-only, commit-pinned evidence gate and route readers through the durable documentation taxonomy.",
@@ -174,7 +217,7 @@
           "path": "src/gate-action.test.ts",
           "lineStart": 49,
           "lineEnd": 87,
-          "contentSha256": "2d6380050c8e145beadfdf913920f95782d4e92667c247af807bb387726daaf3"
+          "contentSha256": "0265c6d4df910af20d022fb8eee1bd3e26547a92028cabb7320fc745f4c6c81f"
         }
       ]
     },
@@ -267,8 +310,8 @@
         {
           "ref": "head",
           "path": "README.md",
-          "lineStart": 39,
-          "lineEnd": 39,
+          "lineStart": 41,
+          "lineEnd": 41,
           "contentSha256": "f224a30bdbcf220f5cf86a19082a01ea15c1fdc460c9cb21c46b2735d90b541b"
         },
         {
