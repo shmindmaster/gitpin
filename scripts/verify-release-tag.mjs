@@ -37,29 +37,50 @@ if (actionDefault !== packageJson.version) {
 }
 
 const escapedVersion = packageJson.version.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
-const currentVersionSurfaces = [
-  {
-    relativePath: 'README.md',
-    patterns: [
-      new RegExp(`\\*\\*Release candidate:\\*\\* This tree targets GitPin ${escapedVersion}`, 'u'),
-      new RegExp(`\\*\\*Current release:\\*\\* GitPin ${escapedVersion} is verified`, 'u'),
-    ],
-  },
+const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf8');
+if (
+  !readme.includes(
+    `**Versioned distribution:** This source tree and its packed README document GitPin ${packageJson.version}`,
+  )
+) {
+  throw new Error(`README.md must describe ${packageJson.version} with stage-neutral packed-package wording.`);
+}
+
+const releaseStageSurfaces = [
   {
     relativePath: 'docs/current-state.md',
-    patterns: [
-      new RegExp(`\\*\\*Release candidate:\\*\\* This tree targets \`${escapedVersion}\``, 'u'),
-      new RegExp(`\\*\\*Published:\\*\\* \`${escapedVersion}\` is the current verified release`, 'u'),
-    ],
+    candidatePattern: new RegExp(`\\*\\*Release candidate:\\*\\* This tree targets \`${escapedVersion}\``, 'u'),
+    publishedPattern: new RegExp(`\\*\\*Published:\\*\\* \`${escapedVersion}\` is the current verified release`, 'u'),
+  },
+  {
+    relativePath: 'docs/website.md',
+    candidatePattern: new RegExp(`This tree is the GitPin ${escapedVersion} release candidate`, 'u'),
+    publishedPattern: new RegExp(`GitPin ${escapedVersion} is the current verified release`, 'u'),
+  },
+  {
+    relativePath: 'ROADMAP.md',
+    candidatePattern: new RegExp(`${escapedVersion} is the release candidate`, 'u'),
+    publishedPattern: new RegExp(`${escapedVersion} is the current verified release`, 'u'),
+  },
+  {
+    relativePath: 'AGENTS.md',
+    candidatePattern: new RegExp(`This tree is the GitPin ${escapedVersion} release candidate`, 'u'),
+    publishedPattern: new RegExp(`This tree documents the verified GitPin ${escapedVersion} release`, 'u'),
   },
 ];
-for (const { relativePath, patterns } of currentVersionSurfaces) {
+const matchedStages = new Set();
+for (const { relativePath, candidatePattern, publishedPattern } of releaseStageSurfaces) {
   const content = readFileSync(new URL(`../${relativePath}`, import.meta.url), 'utf8');
-  if (!patterns.some((pattern) => pattern.test(content))) {
+  const stage = candidatePattern.test(content) ? 'candidate' : publishedPattern.test(content) ? 'published' : undefined;
+  if (!stage) {
     throw new Error(
       `${relativePath} must name ${packageJson.version} in a stage-accurate candidate or verified-release statement.`,
     );
   }
+  matchedStages.add(stage);
+}
+if (matchedStages.size !== 1) {
+  throw new Error(`Release status surfaces disagree: found stages ${[...matchedStages].sort().join(', ')}.`);
 }
 const githubTag = process.env.GITHUB_REF_TYPE === 'tag' ? process.env.GITHUB_REF_NAME : undefined;
 const tag = process.argv[2] ?? githubTag ?? expected;
