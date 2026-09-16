@@ -6,6 +6,7 @@
       "id": "V064-RELEASE-SURFACES",
       "statement": "GitPin 0.6.4 derives runtime version reporting from package.json, exposes exact CLI version commands, verifies release-surface consistency before publishing, and synchronizes the public package, Action, MCP metadata, documentation, website, and deterministic demo artifacts.",
       "covers": [
+        ".github/workflows/evidence-gate.yml",
         "AGENTS.md",
         "CHANGELOG.md",
         "README.md",
