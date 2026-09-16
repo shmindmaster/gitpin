@@ -34,7 +34,8 @@ function hasNamedImport(sourceFile, importedName, moduleName) {
         (specifier) =>
           specifier.type === 'ImportSpecifier' &&
           specifier.imported.type === 'Identifier' &&
-          specifier.imported.name === importedName,
+          specifier.imported.name === importedName &&
+          specifier.local.name === importedName,
       ),
   );
 }
@@ -65,20 +66,62 @@ function isIdentifier(node, name) {
   return node?.type === 'Identifier' && node.name === name;
 }
 
-function hasVersionProperty(sourceFile) {
+function objectHasVersionProperty(node) {
+  return (
+    node?.type === 'ObjectExpression' &&
+    node.properties.some(
+      (property) =>
+        property.type === 'Property' &&
+        ((property.key.type === 'Identifier' && property.key.name === 'version') ||
+          (property.key.type === 'Literal' && property.key.value === 'version')) &&
+        isIdentifier(property.value, 'PACKAGE_VERSION'),
+    )
+  );
+}
+
+function hasServerVersionMetadata(sourceFile) {
   return sourceContains(
     sourceFile,
     (node) =>
-      node.type === 'Property' &&
-      ((node.key.type === 'Identifier' && node.key.name === 'version') ||
-        (node.key.type === 'Literal' && node.key.value === 'version')) &&
-      isIdentifier(node.value, 'PACKAGE_VERSION'),
+      node.type === 'NewExpression' &&
+      isIdentifier(node.callee, 'McpServer') &&
+      objectHasVersionProperty(node.arguments[0]),
+  );
+}
+
+function hasOnboardingVersionMetadata(sourceFile) {
+  return sourceContains(sourceFile, (node) => {
+    if (!objectHasVersionProperty(node)) return false;
+    const values = new Map(
+      node.properties
+        .filter((property) => property.type === 'Property' && property.key.type === 'Identifier')
+        .map((property) => [property.key.name, property.value]),
+    );
+    return (
+      values.get('name')?.type === 'Literal' &&
+      values.get('name').value === 'GitPin' &&
+      values.get('schema')?.type === 'Literal' &&
+      values.get('schema').value === 'v1'
+    );
+  });
+}
+
+function hasVersionedGitPinTemplate(sourceFile) {
+  return sourceContains(
+    sourceFile,
+    (node) =>
+      node.type === 'TemplateLiteral' &&
+      node.expressions.length === 1 &&
+      node.quasis.length === 2 &&
+      node.quasis[0].value.raw.endsWith('gitpin@') &&
+      isIdentifier(node.expressions[0], 'PACKAGE_VERSION'),
   );
 }
 
 const versionSource = parseTypeScript('src/version.ts');
 const serverSource = parseTypeScript('src/server.ts');
 const onboardingSource = parseTypeScript('src/onboarding.ts');
+const registrySource = parseTypeScript('src/registry.ts');
 const packageVersionInitializer = sourceContains(
   versionSource,
   (node) =>
@@ -97,7 +140,7 @@ const packageVersionInitializer = sourceContains(
 if (!hasDefaultImport(versionSource, 'packageManifest', '../package.json') || !packageVersionInitializer) {
   throw new Error('src/version.ts must derive PACKAGE_VERSION from package.json.');
 }
-if (!hasNamedImport(serverSource, 'PACKAGE_VERSION', './version') || !hasVersionProperty(serverSource)) {
+if (!hasNamedImport(serverSource, 'PACKAGE_VERSION', './version') || !hasServerVersionMetadata(serverSource)) {
   throw new Error('MCP server metadata must use PACKAGE_VERSION from src/version.ts.');
 }
 const hasPackageSpec = sourceContains(
@@ -115,9 +158,12 @@ const hasPackageSpec = sourceContains(
 if (
   !hasNamedImport(onboardingSource, 'PACKAGE_VERSION', './version') ||
   !hasPackageSpec ||
-  !hasVersionProperty(onboardingSource)
+  !hasOnboardingVersionMetadata(onboardingSource)
 ) {
   throw new Error('Onboarding config must use PACKAGE_VERSION for package and client metadata.');
+}
+if (!hasNamedImport(registrySource, 'PACKAGE_VERSION', './version') || !hasVersionedGitPinTemplate(registrySource)) {
+  throw new Error('Registry bootstrap guidance must use PACKAGE_VERSION from src/version.ts.');
 }
 
 const registryMetadata = JSON.parse(readFileSync(new URL('../server.json', import.meta.url), 'utf8'));
@@ -138,55 +184,47 @@ if (actionDefault !== packageJson.version) {
 }
 
 const escapedVersion = packageJson.version.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
-const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf8');
-if (
-  !readme.includes(
-    `**Versioned distribution:** This source tree and its packed README document GitPin ${packageJson.version}`,
-  )
-) {
-  throw new Error(`README.md must describe ${packageJson.version} with stage-neutral packed-package wording.`);
-}
-
-const releaseStageSurfaces = [
+const stageNeutralSurfaces = [
+  {
+    relativePath: 'README.md',
+    pattern: new RegExp(
+      `This source tree and its packed documentation describe GitPin ${escapedVersion} without asserting publication status`,
+      'u',
+    ),
+  },
   {
     relativePath: 'docs/current-state.md',
-    candidatePattern: new RegExp(`\\*\\*Release candidate:\\*\\* This tree targets \`${escapedVersion}\``, 'u'),
-    publishedPattern: new RegExp(`\\*\\*Published:\\*\\* \`${escapedVersion}\` is the current verified release`, 'u'),
+    pattern: new RegExp(`This tree and the packed documentation describe \`${escapedVersion}\``, 'u'),
   },
   {
     relativePath: 'docs/website.md',
-    candidatePattern: new RegExp(`This tree is the GitPin ${escapedVersion} release candidate`, 'u'),
-    publishedPattern: new RegExp(`GitPin ${escapedVersion} is the current verified release`, 'u'),
+    pattern: new RegExp(
+      `This tree and the packed documentation describe GitPin ${escapedVersion} without asserting publication status`,
+      'u',
+    ),
   },
   {
     relativePath: 'ROADMAP.md',
-    candidatePattern: new RegExp(`${escapedVersion} is the release candidate`, 'u'),
-    publishedPattern: new RegExp(`${escapedVersion} is the current verified release`, 'u'),
-  },
-  {
-    relativePath: 'AGENTS.md',
-    candidatePattern: new RegExp(`This tree is the GitPin ${escapedVersion} release candidate`, 'u'),
-    publishedPattern: new RegExp(`This tree documents the verified GitPin ${escapedVersion} release`, 'u'),
+    pattern: new RegExp(
+      `The ${escapedVersion} source tree and packed documentation are versioned without asserting publication status`,
+      'u',
+    ),
   },
 ];
-const matchedStages = new Set();
-for (const { relativePath, candidatePattern, publishedPattern } of releaseStageSurfaces) {
+for (const { relativePath, pattern } of stageNeutralSurfaces) {
   const content = readFileSync(new URL(`../${relativePath}`, import.meta.url), 'utf8');
-  const isCandidate = candidatePattern.test(content);
-  const isPublished = publishedPattern.test(content);
-  if (isCandidate && isPublished) {
-    throw new Error(`${relativePath} must not declare both candidate and verified-release status.`);
+  if (!pattern.test(content)) {
+    throw new Error(`${relativePath} must describe ${packageJson.version} without asserting publication status.`);
   }
-  const stage = isCandidate ? 'candidate' : isPublished ? 'published' : undefined;
-  if (!stage) {
-    throw new Error(
-      `${relativePath} must name ${packageJson.version} in a stage-accurate candidate or verified-release statement.`,
-    );
-  }
-  matchedStages.add(stage);
 }
-if (matchedStages.size !== 1) {
-  throw new Error(`Release status surfaces disagree: found stages ${[...matchedStages].sort().join(', ')}.`);
+const agents = readFileSync(new URL('../AGENTS.md', import.meta.url), 'utf8');
+const agentStagePatterns = [
+  new RegExp(`This tree is the GitPin ${escapedVersion} release candidate`, 'u'),
+  new RegExp(`This tree documents the verified GitPin ${escapedVersion} release`, 'u'),
+];
+const matchedAgentStages = agentStagePatterns.filter((pattern) => pattern.test(agents));
+if (matchedAgentStages.length !== 1) {
+  throw new Error(`AGENTS.md must declare exactly one candidate or verified release state for ${packageJson.version}.`);
 }
 const githubTag = process.env.GITHUB_REF_TYPE === 'tag' ? process.env.GITHUB_REF_NAME : undefined;
 const tag = process.argv[2] ?? githubTag ?? expected;
