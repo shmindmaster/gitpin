@@ -28,10 +28,11 @@ The name “RepoContext” collides with many open-source tools (often embedding
 ## Client config
 
 ```bash
+# This exact version becomes usable only after npm publication is verified.
 npx -y gitpin@0.6.4 init --client codex
 ```
 
-Or update MCP config:
+After 0.6.4 npm publication is verified, update the MCP config:
 
 ```json
 {

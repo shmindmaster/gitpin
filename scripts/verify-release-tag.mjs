@@ -40,17 +40,25 @@ const escapedVersion = packageJson.version.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&
 const currentVersionSurfaces = [
   {
     relativePath: 'README.md',
-    pattern: new RegExp(`\\*\\*Release candidate:\\*\\* This tree targets GitPin ${escapedVersion}`, 'u'),
+    patterns: [
+      new RegExp(`\\*\\*Release candidate:\\*\\* This tree targets GitPin ${escapedVersion}`, 'u'),
+      new RegExp(`\\*\\*Current release:\\*\\* GitPin ${escapedVersion} is verified`, 'u'),
+    ],
   },
   {
     relativePath: 'docs/current-state.md',
-    pattern: new RegExp(`\\*\\*Release candidate:\\*\\* This tree targets \`${escapedVersion}\``, 'u'),
+    patterns: [
+      new RegExp(`\\*\\*Release candidate:\\*\\* This tree targets \`${escapedVersion}\``, 'u'),
+      new RegExp(`\\*\\*Published:\\*\\* \`${escapedVersion}\` is the current verified release`, 'u'),
+    ],
   },
 ];
-for (const { relativePath, pattern } of currentVersionSurfaces) {
+for (const { relativePath, patterns } of currentVersionSurfaces) {
   const content = readFileSync(new URL(`../${relativePath}`, import.meta.url), 'utf8');
-  if (!pattern.test(content)) {
-    throw new Error(`${relativePath} must name ${packageJson.version} in its designated current-version statement.`);
+  if (!patterns.some((pattern) => pattern.test(content))) {
+    throw new Error(
+      `${relativePath} must name ${packageJson.version} in a stage-accurate candidate or verified-release statement.`,
+    );
   }
 }
 const githubTag = process.env.GITHUB_REF_TYPE === 'tag' ? process.env.GITHUB_REF_NAME : undefined;

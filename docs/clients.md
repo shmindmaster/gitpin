@@ -1,8 +1,9 @@
 # MCP client setup (GitPin)
 
-## Fast path from npm
+## Fast path from npm after 0.6.4 publication
 
 ```bash
+# This exact version becomes usable only after npm publication is verified.
 npx -y gitpin@0.6.4 init --client codex
 ```
 

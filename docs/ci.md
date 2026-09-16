@@ -23,6 +23,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
+      # Use this exact version only after npm publication is verified.
       - run: npm install --global gitpin@0.6.4
       - name: Build registry
         shell: bash
