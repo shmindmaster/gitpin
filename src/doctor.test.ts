@@ -10,7 +10,7 @@ const tmpRoot = join(tmpdir(), `repocontext-doctor-${process.pid}`);
 const repoPath = join(tmpRoot, 'ready-repo');
 
 beforeEach(() => {
-  rmSync(tmpRoot, { recursive: true, force: true });
+  rmSync(tmpRoot, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
   mkdirSync(join(repoPath, 'docs'), { recursive: true });
   writeFileSync(join(repoPath, 'README.md'), '# Ready\n', 'utf-8');
   writeFileSync(join(repoPath, 'docs', 'architecture.md'), '# Architecture\n', 'utf-8');
@@ -27,7 +27,7 @@ beforeEach(() => {
 afterEach(() => {
   setRegistryPath(null);
   clearRegistryCache();
-  rmSync(tmpRoot, { recursive: true, force: true });
+  rmSync(tmpRoot, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
 });
 
 describe('doctor', () => {

@@ -11,7 +11,7 @@ const repositoryPath = join(tmpRoot, 'storefront');
 const registryPath = join(tmpRoot, 'home', '.gitpin', 'repositories.yaml');
 
 beforeEach(() => {
-  rmSync(tmpRoot, { recursive: true, force: true });
+  rmSync(tmpRoot, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
   mkdirSync(repositoryPath, { recursive: true });
   writeFileSync(join(repositoryPath, 'README.md'), '# Storefront\n\nCommitted onboarding evidence.\n', 'utf8');
   execFileSync('git', ['init', '-q'], { cwd: repositoryPath, windowsHide: true });
@@ -25,7 +25,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  rmSync(tmpRoot, { recursive: true, force: true });
+  rmSync(tmpRoot, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
 });
 
 describe('initializeRepoContext', () => {

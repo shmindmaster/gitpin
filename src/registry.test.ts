@@ -10,7 +10,7 @@ afterEach(() => {
   setRegistryPath(null);
   clearRegistryCache();
   try {
-    rmSync(tmpRoot, { recursive: true, force: true });
+    rmSync(tmpRoot, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
   } catch {
     /* ignore */
   }
