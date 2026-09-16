@@ -38,11 +38,11 @@ const escapedVersion = packageJson.version.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&
 const currentVersionSurfaces = [
   {
     relativePath: 'README.md',
-    pattern: new RegExp(`\\*\\*Current release:\\*\\* GitPin ${escapedVersion} is verified`, 'u'),
+    pattern: new RegExp(`\\*\\*Release candidate:\\*\\* This tree targets GitPin ${escapedVersion}`, 'u'),
   },
   {
     relativePath: 'docs/current-state.md',
-    pattern: new RegExp(`\\*\\*Published:\\*\\* \`${escapedVersion}\` is the current verified release`, 'u'),
+    pattern: new RegExp(`\\*\\*Release candidate:\\*\\* This tree targets \`${escapedVersion}\``, 'u'),
   },
 ];
 for (const { relativePath, pattern } of currentVersionSurfaces) {
