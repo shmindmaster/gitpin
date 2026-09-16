@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from
 import { homedir } from 'node:os';
 import { basename, dirname, resolve, sep } from 'node:path';
 import { stringify } from 'yaml';
+import { PACKAGE_VERSION } from './version';
 import { getContextBrief } from './context-brief';
 import { type DoctorReport, getDoctorReport } from './doctor';
 import { getDocumentationRows } from './documentation-analysis';
@@ -213,7 +214,7 @@ function writeRegistryIfAbsentOrIdentical(path: string, content: string): boolea
 
 function clientConfiguration(client: InitClient, registryPath: string): string {
   const command = process.platform === 'win32' ? 'npx.cmd' : 'npx';
-  const packageSpec = 'gitpin@0.6.3';
+  const packageSpec = `gitpin@${PACKAGE_VERSION}`;
   const server = {
     command,
     args: ['-y', packageSpec],
@@ -228,7 +229,7 @@ function clientConfiguration(client: InitClient, registryPath: string): string {
   if (client === 'continue') {
     return stringify({
       name: 'GitPin',
-      version: '0.6.3',
+      version: PACKAGE_VERSION,
       schema: 'v1',
       mcpServers: [{ name: 'GitPin', type: 'stdio', ...server }],
     }).trim();

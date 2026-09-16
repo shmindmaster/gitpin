@@ -9,7 +9,7 @@ describe('GitHub Action trust boundary', () => {
   it('runs the exact gate version from the public npm registry and documents read-only workflow permissions', () => {
     const action = readFileSync(resolve('action.yml'), 'utf8');
     const docs = readFileSync(resolve('docs/pr-evidence-gate.md'), 'utf8');
-    expect(action).toContain('default: 0.6.3');
+    expect(action).toContain('default: 0.6.4');
     expect(action).toContain('--registry="https://registry.npmjs.org"');
     expect(action).toContain('--userconfig="$EMPTY_NPMRC"');
     expect(action).toContain('cd "$RUNNER_TEMP"');
@@ -24,7 +24,7 @@ describe('GitHub Action trust boundary', () => {
     const workflow = readFileSync(resolve('.github/workflows/evidence-gate.yml'), 'utf8');
     expect(workflow).toContain('commit-pin the self-gate to the published v0.6.3 release source');
     expect(workflow).toContain('uses: shmindmaster/gitpin@b307c4ebe37b98172a9f09e32e351ae5b7686b7b');
-    expect(workflow).not.toContain('uses: shmindmaster/gitpin@v0.6.3');
+    expect(workflow).not.toContain('uses: shmindmaster/gitpin@v0.6.4');
     expect(workflow).not.toContain('uses: shmindmaster/gitpin@v0.6.0');
     expect(workflow).not.toContain('uses: shmindmaster/gitpin@v0.6.1');
   });

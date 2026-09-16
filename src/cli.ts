@@ -4,9 +4,15 @@ import { exitForVerify, parseProveSetOptions, runVerifyCitesCommand, runVerifyCo
 import { doctorExitCode, formatDoctorReport, getDoctorReport } from './doctor';
 import { buildEvidenceSet } from './evidence';
 import { initializeRepoContext, parseInitOptions, supportedInitClients } from './onboarding';
+import { PACKAGE_VERSION } from './version';
 
 export async function runCli(args: string[]): Promise<void> {
   const [command, ...options] = args;
+  if (command === '--version' || command === '-v' || command === 'version') {
+    if (options.length > 0) throw new Error('The version command does not accept options.');
+    console.log(PACKAGE_VERSION);
+    return;
+  }
   if (command === 'doctor') {
     if (options.length > 0) throw new Error('The doctor command does not accept options.');
     const report = await getDoctorReport();
@@ -116,6 +122,7 @@ Product loop: catalog → search candidates → prove → verify (Git HEAD only)
 
 Usage:
   gitpin                              Start stdio MCP (12 pin.* tools)
+  gitpin --version | -v | version     Print the installed GitPin version
   gitpin init --client <name>         Registry + doctor + first evidence line
   gitpin doctor                       Validate readiness (stale/blocked)
   gitpin brief [options]              EvidenceBrief JSON (knownFacts / gaps / evidenceSetId)

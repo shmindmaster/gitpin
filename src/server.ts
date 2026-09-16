@@ -6,9 +6,10 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { runCli } from './cli';
 import { registerProvePrompt } from './pin-prompt';
 import { registerPinTools } from './pin-tools';
+import { PACKAGE_VERSION } from './version';
 
 export function createServer(): McpServer {
-  const server = new McpServer({ name: 'gitpin', version: '0.6.3' });
+  const server = new McpServer({ name: 'gitpin', version: PACKAGE_VERSION });
   registerPinTools(server);
   registerProvePrompt(server);
   return server;

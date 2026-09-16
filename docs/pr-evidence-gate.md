@@ -41,11 +41,12 @@ jobs:
   evidence:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
-      - uses: shmindmaster/gitpin@v0.6.3
+      # Replace with the verified v0.6.4 release commit after publication.
+      - uses: shmindmaster/gitpin@b307c4ebe37b98172a9f09e32e351ae5b7686b7b # v0.6.3
         with:
           base-sha: ${{ github.event.pull_request.base.sha }}
           head-sha: ${{ github.event.pull_request.head.sha }}
