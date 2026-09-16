@@ -31,6 +31,18 @@ GitPin's roadmap is evidence-led. Planned work may change when validation shows 
 - Improve fixtures for workspace repositories, stale documentation, malformed policies, and remote snapshots.
 - Verify the documentation-only remote container in an approved hosting environment.
 
+## Bounded security and public-interest work
+
+The items below are current gaps suitable for grant-supported maintenance. They are not shipped features and no funding has been awarded.
+
+1. **Threat model and abuse-case regression suite.** Publish the trust boundaries for base-commit policy, head-commit evidence, Git path resolution, line-slice hashing, local registry exposure, and the optional HTTP transport. Convert the highest-risk cases into deterministic allow/deny tests.
+2. **Release provenance.** Make provenance explicit and independently verifiable across the npm package, source tag, GitHub release, and MCP Registry entry. Add attestations where the distribution surface supports them and fail release verification when the artifacts disagree.
+3. **SARIF output for the PR evidence gate.** Translate existing deterministic gate violations into a versioned, prompt-free SARIF surface with schema checks and end-to-end Action tests. JSON remains the source report; SARIF is an interoperability adapter, not a second decision engine.
+4. **OpenSSF Scorecard and findings-driven hardening.** Publish a Scorecard workflow, review each result against GitPin's actual threat model, and remediate supported findings without optimizing for a cosmetic score.
+5. **Independent workflow validation.** Run the gate on consented agent-authored changes, publish the measurement protocol, and report false blocking, policy bypass attempts, and review decisions changed. Low or negative adoption results remain publishable outcomes.
+
+The work preserves GitPin's MIT license, read-only architecture, local-Git verification path, and explicit exclusion of dirty worktrees. It does not add a database, hosted evidence dependency, repository write tools, or a claim that a matching locator proves semantic correctness.
+
 ## Longer-term ideas
 
 - Explore documentation-health signals without opaque scoring or generated claims.

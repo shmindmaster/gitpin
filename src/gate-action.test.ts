@@ -42,7 +42,7 @@ describe('GitHub Action trust boundary', () => {
         }),
       ).toThrow();
     } finally {
-      rmSync(root, { recursive: true, force: true });
+      rmSync(root, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
     }
   });
 
@@ -79,7 +79,7 @@ describe('GitHub Action trust boundary', () => {
       });
       stderr = result.stderr ?? '';
     } finally {
-      rmSync(root, { recursive: true, force: true });
+      rmSync(root, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
     }
     expect(stderr).toContain('::error title=GitPin Evidence Gate::');
     expect(stderr).toContain('Gate failed with 1 violation(s).');

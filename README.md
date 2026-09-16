@@ -10,6 +10,8 @@
 
 **GitPin is an agent-delivery assurance gate with a local evidence MCP.** It makes material PR claims cover the actual diff and point to exact committed line slices. The local MCP supplies index-free, read-only, multi-repo evidence that humans and CI can re-check with `git show`.
 
+**Public-good thesis:** evidence for agent-authored software changes should remain inspectable with ordinary local Git, independent of the coding agent or proprietary hosted platform that produced the change.
+
 ```text
 Agent claim
     → pin.search_*   (candidates only)
@@ -106,7 +108,7 @@ Default registry: `~/.gitpin/repositories.yaml` (legacy compatibility fallback: 
 
 ## Docs
 
-[Tools](docs/tools.md) · [Compare](docs/compare.md) · [FAQ](docs/faq.md) · [Migration](docs/migration-gitpin.md) · [Clients](docs/clients.md) · [Architecture](docs/architecture.md) · [Competitive landscape](docs/research/competitive-landscape-corrected-2026-07-30.md)
+[Tools](docs/tools.md) · [Compare](docs/compare.md) · [FAQ](docs/faq.md) · [Migration](docs/migration-gitpin.md) · [Clients](docs/clients.md) · [Architecture](docs/architecture.md) · [Roadmap](ROADMAP.md) · [Governance](GOVERNANCE.md) · [Security](SECURITY.md) · [Competitive landscape](docs/research/competitive-landscape-corrected-2026-07-30.md)
 
 Site: [shmindmaster.github.io/gitpin](https://shmindmaster.github.io/gitpin/). GitPin is the canonical product and repository name; legacy `repocontext` references exist only for migration compatibility.
 

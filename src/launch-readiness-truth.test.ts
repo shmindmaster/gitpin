@@ -375,7 +375,7 @@ describe('public launch truth', () => {
 
       expect(verificationFailure).toContain('advertised reproducibility.artifactSha256 does not match');
     } finally {
-      rmSync(temporaryDirectory, { recursive: true, force: true });
+      rmSync(temporaryDirectory, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
     }
   }, 15_000);
 
@@ -399,7 +399,7 @@ describe('public launch truth', () => {
         expect(verificationFailure).not.toContain('Expected built GitPin CLI');
       }
     } finally {
-      rmSync(temporaryDirectory, { recursive: true, force: true });
+      rmSync(temporaryDirectory, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
     }
   }, 15_000);
 

@@ -30,7 +30,7 @@ function initRepo(): void {
 }
 
 beforeEach(() => {
-  rmSync(tmpRoot, { recursive: true, force: true });
+  rmSync(tmpRoot, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
   mkdirSync(tmpRoot, { recursive: true });
   initRepo();
   const yamlPath = join(tmpRoot, 'repositories.yaml');
@@ -49,7 +49,7 @@ repositories:
 afterEach(() => {
   setRegistryPath(null);
   clearRegistryCache();
-  rmSync(tmpRoot, { recursive: true, force: true });
+  rmSync(tmpRoot, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
 });
 
 describe('git safety', () => {

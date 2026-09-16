@@ -11,7 +11,7 @@ const tmpRoot = join(tmpdir(), `repocontext-wiki-${process.pid}`);
 const repoPath = join(tmpRoot, 'doc-repo');
 
 beforeEach(() => {
-  rmSync(tmpRoot, { recursive: true, force: true });
+  rmSync(tmpRoot, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
   mkdirSync(join(repoPath, 'docs'), { recursive: true });
   writeFileSync(join(repoPath, 'README.md'), '# Doc Repo\n\nAuth works with Clerk.\n', 'utf-8');
   writeFileSync(join(repoPath, 'docs', 'architecture.md'), '# Architecture\n\nModular monolith.\n', 'utf-8');
@@ -47,7 +47,7 @@ repositories:
 afterEach(() => {
   setRegistryPath(null);
   clearRegistryCache();
-  rmSync(tmpRoot, { recursive: true, force: true });
+  rmSync(tmpRoot, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
 });
 
 describe('wiki', () => {

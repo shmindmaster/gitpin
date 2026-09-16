@@ -16,7 +16,7 @@ const repositoryPath = join(tmpRoot, 'sample');
 const token = 'test-token-not-for-production';
 
 beforeEach(() => {
-  rmSync(tmpRoot, { recursive: true, force: true });
+  rmSync(tmpRoot, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
   mkdirSync(repositoryPath, { recursive: true });
   writeFileSync(join(repositoryPath, 'README.md'), '# Sample\n', 'utf-8');
   execFileSync('git', ['init', '-q'], { cwd: repositoryPath, windowsHide: true });
@@ -45,7 +45,7 @@ afterEach(() => {
   setRegistryPath(null);
   clearRegistryCache();
   clearWikiCache();
-  rmSync(tmpRoot, { recursive: true, force: true });
+  rmSync(tmpRoot, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
 });
 
 describe('authenticated HTTP transport', () => {

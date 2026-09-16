@@ -40,7 +40,7 @@ beforeEach(() => {
   baseSha = git(['rev-parse', 'HEAD']);
 });
 
-afterEach(() => rmSync(root, { recursive: true, force: true }));
+afterEach(() => rmSync(root, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 }));
 
 describe('PR evidence gate', () => {
   it('verifies changed-path coverage and exact committed evidence', async () => {
