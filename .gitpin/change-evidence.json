@@ -23,6 +23,7 @@
         "docs/troubleshooting.md",
         "docs/website.md",
         "package.json",
+        "pnpm-lock.yaml",
         "scripts/build-pr-gate-fail-to-pass-artifact.mjs",
         "scripts/verify-package.mjs",
         "scripts/verify-release-tag.mjs",
