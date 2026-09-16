@@ -1,21 +1,120 @@
 import { readFileSync } from 'node:fs';
+import { parseSync, visitorKeys } from 'oxc-parser';
 import YAML from 'yaml';
 
 const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 const expected = `v${packageJson.version}`;
-const serverSource = readFileSync(new URL('../src/server.ts', import.meta.url), 'utf8');
-const onboardingSource = readFileSync(new URL('../src/onboarding.ts', import.meta.url), 'utf8');
-const versionSource = readFileSync(new URL('../src/version.ts', import.meta.url), 'utf8');
-if (
-  !versionSource.includes("import packageManifest from '../package.json'") ||
-  !versionSource.includes('packageManifest.version')
-) {
+
+function parseTypeScript(relativePath) {
+  const source = readFileSync(new URL(`../${relativePath}`, import.meta.url), 'utf8');
+  const result = parseSync(relativePath, source);
+  if (result.errors.length > 0) {
+    throw new Error(`${relativePath} must parse before release metadata can be verified.`);
+  }
+  return result.program;
+}
+
+function hasDefaultImport(sourceFile, localName, moduleName) {
+  return sourceFile.body.some(
+    (statement) =>
+      statement.type === 'ImportDeclaration' &&
+      statement.source.value === moduleName &&
+      statement.specifiers.some(
+        (specifier) => specifier.type === 'ImportDefaultSpecifier' && specifier.local.name === localName,
+      ),
+  );
+}
+
+function hasNamedImport(sourceFile, importedName, moduleName) {
+  return sourceFile.body.some(
+    (statement) =>
+      statement.type === 'ImportDeclaration' &&
+      statement.source.value === moduleName &&
+      statement.specifiers.some(
+        (specifier) =>
+          specifier.type === 'ImportSpecifier' &&
+          specifier.imported.type === 'Identifier' &&
+          specifier.imported.name === importedName,
+      ),
+  );
+}
+
+function sourceContains(sourceFile, predicate) {
+  let found = false;
+  function visit(node) {
+    if (predicate(node)) {
+      found = true;
+      return;
+    }
+    for (const key of visitorKeys[node.type] ?? []) {
+      const child = node[key];
+      if (Array.isArray(child)) {
+        for (const item of child) visit(item);
+      } else if (child) {
+        visit(child);
+      }
+    }
+  }
+  visit(sourceFile);
+  return found;
+}
+
+function isIdentifier(node, name) {
+  return node?.type === 'Identifier' && node.name === name;
+}
+
+function hasVersionProperty(sourceFile) {
+  return sourceContains(
+    sourceFile,
+    (node) =>
+      node.type === 'Property' &&
+      ((node.key.type === 'Identifier' && node.key.name === 'version') ||
+        (node.key.type === 'Literal' && node.key.value === 'version')) &&
+      isIdentifier(node.value, 'PACKAGE_VERSION'),
+  );
+}
+
+const versionSource = parseTypeScript('src/version.ts');
+const serverSource = parseTypeScript('src/server.ts');
+const onboardingSource = parseTypeScript('src/onboarding.ts');
+const packageVersionInitializer = sourceContains(
+  versionSource,
+  (node) =>
+    node.type === 'ExportNamedDeclaration' &&
+    node.declaration?.type === 'VariableDeclaration' &&
+    node.declaration.kind === 'const' &&
+    node.declaration.declarations.some(
+      (declaration) =>
+        isIdentifier(declaration.id, 'PACKAGE_VERSION') &&
+        declaration.init?.type === 'MemberExpression' &&
+        declaration.init.computed === false &&
+        isIdentifier(declaration.init.object, 'packageManifest') &&
+        isIdentifier(declaration.init.property, 'version'),
+    ),
+);
+if (!hasDefaultImport(versionSource, 'packageManifest', '../package.json') || !packageVersionInitializer) {
   throw new Error('src/version.ts must derive PACKAGE_VERSION from package.json.');
 }
-if (!serverSource.includes('version: PACKAGE_VERSION') || !serverSource.includes("from './version'")) {
+if (!hasNamedImport(serverSource, 'PACKAGE_VERSION', './version') || !hasVersionProperty(serverSource)) {
   throw new Error('MCP server metadata must use PACKAGE_VERSION from src/version.ts.');
 }
-if (!/gitpin@\$\{PACKAGE_VERSION\}/u.test(onboardingSource) || !onboardingSource.includes('version: PACKAGE_VERSION')) {
+const hasPackageSpec = sourceContains(
+  onboardingSource,
+  (node) =>
+    node.type === 'VariableDeclarator' &&
+    isIdentifier(node.id, 'packageSpec') &&
+    node.init?.type === 'TemplateLiteral' &&
+    node.init.expressions.length === 1 &&
+    node.init.quasis.length === 2 &&
+    node.init.quasis[0].value.raw === 'gitpin@' &&
+    isIdentifier(node.init.expressions[0], 'PACKAGE_VERSION') &&
+    node.init.quasis[1].value.raw === '',
+);
+if (
+  !hasNamedImport(onboardingSource, 'PACKAGE_VERSION', './version') ||
+  !hasPackageSpec ||
+  !hasVersionProperty(onboardingSource)
+) {
   throw new Error('Onboarding config must use PACKAGE_VERSION for package and client metadata.');
 }
 
@@ -71,7 +170,12 @@ const releaseStageSurfaces = [
 const matchedStages = new Set();
 for (const { relativePath, candidatePattern, publishedPattern } of releaseStageSurfaces) {
   const content = readFileSync(new URL(`../${relativePath}`, import.meta.url), 'utf8');
-  const stage = candidatePattern.test(content) ? 'candidate' : publishedPattern.test(content) ? 'published' : undefined;
+  const isCandidate = candidatePattern.test(content);
+  const isPublished = publishedPattern.test(content);
+  if (isCandidate && isPublished) {
+    throw new Error(`${relativePath} must not declare both candidate and verified-release status.`);
+  }
+  const stage = isCandidate ? 'candidate' : isPublished ? 'published' : undefined;
   if (!stage) {
     throw new Error(
       `${relativePath} must name ${packageJson.version} in a stage-accurate candidate or verified-release statement.`,
