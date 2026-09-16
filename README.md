@@ -38,7 +38,7 @@ gitpin gate --base <full-base-sha> --head <full-head-sha>
 
 The gate reads policy only from the trusted base commit, reads the submitted manifest only from the head commit, compares the merge-base diff, and verifies exact line-slice hashes. It never executes PR code and never labels a locator match as proof of semantic correctness. Use the [GitPin GitHub Action setup](docs/pr-evidence-gate.md) to make it a required check. That guide also documents an optional, separate CrewScore check for teams that want written-control coverage alongside GitPin evidence verification.
 
-> **Current release:** GitPin 0.6.3 is verified on npm, the MCP Registry, GitHub Releases, and Pages. Install with `npx -y gitpin@0.6.3`. Node 20+.
+> **Versioned distribution:** This source tree and its packed documentation describe GitPin 0.6.4 without asserting publication status. Availability is established only by independently verifying the npm, MCP Registry, GitHub Release, and Pages receipts. Install with `npx -y gitpin@0.6.4` only after the npm receipt resolves. Node 20+.
 
 GitPin is maintained by **Sarosh Hussain**, who leads the project's technical direction. **Pendoah** is his company and operating context; GitPin remains the product and repository.
 
@@ -46,14 +46,16 @@ GitPin is maintained by **Sarosh Hussain**, who leads the project's technical di
 
 ```bash
 # From a committed Git repository
-npx -y gitpin@0.6.3 init --client codex
+# This exact version becomes usable only after npm publication is verified.
+npx -y gitpin@0.6.4 init --client codex
 ```
 
 `init` creates `~/.gitpin/repositories.yaml` **outside** the repo, runs `doctor`, prints a **first evidence line with full SHA**, and paste-ready MCP config. It never edits the indexed repository.
 
 ```bash
 # Independently verify any claim (same contract as pin.verify)
-npx -y gitpin@0.6.3 verify \
+# This exact version becomes usable only after npm publication is verified.
+npx -y gitpin@0.6.4 verify \
   --repository my-service \
   --path docs/architecture.md \
   --line 42 \

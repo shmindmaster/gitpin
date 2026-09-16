@@ -1,6 +1,6 @@
 {
   "name": "gitpin",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "mcpName": "io.github.shmindmaster/gitpin",
   "type": "commonjs",
   "description": "Verify agent-authored change claims at exact Git commits with an evidence-first PR gate and local MCP.",
@@ -92,6 +92,7 @@
     "@biomejs/biome": "2.5.13",
     "@playwright/test": "^1.55.0",
     "@types/node": "^26.5.1",
+    "oxc-parser": "0.150.0",
     "tsx": "^4.19.0",
     "typescript": "^7.0.2",
     "vitest": "^5.0.0"

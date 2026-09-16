@@ -28,17 +28,18 @@ The name “RepoContext” collides with many open-source tools (often embedding
 ## Client config
 
 ```bash
-npx -y gitpin@0.6.3 init --client codex
+# This exact version becomes usable only after npm publication is verified.
+npx -y gitpin@0.6.4 init --client codex
 ```
 
-Or update MCP config:
+After 0.6.4 npm publication is verified, update the MCP config:
 
 ```json
 {
   "mcpServers": {
     "gitpin": {
       "command": "npx",
-      "args": ["-y", "gitpin@0.6.3"],
+      "args": ["-y", "gitpin@0.6.4"],
       "env": {
         "GITPIN_REGISTRY": "/absolute/path/to/repositories.yaml"
       }

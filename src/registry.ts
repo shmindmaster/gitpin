@@ -5,6 +5,7 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { dirname, resolve, join } from 'node:path';
 import { parse } from 'yaml';
+import { PACKAGE_VERSION } from './version';
 
 export type RepoMode = 'auto' | 'workspace' | 'snapshot';
 
@@ -43,7 +44,9 @@ function findRegistryPath(): string {
     join(homeDirectory(), '.repocontext', 'repositories.yaml'),
   ].filter((candidate): candidate is string => Boolean(candidate));
   for (const c of candidates) if (existsSync(c)) return c;
-  throw new Error('No GitPin registry found. Set GITPIN_REGISTRY or run: npx -y gitpin@0.6.3 init --client codex');
+  throw new Error(
+    `No GitPin registry found. Set GITPIN_REGISTRY or run: npx -y gitpin@${PACKAGE_VERSION} init --client codex`,
+  );
 }
 
 export function loadRegistry(): RepoEntry[] {

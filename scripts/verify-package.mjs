@@ -165,6 +165,15 @@ try {
   }
 
   const serverPath = join(packageRoot, 'dist', 'server.js');
+  const installedVersion = execFileSync(process.execPath, [serverPath, '--version'], {
+    cwd: clientPath,
+    env: commandEnvironment,
+    encoding: 'utf8',
+    windowsHide: true,
+  }).trim();
+  if (installedVersion !== packageVersion) {
+    throw new Error(`Packed gitpin --version returned ${installedVersion}; expected ${packageVersion}.`);
+  }
   const gateReport = JSON.parse(
     execFileSync(
       process.execPath,

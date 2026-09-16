@@ -1,543 +1,82 @@
 {
   "schemaVersion": 1,
-  "summary": "Publish an auditable grant-readiness package without claiming adoption or awarded funding, and make Windows test cleanup resilient to transient file locks.",
+  "summary": "Prepare the GitPin 0.6.4 release with one package-derived runtime version, explicit CLI version output, cross-surface drift checks, and synchronized public documentation and demos.",
   "claims": [
     {
-      "id": "GRANT-READINESS-2026-09",
-      "statement": "GitPin now states its public-good thesis, bounded unfunded security roadmap, current single-maintainer governance, and funding disclosure rules; the full validation suite also tolerates transient Windows fixture-cleanup locks without changing product assertions.",
-      "covers": [
-        "README.md",
-        "ROADMAP.md",
-        "GOVERNANCE.md",
-        "src/doctor.test.ts",
-        "src/evidence.test.ts",
-        "src/gate-action.test.ts",
-        "src/gate.test.ts",
-        "src/git.test.ts",
-        "src/http.test.ts",
-        "src/launch-readiness-truth.test.ts",
-        "src/onboarding.test.ts",
-        "src/registry.test.ts",
-        "src/snapshot-output.test.ts",
-        "src/wiki.test.ts"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "GOVERNANCE.md",
-          "lineStart": 1,
-          "lineEnd": 30,
-          "contentSha256": "22f84372562da3c733e28bd098daccc16f0ce9b835f0ea1d34621ab087e9acd3"
-        },
-        {
-          "ref": "head",
-          "path": "ROADMAP.md",
-          "lineStart": 34,
-          "lineEnd": 45,
-          "contentSha256": "4b7c90d091322fa2fdeff72d186578f24c0c61d54a39b824c11bbc0502446301"
-        },
-        {
-          "ref": "head",
-          "path": "src/git.test.ts",
-          "lineStart": 30,
-          "lineEnd": 52,
-          "contentSha256": "aae47949b793821336ab79358e02672907154ea80532721b94aec08262ada4d9"
-        }
-      ]
-    },
-    {
-      "id": "DOCS-1",
-      "statement": "Contributor and product documentation consistently describe GitPin as a read-only, commit-pinned evidence gate and route readers through the durable documentation taxonomy.",
+      "id": "V064-RELEASE-SURFACES",
+      "statement": "GitPin 0.6.4 derives runtime version reporting from package.json, exposes exact CLI version commands, verifies release-surface consistency before publishing, and synchronizes the public package, Action, MCP metadata, documentation, website, and deterministic demo artifacts.",
       "covers": [
         "AGENTS.md",
-        "CLAUDE.md",
-        "docs/README.md",
-        "docs/plans/PLANS.md",
-        "docs/product/overview.md"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "AGENTS.md",
-          "lineStart": 5,
-          "lineEnd": 10,
-          "contentSha256": "dd698c5443a9f0dc457a1240cf8ceb0cece3c5d54cef944f307dfdd2cfa3a3d2"
-        },
-        {
-          "ref": "head",
-          "path": "CLAUDE.md",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "918b1c90559355ef78f33fdf3562f2b021ef8bdfd8a5c8415e5decd44934de55"
-        },
-        {
-          "ref": "head",
-          "path": "docs/README.md",
-          "lineStart": 7,
-          "lineEnd": 13,
-          "contentSha256": "376fefc5a0c067eca3ec0545a71a9d4db2b1a656d769292e8b7fc52f2ecffec5"
-        },
-        {
-          "ref": "head",
-          "path": "docs/plans/PLANS.md",
-          "lineStart": 3,
-          "lineEnd": 6,
-          "contentSha256": "49fb69a41fc9020cf1de65b65686c7e8dd602a4b9086fe85c9da546c33983a43"
-        },
-        {
-          "ref": "head",
-          "path": "docs/product/overview.md",
-          "lineStart": 15,
-          "lineEnd": 21,
-          "contentSha256": "ce9728d2be8ef715f5d698bbcca2a47e910c6aac8bf07543a8551afa7606ca6c"
-        }
-      ]
-    },
-    {
-      "id": "DOCS-2",
-      "statement": "Operational documentation accurately distinguishes generated package and site artifacts, source previews, the separate browser gate, and manual release publishing workflows.",
-      "covers": [
-        "docs/current-state.md",
-        "docs/development/setup.md",
-        "docs/development/testing.md",
-        "docs/runbooks/deployment.md"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "docs/current-state.md",
-          "lineStart": 26,
-          "lineEnd": 33,
-          "contentSha256": "6f1929dbb8f30dd918a04adb1df6eba086f30059b58f422fd3db9148ce1841ab"
-        },
-        {
-          "ref": "head",
-          "path": "docs/development/setup.md",
-          "lineStart": 22,
-          "lineEnd": 26,
-          "contentSha256": "c8746fe34af77c15771f1ecaa58aaf91055d817b49468e0e4865e1202364e332"
-        },
-        {
-          "ref": "head",
-          "path": "docs/development/testing.md",
-          "lineStart": 23,
-          "lineEnd": 35,
-          "contentSha256": "138ae4868530f7922482ccd700dc51b7697ce29c8b98cf7bcb93ef40719a52ef"
-        },
-        {
-          "ref": "head",
-          "path": "docs/runbooks/deployment.md",
-          "lineStart": 21,
-          "lineEnd": 36,
-          "contentSha256": "b6bb203944ad91b413cf77b702096f9438bdbd66a80aab9f45820268c1a5cee0"
-        }
-      ]
-    },
-    {
-      "id": "DOCS-3",
-      "statement": "The architecture map names the actual evidence-gate implementation modules and generated work products remain excluded from Git.",
-      "covers": [
-        ".gitignore",
-        "docs/architecture/overview.md"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": ".gitignore",
-          "lineStart": 5,
-          "lineEnd": 11,
-          "contentSha256": "3a204ad20dc072a0339756f601e80ae524519456e969a7ddc596ae734f7581be"
-        },
-        {
-          "ref": "head",
-          "path": "docs/architecture/overview.md",
-          "lineStart": 34,
-          "lineEnd": 40,
-          "contentSha256": "8897c1a6c25816800e8881070f47638145aad740c875502a99e7e017f7d04d70"
-        }
-      ]
-    },
-    {
-      "id": "DEPS-1",
-      "statement": "The frozen pnpm graph forces Hono to 4.13.5+, qs to 6.16.0+, nanoid to 3.3.18+, and fast-uri to 3.1.6+, closing the current Dependabot advisories while preserving dependency majors.",
-      "covers": [
-        "pnpm-lock.yaml",
-        "pnpm-workspace.yaml"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "pnpm-workspace.yaml",
-          "lineStart": 4,
-          "lineEnd": 9,
-          "contentSha256": "f83c1235968c7aef80f96f15c21ceba88f8baf24632a6538b8944cc4e3db8a47"
-        },
-        {
-          "ref": "head",
-          "path": "pnpm-lock.yaml",
-          "lineStart": 7,
-          "lineEnd": 12,
-          "contentSha256": "f83c1235968c7aef80f96f15c21ceba88f8baf24632a6538b8944cc4e3db8a47"
-        }
-      ]
-    },
-    {
-      "id": "PACKAGE-TRUTH",
-      "statement": "The packed-package gate rejects multiple equivalent forms of stale pre-publication README guidance.",
-      "covers": [
-        "scripts/verify-package.mjs"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "scripts/verify-package.mjs",
-          "lineStart": 149,
-          "lineEnd": 160,
-          "contentSha256": "a8b5cdeb1c85a81988a139020324d3a3d29fe7c13c029a9058ad76fbd2032437"
-        }
-      ]
-    },
-    {
-      "id": "GATE-1",
-      "statement": "The evidence-gate action renderer emits a legible workflow error annotation when a valid gate report has failed status, so failures surface on the check run instead of silently failing.",
-      "covers": [
-        "scripts/render-gate-action-report.mjs",
-        "src/gate-action.test.ts"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "scripts/render-gate-action-report.mjs",
-          "lineStart": 46,
-          "lineEnd": 49,
-          "contentSha256": "ea5d8c9d408d8816b9375e1e26833d4b7ca3731e9de39928e2076ffc225bac90"
-        },
-        {
-          "ref": "head",
-          "path": "src/gate-action.test.ts",
-          "lineStart": 49,
-          "lineEnd": 87,
-          "contentSha256": "0265c6d4df910af20d022fb8eee1bd3e26547a92028cabb7320fc745f4c6c81f"
-        }
-      ]
-    },
-    {
-      "id": "V063-PACKAGE-ACTION-MCP",
-      "statement": "The npm package, MCP Registry metadata, GitHub Action default, local client bootstrap, and client rules advertise the 0.6.3 candidate.",
-      "covers": [
-        "package.json",
-        "action.yml",
-        "server.json",
-        "src/server.ts",
-        "src/onboarding.ts",
-        "src/registry.ts",
-        "templates/client-rules.md",
-        "src/onboarding.test.ts"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "action.yml",
-          "lineStart": 26,
-          "lineEnd": 26,
-          "contentSha256": "1a82e5cb6d6c27ac866e0e4506bab5218847e809894a4b17ae4c9a698b87dea5"
-        },
-        {
-          "ref": "head",
-          "path": "server.json",
-          "lineStart": 10,
-          "lineEnd": 10,
-          "contentSha256": "d9143e426945ffb98f334009809ca1eee4d81662f06f76baed91493827ab10d9"
-        },
-        {
-          "ref": "head",
-          "path": "src/server.ts",
-          "lineStart": 11,
-          "lineEnd": 11,
-          "contentSha256": "a7da1f0eff3913ee08614b38c7b1e37f70ba4fb87fede27ea495a296a91574b4"
-        },
-        {
-          "ref": "head",
-          "path": "src/onboarding.ts",
-          "lineStart": 216,
-          "lineEnd": 216,
-          "contentSha256": "13450ffc957cf6f3f811635b5cec519f8c1b44dd4507e0e5f73055132e379e89"
-        },
-        {
-          "ref": "head",
-          "path": "src/registry.ts",
-          "lineStart": 46,
-          "lineEnd": 46,
-          "contentSha256": "3d58381b1f1d2883c09e07e5f0efe1ddd78ba4c41ec0488c4968cf9b6380b493"
-        },
-        {
-          "ref": "head",
-          "path": "templates/client-rules.md",
-          "lineStart": 13,
-          "lineEnd": 13,
-          "contentSha256": "2ed43904069d24f9406993c4756d97ad233879030b6b920a37f27ad9bf7c2f56"
-        },
-        {
-          "ref": "head",
-          "path": "src/onboarding.test.ts",
-          "lineStart": 48,
-          "lineEnd": 48,
-          "contentSha256": "cee131b8d7383fbb4c1bf8feef859e85b93e6fdd5d03c7e0d3b9e033c5a13fb6"
-        }
-      ]
-    },
-    {
-      "id": "V063-RELEASE-TRUTH",
-      "statement": "Release-surface documentation consistently names 0.6.3 as verified across npm, GitHub Releases, the official MCP Registry, and Pages.",
-      "covers": [
-        "AGENTS.md",
-        "README.md",
-        "ROADMAP.md",
         "CHANGELOG.md",
+        "README.md",
+        "ROADMAP.md",
+        "action.yml",
         "docs/ci.md",
         "docs/clients.md",
+        "docs/current-state.md",
+        "docs/demos/pr-gate-fail-to-pass.artifact.json",
+        "docs/demos/pr-gate-fail-to-pass.md",
+        "docs/demos/pr-gate-fail-to-pass.svg",
+        "docs/launch.md",
         "docs/migration-gitpin.md",
-        "docs/troubleshooting.md"
+        "docs/pr-evidence-gate.md",
+        "docs/troubleshooting.md",
+        "docs/website.md",
+        "package.json",
+        "pnpm-lock.yaml",
+        "scripts/build-pr-gate-fail-to-pass-artifact.mjs",
+        "scripts/verify-package.mjs",
+        "scripts/verify-release-tag.mjs",
+        "server.json",
+        "site/index.html",
+        "site/llms.txt",
+        "src/cli.test.ts",
+        "src/cli.ts",
+        "src/gate-action.test.ts",
+        "src/onboarding.test.ts",
+        "src/onboarding.ts",
+        "src/registry.ts",
+        "src/server.ts",
+        "src/version.ts",
+        "templates/client-rules.md",
+        "tests/browser/site.spec.mjs"
       ],
       "evidence": [
         {
           "ref": "head",
-          "path": "AGENTS.md",
+          "path": "src/version.ts",
+          "lineStart": 1,
+          "lineEnd": 3,
+          "contentSha256": "1de774f41d27d7ca35c7c0902d715a87ea73964fc19eec439ac3d0ea89cc0c7e"
+        },
+        {
+          "ref": "head",
+          "path": "src/cli.ts",
           "lineStart": 7,
-          "lineEnd": 9,
-          "contentSha256": "c8f5fe47ce6979119c65e21191b78ec6968c360236355b3926010491957b34fc"
+          "lineEnd": 15,
+          "contentSha256": "c5d973cf81f88f8479bb06f6868d228336b758a1ccc41aa8d508bba9feac0a1b"
         },
         {
           "ref": "head",
-          "path": "README.md",
-          "lineStart": 41,
-          "lineEnd": 41,
-          "contentSha256": "f224a30bdbcf220f5cf86a19082a01ea15c1fdc460c9cb21c46b2735d90b541b"
+          "path": "src/cli.test.ts",
+          "lineStart": 5,
+          "lineEnd": 21,
+          "contentSha256": "639d28e9169d21df3b73c11d3d62e817f36a332777fbe55a3717b08154639d7e"
         },
         {
           "ref": "head",
-          "path": "ROADMAP.md",
-          "lineStart": 11,
-          "lineEnd": 11,
-          "contentSha256": "5e54e4072d77eac45cc821b9466c9fcda4df93f198f0863a8a1820071b972fbe"
+          "path": "scripts/verify-release-tag.mjs",
+          "lineStart": 4,
+          "lineEnd": 37,
+          "contentSha256": "169b01d17bf49e03026a4cc06a09fe6c40007c6bce0ad7103479329d2b9cfa58"
         },
         {
           "ref": "head",
           "path": "CHANGELOG.md",
-          "lineStart": 9,
-          "lineEnd": 16,
-          "contentSha256": "5fd8fda5c9db39c7ee35db2304a2795d3d0ef45ee5b1fac0f0becb3907982f52"
-        },
-        {
-          "ref": "head",
-          "path": "docs/ci.md",
-          "lineStart": 26,
-          "lineEnd": 26,
-          "contentSha256": "bbc440f2f6b073d53d5fe9ff1d964ba1962d45079baf650773fae26a8b7a86fc"
-        },
-        {
-          "ref": "head",
-          "path": "docs/clients.md",
-          "lineStart": 6,
-          "lineEnd": 6,
-          "contentSha256": "69c706eeba1a9966bedaa4b86be3a1f996bec43fb1c252333a872713a4319492"
-        },
-        {
-          "ref": "head",
-          "path": "docs/migration-gitpin.md",
-          "lineStart": 31,
-          "lineEnd": 31,
-          "contentSha256": "69c706eeba1a9966bedaa4b86be3a1f996bec43fb1c252333a872713a4319492"
-        },
-        {
-          "ref": "head",
-          "path": "docs/troubleshooting.md",
           "lineStart": 7,
-          "lineEnd": 7,
-          "contentSha256": "ec1bc9ba342aad90971357b3ed0360d790ff7fa860631491ff07a9fee486d905"
+          "lineEnd": 21,
+          "contentSha256": "ea03a338c7f0d47ffb632520cd42e49163a2801b4089bcd6eabf11afea1e77f7"
         }
-      ]
-    },
-    {
-      "id": "V063-LAUNCH-AND-BOOTSTRAP",
-      "statement": "The launch package, PR evidence gate setup guide, deterministic fail-to-pass demo, and the repository self-gate commit-pin advertise the 0.6.3 candidate.",
-      "covers": [
-        ".github/workflows/evidence-gate.yml",
-        "docs/launch.md",
-        "docs/pr-evidence-gate.md",
-        "docs/demos/pr-gate-fail-to-pass.md",
-        "docs/demos/pr-gate-fail-to-pass.artifact.json"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": ".github/workflows/evidence-gate.yml",
-          "lineStart": 21,
-          "lineEnd": 22,
-          "contentSha256": "b1b34ad0a0cc4ced18ff07fa2328a8fca1c5aeff8e133f9174adc9c77421d27e"
-        },
-        {
-          "ref": "head",
-          "path": "docs/launch.md",
-          "lineStart": 60,
-          "lineEnd": 60,
-          "contentSha256": "d9a030792dea4d58b7616ee98ede50e31ff7def9889650e612f19dea1201611e"
-        },
-        {
-          "ref": "head",
-          "path": "docs/pr-evidence-gate.md",
-          "lineStart": 48,
-          "lineEnd": 48,
-          "contentSha256": "ef25e348a2ab42ef4ee60798e149fe44a408afa456f5f0fabc7cdfb7d351cfd0"
-        },
-        {
-          "ref": "head",
-          "path": "docs/demos/pr-gate-fail-to-pass.md",
-          "lineStart": 5,
-          "lineEnd": 5,
-          "contentSha256": "d2721927a7d34c84f4d464936099312459cdeb40f01a58892a0fec4db99c03af"
-        },
-        {
-          "ref": "head",
-          "path": "docs/demos/pr-gate-fail-to-pass.artifact.json",
-          "lineStart": 4,
-          "lineEnd": 4,
-          "contentSha256": "d9143e426945ffb98f334009809ca1eee4d81662f06f76baed91493827ab10d9"
-        }
-      ]
-    },
-    {
-      "id": "V063-SITE",
-      "statement": "The static site metadata, llms.txt quickstart, browser tests, and website documentation consistently advertise the verified 0.6.3 release.",
-      "covers": [
-        "site/index.html",
-        "site/llms.txt",
-        "tests/browser/site.spec.mjs",
-        "docs/website.md"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "site/index.html",
-          "lineStart": 45,
-          "lineEnd": 45,
-          "contentSha256": "78ab2be08c6731492fe8c6619846debf7cf83699e59b1ae65569cf3ab9c879e4"
-        },
-        {
-          "ref": "head",
-          "path": "site/llms.txt",
-          "lineStart": 15,
-          "lineEnd": 15,
-          "contentSha256": "18f9270a4f72b56c429acc5c7f819156c147a92360a23635384ac04db769f403"
-        },
-        {
-          "ref": "head",
-          "path": "tests/browser/site.spec.mjs",
-          "lineStart": 49,
-          "lineEnd": 49,
-          "contentSha256": "8f7230b1849f69b1c73b227bfd431766c2bf598d3cf361b986e0f593b8b92d20"
-        },
-        {
-          "ref": "head",
-          "path": "docs/website.md",
-          "lineStart": 5,
-          "lineEnd": 5,
-          "contentSha256": "b0e13b436f4490bf597225e37eddd8feadbba748a07df19bbd92b75d4fa56dc2"
-        }
-      ]
-    },
-    {
-      "id": "V063-REPRODUCIBILITY",
-      "statement": "The deterministic fail-to-pass demo generator and its regenerated SVG reproduce the 0.6.3 candidate version.",
-      "covers": [
-        "scripts/build-pr-gate-fail-to-pass-artifact.mjs",
-        "docs/demos/pr-gate-fail-to-pass.svg"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "scripts/build-pr-gate-fail-to-pass-artifact.mjs",
-          "lineStart": 165,
-          "lineEnd": 165,
-          "contentSha256": "633d63598b9cf18ec530eb43e9a074542dcf1e445f8b8035382107283701b616"
-        },
-        {
-          "ref": "head",
-          "path": "docs/demos/pr-gate-fail-to-pass.svg",
-          "lineStart": 23,
-          "lineEnd": 23,
-          "contentSha256": "9f9c66045426d1d38195f7a507ac6e4194266c88ede1996b9b06a782fb407ecf"
-        }
-      ]
-    },
-    {
-      "id": "RESEARCH-ARCH-ASSESSMENT",
-      "statement": "The committed assessment declares its assessed revision, evidence boundaries, and a reachable citation anchor up front, marks the release-state finding as already corrected on origin/main before the assessment date (not merely 'resolved after' it) rather than asserting a defect the tree no longer has, and is reachable from the documentation index.",
-      "covers": [
-        "docs/README.md",
-        "docs/research/agentic-ai-architecture-modernization-assessment-2026-08-28.md"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "docs/research/agentic-ai-architecture-modernization-assessment-2026-08-28.md",
-          "lineStart": 3,
-          "lineEnd": 10,
-          "contentSha256": "103ef750ba334f7ff68b3aea049a0bb332f7309566645731cca94e14e95ebe4d"
-        },
-        {
-          "ref": "head",
-          "path": "docs/research/agentic-ai-architecture-modernization-assessment-2026-08-28.md",
-          "lineStart": 30,
-          "lineEnd": 30,
-          "contentSha256": "60ede40c3e827b0bf0f070baa84eaa09593c2ee78268db737990dd8973fc7cb3"
-        },
-        {
-          "ref": "head",
-          "path": "docs/README.md",
-          "lineStart": 14,
-          "lineEnd": 14,
-          "contentSha256": "cf7c0c456f4952ec3430d3a60cc30e71fa8eceb441757a152a3bd992ee72482b"
-        }
-      ]
-    },
-    {
-      "id": "NODE-24-20-0-PIN",
-      "statement": "Single-version CI jobs, the composite action default, and the remote image are pinned to Node 24.20.0, the multi-major test matrices are left intact, and the CI routing verifier accepts an exact 24.x.y pin as well as the bare major. The composite action's own setup-node step is pinned to the same commit SHA the workflows use, so the one file downstream consumers execute no longer resolves a floating tag.",
-      "covers": [
-        ".github/workflows/ci.yml",
-        ".github/workflows/pages.yml",
-        ".github/workflows/publish-mcp.yml",
-        ".github/workflows/release.yml",
-        "Dockerfile.remote",
-        "action.yml",
-        "scripts/verify-ci-runner-routing.mjs"
-      ],
-      "evidence": [
-        { "ref": "head", "path": ".github/workflows/ci.yml", "lineStart": 39, "lineEnd": 39, "contentSha256": "182ba05e28612493711f41f15a52237e546852410b00f244ec793380297c6049" },
-        { "ref": "head", "path": ".github/workflows/pages.yml", "lineStart": 25, "lineEnd": 25, "contentSha256": "182ba05e28612493711f41f15a52237e546852410b00f244ec793380297c6049" },
-        { "ref": "head", "path": ".github/workflows/publish-mcp.yml", "lineStart": 28, "lineEnd": 28, "contentSha256": "182ba05e28612493711f41f15a52237e546852410b00f244ec793380297c6049" },
-        { "ref": "head", "path": ".github/workflows/release.yml", "lineStart": 30, "lineEnd": 30, "contentSha256": "182ba05e28612493711f41f15a52237e546852410b00f244ec793380297c6049" },
-        { "ref": "head", "path": "Dockerfile.remote", "lineStart": 1, "lineEnd": 1, "contentSha256": "778859d58d4afee7c624b382df1ef74109da48b36cef5ce1930776e5814dfedd" },
-        { "ref": "head", "path": "action.yml", "lineStart": 43, "lineEnd": 43, "contentSha256": "4895614acb5bca87c5b6acc6c689044d6ec2297cabedba0c43d32dfb4506d245" },
-        { "ref": "head", "path": "action.yml", "lineStart": 45, "lineEnd": 45, "contentSha256": "c5898ef35c6e39eb04d86bdd323ea25126a701bd0047eabee8a182ee637f63af" },
-        { "ref": "head", "path": "scripts/verify-ci-runner-routing.mjs", "lineStart": 53, "lineEnd": 60, "contentSha256": "f97581bad3f20ff1b22cac8c1b1029aeabaa9194b536294bde8945c96516fbce" }
-      ]
-    },
-    {
-      "id": "OWNER-AUTOMERGE",
-      "statement": "Maintainer-owned same-repo pull requests are squash-merged by machine once the ruleset's required checks pass: the workflow admits only PRs authored by the repository owner from a same-repo head without a no-automerge label, loads its merge controller from the base revision so a PR cannot rewrite its own gate, and the controller merges a CLEAN PR only at the exact head it evaluated. It runs only for PRs targeting main, admits every event structurally but lets only owner-sent, unlabelled events arm or merge -- a collaborator push or a no-automerge label from anyone reaches the controller and may only withdraw an armed request, with bounded retries so withdrawal is as robust as arming, replaces any non-squash request with SQUASH, and is recorded in docs/current-state.md. Thirteen node:test cases cover retry, race, opt-out, method replacement, and fail-closed paths, wired into pnpm validate.",
-      "covers": [
-        ".github/workflows/auto-merge-owner-prs.yml",
-        ".github/scripts/owner-automerge.js",
-        ".github/scripts/owner-automerge.test.js",
-        "docs/current-state.md"
-      ],
-      "evidence": [
-        { "ref": "head", "path": ".github/workflows/auto-merge-owner-prs.yml", "lineStart": 95, "lineEnd": 95, "contentSha256": "f403efa10586934707998cf80bd9d7fa2dd9e3f638ac4e3a6bd38c7a21c2c536" },
-        { "ref": "head", "path": ".github/scripts/owner-automerge.js", "lineStart": 27, "lineEnd": 27, "contentSha256": "60f150a0485a44e99de5c2c92c44f88361c40723d7a1f8a5fa0fe588620d2243" },
-        { "ref": "head", "path": ".github/scripts/owner-automerge.test.js", "lineStart": 113, "lineEnd": 113, "contentSha256": "f170a5f0692e8db74115acc67f9dafb1267cbc35be33a1656f3489e461e22a83" },
-        { "ref": "head", "path": "docs/current-state.md", "lineStart": 28, "lineEnd": 28, "contentSha256": "ca87bab47a6b2adb18c6fcc39a060f524239078980e7b0f7159feb0da4f3f1bf" }
       ]
     }
   ]

@@ -4,6 +4,22 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 
 ## [Unreleased]
 
+## [0.6.4] - 2026-09-16
+
+### Added
+
+- Add `gitpin --version`, `gitpin -v`, and `gitpin version`, backed by the package manifest as the single runtime version source.
+
+### Changed
+
+- Reconcile the CLI, MCP server, onboarding, Action default, MCP Registry metadata, documentation, website, and deterministic demo artifacts on 0.6.4.
+- Refresh validated runtime and development dependencies while retaining Node 20, 22, and 24 verification.
+
+### Fixed
+
+- Extend release verification and clean-package testing so version drift across public surfaces fails before publication.
+- Harden repository governance, CI provenance, package verification, and security checks merged since 0.6.3.
+
 ## [0.6.3] - 2026-08-13
 
 ### Changed
@@ -207,7 +223,8 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 - Snapshot generation replaces only marked RepoContext output directories and rejects registered repository roots or their ancestors.
 - Malformed exposure policies fail closed.
 
-[Unreleased]: https://github.com/shmindmaster/gitpin/compare/v0.6.3...HEAD
+[Unreleased]: https://github.com/shmindmaster/gitpin/compare/v0.6.4...HEAD
+[0.6.4]: https://github.com/shmindmaster/gitpin/releases/tag/v0.6.4
 [0.6.3]: https://github.com/shmindmaster/gitpin/releases/tag/v0.6.3
 [0.6.2]: https://github.com/shmindmaster/gitpin/releases/tag/v0.6.2
 [0.6.1]: https://github.com/shmindmaster/gitpin/releases/tag/v0.6.1

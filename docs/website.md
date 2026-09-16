@@ -2,7 +2,7 @@
 
 GitPin ships a static public site in `site/`. It leads with the required PR evidence gate, explains the trust boundary, demonstrates the local EvidenceBrief companion, and links directly to source setup and contributor documentation.
 
-GitPin 0.6.3 is verified across npm, the MCP Registry, GitHub Releases, and Pages. The Pages deployment has its own deployment SHA and was verified independently; package parity does not imply website-source parity. Historical release artifacts remain immutable.
+This tree and the packed documentation describe GitPin 0.6.4 without asserting publication status. Availability is established only from independently verified npm, MCP Registry, GitHub Release, and Pages receipts. A Pages deployment has its own deployment SHA; package parity does not imply website-source parity. Historical release artifacts remain immutable.
 
 The deployable surface includes a privacy page, canonical and social metadata, `robots.txt`, and a sitemap for the GitHub Pages URL. These are static release artifacts; they do not change the MCP server's read-only boundary.
 

@@ -1,9 +1,10 @@
 # MCP client setup (GitPin)
 
-## Fast path from npm
+## Fast path from npm after 0.6.4 publication
 
 ```bash
-npx -y gitpin@0.6.3 init --client codex
+# This exact version becomes usable only after npm publication is verified.
+npx -y gitpin@0.6.4 init --client codex
 ```
 
 Clients: `claude-code`, `codex`, `cursor`, `windsurf`, `zed`, `continue`.
@@ -85,7 +86,7 @@ See [Zed MCP docs](https://zed.dev/docs/ai/mcp).
 <!-- config:continue:start -->
 ```yaml
 name: GitPin
-version: 0.6.3
+version: 0.6.4
 schema: v1
 mcpServers:
   - name: GitPin
