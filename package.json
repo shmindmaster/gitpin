@@ -95,7 +95,7 @@
     "oxc-parser": "0.150.0",
     "tsx": "^4.19.0",
     "typescript": "^7.0.2",
-    "vitest": "^5.0.0"
+    "vitest": "^5.0.1"
   },
   "keywords": [
     "mcp",
