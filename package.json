@@ -85,13 +85,13 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
     "simple-git": "^3.27.0",
-    "yaml": "^2.7.0",
-    "zod": "^4.4.3"
+    "yaml": "^2.9.1",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.12",
+    "@biomejs/biome": "2.5.13",
     "@playwright/test": "^1.55.0",
-    "@types/node": "^26.2.0",
+    "@types/node": "^26.5.1",
     "tsx": "^4.19.0",
     "typescript": "^7.0.2",
     "vitest": "^5.0.0"
