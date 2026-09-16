@@ -159,7 +159,7 @@
     },
     {
       "id": "DEPS-1",
-      "statement": "The frozen pnpm graph forces nanoid to the patched 3.3.18 release and fast-uri to the patched 3.1.6+ line (GHSA host-confusion advisories, pnpm audit high) while preserving the existing dependency majors.",
+      "statement": "The frozen pnpm graph forces Hono to 4.13.5+, qs to 6.16.0+, nanoid to 3.3.18+, and fast-uri to 3.1.6+, closing the current Dependabot advisories while preserving dependency majors.",
       "covers": [
         "pnpm-lock.yaml",
         "pnpm-workspace.yaml"
@@ -169,15 +169,15 @@
           "ref": "head",
           "path": "pnpm-workspace.yaml",
           "lineStart": 4,
-          "lineEnd": 8,
-          "contentSha256": "9da7a8c46b57f353016c7371b9dbcc32401f3ae3d5a259efc5879c394d86285a"
+          "lineEnd": 9,
+          "contentSha256": "f83c1235968c7aef80f96f15c21ceba88f8baf24632a6538b8944cc4e3db8a47"
         },
         {
           "ref": "head",
           "path": "pnpm-lock.yaml",
           "lineStart": 7,
-          "lineEnd": 11,
-          "contentSha256": "9da7a8c46b57f353016c7371b9dbcc32401f3ae3d5a259efc5879c394d86285a"
+          "lineEnd": 12,
+          "contentSha256": "f83c1235968c7aef80f96f15c21ceba88f8baf24632a6538b8944cc4e3db8a47"
         }
       ]
     },
