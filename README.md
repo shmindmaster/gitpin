@@ -46,6 +46,7 @@ GitPin is maintained by **Sarosh Hussain**, who leads the project's technical di
 
 ```bash
 # From a committed Git repository
+# This exact version becomes usable only after npm publication is verified.
 npx -y gitpin@0.6.4 init --client codex
 ```
 
@@ -53,6 +54,7 @@ npx -y gitpin@0.6.4 init --client codex
 
 ```bash
 # Independently verify any claim (same contract as pin.verify)
+# This exact version becomes usable only after npm publication is verified.
 npx -y gitpin@0.6.4 verify \
   --repository my-service \
   --path docs/architecture.md \
