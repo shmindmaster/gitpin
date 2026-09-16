@@ -65,9 +65,9 @@
         {
           "ref": "head",
           "path": "scripts/verify-release-tag.mjs",
-          "lineStart": 3,
-          "lineEnd": 35,
-          "contentSha256": "d4be77c9e34cd7471f41249a36fbe418c778581378f1b2e74e6de1ea3f162469"
+          "lineStart": 4,
+          "lineEnd": 37,
+          "contentSha256": "8a842bb2b01d8c9df0746484ed280e5d47045d45ba2aa71db00851e1149d6e2e"
         },
         {
           "ref": "head",

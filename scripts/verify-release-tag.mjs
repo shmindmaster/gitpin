@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import YAML from 'yaml';
 
 const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 const expected = `v${packageJson.version}`;
@@ -27,7 +28,8 @@ if (
 }
 
 const actionSource = readFileSync(new URL('../action.yml', import.meta.url), 'utf8');
-const actionDefault = actionSource.match(/gitpin-version:[\s\S]*?default: ([^\s]+)/u)?.[1];
+const actionMetadata = YAML.parse(actionSource);
+const actionDefault = actionMetadata?.inputs?.['gitpin-version']?.default;
 if (actionDefault !== packageJson.version) {
   throw new Error(
     `action.yml default ${actionDefault ?? 'missing'} does not match package version ${packageJson.version}.`,
