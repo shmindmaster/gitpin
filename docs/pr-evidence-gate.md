@@ -45,8 +45,8 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
-      # Replace with the verified v0.6.4 release commit after publication.
-      - uses: shmindmaster/gitpin@b307c4ebe37b98172a9f09e32e351ae5b7686b7b # v0.6.3
+      # Commit-pinned to the verified v0.6.4 release source.
+      - uses: shmindmaster/gitpin@514799cb0eae55e965e51d510d5e7a0a7604c9cc # v0.6.4
         with:
           base-sha: ${{ github.event.pull_request.base.sha }}
           head-sha: ${{ github.event.pull_request.head.sha }}
