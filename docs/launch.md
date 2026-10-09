@@ -41,7 +41,7 @@ For engineering managers, the value is visible coverage of the files an agent ch
 
 The local MCP remains available for multi-repository evidence pinned to Git HEAD. It does not index, embed, write, commit, or push. Search finds candidates; prove and verify help assemble evidence the gate can independently re-check.
 
-GitPin is maintained by Sarosh Hussain, who leads its technical direction. Pendoah is his company and operating context. Keep launch copy product-first and do not attribute unrelated products to Pendoah.
+GitPin is maintained by Sarosh Hussain, an independent open-source maintainer who leads its technical direction. Keep launch copy product-first and do not mention unrelated products or companies.
 
 ## Announcement draft
 
@@ -55,7 +55,7 @@ GitPin is maintained by Sarosh Hussain, who leads its technical direction. Pendo
 >
 > https://github.com/shmindmaster/gitpin
 >
-> Maintained by Sarosh Hussain. Pendoah is his company and operating context.
+> Maintained by Sarosh Hussain, independent open-source maintainer.
 
 ## Canonical announcement candidate (v0.6.4)
 

@@ -2,7 +2,7 @@
 
 Thanks for improving GitPin.
 
-GitPin is maintained by Sarosh Hussain, who leads the project's technical direction. Pendoah is his company and operating context.
+GitPin is maintained by Sarosh Hussain, an independent open-source maintainer who leads the project's technical direction.
 
 ## Before you start
 

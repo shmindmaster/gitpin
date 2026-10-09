@@ -40,7 +40,7 @@ The gate reads policy only from the trusted base commit, reads the submitted man
 
 > **Versioned distribution:** This source tree and its packed documentation describe GitPin 0.6.4 without asserting publication status. Availability is established only by independently verifying the npm, MCP Registry, GitHub Release, and Pages receipts. Install with `npx -y gitpin@0.6.4` only after the npm receipt resolves. Node 20+.
 
-GitPin is maintained by **Sarosh Hussain**, who leads the project's technical direction. **Pendoah** is his company and operating context; GitPin remains the product and repository.
+GitPin is maintained by **Sarosh Hussain**, an independent open-source maintainer who leads the project's technical direction.
 
 ## Five-minute path
 

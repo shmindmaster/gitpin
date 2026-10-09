@@ -1,6 +1,6 @@
 # Governance
 
-GitPin is an MIT-licensed public project maintained by Sarosh Hussain. Technical direction is currently maintainer-led because the contributor base is small. Pendoah is the operating context, not a separate authority over repository decisions.
+GitPin is an MIT-licensed public project maintained by Sarosh Hussain. Technical direction is currently maintainer-led because the contributor base is small. GitPin is an independent open-source project; no company or outside organization has authority over repository decisions.
 
 ## Decision process
 
