@@ -1,124 +1,60 @@
 {
   "schemaVersion": 1,
-  "summary": "Resolve the pnpm audit advisories that fail the CI package job by upgrading @modelcontextprotocol/sdk and simple-git and raising the existing fast-uri and postcss override floors.",
+  "summary": "Remove company attribution from public project files so GitPin reads as an independent open-source project maintained by Sarosh Hussain.",
   "claims": [
     {
-      "id": "MCP-SDK-1-32-1",
-      "statement": "The lockfile resolves @modelcontextprotocol/sdk to 1.32.1 (patched for GHSA-6qxp-vccf-f47h; previously 1.30.0), and refreshes its transitive ip-address to 10.7.3 and proxy-addr to 2.0.8, clearing the ip-address and proxy-addr advisories without overrides.",
+      "id": "INDEPENDENT-MAINTAINER-ATTRIBUTION",
+      "statement": "Public project files (README, CONTRIBUTING, GOVERNANCE, launch notes, website footer) describe the maintainer as an independent open-source maintainer with no company attribution, and the browser test asserts the new footer wording.",
       "covers": [
-        "pnpm-lock.yaml"
+        "CONTRIBUTING.md",
+        "GOVERNANCE.md",
+        "README.md",
+        "docs/launch.md",
+        "site/index.html",
+        "tests/browser/site.spec.mjs"
       ],
       "evidence": [
         {
           "ref": "head",
-          "path": "pnpm-lock.yaml",
-          "lineStart": 18,
-          "lineEnd": 20,
-          "contentSha256": "1614b1abde6ff2bcac10b31218ec090a5ba759d38c8e56aa6ec02c5b82f0803c"
-        },
-        {
-          "ref": "head",
-          "path": "pnpm-lock.yaml",
-          "lineStart": 289,
-          "lineEnd": 289,
-          "contentSha256": "35eadf7dea47def0126d040c651d14dd061d1425af65bc46484946ede05d2cc6"
-        },
-        {
-          "ref": "head",
-          "path": "pnpm-lock.yaml",
-          "lineStart": 1911,
-          "lineEnd": 1911,
-          "contentSha256": "9a677315e520372a379c08a8ef1995ba02b2f94c8e7778221fae13c9def08d2c"
-        },
-        {
-          "ref": "head",
-          "path": "pnpm-lock.yaml",
-          "lineStart": 1045,
-          "lineEnd": 1045,
-          "contentSha256": "2d7db92b7915fde602ac32dd3b87d3995be9b991fc0de7b59e2469b1bcec6a4c"
-        }
-      ]
-    },
-    {
-      "id": "SIMPLE-GIT-V4",
-      "statement": "simple-git moves to 4.0.2 with @simple-git/argv-parser 2.0.1 (the critical GHSA-x6jw-m9v5-85vh and GHSA-v5rq-49vh-5v5c have no 3.x fix); because v4 removes the default export, src/git-shared.ts imports the named simpleGit export instead.",
-      "covers": [
-        "src/git-shared.ts",
-        "pnpm-lock.yaml"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "src/git-shared.ts",
+          "path": "CONTRIBUTING.md",
           "lineStart": 5,
           "lineEnd": 5,
-          "contentSha256": "f628eb4b49d124ef749f0f6f86a8ccb86fd0c37d0c61aa6d637eb213dd6fe5e9"
+          "contentSha256": "3fc388e6322cc78fafb5d702f995d863fe8b753a5238c64c23734634123f189d"
         },
         {
           "ref": "head",
-          "path": "pnpm-lock.yaml",
-          "lineStart": 21,
-          "lineEnd": 23,
-          "contentSha256": "91e8a6469b3531b3431ca5945bee8df177fc8af5c14e9d26bec4cf3fc014069c"
+          "path": "GOVERNANCE.md",
+          "lineStart": 3,
+          "lineEnd": 3,
+          "contentSha256": "699e8fd9fc831f564cb8015ba62d649f1093c67633d3fb965d2d4ff75433ecca"
         },
         {
           "ref": "head",
-          "path": "pnpm-lock.yaml",
-          "lineStart": 1115,
-          "lineEnd": 1115,
-          "contentSha256": "e1b16bc57d36a6b916d0421dce3b4930d30aac08cc300f58c26cdf4dd3746ee5"
+          "path": "README.md",
+          "lineStart": 43,
+          "lineEnd": 43,
+          "contentSha256": "a0634b4b13965b7f55e319c009e1aab6c34da8df8c4e7edb7ee808ebcee6d724"
         },
         {
           "ref": "head",
-          "path": "pnpm-lock.yaml",
-          "lineStart": 569,
-          "lineEnd": 569,
-          "contentSha256": "de981968bb8c1ea0061e4aaae9c1dc8e94a8ec950e15935029473db6301bbfc6"
-        }
-      ]
-    },
-    {
-      "id": "TRANSITIVE-OVERRIDE-FLOORS",
-      "statement": "The pnpm override floors rise to fast-uri ^3.1.8 and postcss ^8.5.29; postcss 8.5.29 requires source-map-js ^1.2.2, so the vitest > vite > postcss path resolves the patched source-map-js 1.2.2 and ajv resolves fast-uri 3.1.8.",
-      "covers": [
-        "pnpm-workspace.yaml",
-        "pnpm-lock.yaml"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "pnpm-workspace.yaml",
-          "lineStart": 7,
-          "lineEnd": 8,
-          "contentSha256": "2645d8edaebfc079fab307e65593cae5b92db517abce9fe32c36482cf5abbaa3"
+          "path": "docs/launch.md",
+          "lineStart": 44,
+          "lineEnd": 58,
+          "contentSha256": "bc1a684a260f247a30b89a01777cab56bccd6ee843a54c289402aa1c9f8ed934"
         },
         {
           "ref": "head",
-          "path": "pnpm-lock.yaml",
-          "lineStart": 10,
-          "lineEnd": 11,
-          "contentSha256": "2645d8edaebfc079fab307e65593cae5b92db517abce9fe32c36482cf5abbaa3"
+          "path": "site/index.html",
+          "lineStart": 301,
+          "lineEnd": 301,
+          "contentSha256": "ac1e9da57e25d567767c858395566bbd03ec923a838e03cd4b3532eff5841498"
         },
         {
           "ref": "head",
-          "path": "pnpm-lock.yaml",
-          "lineStart": 1843,
-          "lineEnd": 1843,
-          "contentSha256": "bdf2d0c5eea7f49e76bc8dce12780598eaad4a50ecf781c31d4bf88d7fea320d"
-        },
-        {
-          "ref": "head",
-          "path": "pnpm-lock.yaml",
-          "lineStart": 1041,
-          "lineEnd": 1041,
-          "contentSha256": "d2e4459d71088a8647d51dd26307e46358bd9155331ca9dee667d6aaf1922e02"
-        },
-        {
-          "ref": "head",
-          "path": "pnpm-lock.yaml",
-          "lineStart": 2146,
-          "lineEnd": 2146,
-          "contentSha256": "d6dc6d965c375a6f0dab98cf26f96331a596e6d70df478c13e08e286da2d8b17"
+          "path": "tests/browser/site.spec.mjs",
+          "lineStart": 57,
+          "lineEnd": 57,
+          "contentSha256": "8eb9ede86df94ca0b4180db4f865cc71c28bbf9afbe1f0a7d6d3c4e8ed697eaf"
         }
       ]
     }
