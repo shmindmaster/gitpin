@@ -54,9 +54,7 @@ test('presents the release path and safety boundary without analytics by default
   await expect(page.locator('body')).not.toContainText('turned off permanently in this browser');
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://shmindmaster.github.io/gitpin/');
   await expect(page.getByRole('link', { name: 'Privacy', exact: true })).toHaveAttribute('href', './privacy.html');
-  await expect(
-    page.getByText('Maintained by Sarosh Hussain. Pendoah is his company and operating context.'),
-  ).toBeVisible();
+  await expect(page.getByText('Maintained by Sarosh Hussain, independent open-source maintainer.')).toBeVisible();
   expect(analyticsRequests).toEqual([]);
 });
 
