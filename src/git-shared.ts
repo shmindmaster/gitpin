@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, lstatSync, readFileSync, readdirSync, realpathSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
-import simpleGit, { type SimpleGit } from 'simple-git';
+import { type SimpleGit, simpleGit } from 'simple-git';
 import { isAlwaysSensitivePath } from './policy';
 import { resolveRepoPath } from './registry';
 

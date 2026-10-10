@@ -1,82 +1,124 @@
 {
   "schemaVersion": 1,
-  "summary": "Prepare the GitPin 0.6.4 release with one package-derived runtime version, explicit CLI version output, cross-surface drift checks, and synchronized public documentation and demos.",
+  "summary": "Resolve the pnpm audit advisories that fail the CI package job by upgrading @modelcontextprotocol/sdk and simple-git and raising the existing fast-uri and postcss override floors.",
   "claims": [
     {
-      "id": "V064-RELEASE-SURFACES",
-      "statement": "GitPin 0.6.4 derives runtime version reporting from package.json, exposes exact CLI version commands, verifies release-surface consistency before publishing, and synchronizes the public package, Action, MCP metadata, documentation, website, and deterministic demo artifacts.",
+      "id": "MCP-SDK-1-32-1",
+      "statement": "The lockfile resolves @modelcontextprotocol/sdk to 1.32.1 (patched for GHSA-6qxp-vccf-f47h; previously 1.30.0), and refreshes its transitive ip-address to 10.7.3 and proxy-addr to 2.0.8, clearing the ip-address and proxy-addr advisories without overrides.",
       "covers": [
-        ".github/workflows/evidence-gate.yml",
-        "AGENTS.md",
-        "CHANGELOG.md",
-        "README.md",
-        "ROADMAP.md",
-        "action.yml",
-        "docs/ci.md",
-        "docs/clients.md",
-        "docs/current-state.md",
-        "docs/demos/pr-gate-fail-to-pass.artifact.json",
-        "docs/demos/pr-gate-fail-to-pass.md",
-        "docs/demos/pr-gate-fail-to-pass.svg",
-        "docs/launch.md",
-        "docs/migration-gitpin.md",
-        "docs/pr-evidence-gate.md",
-        "docs/troubleshooting.md",
-        "docs/website.md",
-        "package.json",
-        "pnpm-lock.yaml",
-        "scripts/build-pr-gate-fail-to-pass-artifact.mjs",
-        "scripts/verify-package.mjs",
-        "scripts/verify-release-tag.mjs",
-        "server.json",
-        "site/index.html",
-        "site/llms.txt",
-        "src/cli.test.ts",
-        "src/cli.ts",
-        "src/gate-action.test.ts",
-        "src/onboarding.test.ts",
-        "src/onboarding.ts",
-        "src/registry.ts",
-        "src/server.ts",
-        "src/version.ts",
-        "templates/client-rules.md",
-        "tests/browser/site.spec.mjs"
+        "pnpm-lock.yaml"
       ],
       "evidence": [
         {
           "ref": "head",
-          "path": "src/version.ts",
-          "lineStart": 1,
-          "lineEnd": 3,
-          "contentSha256": "1de774f41d27d7ca35c7c0902d715a87ea73964fc19eec439ac3d0ea89cc0c7e"
+          "path": "pnpm-lock.yaml",
+          "lineStart": 18,
+          "lineEnd": 20,
+          "contentSha256": "1614b1abde6ff2bcac10b31218ec090a5ba759d38c8e56aa6ec02c5b82f0803c"
         },
         {
           "ref": "head",
-          "path": "src/cli.ts",
-          "lineStart": 7,
-          "lineEnd": 15,
-          "contentSha256": "c5d973cf81f88f8479bb06f6868d228336b758a1ccc41aa8d508bba9feac0a1b"
+          "path": "pnpm-lock.yaml",
+          "lineStart": 289,
+          "lineEnd": 289,
+          "contentSha256": "35eadf7dea47def0126d040c651d14dd061d1425af65bc46484946ede05d2cc6"
         },
         {
           "ref": "head",
-          "path": "src/cli.test.ts",
+          "path": "pnpm-lock.yaml",
+          "lineStart": 1911,
+          "lineEnd": 1911,
+          "contentSha256": "9a677315e520372a379c08a8ef1995ba02b2f94c8e7778221fae13c9def08d2c"
+        },
+        {
+          "ref": "head",
+          "path": "pnpm-lock.yaml",
+          "lineStart": 1045,
+          "lineEnd": 1045,
+          "contentSha256": "2d7db92b7915fde602ac32dd3b87d3995be9b991fc0de7b59e2469b1bcec6a4c"
+        }
+      ]
+    },
+    {
+      "id": "SIMPLE-GIT-V4",
+      "statement": "simple-git moves to 4.0.2 with @simple-git/argv-parser 2.0.1 (the critical GHSA-x6jw-m9v5-85vh and GHSA-v5rq-49vh-5v5c have no 3.x fix); because v4 removes the default export, src/git-shared.ts imports the named simpleGit export instead.",
+      "covers": [
+        "src/git-shared.ts",
+        "pnpm-lock.yaml"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "src/git-shared.ts",
           "lineStart": 5,
-          "lineEnd": 21,
-          "contentSha256": "639d28e9169d21df3b73c11d3d62e817f36a332777fbe55a3717b08154639d7e"
+          "lineEnd": 5,
+          "contentSha256": "f628eb4b49d124ef749f0f6f86a8ccb86fd0c37d0c61aa6d637eb213dd6fe5e9"
         },
         {
           "ref": "head",
-          "path": "scripts/verify-release-tag.mjs",
-          "lineStart": 4,
-          "lineEnd": 37,
-          "contentSha256": "169b01d17bf49e03026a4cc06a09fe6c40007c6bce0ad7103479329d2b9cfa58"
+          "path": "pnpm-lock.yaml",
+          "lineStart": 21,
+          "lineEnd": 23,
+          "contentSha256": "91e8a6469b3531b3431ca5945bee8df177fc8af5c14e9d26bec4cf3fc014069c"
         },
         {
           "ref": "head",
-          "path": "CHANGELOG.md",
+          "path": "pnpm-lock.yaml",
+          "lineStart": 1115,
+          "lineEnd": 1115,
+          "contentSha256": "e1b16bc57d36a6b916d0421dce3b4930d30aac08cc300f58c26cdf4dd3746ee5"
+        },
+        {
+          "ref": "head",
+          "path": "pnpm-lock.yaml",
+          "lineStart": 569,
+          "lineEnd": 569,
+          "contentSha256": "de981968bb8c1ea0061e4aaae9c1dc8e94a8ec950e15935029473db6301bbfc6"
+        }
+      ]
+    },
+    {
+      "id": "TRANSITIVE-OVERRIDE-FLOORS",
+      "statement": "The pnpm override floors rise to fast-uri ^3.1.8 and postcss ^8.5.29; postcss 8.5.29 requires source-map-js ^1.2.2, so the vitest > vite > postcss path resolves the patched source-map-js 1.2.2 and ajv resolves fast-uri 3.1.8.",
+      "covers": [
+        "pnpm-workspace.yaml",
+        "pnpm-lock.yaml"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "pnpm-workspace.yaml",
           "lineStart": 7,
-          "lineEnd": 21,
-          "contentSha256": "ea03a338c7f0d47ffb632520cd42e49163a2801b4089bcd6eabf11afea1e77f7"
+          "lineEnd": 8,
+          "contentSha256": "2645d8edaebfc079fab307e65593cae5b92db517abce9fe32c36482cf5abbaa3"
+        },
+        {
+          "ref": "head",
+          "path": "pnpm-lock.yaml",
+          "lineStart": 10,
+          "lineEnd": 11,
+          "contentSha256": "2645d8edaebfc079fab307e65593cae5b92db517abce9fe32c36482cf5abbaa3"
+        },
+        {
+          "ref": "head",
+          "path": "pnpm-lock.yaml",
+          "lineStart": 1843,
+          "lineEnd": 1843,
+          "contentSha256": "bdf2d0c5eea7f49e76bc8dce12780598eaad4a50ecf781c31d4bf88d7fea320d"
+        },
+        {
+          "ref": "head",
+          "path": "pnpm-lock.yaml",
+          "lineStart": 1041,
+          "lineEnd": 1041,
+          "contentSha256": "d2e4459d71088a8647d51dd26307e46358bd9155331ca9dee667d6aaf1922e02"
+        },
+        {
+          "ref": "head",
+          "path": "pnpm-lock.yaml",
+          "lineStart": 2146,
+          "lineEnd": 2146,
+          "contentSha256": "d6dc6d965c375a6f0dab98cf26f96331a596e6d70df478c13e08e286da2d8b17"
         }
       ]
     }
