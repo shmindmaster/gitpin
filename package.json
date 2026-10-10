@@ -83,8 +83,8 @@
     "validate": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm verify:clients && pnpm verify:ci && pnpm verify:automerge && pnpm verify:env && pnpm verify:mcp-registry && pnpm verify:release-tag && pnpm test && pnpm site:build && pnpm verify:artifact-gate-demo"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.30.0",
-    "simple-git": "^3.27.0",
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "simple-git": "^4.0.2",
     "yaml": "^2.9.1",
     "zod": "^4.6.5"
   },
