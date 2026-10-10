@@ -9,8 +9,6 @@ generated/
 .demo/
 playwright-report/
 test-results/
-.env
-.env.*
 !.env.example
 *.secret.*
 *.key
@@ -25,4 +23,4 @@ _product-experience/
 dist/
 .turbo/
 .DS_Store
-.vscode/
+config.bat

@@ -56,7 +56,7 @@
     "verify:package": "node scripts/verify-package.mjs",
     "verify:container": "node scripts/verify-container.mjs",
     "verify:remote": "node scripts/verify-remote.mjs",
-    "start": "node dist/http.js",
+    "start": "node api.js && node dist/http.js",
     "lint": "biome lint src scripts site/app.js site/analytics.js tests playwright.config.mjs",
     "format": "biome format --write src scripts site/app.js site/analytics.js tests playwright.config.mjs package.json tsconfig.json biome.json",
     "format:check": "biome format src scripts site/app.js site/analytics.js tests playwright.config.mjs package.json tsconfig.json biome.json",
@@ -89,7 +89,7 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.13",
+    "@biomejs/biome": "2.5.15",
     "@playwright/test": "^1.55.0",
     "@types/node": "^26.5.1",
     "oxc-parser": "0.150.0",
