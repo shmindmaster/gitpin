@@ -1,60 +1,36 @@
 {
   "schemaVersion": 1,
-  "summary": "Remove company attribution from public project files so GitPin reads as an independent open-source project maintained by Sarosh Hussain.",
+  "summary": "Add a live fail-to-pass gate fixture (scripts/demo-gate-hero.mjs, pnpm demo:gate) for the demo hero, with a test and a changelog entry.",
   "claims": [
     {
-      "id": "INDEPENDENT-MAINTAINER-ATTRIBUTION",
-      "statement": "Public project files (README, CONTRIBUTING, GOVERNANCE, launch notes, website footer) describe the maintainer as an independent open-source maintainer with no company attribution, and the browser test asserts the new footer wording.",
+      "id": "LIVE-GATE-HERO-FIXTURE",
+      "statement": "scripts/demo-gate-hero.mjs builds a synthetic repository where an agent PR changes two documents but claims one, so gitpin gate fails with uncovered-change and then passes after one locator is added; src/gate-hero.test.ts asserts both runs through the CLI and the changelog records it.",
       "covers": [
-        "CONTRIBUTING.md",
-        "GOVERNANCE.md",
-        "README.md",
-        "docs/launch.md",
-        "site/index.html",
-        "tests/browser/site.spec.mjs"
+        "CHANGELOG.md",
+        "scripts/demo-gate-hero.mjs",
+        "src/gate-hero.test.ts"
       ],
       "evidence": [
         {
           "ref": "head",
-          "path": "CONTRIBUTING.md",
-          "lineStart": 5,
-          "lineEnd": 5,
-          "contentSha256": "3fc388e6322cc78fafb5d702f995d863fe8b753a5238c64c23734634123f189d"
+          "path": "CHANGELOG.md",
+          "lineStart": 9,
+          "lineEnd": 9,
+          "contentSha256": "f2d0885ffc3ebe510c158a1db2ac9dcefe3bdadf529dba2d73cabf91baca54c8"
         },
         {
           "ref": "head",
-          "path": "GOVERNANCE.md",
-          "lineStart": 3,
-          "lineEnd": 3,
-          "contentSha256": "699e8fd9fc831f564cb8015ba62d649f1093c67633d3fb965d2d4ff75433ecca"
+          "path": "scripts/demo-gate-hero.mjs",
+          "lineStart": 2,
+          "lineEnd": 2,
+          "contentSha256": "e61e11f0097d712d2693f6b53b6f375c54871eb655b62c9896b2a9a4bc2493ac"
         },
         {
           "ref": "head",
-          "path": "README.md",
-          "lineStart": 43,
-          "lineEnd": 43,
-          "contentSha256": "a0634b4b13965b7f55e319c009e1aab6c34da8df8c4e7edb7ee808ebcee6d724"
-        },
-        {
-          "ref": "head",
-          "path": "docs/launch.md",
-          "lineStart": 44,
-          "lineEnd": 58,
-          "contentSha256": "bc1a684a260f247a30b89a01777cab56bccd6ee843a54c289402aa1c9f8ed934"
-        },
-        {
-          "ref": "head",
-          "path": "site/index.html",
-          "lineStart": 301,
-          "lineEnd": 301,
-          "contentSha256": "ac1e9da57e25d567767c858395566bbd03ec923a838e03cd4b3532eff5841498"
-        },
-        {
-          "ref": "head",
-          "path": "tests/browser/site.spec.mjs",
-          "lineStart": 57,
-          "lineEnd": 57,
-          "contentSha256": "8eb9ede86df94ca0b4180db4f865cc71c28bbf9afbe1f0a7d6d3c4e8ed697eaf"
+          "path": "src/gate-hero.test.ts",
+          "lineStart": 13,
+          "lineEnd": 13,
+          "contentSha256": "28db681b5e639ab0c70d769d003e4cd0a735e98d544e6d0fc456517c8aee94e1"
         }
       ]
     }

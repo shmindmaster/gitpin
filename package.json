@@ -73,6 +73,7 @@
     "verify:artifact-gate-demo": "pnpm build && node scripts/build-pr-gate-fail-to-pass-artifact.mjs --verify",
     "demo:reset": "node scripts/demo-fixture.mjs",
     "demo:workflow": "pnpm build && node scripts/demo-workflow.mjs",
+    "demo:gate": "pnpm build && node scripts/demo-gate-hero.mjs run",
     "demo:verify": "pnpm build && node scripts/verify-demo-workflow.mjs",
     "demo:present": "pnpm build && powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/demo-terminal.ps1",
     "demo:record": "pnpm build && node scripts/record-demo.mjs",
