@@ -1,36 +1,43 @@
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { getContextBrief } from './context-brief';
 import { setRegistryPath, clearRegistryCache } from './registry';
 import { getCatalog, getDocGaps, getDocs, searchDocs } from './wiki';
 
-const tmpRoot = join(tmpdir(), `repocontext-wiki-${process.pid}`);
-const repoPath = join(tmpRoot, 'doc-repo');
+const fixtureRoot = join(tmpdir(), `repocontext-wiki-fixture-${process.pid}`);
+const fixtureRepoPath = join(fixtureRoot, 'doc-repo');
+let tmpRoot: string;
+let repoPath: string;
 
-beforeEach(() => {
-  rmSync(tmpRoot, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
-  mkdirSync(join(repoPath, 'docs'), { recursive: true });
-  writeFileSync(join(repoPath, 'README.md'), '# Doc Repo\n\nAuth works with Clerk.\n', 'utf-8');
-  writeFileSync(join(repoPath, 'docs', 'architecture.md'), '# Architecture\n\nModular monolith.\n', 'utf-8');
-  writeFileSync(join(repoPath, 'AGENTS.md'), '# Agents\n', 'utf-8');
+beforeAll(() => {
+  mkdirSync(join(fixtureRepoPath, 'docs'), { recursive: true });
+  writeFileSync(join(fixtureRepoPath, 'README.md'), '# Doc Repo\n\nAuth works with Clerk.\n', 'utf-8');
+  writeFileSync(join(fixtureRepoPath, 'docs', 'architecture.md'), '# Architecture\n\nModular monolith.\n', 'utf-8');
+  writeFileSync(join(fixtureRepoPath, 'AGENTS.md'), '# Agents\n', 'utf-8');
   for (let index = 0; index < 12; index += 1) {
     writeFileSync(
-      join(repoPath, 'docs', `reference-${index}.md`),
+      join(fixtureRepoPath, 'docs', `reference-${index}.md`),
       `# Reference ${index}\n\nCommitted content.\n`,
       'utf-8',
     );
   }
-  execFileSync('git', ['init', '-q'], { cwd: repoPath, windowsHide: true });
+  execFileSync('git', ['init', '-q'], { cwd: fixtureRepoPath, windowsHide: true });
   execFileSync('git', ['config', 'user.email', 'gitpin-test@example.invalid'], {
-    cwd: repoPath,
+    cwd: fixtureRepoPath,
     windowsHide: true,
   });
-  execFileSync('git', ['config', 'user.name', 'GitPin Test'], { cwd: repoPath, windowsHide: true });
-  execFileSync('git', ['add', '.'], { cwd: repoPath, windowsHide: true });
-  execFileSync('git', ['commit', '-qm', 'test fixture'], { cwd: repoPath, windowsHide: true });
+  execFileSync('git', ['config', 'user.name', 'GitPin Test'], { cwd: fixtureRepoPath, windowsHide: true });
+  execFileSync('git', ['add', '.'], { cwd: fixtureRepoPath, windowsHide: true });
+  execFileSync('git', ['commit', '-qm', 'test fixture'], { cwd: fixtureRepoPath, windowsHide: true });
+});
+
+beforeEach(() => {
+  tmpRoot = mkdtempSync(join(tmpdir(), `repocontext-wiki-${process.pid}-`));
+  repoPath = join(tmpRoot, 'doc-repo');
+  cpSync(fixtureRepoPath, repoPath, { recursive: true });
   const yamlPath = join(tmpRoot, 'repositories.yaml');
   writeFileSync(
     yamlPath,
@@ -49,6 +56,7 @@ afterEach(() => {
   clearRegistryCache();
   rmSync(tmpRoot, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
 });
+afterAll(() => rmSync(fixtureRoot, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 }));
 
 describe('wiki', () => {
   it('catalogs docs', async () => {

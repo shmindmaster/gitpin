@@ -1,20 +1,21 @@
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { runGitPinGate } from './gate';
 import { sha256 } from './gate-policy';
 
 let root: string;
+let fixtureRoot: string;
 let baseSha: string;
 
-beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'gitpin-gate-'));
-  mkdirSync(join(root, '.gitpin'), { recursive: true });
-  mkdirSync(join(root, 'src'), { recursive: true });
+beforeAll(() => {
+  fixtureRoot = mkdtempSync(join(tmpdir(), 'gitpin-gate-fixture-'));
+  mkdirSync(join(fixtureRoot, '.gitpin'), { recursive: true });
+  mkdirSync(join(fixtureRoot, 'src'), { recursive: true });
   writeFileSync(
-    join(root, '.gitpin', 'gate.yml'),
+    join(fixtureRoot, '.gitpin', 'gate.yml'),
     [
       'schemaVersion: 1',
       'manifestPath: .gitpin/change-evidence.json',
@@ -31,16 +32,22 @@ beforeEach(() => {
     ].join('\n'),
     'utf8',
   );
-  writeFileSync(join(root, 'src', 'feature.ts'), "export const state = 'before';\n", 'utf8');
-  git(['init']);
-  git(['config', 'user.email', 'gate-test@example.invalid']);
-  git(['config', 'user.name', 'Gate Test']);
-  git(['add', '.']);
-  git(['commit', '-qm', 'base']);
-  baseSha = git(['rev-parse', 'HEAD']);
+  writeFileSync(join(fixtureRoot, 'src', 'feature.ts'), "export const state = 'before';\n", 'utf8');
+  gitAt(fixtureRoot, ['init']);
+  gitAt(fixtureRoot, ['config', 'user.email', 'gate-test@example.invalid']);
+  gitAt(fixtureRoot, ['config', 'user.name', 'Gate Test']);
+  gitAt(fixtureRoot, ['add', '.']);
+  gitAt(fixtureRoot, ['commit', '-qm', 'base']);
+  baseSha = gitAt(fixtureRoot, ['rev-parse', 'HEAD']).trim();
+});
+
+beforeEach(() => {
+  root = mkdtempSync(join(tmpdir(), 'gitpin-gate-'));
+  cpSync(fixtureRoot, root, { recursive: true });
 });
 
 afterEach(() => rmSync(root, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 }));
+afterAll(() => rmSync(fixtureRoot, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 }));
 
 describe('PR evidence gate', () => {
   it('verifies changed-path coverage and exact committed evidence', async () => {
@@ -208,5 +215,9 @@ function commitAll(message: string): string {
 }
 
 function git(args: string[]): string {
-  return execFileSync('git', args, { cwd: root, encoding: 'utf8', windowsHide: true }).trim();
+  return gitAt(root, args).trim();
+}
+
+function gitAt(path: string, args: string[]): string {
+  return execFileSync('git', args, { cwd: path, encoding: 'utf8', windowsHide: true }).trim();
 }
