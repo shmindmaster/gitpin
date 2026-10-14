@@ -104,7 +104,9 @@ Cite formats: [docs/cite-spec.md](docs/cite-spec.md). Agent skill template: [tem
 | --- | --- |
 | `GITPIN_REGISTRY` | Registry YAML path (legacy compatibility alias: `REPOCONTEXT_REGISTRY`) |
 | `GITPIN_MCP_TOKEN` | HTTP bearer token (legacy compatibility alias: `REPOCONTEXT_MCP_TOKEN`) |
-| `GITPIN_ALLOWED_HOSTS` | HTTP host allowlist (legacy compatibility alias: `REPOCONTEXT_ALLOWED_HOSTS`) |
+| `GITPIN_ALLOWED_HOSTS` | HTTP host allowlist; required when `HOST` is not loopback (legacy compatibility alias: `REPOCONTEXT_ALLOWED_HOSTS`) |
+| `GITPIN_ALLOWED_ORIGINS` | Extra browser `Origin` values allowed on `/api/mcp` (loopback origins are always allowed) |
+| `HOST` / `PORT` | HTTP bind address and port (default `127.0.0.1:3000`; the container image sets `HOST=0.0.0.0`) |
 
 Default registry: `~/.gitpin/repositories.yaml` (legacy compatibility fallback: `~/.repocontext/...` if present).
 

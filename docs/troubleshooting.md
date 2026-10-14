@@ -36,6 +36,8 @@
 | --- | --- | --- |
 | `401` on `/api/mcp` | Missing or wrong bearer token | Set `GITPIN_MCP_TOKEN` and send `Authorization: Bearer …` |
 | Health works, MCP fails host check | Host not in allowlist | Set `GITPIN_ALLOWED_HOSTS` without schemes/ports |
+| `403 forbidden_origin` on `/api/mcp` | Browser-based client sent a non-loopback `Origin` | Add its exact `scheme://host[:port]` to `GITPIN_ALLOWED_ORIGINS` |
+| Server exits with `non-loopback bind address` | `HOST` is `0.0.0.0` or another public address without a host allowlist | Set `GITPIN_ALLOWED_HOSTS` to the public hostname(s), or bind `HOST=127.0.0.1` |
 | No source code over HTTP | Snapshot is docs/manifests only | Use local stdio for `pin.read` / `pin.search_code` / history |
 | Snapshot build fails on secrets scan | `gitleaks` missing or findings present | Install gitleaks; remove committed secrets before snapshot |
 
