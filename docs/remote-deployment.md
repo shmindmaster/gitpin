@@ -34,6 +34,18 @@ Store the token in your platform’s secret manager. Restrict network access and
 `GITPIN_ALLOWED_HOSTS` accepts hostnames only, such as `mcp.example.com`; do not include a scheme, path, or port.
 Managed health probes remain host-agnostic so platform readiness checks can run through their internal routing; all MCP requests still enforce the configured host allowlist.
 
+### Bind address and Origin checks
+
+| Variable | Default | Notes |
+| --- | --- | --- |
+| `HOST` | `127.0.0.1` (`0.0.0.0` in `Dockerfile.remote`) | Outside the container, the server only listens on loopback unless you override `HOST`. |
+| `GITPIN_ALLOWED_HOSTS` | empty | Required when `HOST` is not loopback (for example `0.0.0.0`); the server refuses to start without it. |
+| `GITPIN_ALLOWED_ORIGINS` | empty | Comma-separated `scheme://host[:port]` values, such as `https://console.example.com`. |
+
+The image binds `0.0.0.0` so the published port is reachable, which means every container run must set `GITPIN_ALLOWED_HOSTS` to the hostname clients use (`mcp.example.com` above, `127.0.0.1` or `localhost` for a local `-p 127.0.0.1:3000:3000` mapping).
+
+`/api/mcp` validates the `Origin` header to block DNS-rebinding attacks. Requests without `Origin` (CLI, SDK, and desktop MCP clients) are unaffected. Loopback origins (`localhost`, `127.0.0.1`, `[::1]`, any port) are always allowed. Any other `Origin` receives `403 forbidden_origin` before authentication unless it is listed in `GITPIN_ALLOWED_ORIGINS`. Set it only when a browser-based client calls the server directly. `/healthz` does not check `Origin`.
+
 ## Verify
 
 For a credential-free local container check, run:

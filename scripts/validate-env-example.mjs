@@ -5,6 +5,7 @@ const expectedKeys = [
   'GITPIN_INDEX_PATH',
   'GITPIN_MCP_TOKEN',
   'GITPIN_ALLOWED_HOSTS',
+  'GITPIN_ALLOWED_ORIGINS',
   'HOST',
   'PORT',
   'GITPIN_MCP_URL',

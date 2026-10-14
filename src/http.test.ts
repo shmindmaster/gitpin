@@ -7,7 +7,7 @@ import { tmpdir } from 'node:os';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { createHttpServer } from './http';
+import { createHttpServer, resolveHttpConfig } from './http';
 import { clearRegistryCache, setRegistryPath } from './registry';
 import { clearWikiCache } from './wiki';
 
@@ -185,6 +185,164 @@ describe('authenticated HTTP transport', () => {
     } finally {
       await close(server);
     }
+  });
+});
+
+describe('Origin validation', () => {
+  const initializeBody = JSON.stringify({
+    jsonrpc: '2.0',
+    id: 1,
+    method: 'initialize',
+    params: {
+      protocolVersion: '2025-06-18',
+      capabilities: {},
+      clientInfo: { name: 'gitpin-http-test', version: '1.0.0' },
+    },
+  });
+
+  it('rejects a foreign Origin with 403 before authentication or body handling', async () => {
+    const server = createHttpServer({ token });
+    await listen(server);
+    const port = (server.address() as AddressInfo).port;
+
+    try {
+      const unauthenticated = await fetch(`http://127.0.0.1:${port}/api/mcp`, {
+        method: 'POST',
+        headers: { origin: 'https://attacker.example', 'content-type': 'application/json' },
+        body: initializeBody,
+      });
+      expect(unauthenticated.status).toBe(403);
+      expect(await unauthenticated.json()).toEqual({ error: 'forbidden_origin' });
+
+      expect(
+        await requestStatus(port, '/api/mcp', 'POST', {
+          origin: 'http://attacker.example:3000',
+          authorization: `Bearer ${token}`,
+          'content-type': 'application/json',
+          'transfer-encoding': 'chunked',
+        }),
+      ).toBe(403);
+
+      expect(await requestStatus(port, '/api/mcp', 'POST', { origin: 'null', 'content-length': '2' }, '{}')).toBe(403);
+    } finally {
+      await close(server);
+    }
+  });
+
+  it('accepts authenticated requests without an Origin header', async () => {
+    const server = createHttpServer({ token });
+    await listen(server);
+    const port = (server.address() as AddressInfo).port;
+    const client = new Client({ name: 'gitpin-http-test', version: '1.0.0' });
+    const transport = new StreamableHTTPClientTransport(new URL(`http://127.0.0.1:${port}/api/mcp`), {
+      requestInit: { headers: { Authorization: `Bearer ${token}` } },
+    });
+
+    try {
+      await client.connect(transport);
+      const tools = await client.listTools();
+      expect(tools.tools.length).toBeGreaterThan(0);
+    } finally {
+      await client.close();
+      await close(server);
+    }
+  });
+
+  it('accepts loopback origins by default and configured origins when allowed', async () => {
+    const server = createHttpServer({ token, allowedOrigins: ['https://Console.Example.test'] });
+    await listen(server);
+    const port = (server.address() as AddressInfo).port;
+    const mcpPost = (origin: string) =>
+      fetch(`http://127.0.0.1:${port}/api/mcp`, {
+        method: 'POST',
+        headers: {
+          origin,
+          authorization: `Bearer ${token}`,
+          'content-type': 'application/json',
+          accept: 'application/json, text/event-stream',
+        },
+        body: initializeBody,
+      });
+
+    try {
+      for (const origin of [
+        'http://localhost:5173',
+        'http://127.0.0.1:3000',
+        'http://[::1]:8080',
+        'https://console.example.test',
+      ]) {
+        expect((await mcpPost(origin)).status, origin).toBe(200);
+      }
+      expect((await mcpPost('https://other.example.test')).status).toBe(403);
+    } finally {
+      await close(server);
+    }
+  });
+
+  it('keeps health checks independent of Origin', async () => {
+    const server = createHttpServer({ token });
+    await listen(server);
+    const port = (server.address() as AddressInfo).port;
+
+    try {
+      expect(await requestStatus(port, '/healthz', 'GET', { origin: 'https://attacker.example' })).toBe(200);
+    } finally {
+      await close(server);
+    }
+  });
+});
+
+describe('HTTP startup configuration', () => {
+  it('binds to loopback by default', () => {
+    const config = resolveHttpConfig({ GITPIN_MCP_TOKEN: token });
+    expect(config.host).toBe('127.0.0.1');
+    expect(config.port).toBe(3000);
+    expect(config.allowedHosts).toEqual([]);
+    expect(config.allowedOrigins).toEqual([]);
+  });
+
+  it('refuses a non-loopback bind without a host allowlist', () => {
+    for (const env of [
+      { HOST: '0.0.0.0' },
+      { HOST: '0.0.0.0', GITPIN_ALLOWED_HOSTS: '' },
+      { HOST: '::', GITPIN_ALLOWED_HOSTS: ' , ' },
+      { HOST: '192.0.2.10' },
+    ]) {
+      expect(() => resolveHttpConfig({ GITPIN_MCP_TOKEN: token, ...env })).toThrow(
+        /non-loopback.*GITPIN_ALLOWED_HOSTS/i,
+      );
+    }
+  });
+
+  it('accepts a non-loopback bind with a host allowlist and parses allowed origins', () => {
+    const config = resolveHttpConfig({
+      GITPIN_MCP_TOKEN: token,
+      HOST: '0.0.0.0',
+      PORT: '8080',
+      GITPIN_ALLOWED_HOSTS: 'mcp.example.com, ',
+      GITPIN_ALLOWED_ORIGINS: 'https://console.example.com , https://admin.example.com',
+    });
+    expect(config).toMatchObject({
+      host: '0.0.0.0',
+      port: 8080,
+      allowedHosts: ['mcp.example.com'],
+      allowedOrigins: ['https://console.example.com', 'https://admin.example.com'],
+    });
+  });
+
+  it('accepts loopback bind hosts without a host allowlist', () => {
+    for (const host of ['127.0.0.1', 'localhost', '::1', '127.0.0.2']) {
+      expect(resolveHttpConfig({ GITPIN_MCP_TOKEN: token, HOST: host }).host).toBe(host);
+    }
+  });
+
+  it('rejects malformed allowed origins', () => {
+    expect(() => resolveHttpConfig({ GITPIN_MCP_TOKEN: token, GITPIN_ALLOWED_ORIGINS: 'console.example.com' })).toThrow(
+      /GITPIN_ALLOWED_ORIGINS/,
+    );
+    expect(() =>
+      resolveHttpConfig({ GITPIN_MCP_TOKEN: token, GITPIN_ALLOWED_ORIGINS: 'https://console.example.com/app' }),
+    ).toThrow(/GITPIN_ALLOWED_ORIGINS/);
   });
 });
 

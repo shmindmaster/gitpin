@@ -7,6 +7,12 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 ### Added
 
 - `pnpm demo:gate` and `scripts/demo-gate-hero.mjs`: a live fail-to-pass fixture for the PR evidence gate. An agent PR changes two documents but claims one; `gitpin gate` fails with `uncovered-change`, one locator is added, and the same gate passes. Every step is a real CLI run on a synthetic repository in a scratch directory, covered by `src/gate-hero.test.ts`.
+- `GITPIN_ALLOWED_ORIGINS` for the HTTP transport: comma-separated browser origins allowed to call `/api/mcp` in addition to loopback origins.
+
+### Security
+
+- The HTTP transport binds `127.0.0.1` by default instead of `0.0.0.0`, and refuses to start on a non-loopback `HOST` unless `GITPIN_ALLOWED_HOSTS` is set. `Dockerfile.remote` sets `HOST=0.0.0.0` explicitly, so container runs must set `GITPIN_ALLOWED_HOSTS`.
+- `/api/mcp` rejects requests whose `Origin` header is neither loopback nor listed in `GITPIN_ALLOWED_ORIGINS` with `403 forbidden_origin`, before authentication or body handling, per the MCP Streamable HTTP DNS-rebinding guidance. Requests without `Origin` and `/healthz` are unaffected.
 
 ## [0.6.4] - 2026-09-16
 

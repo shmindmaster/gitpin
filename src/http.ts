@@ -5,15 +5,27 @@ import { getCatalog } from './wiki';
 import { createServer as createMcpServer } from './server';
 
 const MAX_MCP_REQUEST_BYTES = 1_048_576;
+const DEFAULT_HOST = '127.0.0.1';
+const LOOPBACK_HOSTNAMES = new Set(['localhost', '::1', '[::1]']);
 
 interface HttpServerOptions {
   token: string;
   allowedHosts?: string[];
+  allowedOrigins?: string[];
+}
+
+export interface HttpConfig {
+  host: string;
+  port: number;
+  token: string;
+  allowedHosts: string[];
+  allowedOrigins: string[];
 }
 
 export function createHttpServer(options: HttpServerOptions): Server {
   if (!options.token) throw new Error('GITPIN_MCP_TOKEN (or REPOCONTEXT_MCP_TOKEN) is required for the HTTP server.');
   const allowedHosts = new Set((options.allowedHosts ?? []).map((host) => host.toLowerCase()));
+  const allowedOrigins = new Set((options.allowedOrigins ?? []).map(normalizeOrigin));
 
   return createNodeServer(async (request, response) => {
     setSecurityHeaders(response);
@@ -48,6 +60,13 @@ export function createHttpServer(options: HttpServerOptions): Server {
           error: error instanceof Error ? error.message : 'Registry unavailable.',
         });
       }
+      return;
+    }
+
+    // Browsers always send Origin on cross-origin and POST requests, including
+    // DNS-rebinding attempts; non-browser MCP clients omit it.
+    if (!originAllowed(request, allowedOrigins)) {
+      sendJson(response, 403, { error: 'forbidden_origin' });
       return;
     }
 
@@ -112,20 +131,68 @@ export function createHttpServer(options: HttpServerOptions): Server {
   });
 }
 
+export function resolveHttpConfig(env: NodeJS.ProcessEnv = process.env): HttpConfig {
+  const port = parsePort(env.PORT);
+  const host = env.HOST?.trim() || DEFAULT_HOST;
+  const token = env.GITPIN_MCP_TOKEN?.trim() || env.REPOCONTEXT_MCP_TOKEN?.trim() || '';
+  const allowedHosts = parseList(env.GITPIN_ALLOWED_HOSTS ?? env.REPOCONTEXT_ALLOWED_HOSTS);
+  const allowedOrigins = parseList(env.GITPIN_ALLOWED_ORIGINS).map((origin) => {
+    try {
+      return normalizeOrigin(origin);
+    } catch {
+      throw new Error(
+        `Invalid GITPIN_ALLOWED_ORIGINS entry: ${origin}. Use scheme://host[:port], such as https://console.example.com.`,
+      );
+    }
+  });
+  if (!isLoopbackHost(host) && allowedHosts.length === 0) {
+    throw new Error(
+      `HOST=${host} is a non-loopback bind address; set GITPIN_ALLOWED_HOSTS to the public hostname(s) clients use, or bind HOST=127.0.0.1.`,
+    );
+  }
+  return { host, port, token, allowedHosts, allowedOrigins };
+}
+
 export async function runHttpServer(): Promise<void> {
-  const port = parsePort(process.env.PORT);
-  const host = process.env.HOST?.trim() || '0.0.0.0';
-  const token = process.env.GITPIN_MCP_TOKEN?.trim() || process.env.REPOCONTEXT_MCP_TOKEN?.trim() || '';
-  const allowedHosts = (process.env.GITPIN_ALLOWED_HOSTS ?? process.env.REPOCONTEXT_ALLOWED_HOSTS ?? '')
-    .split(',')
-    .map((value) => value.trim())
-    .filter(Boolean);
-  const server = createHttpServer({ token, allowedHosts });
+  const { host, port, token, allowedHosts, allowedOrigins } = resolveHttpConfig();
+  const server = createHttpServer({ token, allowedHosts, allowedOrigins });
   await new Promise<void>((resolve, reject) => {
     server.once('error', reject);
     server.listen(port, host, resolve);
   });
   console.error(`[gitpin] MCP server ready (http) on ${host}:${port}/api/mcp`);
+}
+
+function parseList(value: string | undefined): string[] {
+  return (value ?? '')
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+}
+
+function isLoopbackHost(host: string): boolean {
+  const normalized = host.toLowerCase();
+  return LOOPBACK_HOSTNAMES.has(normalized) || /^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/u.test(normalized);
+}
+
+function normalizeOrigin(value: string): string {
+  const url = new URL(value);
+  const originOnly = url.pathname === '/' && !url.search && !url.hash && !url.username && !url.password;
+  if (!['http:', 'https:'].includes(url.protocol) || !originOnly) throw new Error(`Invalid origin: ${value}`);
+  return url.origin;
+}
+
+function originAllowed(request: IncomingMessage, allowedOrigins: Set<string>): boolean {
+  const origin = request.headers.origin;
+  if (origin === undefined) return true;
+  let url: URL;
+  try {
+    url = new URL(origin);
+  } catch {
+    return false;
+  }
+  if (!['http:', 'https:'].includes(url.protocol)) return false;
+  return isLoopbackHost(url.hostname) || allowedOrigins.has(url.origin);
 }
 
 function authorized(request: IncomingMessage, expectedToken: string): boolean {
