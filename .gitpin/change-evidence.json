@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "summary": "Add a live fail-to-pass gate fixture (scripts/demo-gate-hero.mjs, pnpm demo:gate) for the demo hero, with a test and a changelog entry.",
+  "summary": "Reuse isolated Git test fixtures and add optional text output for the PR evidence gate while preserving JSON by default.",
   "claims": [
     {
       "id": "LIVE-GATE-HERO-FIXTURE",
@@ -31,6 +31,78 @@
           "lineStart": 13,
           "lineEnd": 13,
           "contentSha256": "28db681b5e639ab0c70d769d003e4cd0a735e98d544e6d0fc456517c8aee94e1"
+        }
+      ]
+    },
+    {
+      "id": "GIT-TEST-FIXTURE-REUSE",
+      "statement": "The gate, onboarding, and wiki tests initialize one committed temporary Git fixture per suite and copy it for each test, avoiding repeated repository setup while isolating mutations.",
+      "covers": [
+        "src/gate.test.ts",
+        "src/onboarding.test.ts",
+        "src/wiki.test.ts"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "src/gate.test.ts",
+          "lineStart": 13,
+          "lineEnd": 46,
+          "contentSha256": "0291444d1c67238c2a26f2547650245280977d6b98aa887c0e11cceb678332bb"
+        },
+        {
+          "ref": "head",
+          "path": "src/onboarding.test.ts",
+          "lineStart": 25,
+          "lineEnd": 41,
+          "contentSha256": "32737547b5f8f3d22e1541a18d6d4bd665cd5ab6b200de13c92750e69ba43028"
+        },
+        {
+          "ref": "head",
+          "path": "src/wiki.test.ts",
+          "lineStart": 15,
+          "lineEnd": 40,
+          "contentSha256": "03f03deda5cee49bb839d2a6bb114e85a740eca00b2c37440990bc5e00990f34"
+        }
+      ]
+    },
+    {
+      "id": "GATE-TEXT-OUTPUT",
+      "statement": "The gitpin gate CLI accepts --format text for a one-line PASS or FAIL summary and preserves its existing JSON output by default.",
+      "covers": [
+        "src/cli-gate.ts",
+        "src/cli.ts",
+        "src/cli-gate.test.ts",
+        "docs/pr-evidence-gate.md"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "src/cli-gate.ts",
+          "lineStart": 32,
+          "lineEnd": 37,
+          "contentSha256": "eb6d094fdb8d2f9b148bfa15ed68cb4fda71947bc1234f1849e2ca68c02266af"
+        },
+        {
+          "ref": "head",
+          "path": "src/cli.ts",
+          "lineStart": 52,
+          "lineEnd": 54,
+          "contentSha256": "bfd8b0cac0129ada549b14018cb122bf4800dd03805a5a67ac72f074ea95cade"
+        },
+        {
+          "ref": "head",
+          "path": "src/cli-gate.test.ts",
+          "lineStart": 35,
+          "lineEnd": 49,
+          "contentSha256": "d5613a9a9d0711070b07c40885244e2129aa43ea3c4729a1324b807af0c21b93"
+        },
+        {
+          "ref": "head",
+          "path": "docs/pr-evidence-gate.md",
+          "lineStart": 92,
+          "lineEnd": 92,
+          "contentSha256": "691d740a6c0ea1a45129e66424ab942d36ec2ec81c7e78abda7db6f3d4ad190b"
         }
       ]
     }

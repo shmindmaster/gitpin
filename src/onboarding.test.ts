@@ -1,32 +1,51 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, realpathSync, rmSync, utimesSync, writeFileSync } from 'node:fs';
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+  utimesSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
 import { type InitClient, initializeRepoContext, parseInitOptions, supportedInitClients } from './onboarding';
 
-const tmpRoot = join(tmpdir(), `repocontext-onboarding-${process.pid}`);
-const repositoryPath = join(tmpRoot, 'storefront');
-const registryPath = join(tmpRoot, 'home', '.gitpin', 'repositories.yaml');
+const fixtureRoot = join(tmpdir(), `repocontext-onboarding-fixture-${process.pid}`);
+const fixtureRepositoryPath = join(fixtureRoot, 'storefront');
+let tmpRoot: string;
+let repositoryPath: string;
+let registryPath: string;
 
-beforeEach(() => {
-  rmSync(tmpRoot, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
-  mkdirSync(repositoryPath, { recursive: true });
-  writeFileSync(join(repositoryPath, 'README.md'), '# Storefront\n\nCommitted onboarding evidence.\n', 'utf8');
-  execFileSync('git', ['init', '-q'], { cwd: repositoryPath, windowsHide: true });
+beforeAll(() => {
+  mkdirSync(fixtureRepositoryPath, { recursive: true });
+  writeFileSync(join(fixtureRepositoryPath, 'README.md'), '# Storefront\n\nCommitted onboarding evidence.\n', 'utf8');
+  execFileSync('git', ['init', '-q'], { cwd: fixtureRepositoryPath, windowsHide: true });
   execFileSync('git', ['config', 'user.email', 'gitpin-test@example.invalid'], {
-    cwd: repositoryPath,
+    cwd: fixtureRepositoryPath,
     windowsHide: true,
   });
-  execFileSync('git', ['config', 'user.name', 'GitPin Test'], { cwd: repositoryPath, windowsHide: true });
-  execFileSync('git', ['add', 'README.md'], { cwd: repositoryPath, windowsHide: true });
-  execFileSync('git', ['commit', '-qm', 'onboarding fixture'], { cwd: repositoryPath, windowsHide: true });
+  execFileSync('git', ['config', 'user.name', 'GitPin Test'], { cwd: fixtureRepositoryPath, windowsHide: true });
+  execFileSync('git', ['add', 'README.md'], { cwd: fixtureRepositoryPath, windowsHide: true });
+  execFileSync('git', ['commit', '-qm', 'onboarding fixture'], { cwd: fixtureRepositoryPath, windowsHide: true });
+});
+
+beforeEach(() => {
+  tmpRoot = mkdtempSync(join(tmpdir(), `repocontext-onboarding-${process.pid}-`));
+  repositoryPath = join(tmpRoot, 'storefront');
+  cpSync(fixtureRepositoryPath, repositoryPath, { recursive: true });
+  registryPath = join(tmpRoot, 'home', '.gitpin', 'repositories.yaml');
 });
 
 afterEach(() => {
   rmSync(tmpRoot, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
 });
+afterAll(() => rmSync(fixtureRoot, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 }));
 
 describe('initializeRepoContext', () => {
   it('creates an external registry, verifies readiness, and returns a commit-pinned first fact', async () => {

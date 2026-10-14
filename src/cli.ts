@@ -47,8 +47,12 @@ export async function runCli(args: string[]): Promise<void> {
     return;
   }
   if (command === 'gate') {
-    const report = await runGateCommand(options);
-    console.log(JSON.stringify(report, null, 2));
+    const { report, format } = await runGateCommand(options);
+    console.log(
+      format === 'text'
+        ? `${report.status === 'ok' ? 'PASS' : 'FAIL'}: ${report.message}`
+        : JSON.stringify(report, null, 2),
+    );
     process.exitCode = exitForVerify(report);
     return;
   }
@@ -131,7 +135,7 @@ Usage:
   gitpin verify --from-pack <pack.json>
   gitpin verify-cites --file <notes.md>
   gitpin prove-set --from-json <items.json>
-  gitpin gate --base <full-sha> --head <full-sha> [--root <repo>] [--policy <path>]
+  gitpin gate --base <full-sha> --head <full-sha> [--root <repo>] [--policy <path>] [--format <json|text>]
 
 Init options:
   --client <name>                     ${supportedInitClients.join(', ')}
