@@ -1,36 +1,137 @@
 {
   "schemaVersion": 1,
-  "summary": "Add a live fail-to-pass gate fixture (scripts/demo-gate-hero.mjs, pnpm demo:gate) for the demo hero, with a test and a changelog entry.",
+  "summary": "Bind the HTTP transport to 127.0.0.1 by default, refuse a non-loopback HOST without GITPIN_ALLOWED_HOSTS, and reject foreign Origin headers on /api/mcp (MCP Streamable HTTP DNS-rebinding guidance), with tests and self-hosting docs.",
   "claims": [
     {
-      "id": "LIVE-GATE-HERO-FIXTURE",
-      "statement": "scripts/demo-gate-hero.mjs builds a synthetic repository where an agent PR changes two documents but claims one, so gitpin gate fails with uncovered-change and then passes after one locator is added; src/gate-hero.test.ts asserts both runs through the CLI and the changelog records it.",
+      "id": "HTTP-LOOPBACK-DEFAULT-BIND",
+      "statement": "resolveHttpConfig defaults HOST to 127.0.0.1 and throws for a non-loopback HOST when GITPIN_ALLOWED_HOSTS is empty; Dockerfile.remote sets HOST=0.0.0.0 explicitly, and .env.example plus its validator carry HOST=127.0.0.1 and the new GITPIN_ALLOWED_ORIGINS key.",
       "covers": [
-        "CHANGELOG.md",
-        "scripts/demo-gate-hero.mjs",
-        "src/gate-hero.test.ts"
+        "src/http.ts",
+        "src/http.test.ts",
+        "Dockerfile.remote",
+        ".env.example",
+        "scripts/validate-env-example.mjs"
       ],
       "evidence": [
         {
           "ref": "head",
+          "path": "src/http.ts",
+          "lineStart": 8,
+          "lineEnd": 8,
+          "contentSha256": "78d01c8f42431a0a731ee7a56e6ae7a0886533f53084f1352a59c9c8002be9bf"
+        },
+        {
+          "ref": "head",
+          "path": "src/http.ts",
+          "lineStart": 150,
+          "lineEnd": 150,
+          "contentSha256": "ff4f16d4dafd469c801e88dbaf98f4470870fc2fdda148be3f7c07c33f7801f3"
+        },
+        {
+          "ref": "head",
+          "path": "src/http.test.ts",
+          "lineStart": 298,
+          "lineEnd": 298,
+          "contentSha256": "eb5fc35142027846cc95ac886a63170daec548d7d963cd63dd9dbac8440bbf37"
+        },
+        {
+          "ref": "head",
+          "path": "src/http.test.ts",
+          "lineStart": 304,
+          "lineEnd": 304,
+          "contentSha256": "7e789fa23cc02cfaf5747857712d9967b41a1d403486f3c20185c7ca4fec7d32"
+        },
+        {
+          "ref": "head",
+          "path": "Dockerfile.remote",
+          "lineStart": 17,
+          "lineEnd": 17,
+          "contentSha256": "0e799a9346621ef8d1abff7e622c2e4545608edfbef33f2c4794b7cbd89245ff"
+        },
+        {
+          "ref": "head",
+          "path": "scripts/validate-env-example.mjs",
+          "lineStart": 8,
+          "lineEnd": 8,
+          "contentSha256": "27dfa04aed14d6b8fe028ef83a0eb0b77147a8ef24965fd363571cd1b29c6b6f"
+        }
+      ]
+    },
+    {
+      "id": "HTTP-ORIGIN-VALIDATION",
+      "statement": "Non-health requests whose Origin is neither loopback nor listed in GITPIN_ALLOWED_ORIGINS receive 403 forbidden_origin before host, auth, or body handling; requests without Origin are unaffected.",
+      "covers": [
+        "src/http.ts",
+        "src/http.test.ts"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "src/http.ts",
+          "lineStart": 69,
+          "lineEnd": 69,
+          "contentSha256": "e2fe666c71c046b1df62614ffd316225fbff88431a4e359d5ef0fbf87640a630"
+        },
+        {
+          "ref": "head",
+          "path": "src/http.ts",
+          "lineStart": 187,
+          "lineEnd": 187,
+          "contentSha256": "f9272965261873bab6432c310abbeb7c58a74aa3e204ad3245edb154102d29b1"
+        },
+        {
+          "ref": "head",
+          "path": "src/http.test.ts",
+          "lineStart": 203,
+          "lineEnd": 203,
+          "contentSha256": "d5ac2040963b73a6733a5957e7407787a7aa5e8dbdc9ad2d3c1f718d43a46512"
+        },
+        {
+          "ref": "head",
+          "path": "src/http.test.ts",
+          "lineStart": 232,
+          "lineEnd": 232,
+          "contentSha256": "da2ff1b4d64443fb361b2b9f8cee9c79e95683bf8cf735b3557e141bf3f979af"
+        }
+      ]
+    },
+    {
+      "id": "SELF-HOSTING-DOCS",
+      "statement": "README, the self-hosted deployment guide, troubleshooting, and the changelog document HOST, GITPIN_ALLOWED_HOSTS, and GITPIN_ALLOWED_ORIGINS, including what a container binding 0.0.0.0 must set.",
+      "covers": [
+        "README.md",
+        "docs/remote-deployment.md",
+        "docs/troubleshooting.md",
+        "CHANGELOG.md"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "README.md",
+          "lineStart": 108,
+          "lineEnd": 108,
+          "contentSha256": "eb52f06c7e07635160eecd6f15ac07b9eac2d0fb9733257f73751b460f0f371d"
+        },
+        {
+          "ref": "head",
+          "path": "docs/remote-deployment.md",
+          "lineStart": 45,
+          "lineEnd": 45,
+          "contentSha256": "6eae4ff3c63ab2a76eff1f835af0594bffe9b063e35f94da6955254ca0d9e201"
+        },
+        {
+          "ref": "head",
+          "path": "docs/troubleshooting.md",
+          "lineStart": 39,
+          "lineEnd": 39,
+          "contentSha256": "56630fcbb9e3ede9a9f73a3e618f70c5d51ee7d2a23b13c872a73187ab7c56aa"
+        },
+        {
+          "ref": "head",
           "path": "CHANGELOG.md",
-          "lineStart": 9,
-          "lineEnd": 9,
-          "contentSha256": "f2d0885ffc3ebe510c158a1db2ac9dcefe3bdadf529dba2d73cabf91baca54c8"
-        },
-        {
-          "ref": "head",
-          "path": "scripts/demo-gate-hero.mjs",
-          "lineStart": 2,
-          "lineEnd": 2,
-          "contentSha256": "e61e11f0097d712d2693f6b53b6f375c54871eb655b62c9896b2a9a4bc2493ac"
-        },
-        {
-          "ref": "head",
-          "path": "src/gate-hero.test.ts",
-          "lineStart": 13,
-          "lineEnd": 13,
-          "contentSha256": "28db681b5e639ab0c70d769d003e4cd0a735e98d544e6d0fc456517c8aee94e1"
+          "lineStart": 14,
+          "lineEnd": 14,
+          "contentSha256": "980fea4d81269f2ac8f45d256ed03a24055f494365eeda226d12abc6c95f06a5"
         }
       ]
     }
