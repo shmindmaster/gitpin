@@ -4,6 +4,10 @@ All notable changes to GitPin (formerly RepoContext) are documented here. The pr
 
 ## [Unreleased]
 
+### Added
+
+- `pnpm demo:gate` and `scripts/demo-gate-hero.mjs`: a live fail-to-pass fixture for the PR evidence gate. An agent PR changes two documents but claims one; `gitpin gate` fails with `uncovered-change`, one locator is added, and the same gate passes. Every step is a real CLI run on a synthetic repository in a scratch directory, covered by `src/gate-hero.test.ts`.
+
 ## [0.6.4] - 2026-09-16
 
 ### Added
