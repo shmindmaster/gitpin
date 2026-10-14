@@ -13,7 +13,7 @@
 // The repository is created in a scratch directory and never inside GitPin itself.
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -56,7 +56,10 @@ function git(cwd, args, env = {}) {
 
 function commitAll(cwd, message, date) {
   git(cwd, ['add', '--all']);
-  git(cwd, ['commit', '-qm', message], { GIT_AUTHOR_DATE: date, GIT_COMMITTER_DATE: date });
+  git(cwd, ['-c', 'commit.gpgsign=false', 'commit', '--no-gpg-sign', '-qm', message], {
+    GIT_AUTHOR_DATE: date,
+    GIT_COMMITTER_DATE: date,
+  });
   return git(cwd, ['rev-parse', 'HEAD']);
 }
 
@@ -107,9 +110,10 @@ function protocolClaim() {
 /** Build the repo up to the failing agent PR. Returns the base and head SHAs. */
 export function setupHeroFixture(dir) {
   const repo = resolve(dir);
-  if (existsSync(join(repo, '.git'))) throw new Error(`${repo} already holds a repository; pass an empty directory.`);
+  if (existsSync(repo) && readdirSync(repo).length > 0)
+    throw new Error(`${repo} is not empty; pass an empty or new directory.`);
   mkdirSync(repo, { recursive: true });
-  git(repo, ['init', '--quiet', '--initial-branch=main']);
+  git(repo, ['init', '--quiet', '--initial-branch=main', '--object-format=sha1']);
   git(repo, ['config', 'core.autocrlf', 'false']);
 
   write(repo, 'README.md', '# Synthetic service\n\nA synthetic repository for the GitPin gate demo.\n');
