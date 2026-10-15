@@ -1,58 +1,68 @@
 {
   "schemaVersion": 1,
-  "summary": "Rewrite the README for a fast first read (problem, 30-second fail-to-pass quickstart, film, Mermaid trust-boundary sketch, guardrails, stage-neutral status) and add the social preview and demo GIF it references.",
+  "summary": "Add the verification pack in docs/verification: overview, functional, technical trace, coverage matrix, executed test evidence at 90598a1, demos and readiness status block.",
   "claims": [
     {
-      "id": "README-FIRST-READ",
-      "statement": "README.md now leads with the problem, a pnpm demo:gate quickstart, use-in-your-repo steps, a Mermaid sketch of the base-trusted policy and head-submitted manifest, guardrails and non-goals, and keeps the stage-neutral 0.6.4 sentence required by scripts/verify-release-tag.mjs.",
+      "id": "VERIFICATION-PACK",
+      "statement": "docs/verification adds the seven-file verification pack; READINESS.md carries the machine-readable status block with the verdict Verified End-to-End Ready at 90598a1.",
       "covers": [
-        "README.md"
+        "docs/verification/README.md",
+        "docs/verification/FUNCTIONAL.md",
+        "docs/verification/TECHNICAL.md",
+        "docs/verification/COVERAGE.md",
+        "docs/verification/TESTS.md",
+        "docs/verification/DEMOS.md",
+        "docs/verification/READINESS.md"
       ],
       "evidence": [
         {
           "ref": "head",
-          "path": "README.md",
-          "lineStart": 38,
-          "lineEnd": 38,
-          "contentSha256": "d3088a4ed3623c123bbc6615dce53fc46ac9c61666bd84fd1231e0c49ba82132"
+          "path": "docs/verification/README.md",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "ada84a7dbfea9df76535cceae661813128205f2acc4ea7be595e24b1d1fb35c7"
         },
         {
           "ref": "head",
-          "path": "README.md",
-          "lineStart": 43,
-          "lineEnd": 43,
-          "contentSha256": "a0a4d4a60b7eb8343c9a0021ec8237f9cbdc088d03c4c6bcd0ffd4c70d92d67c"
+          "path": "docs/verification/FUNCTIONAL.md",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "c928217b815376b9f2d2ce0f9fb011c9df6386763815c8cb37b2e37c4c01208f"
         },
         {
           "ref": "head",
-          "path": "README.md",
-          "lineStart": 184,
-          "lineEnd": 184,
-          "contentSha256": "06fa519f1345a104f9fc86974955bc236498b11ae67e363335cc2887a94efef2"
-        }
-      ]
-    },
-    {
-      "id": "README-MEDIA",
-      "statement": "The social preview image and the demo GIF are referenced from the README; the GIF is cut from the delivered 30-second film and the preview is rendered from a real film frame.",
-      "covers": [
-        "docs/media/social-preview.png",
-        "docs/media/gitpin-demo.gif"
-      ],
-      "evidence": [
-        {
-          "ref": "head",
-          "path": "README.md",
-          "lineStart": 3,
-          "lineEnd": 3,
-          "contentSha256": "8a856a365aea603fe62f31cbd6e285d0acb04f352a6667701f760ea7813cf968"
+          "path": "docs/verification/TECHNICAL.md",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "83e4d6c9ba3b0bf03981e38e26428eabf0f0c42492928ac955439f0b3d243f16"
         },
         {
           "ref": "head",
-          "path": "README.md",
-          "lineStart": 68,
-          "lineEnd": 68,
-          "contentSha256": "98a2d7c9416a700e619964b9069a5a7f6d7892ff032e6e0e4450f38c818cefd1"
+          "path": "docs/verification/COVERAGE.md",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "9612e9419400d1830d20d86b7855f616c1868f6ac937a45dd1849c6596d6d1aa"
+        },
+        {
+          "ref": "head",
+          "path": "docs/verification/TESTS.md",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "2e2e79ae1f9d53c9af70739be09176e10ac0055d51ff48fedf380dff075eb6ae"
+        },
+        {
+          "ref": "head",
+          "path": "docs/verification/DEMOS.md",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "contentSha256": "6d8a9ba3e9e53a7fe3e582bb182ca12e693515297547f5fa8ed6ae3daf2a8c3b"
+        },
+        {
+          "ref": "head",
+          "path": "docs/verification/READINESS.md",
+          "lineStart": 5,
+          "lineEnd": 5,
+          "contentSha256": "67c03c92e2f38217b1dc4f8b0aeaac2835f2d73e7c9a5a8f43fd48511b5a77cf"
         }
       ]
     }
