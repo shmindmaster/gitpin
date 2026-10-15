@@ -42,13 +42,6 @@
         },
         {
           "ref": "head",
-          "path": ".env.example",
-          "lineStart": 11,
-          "lineEnd": 11,
-          "contentSha256": "f598af1c64c4eac8bfa38d03a059ba33fea7d9eb879fa34711df90725235764f"
-        },
-        {
-          "ref": "head",
           "path": "src/http.test.ts",
           "lineStart": 251,
           "lineEnd": 251,
