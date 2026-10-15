@@ -4,26 +4,34 @@
   "claims": [
     {
       "id": "HTTP-LOOPBACK-DEFAULT",
-      "statement": "src/http.ts resolveHttpBindOptions defaults HOST to 127.0.0.1 and refuses a non-loopback bind without GITPIN_ALLOWED_HOSTS; Dockerfile.remote sets HOST=0.0.0.0 for the container, and src/http.test.ts asserts the default and the refusal.",
+      "statement": "src/http.ts resolveHttpBindOptions defaults HOST to 127.0.0.1 and refuses a non-loopback bind without GITPIN_ALLOWED_HOSTS; isLoopbackHost accepts 127.0.0.0/8 and every IPv6 loopback spelling; Dockerfile.remote sets HOST=0.0.0.0 for the container, .env.example binds loopback, and src/http.test.ts asserts the default, the refusal and the loopback spellings.",
       "covers": [
         "src/http.ts",
         "Dockerfile.remote",
-        "src/http.test.ts"
+        "src/http.test.ts",
+        ".env.example"
       ],
       "evidence": [
         {
           "ref": "head",
           "path": "src/http.ts",
-          "lineStart": 137,
-          "lineEnd": 137,
+          "lineStart": 138,
+          "lineEnd": 138,
           "contentSha256": "8c2d8136ae5ee3807b416bfe88f81c2cde96402e2cc754dabcbb7df3479ff4ae"
         },
         {
           "ref": "head",
           "path": "src/http.ts",
-          "lineStart": 145,
-          "lineEnd": 145,
+          "lineStart": 146,
+          "lineEnd": 146,
           "contentSha256": "1f76a4fdbf2ae5d989b99809cb673223cc42e0fc28d6a7c77e204a683ee96c74"
+        },
+        {
+          "ref": "head",
+          "path": "src/http.ts",
+          "lineStart": 193,
+          "lineEnd": 193,
+          "contentSha256": "f6a579db7c7f574b7b2c2a0d1c16b2498a50afa61246f9be5911a5a822df3153"
         },
         {
           "ref": "head",
@@ -34,10 +42,24 @@
         },
         {
           "ref": "head",
+          "path": ".env.example",
+          "lineStart": 11,
+          "lineEnd": 11,
+          "contentSha256": "f598af1c64c4eac8bfa38d03a059ba33fea7d9eb879fa34711df90725235764f"
+        },
+        {
+          "ref": "head",
           "path": "src/http.test.ts",
-          "lineStart": 241,
-          "lineEnd": 241,
+          "lineStart": 251,
+          "lineEnd": 251,
           "contentSha256": "0d320b0aee12aa203e8fe0c8c28873dd84b9efe350388cca153ac6faf25757f8"
+        },
+        {
+          "ref": "head",
+          "path": "src/http.test.ts",
+          "lineStart": 235,
+          "lineEnd": 235,
+          "contentSha256": "fdb4cb9ef47fea97f9835712d2f57aed8ff7331623a771da8fd61bfa5dde5736"
         }
       ]
     },
@@ -52,8 +74,8 @@
         {
           "ref": "head",
           "path": "src/http.ts",
-          "lineStart": 66,
-          "lineEnd": 66,
+          "lineStart": 67,
+          "lineEnd": 67,
           "contentSha256": "e2fe666c71c046b1df62614ffd316225fbff88431a4e359d5ef0fbf87640a630"
         },
         {
