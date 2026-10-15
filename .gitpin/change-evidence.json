@@ -1,28 +1,58 @@
 {
   "schemaVersion": 1,
-  "summary": "Let the Validate workflow be dispatched on main, because auto-merged commits pushed with GITHUB_TOKEN never start the push: main run; the CI routing check now requires the trigger.",
+  "summary": "Rewrite the README for a fast first read (problem, 30-second fail-to-pass quickstart, film, Mermaid trust-boundary sketch, guardrails, stage-neutral status) and add the social preview and demo GIF it references.",
   "claims": [
     {
-      "id": "VALIDATE-DISPATCH-ON-MAIN",
-      "statement": ".github/workflows/ci.yml adds workflow_dispatch so main can be validated at its exact merged SHA, and scripts/verify-ci-runner-routing.mjs fails if ci.yml ever drops that trigger.",
+      "id": "README-FIRST-READ",
+      "statement": "README.md now leads with the problem, a pnpm demo:gate quickstart, use-in-your-repo steps, a Mermaid sketch of the base-trusted policy and head-submitted manifest, guardrails and non-goals, and keeps the stage-neutral 0.6.4 sentence required by scripts/verify-release-tag.mjs.",
       "covers": [
-        ".github/workflows/ci.yml",
-        "scripts/verify-ci-runner-routing.mjs"
+        "README.md"
       ],
       "evidence": [
         {
           "ref": "head",
-          "path": ".github/workflows/ci.yml",
-          "lineStart": 10,
-          "lineEnd": 10,
-          "contentSha256": "31ef10165fe98492a75234e221d538925dc4007bfd24de8f56275ef977e9f564"
+          "path": "README.md",
+          "lineStart": 38,
+          "lineEnd": 38,
+          "contentSha256": "d3088a4ed3623c123bbc6615dce53fc46ac9c61666bd84fd1231e0c49ba82132"
         },
         {
           "ref": "head",
-          "path": "scripts/verify-ci-runner-routing.mjs",
-          "lineStart": 46,
-          "lineEnd": 46,
-          "contentSha256": "7c8cbd587163ebb59858ea291e2ec5615475e89f9721728c5d6f5929b28ea39b"
+          "path": "README.md",
+          "lineStart": 43,
+          "lineEnd": 43,
+          "contentSha256": "a0a4d4a60b7eb8343c9a0021ec8237f9cbdc088d03c4c6bcd0ffd4c70d92d67c"
+        },
+        {
+          "ref": "head",
+          "path": "README.md",
+          "lineStart": 184,
+          "lineEnd": 184,
+          "contentSha256": "06fa519f1345a104f9fc86974955bc236498b11ae67e363335cc2887a94efef2"
+        }
+      ]
+    },
+    {
+      "id": "README-MEDIA",
+      "statement": "The social preview image and the demo GIF are referenced from the README; the GIF is cut from the delivered 30-second film and the preview is rendered from a real film frame.",
+      "covers": [
+        "docs/media/social-preview.png",
+        "docs/media/gitpin-demo.gif"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "README.md",
+          "lineStart": 3,
+          "lineEnd": 3,
+          "contentSha256": "8a856a365aea603fe62f31cbd6e285d0acb04f352a6667701f760ea7813cf968"
+        },
+        {
+          "ref": "head",
+          "path": "README.md",
+          "lineStart": 68,
+          "lineEnd": 68,
+          "contentSha256": "98a2d7c9416a700e619964b9069a5a7f6d7892ff032e6e0e4450f38c818cefd1"
         }
       ]
     }
