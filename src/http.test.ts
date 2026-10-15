@@ -7,7 +7,7 @@ import { tmpdir } from 'node:os';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { createHttpServer, resolveHttpBindOptions } from './http';
+import { createHttpServer, isLoopbackHost, resolveHttpBindOptions } from './http';
 import { clearRegistryCache, setRegistryPath } from './registry';
 import { clearWikiCache } from './wiki';
 
@@ -232,6 +232,16 @@ describe('authenticated HTTP transport', () => {
 });
 
 describe('HTTP bind options', () => {
+  it('recognizes every loopback spelling and nothing else', () => {
+    for (const host of ['localhost', '127.0.0.1', '127.0.0.2', '::1', '[::1]', '0:0:0:0:0:0:0:1']) {
+      expect(isLoopbackHost(host)).toBe(true);
+    }
+    for (const host of ['0.0.0.0', '10.0.0.1', '128.0.0.1', '::', 'example.test']) {
+      expect(isLoopbackHost(host)).toBe(false);
+    }
+    expect(resolveHttpBindOptions({ GITPIN_MCP_TOKEN: token, HOST: '127.0.0.2' }).host).toBe('127.0.0.2');
+  });
+
   it('binds loopback by default', () => {
     const options = resolveHttpBindOptions({ GITPIN_MCP_TOKEN: token });
     expect(options.host).toBe('127.0.0.1');

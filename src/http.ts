@@ -1,5 +1,6 @@
 import { createServer as createNodeServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
 import { timingSafeEqual } from 'node:crypto';
+import { isIPv4, isIPv6 } from 'node:net';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { getCatalog } from './wiki';
 import { createServer as createMcpServer } from './server';
@@ -181,10 +182,17 @@ function hostAllowed(request: IncomingMessage, allowedHosts: Set<string>): boole
   return allowedHosts.has(host);
 }
 
-const LOOPBACK_HOSTS = new Set(['127.0.0.1', '::1', '[::1]', 'localhost']);
-
-function isLoopbackHost(host: string): boolean {
-  return LOOPBACK_HOSTS.has(host.toLowerCase());
+/**
+ * True for `localhost`, any IPv4 address in 127.0.0.0/8, and the IPv6 loopback
+ * in any spelling (`::1`, `[::1]`, `0:0:0:0:0:0:0:1`).
+ */
+export function isLoopbackHost(host: string): boolean {
+  const value = host.trim().toLowerCase();
+  if (value === 'localhost') return true;
+  const unbracketed = value.startsWith('[') && value.endsWith(']') ? value.slice(1, -1) : value;
+  if (isIPv4(unbracketed)) return unbracketed.startsWith('127.');
+  if (isIPv6(unbracketed)) return new URL(`http://[${unbracketed}]`).hostname === '[::1]';
+  return false;
 }
 
 function originAllowed(request: IncomingMessage, allowedHosts: Set<string>): boolean {
