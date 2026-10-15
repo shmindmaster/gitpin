@@ -40,3 +40,28 @@ The social cut's EDL, which records what each segment proves, is in `D:\Local-AI
 - An MCP client (Claude Code or another) calling `pin.search → pin.prove → pin.verify`.
 - The GitHub Action failing a real agent PR in the Checks UI.
 - The HTTP transport with a bearer token.
+
+## Production plan: the next two assets
+
+Both reuse the GP1 footage. Heavy work (capture, TTS, render) waits for an assigned slot.
+
+**C. Technical deep dive, "Inside the gate's trust boundary" (about 6 min, developer education).** Planned, not made.
+- **Hook (0:00–0:15).** A PR tries to weaken its own gate by editing `.gitpin/gate.yml` in head. The gate reads policy from base, reports `policy-change-blocked`, and exits 1.
+- **Axes (0:15–0:45).** Base versus head trust. Coverage from the merge-base diff, not from the PR description. A hash-pinned line versus a semantic check.
+- **Behaviour, then diagram (0:45–3:15).** Reuse the GP1 fail and pass takes. Walk the 17-hop trace in [TECHNICAL.md](TECHNICAL.md) on the code stage: `gate.ts` policy block (55–67), line-slice hash (108–115), coverage (169–173). Show the Mermaid diagram after the behaviour.
+- **MCP (3:15–4:15).** A real MCP client over stdio calling `pin.search` → `pin.prove` → `pin.verify`, ending with the evidence pack's full SHA and hash.
+- **Trade-off (4:15–4:45).** "Committed content, not semantic correctness." The claim text is not judged, except through optional `mustContain`.
+- **Failure and recovery (4:45–5:30).** Edit the cited line after proving: the gate reports `content-hash-mismatch`. Re-prove, and it passes.
+- **Payoff (5:30–6:00).** The Action YAML and `npx -y gitpin@0.6.4`. One call to action.
+- **New captures needed:** the policy-change block, the hash mismatch and the MCP session.
+- **Voice:** the local Qwen3-TTS narrator (no ElevenLabs spend), with WER checked by local ASR.
+
+**Vertical short (≤ 45 s, 1080x1920).** Planned, not made.
+- Reframed from film 02's beats: zero claims (exit 1), one pinned claim (exit 0), the plain-git recheck and the limit.
+- Cropped from the GP1 Recast takes, not by letterboxing the 16:9 master.
+- Burned-in captions. It reuses film 02's Bella lines, so there is no new TTS.
+
+**ElevenLabs usage to date:**
+- Film 02 used 7 `eleven_v4` lines, 411 characters. The API's `character-cost` headers total 180.
+- Its music bed was reused from film 01.
+- Film 01's usage is recorded in its own job workspace.
