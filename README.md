@@ -1,3 +1,8 @@
+> [!IMPORTANT]
+> **Archived 2026-10-15.** Superseded by [Assay](https://github.com/shmindmaster/assay), a reference architecture for deterministic agent control.
+> Why: the same agent writes both the change and its evidence manifest, so the gate proves coverage and hash pinning, not that a claim is true. Assay moves the decision into deterministic code instead.
+> The last release, 0.6.4, stays on npm. The rest of this README is unchanged.
+
 <div align="center">
 
 <img src="docs/media/social-preview.png" alt="GitPin: agent pull requests must show exact evidence before they merge." width="100%">

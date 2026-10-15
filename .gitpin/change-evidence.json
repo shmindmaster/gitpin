@@ -1,68 +1,20 @@
 {
   "schemaVersion": 1,
-  "summary": "Add the verification pack in docs/verification: overview, functional, technical trace, coverage matrix, executed test evidence at 90598a1, demos and readiness status block.",
+  "summary": "Archive notice at the top of the README: GitPin is retired and superseded by Assay.",
   "claims": [
     {
-      "id": "VERIFICATION-PACK",
-      "statement": "docs/verification adds the seven-file verification pack; READINESS.md carries the machine-readable status block with the verdict Verified End-to-End Ready at 90598a1.",
+      "id": "ARCHIVE-NOTICE",
+      "statement": "README.md opens with the 2026-10-15 archive notice pointing to shmindmaster/assay, with one line on why.",
       "covers": [
-        "docs/verification/README.md",
-        "docs/verification/FUNCTIONAL.md",
-        "docs/verification/TECHNICAL.md",
-        "docs/verification/COVERAGE.md",
-        "docs/verification/TESTS.md",
-        "docs/verification/DEMOS.md",
-        "docs/verification/READINESS.md"
+        "README.md"
       ],
       "evidence": [
         {
           "ref": "head",
-          "path": "docs/verification/README.md",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "ada84a7dbfea9df76535cceae661813128205f2acc4ea7be595e24b1d1fb35c7"
-        },
-        {
-          "ref": "head",
-          "path": "docs/verification/FUNCTIONAL.md",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "c928217b815376b9f2d2ce0f9fb011c9df6386763815c8cb37b2e37c4c01208f"
-        },
-        {
-          "ref": "head",
-          "path": "docs/verification/TECHNICAL.md",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "83e4d6c9ba3b0bf03981e38e26428eabf0f0c42492928ac955439f0b3d243f16"
-        },
-        {
-          "ref": "head",
-          "path": "docs/verification/COVERAGE.md",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "9612e9419400d1830d20d86b7855f616c1868f6ac937a45dd1849c6596d6d1aa"
-        },
-        {
-          "ref": "head",
-          "path": "docs/verification/TESTS.md",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "2e2e79ae1f9d53c9af70739be09176e10ac0055d51ff48fedf380dff075eb6ae"
-        },
-        {
-          "ref": "head",
-          "path": "docs/verification/DEMOS.md",
-          "lineStart": 1,
-          "lineEnd": 1,
-          "contentSha256": "6d8a9ba3e9e53a7fe3e582bb182ca12e693515297547f5fa8ed6ae3daf2a8c3b"
-        },
-        {
-          "ref": "head",
-          "path": "docs/verification/READINESS.md",
-          "lineStart": 5,
-          "lineEnd": 5,
-          "contentSha256": "67c03c92e2f38217b1dc4f8b0aeaac2835f2d73e7c9a5a8f43fd48511b5a77cf"
+          "path": "README.md",
+          "lineStart": 2,
+          "lineEnd": 2,
+          "contentSha256": "365f0a97cf102e17efaf65103ce5479e5273a81a0b108c6928ace647729a103a"
         }
       ]
     }
