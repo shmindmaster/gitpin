@@ -1,36 +1,113 @@
 {
   "schemaVersion": 1,
-  "summary": "Add a live fail-to-pass gate fixture (scripts/demo-gate-hero.mjs, pnpm demo:gate) for the demo hero, with a test and a changelog entry.",
+  "summary": "Harden the self-hosted HTTP MCP transport: bind loopback by default, refuse a public bind without a host allowlist, and reject foreign browser Origins (DNS rebinding).",
   "claims": [
     {
-      "id": "LIVE-GATE-HERO-FIXTURE",
-      "statement": "scripts/demo-gate-hero.mjs builds a synthetic repository where an agent PR changes two documents but claims one, so gitpin gate fails with uncovered-change and then passes after one locator is added; src/gate-hero.test.ts asserts both runs through the CLI and the changelog records it.",
+      "id": "HTTP-LOOPBACK-DEFAULT",
+      "statement": "src/http.ts resolveHttpBindOptions defaults HOST to 127.0.0.1 and refuses a non-loopback bind without GITPIN_ALLOWED_HOSTS; isLoopbackHost accepts 127.0.0.0/8 and every IPv6 loopback spelling; Dockerfile.remote sets HOST=0.0.0.0 for the container, .env.example binds loopback, and src/http.test.ts asserts the default, the refusal and the loopback spellings.",
       "covers": [
-        "CHANGELOG.md",
-        "scripts/demo-gate-hero.mjs",
-        "src/gate-hero.test.ts"
+        "src/http.ts",
+        "Dockerfile.remote",
+        "src/http.test.ts",
+        ".env.example"
       ],
       "evidence": [
         {
           "ref": "head",
-          "path": "CHANGELOG.md",
-          "lineStart": 9,
-          "lineEnd": 9,
-          "contentSha256": "f2d0885ffc3ebe510c158a1db2ac9dcefe3bdadf529dba2d73cabf91baca54c8"
+          "path": "src/http.ts",
+          "lineStart": 138,
+          "lineEnd": 138,
+          "contentSha256": "8c2d8136ae5ee3807b416bfe88f81c2cde96402e2cc754dabcbb7df3479ff4ae"
         },
         {
           "ref": "head",
-          "path": "scripts/demo-gate-hero.mjs",
-          "lineStart": 2,
-          "lineEnd": 2,
-          "contentSha256": "e61e11f0097d712d2693f6b53b6f375c54871eb655b62c9896b2a9a4bc2493ac"
+          "path": "src/http.ts",
+          "lineStart": 146,
+          "lineEnd": 146,
+          "contentSha256": "1f76a4fdbf2ae5d989b99809cb673223cc42e0fc28d6a7c77e204a683ee96c74"
         },
         {
           "ref": "head",
-          "path": "src/gate-hero.test.ts",
-          "lineStart": 13,
-          "lineEnd": 13,
-          "contentSha256": "28db681b5e639ab0c70d769d003e4cd0a735e98d544e6d0fc456517c8aee94e1"
+          "path": "src/http.ts",
+          "lineStart": 193,
+          "lineEnd": 193,
+          "contentSha256": "f6a579db7c7f574b7b2c2a0d1c16b2498a50afa61246f9be5911a5a822df3153"
+        },
+        {
+          "ref": "head",
+          "path": "Dockerfile.remote",
+          "lineStart": 20,
+          "lineEnd": 20,
+          "contentSha256": "0e799a9346621ef8d1abff7e622c2e4545608edfbef33f2c4794b7cbd89245ff"
+        },
+        {
+          "ref": "head",
+          "path": "src/http.test.ts",
+          "lineStart": 251,
+          "lineEnd": 251,
+          "contentSha256": "0d320b0aee12aa203e8fe0c8c28873dd84b9efe350388cca153ac6faf25757f8"
+        },
+        {
+          "ref": "head",
+          "path": "src/http.test.ts",
+          "lineStart": 235,
+          "lineEnd": 235,
+          "contentSha256": "fdb4cb9ef47fea97f9835712d2f57aed8ff7331623a771da8fd61bfa5dde5736"
+        }
+      ]
+    },
+    {
+      "id": "HTTP-ORIGIN-CHECK",
+      "statement": "src/http.ts rejects an MCP request whose browser Origin is not an allowed host (or loopback when no allowlist is set) with 403 forbidden_origin before authentication; src/http.test.ts covers foreign, null and same-host origins.",
+      "covers": [
+        "src/http.ts",
+        "src/http.test.ts"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "src/http.ts",
+          "lineStart": 67,
+          "lineEnd": 67,
+          "contentSha256": "e2fe666c71c046b1df62614ffd316225fbff88431a4e359d5ef0fbf87640a630"
+        },
+        {
+          "ref": "head",
+          "path": "src/http.test.ts",
+          "lineStart": 190,
+          "lineEnd": 190,
+          "contentSha256": "2fdf88b78a4b4a37e13e28704f6f3139a277b42492b7628ffd358ebee3586f26"
+        }
+      ]
+    },
+    {
+      "id": "HTTP-BIND-DOCS",
+      "statement": "README.md documents HOST in the configuration table and names the locked MCP SDK version (1.32) in the badge; docs/remote-deployment.md explains the loopback default, the allowlist requirement and the Origin rejection.",
+      "covers": [
+        "README.md",
+        "docs/remote-deployment.md"
+      ],
+      "evidence": [
+        {
+          "ref": "head",
+          "path": "README.md",
+          "lineStart": 108,
+          "lineEnd": 108,
+          "contentSha256": "b1b36abad723b64786783779c9630aab49f39d4f8e7aaf76c1d7c885ee438722"
+        },
+        {
+          "ref": "head",
+          "path": "README.md",
+          "lineStart": 6,
+          "lineEnd": 6,
+          "contentSha256": "a1f55f0f75af2ba598546c351aadf8232bda6540c36eaa558f83d13635e68816"
+        },
+        {
+          "ref": "head",
+          "path": "docs/remote-deployment.md",
+          "lineStart": 35,
+          "lineEnd": 35,
+          "contentSha256": "2cf0bae288d948bf43cd7c240060c5b4db3a7388960b02dcd13f7bb64fa0f1cc"
         }
       ]
     }

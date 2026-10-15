@@ -1,5 +1,6 @@
 import { createServer as createNodeServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
 import { timingSafeEqual } from 'node:crypto';
+import { isIPv4, isIPv6 } from 'node:net';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { getCatalog } from './wiki';
 import { createServer as createMcpServer } from './server';
@@ -59,6 +60,14 @@ export function createHttpServer(options: HttpServerOptions): Server {
       return;
     }
 
+    // Browsers attach Origin to cross-site requests. Refuse any origin that is
+    // not one of this server's own hosts, so a web page cannot drive the MCP
+    // endpoint through DNS rebinding. Non-browser clients send no Origin.
+    if (!originAllowed(request, allowedHosts)) {
+      sendJson(response, 403, { error: 'forbidden_origin' });
+      return;
+    }
+
     if (url.pathname !== '/api/mcp') {
       sendJson(response, 404, { error: 'not_found' });
       return;
@@ -112,14 +121,36 @@ export function createHttpServer(options: HttpServerOptions): Server {
   });
 }
 
-export async function runHttpServer(): Promise<void> {
-  const port = parsePort(process.env.PORT);
-  const host = process.env.HOST?.trim() || '0.0.0.0';
-  const token = process.env.GITPIN_MCP_TOKEN?.trim() || process.env.REPOCONTEXT_MCP_TOKEN?.trim() || '';
-  const allowedHosts = (process.env.GITPIN_ALLOWED_HOSTS ?? process.env.REPOCONTEXT_ALLOWED_HOSTS ?? '')
+export interface HttpBindOptions {
+  port: number;
+  host: string;
+  token: string;
+  allowedHosts: string[];
+}
+
+/**
+ * Bind to loopback unless HOST says otherwise, and refuse a non-loopback bind
+ * without a host allowlist: an all-interfaces listener that accepts any Host
+ * header is reachable through DNS rebinding.
+ */
+export function resolveHttpBindOptions(env: NodeJS.ProcessEnv): HttpBindOptions {
+  const port = parsePort(env.PORT);
+  const host = env.HOST?.trim() || '127.0.0.1';
+  const token = env.GITPIN_MCP_TOKEN?.trim() || env.REPOCONTEXT_MCP_TOKEN?.trim() || '';
+  const allowedHosts = (env.GITPIN_ALLOWED_HOSTS ?? env.REPOCONTEXT_ALLOWED_HOSTS ?? '')
     .split(',')
     .map((value) => value.trim())
     .filter(Boolean);
+  if (!isLoopbackHost(host) && allowedHosts.length === 0) {
+    throw new Error(
+      `Refusing to bind ${host} without GITPIN_ALLOWED_HOSTS; set it to the public hostname, or bind 127.0.0.1.`,
+    );
+  }
+  return { port, host, token, allowedHosts };
+}
+
+export async function runHttpServer(): Promise<void> {
+  const { port, host, token, allowedHosts } = resolveHttpBindOptions(process.env);
   const server = createHttpServer({ token, allowedHosts });
   await new Promise<void>((resolve, reject) => {
     server.once('error', reject);
@@ -149,6 +180,31 @@ function hostAllowed(request: IncomingMessage, allowedHosts: Set<string>): boole
   if (allowedHosts.size === 0) return true;
   const host = (request.headers.host ?? '').split(':')[0].toLowerCase();
   return allowedHosts.has(host);
+}
+
+/**
+ * True for `localhost`, any IPv4 address in 127.0.0.0/8, and the IPv6 loopback
+ * in any spelling (`::1`, `[::1]`, `0:0:0:0:0:0:0:1`).
+ */
+export function isLoopbackHost(host: string): boolean {
+  const value = host.trim().toLowerCase();
+  if (value === 'localhost') return true;
+  const unbracketed = value.startsWith('[') && value.endsWith(']') ? value.slice(1, -1) : value;
+  if (isIPv4(unbracketed)) return unbracketed.startsWith('127.');
+  if (isIPv6(unbracketed)) return new URL(`http://[${unbracketed}]`).hostname === '[::1]';
+  return false;
+}
+
+function originAllowed(request: IncomingMessage, allowedHosts: Set<string>): boolean {
+  const origin = request.headers.origin;
+  if (origin === undefined) return true;
+  let hostname: string;
+  try {
+    hostname = new URL(origin).hostname.toLowerCase();
+  } catch {
+    return false;
+  }
+  return allowedHosts.size > 0 ? allowedHosts.has(hostname) : isLoopbackHost(hostname);
 }
 
 function setSecurityHeaders(response: ServerResponse): void {
