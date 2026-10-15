@@ -1,6 +1,6 @@
 # GitPin Verification Pack
 
-Pack for GitPin 0.6.4 at `main` `e4c550e88e601cb41cb65f299b1525d1415be5c0`. This is evidence about the product, not marketing. Where a check was not run it says "not checked".
+Pack for GitPin 0.6.4. The code was read at `e4c550e`; the suites ran at main `90598a1`. This is evidence about the product, not marketing. Where a check was not run it says "not checked".
 
 ## Purpose
 

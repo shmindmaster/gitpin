@@ -1,6 +1,6 @@
 # GitPin Functional Verification
 
-Scope: GitPin 0.6.4 at `e4c550e`. Everything below was read from source and docs; no test or command was run for this pack. Results are in [TESTS.md](TESTS.md).
+Scope: GitPin 0.6.4. Read from source and docs at `e4c550e`. Test and smoke results are in [TESTS.md](TESTS.md).
 
 ## Roles
 

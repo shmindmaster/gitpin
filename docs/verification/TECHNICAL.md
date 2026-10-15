@@ -1,6 +1,6 @@
 # GitPin Technical Verification
 
-Scope: GitPin 0.6.4 at `e4c550e`. Read from source; nothing was executed for this pack. Existing architecture docs: [docs/architecture.md](../architecture.md), [docs/architecture/overview.md](../architecture/overview.md). This file adds the gate trace and the verification view.
+Scope: GitPin 0.6.4. Read from source at `e4c550e`; the suites ran at `90598a1` (see [TESTS.md](TESTS.md)). Existing architecture docs: [docs/architecture.md](../architecture.md), [docs/architecture/overview.md](../architecture/overview.md). This file adds the gate trace and the verification view.
 
 ## Architecture
 
@@ -61,7 +61,7 @@ Single TypeScript package, CommonJS, Node 20 or later. Runtime dependencies: `@m
 | `pages.yml` | manual only | Builds and deploys the site |
 | `auto-merge-owner-prs.yml` | PR events | Squash-merge of owner PRs once required checks pass |
 
-Actions are pinned by commit SHA. `pnpm validate` chains lint, format check, typecheck, client config, CI routing, automerge test, env example, MCP registry, release tag, vitest, site build and the fail-to-pass artifact check. What it returns when run was not checked here; see [TESTS.md](TESTS.md).
+Actions are pinned by commit SHA. `pnpm validate` chains lint, format check, typecheck, client config, CI routing, automerge test, env example, MCP registry, release tag, vitest, site build and the fail-to-pass artifact check. It passed on Node 22 and 24 at `90598a1` (Validate run 38736417735; see [TESTS.md](TESTS.md)).
 
 ## Observability
 
@@ -78,7 +78,7 @@ Stderr only: a ready line on server start and thrown error messages. HTTP has `G
 
 ## Critical-feature trace: `gitpin gate --base <sha> --head <sha>`
 
-Line numbers are for `e4c550e`. No segment is simulated or a placeholder; the trace was read from source, not run.
+Line numbers are for `e4c550e`; none of the traced files changed through `90598a1`. No segment is simulated or a placeholder.
 
 | # | Hop | Where | What happens |
 | --- | --- | --- | --- |
@@ -102,4 +102,4 @@ Line numbers are for `e4c550e`. No segment is simulated or a placeholder; the tr
 
 In the Action, hop 1 is replaced by `npm exec --package=gitpin@0.6.4 -- gitpin gate ...` (`action.yml:65-73`), output goes to a report file, then `scripts/render-gate-action-report.mjs` renders it and the step exits with the gate's code.
 
-Executed result of this trace: not checked in this pack. The fail-to-pass run is `src/gate-hero.test.ts` and the films; see [TESTS.md](TESTS.md) and [DEMOS.md](DEMOS.md).
+Executed: the published `gitpin@0.6.4` gate ran on this repository's own history on 2026-10-15. 56fcab9→df94cd3 gave `evidence-verified`, exit 0. 56fcab9→90598a1 gave `uncovered-change` on 2 paths, exit 1 (see [TESTS.md](TESTS.md)). The fail-to-pass run is `src/gate-hero.test.ts` and the films; see [TESTS.md](TESTS.md) and [DEMOS.md](DEMOS.md).
