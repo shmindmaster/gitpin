@@ -40,6 +40,13 @@ for (const jobName of ['validate', 'package', 'package-runtime', 'website']) {
   }
 }
 
+// Auto-merge pushes to main with GITHUB_TOKEN, which does not start workflows, so
+// `push: main` alone never validates an auto-merged commit. Keep a manual trigger so
+// main can be validated at its exact SHA.
+if (!workflow.on || !Object.hasOwn(workflow.on, 'workflow_dispatch')) {
+  throw new Error('ci.yml must keep workflow_dispatch so main can be validated at its merged SHA.');
+}
+
 const releaseJob = releaseWorkflow.jobs?.publish;
 if (releaseJob?.permissions?.contents !== 'write' || releaseJob.permissions?.['id-token'] !== 'write') {
   throw new Error('The trusted release job must have contents: write and id-token: write permissions.');
