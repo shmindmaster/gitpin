@@ -32,6 +32,8 @@ Endpoints:
 
 Store the token in your platform’s secret manager. Restrict network access and allowed hosts to the clients that should access the snapshot.
 `GITPIN_ALLOWED_HOSTS` accepts hostnames only, such as `mcp.example.com`; do not include a scheme, path, or port.
+The server binds `127.0.0.1` unless `HOST` says otherwise, and refuses to start on a non-loopback `HOST` without `GITPIN_ALLOWED_HOSTS` (the container image sets `HOST=0.0.0.0`, so the allowlist is required there).
+Browser requests whose `Origin` is not an allowed host (or loopback, when no allowlist is set) get `403 forbidden_origin` before authentication, which blocks DNS-rebinding access to the MCP endpoint.
 Managed health probes remain host-agnostic so platform readiness checks can run through their internal routing; all MCP requests still enforce the configured host allowlist.
 
 ## Verify

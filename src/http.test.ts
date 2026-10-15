@@ -7,7 +7,7 @@ import { tmpdir } from 'node:os';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { createHttpServer } from './http';
+import { createHttpServer, resolveHttpBindOptions } from './http';
 import { clearRegistryCache, setRegistryPath } from './registry';
 import { clearWikiCache } from './wiki';
 
@@ -185,6 +185,70 @@ describe('authenticated HTTP transport', () => {
     } finally {
       await close(server);
     }
+  });
+
+  it('refuses MCP calls from a foreign browser Origin before authentication', async () => {
+    const server = createHttpServer({ token, allowedHosts: ['mcp.example.test'] });
+    await listen(server);
+    const port = (server.address() as AddressInfo).port;
+    const headers = {
+      host: 'mcp.example.test',
+      'content-type': 'application/json',
+      'content-length': '2',
+    };
+
+    try {
+      expect(await requestStatus(port, '/api/mcp', 'POST', { ...headers, origin: 'https://evil.example' }, '{}')).toBe(
+        403,
+      );
+      expect(await requestStatus(port, '/api/mcp', 'POST', { ...headers, origin: 'null' }, '{}')).toBe(403);
+      // Same-host origin and no origin both reach the bearer check.
+      expect(
+        await requestStatus(port, '/api/mcp', 'POST', { ...headers, origin: 'https://mcp.example.test' }, '{}'),
+      ).toBe(401);
+      expect(await requestStatus(port, '/api/mcp', 'POST', headers, '{}')).toBe(401);
+    } finally {
+      await close(server);
+    }
+  });
+
+  it('accepts only loopback origins when no host allowlist is configured', async () => {
+    const server = createHttpServer({ token });
+    await listen(server);
+    const port = (server.address() as AddressInfo).port;
+    const headers = { 'content-type': 'application/json', 'content-length': '2' };
+
+    try {
+      expect(await requestStatus(port, '/api/mcp', 'POST', { ...headers, origin: 'http://localhost:5173' }, '{}')).toBe(
+        401,
+      );
+      expect(await requestStatus(port, '/api/mcp', 'POST', { ...headers, origin: 'http://attacker.test' }, '{}')).toBe(
+        403,
+      );
+    } finally {
+      await close(server);
+    }
+  });
+});
+
+describe('HTTP bind options', () => {
+  it('binds loopback by default', () => {
+    const options = resolveHttpBindOptions({ GITPIN_MCP_TOKEN: token });
+    expect(options.host).toBe('127.0.0.1');
+    expect(options.port).toBe(3000);
+  });
+
+  it('refuses an all-interfaces bind without a host allowlist', () => {
+    expect(() => resolveHttpBindOptions({ GITPIN_MCP_TOKEN: token, HOST: '0.0.0.0' })).toThrow(/GITPIN_ALLOWED_HOSTS/);
+  });
+
+  it('allows an all-interfaces bind once the public host is allowlisted', () => {
+    const options = resolveHttpBindOptions({
+      GITPIN_MCP_TOKEN: token,
+      HOST: '0.0.0.0',
+      GITPIN_ALLOWED_HOSTS: 'mcp.example.test, other.example.test',
+    });
+    expect(options.allowedHosts).toEqual(['mcp.example.test', 'other.example.test']);
   });
 });
 
